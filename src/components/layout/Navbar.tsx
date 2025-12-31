@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/lib/i18n';
@@ -9,6 +9,7 @@ import LanguageSelector from './LanguageSelector';
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function Navbar() {
           <span className="text-xl font-extrabold tracking-tight text-slate-900">ilovehaccp.com</span>
         </Link>
         
+        {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8">
           <Link href="/#features" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">{t('nav.features')}</Link>
           <Link href="/#pricing" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">{t('nav.pricing')}</Link>
@@ -40,6 +42,7 @@ export default function Navbar() {
           <Link href="/about" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">About</Link>
         </nav>
 
+        {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-6">
           <LanguageSelector />
           
@@ -64,7 +67,96 @@ export default function Navbar() {
             </>
           )}
         </div>
+
+        {/* Mobile Menu Button */}
+        <button 
+          className="md:hidden p-2 text-slate-600"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="md:hidden absolute top-20 left-0 right-0 bg-white border-b border-slate-100 p-4 shadow-xl flex flex-col gap-4 animate-in slide-in-from-top-5">
+          <Link 
+            href="/#features" 
+            className="text-base font-medium text-slate-600 py-2"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {t('nav.features')}
+          </Link>
+          <Link 
+            href="/#pricing" 
+            className="text-base font-medium text-slate-600 py-2"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {t('nav.pricing')}
+          </Link>
+          <Link 
+            href="/resources" 
+            className="text-base font-medium text-slate-600 py-2"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {t('nav.resources')}
+          </Link>
+          <Link 
+            href="/about" 
+            className="text-base font-medium text-slate-600 py-2"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            About
+          </Link>
+          
+          <div className="h-px bg-slate-100 my-2" />
+          
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-slate-500">Language</span>
+            <LanguageSelector />
+          </div>
+
+          <div className="h-px bg-slate-100 my-2" />
+
+          {user ? (
+            <>
+              <Link 
+                href="/dashboard" 
+                className="text-base font-medium text-slate-600 py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <button 
+                onClick={() => {
+                  supabase.auth.signOut();
+                  setIsMenuOpen(false);
+                }}
+                className="text-base font-medium text-red-600 py-2 text-left"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <Link 
+                href="/login" 
+                className="text-center py-3 rounded-lg border border-slate-200 font-bold text-slate-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('nav.login')}
+              </Link>
+              <Link 
+                href="/builder" 
+                className="text-center py-3 rounded-lg bg-blue-600 text-white font-bold shadow-lg"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('nav.getStarted')}
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </header>
   );
 }
