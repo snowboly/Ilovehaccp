@@ -12,8 +12,12 @@ import {
   MoreVertical, 
   Trash2, 
   Edit,
-  LogOut
+  LogOut,
+  Download,
+  Loader2
 } from 'lucide-react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import HACCPDocument from '@/components/pdf/HACCPDocument';
 
 interface Plan {
   id: string;
@@ -21,6 +25,11 @@ interface Plan {
   business_name: string;
   created_at: string;
   status: string;
+  hazard_analysis: any;
+  full_plan: any;
+  intended_use: string;
+  storage_type: string;
+  business_type: string;
 }
 
 export default function Dashboard() {
@@ -175,11 +184,31 @@ export default function Dashboard() {
                   >
                     <Edit className="h-4 w-4" /> Edit
                   </Link>
-                  <button 
+                  
+                  <PDFDownloadLink
+                    document={
+                      <HACCPDocument 
+                        data={{
+                          businessName: plan.business_name,
+                          productName: plan.product_name,
+                          productDescription: `HACCP Plan for ${plan.business_type}`,
+                          intendedUse: plan.intended_use,
+                          storageType: plan.storage_type,
+                          analysis: plan.hazard_analysis,
+                          fullPlan: plan.full_plan
+                        }} 
+                      />
+                    }
+                    fileName={`${plan.business_name.replace(/\s+/g, '_')}_HACCP.pdf`}
                     className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                   >
-                    Export
-                  </button>
+                    {({ loading }) => (
+                      <>
+                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                        {loading ? '...' : 'Export'}
+                      </>
+                    )}
+                  </PDFDownloadLink>
                 </div>
               </div>
             ))}

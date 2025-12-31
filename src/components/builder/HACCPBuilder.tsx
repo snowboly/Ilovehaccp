@@ -1154,6 +1154,7 @@ export default function HACCPBuilder() {
         intended_use: formData.isVulnerable === 'Yes' ? 'Vulnerable Populations' : 'General Consumption',
         process_steps: formData.processSteps.map((name, i) => ({ id: String(i+1), name })),
         hazard_analysis: analysis,
+        full_plan: aiData.full_plan,
         user_id: userId,
       };
 
@@ -1416,13 +1417,14 @@ export default function HACCPBuilder() {
                     <p className="text-slate-500">Full analysis based on your business context.</p>
                   </div>
                   
-                  {userId ? (
-                    isClient && (
+                  {/* Unlocked for Beta: Download available to everyone */}
+                  {isClient && (
+                    <div className="flex flex-col items-end gap-2">
                       <PDFDownloadLink
                         document={
                           <HACCPDocument 
                             data={{
-                              businessName: formData.businessLegalName,
+                              businessName: formData.businessLegalName || "My Business",
                               productName: "Food Safety Plan",
                               productDescription: `HACCP Plan for ${formData.businessType}`,
                               intendedUse: formData.isVulnerable === 'Yes' ? 'Vulnerable Populations' : 'General Consumption',
@@ -1432,7 +1434,7 @@ export default function HACCPBuilder() {
                             }} 
                           />
                         }
-                        fileName={`${formData.businessLegalName.replace(/\s+/g, '_')}_HACCP.pdf`}
+                        fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
                         className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-blue-700 flex items-center gap-2 shadow-lg shadow-blue-500/20"
                       >
                         {({ loading }) => (
@@ -1442,16 +1444,12 @@ export default function HACCPBuilder() {
                           </>
                         )}
                       </PDFDownloadLink>
-                    )
-                  ) : (
-                    <div className="flex flex-col items-center gap-3">
-                       <Link 
-                        href="/signup" 
-                        className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 flex items-center gap-2 shadow-lg"
-                      >
-                        <Lock className="w-5 h-5" /> Create Account to Download
-                      </Link>
-                      <p className="text-xs text-slate-400">Join 500+ businesses today</p>
+                      
+                      {!userId && (
+                        <p className="text-xs text-slate-400">
+                          <Link href="/signup" className="text-blue-600 hover:underline">Sign up</Link> to save this plan to your dashboard.
+                        </p>
+                      )}
                     </div>
                   )}
                </div>

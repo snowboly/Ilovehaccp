@@ -1,24 +1,31 @@
 import Link from 'next/link';
 import { 
-  Zap, 
+  Clock, 
   ArrowRight, 
   Star, 
   CheckCircle2, 
   X,
-  Globe,
-  Users,
+  Gavel,
+  UserCheck,
   ShieldCheck
 } from 'lucide-react';
 import InteractiveDemo from '@/components/landing/InteractiveDemo';
 import Testimonials from '@/components/landing/Testimonials';
 import BlogPreview from '@/components/landing/BlogPreview';
+import Newsletter from '@/components/landing/Newsletter';
 
 export default function Home() {
   return (
     <div className="font-sans">
       <main className="flex-1 pt-20">
+        {/* Beta Banner */}
+        <div className="bg-indigo-600 text-white text-center py-3 px-4 font-medium text-sm flex justify-center items-center gap-2">
+          <span className="bg-white/20 text-white px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide">Beta Launch</span>
+          <span>We are currently in public beta. All features (including PDF export) are <strong>free</strong> for a limited time!</span>
+        </div>
+
         {/* Hero Section */}
-        <section className="relative overflow-hidden py-20 lg:py-32 bg-slate-50">
+        <section className="relative overflow-hidden py-20 lg:py-32">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
             <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-400 opacity-20 blur-[100px]"></div>
@@ -87,17 +94,17 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
-                  icon: <Zap className="w-6 h-6" />,
+                  icon: <Clock className="w-6 h-6" />,
                   title: "Lightning Fast",
                   desc: "What used to take 2 weeks now takes 20 minutes. Answer our smart questionnaire and get a full plan instantly."
                 },
                 {
-                  icon: <Globe className="w-6 h-6" />,
+                  icon: <Gavel className="w-6 h-6" />,
                   title: "Global Compliance",
                   desc: "Whether you're under FDA, EU, or UK regulations, our system adapts the hazard analysis to your region."
                 },
                 {
-                  icon: <Users className="w-6 h-6" />,
+                  icon: <UserCheck className="w-6 h-6" />,
                   title: "Expert Verification",
                   desc: "AI does the heavy lifting, but our certified food safety experts provide the final stamp of approval."
                 }
@@ -232,6 +239,7 @@ export default function Home() {
 
         <Testimonials />
         <BlogPreview />
+        <Newsletter />
 
         {/* Final CTA */}
         <section className="py-24 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center">
