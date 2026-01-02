@@ -17,7 +17,10 @@ import {
   Loader2,
   CheckCircle2,
   XCircle,
-  Lock
+  Lock,
+  Search,
+  LayoutGrid,
+  List as ListIcon
 } from 'lucide-react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
