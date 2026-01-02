@@ -20,7 +20,8 @@ import {
   Lock,
   Search,
   LayoutGrid,
-  List as ListIcon
+  List as ListIcon,
+  Settings
 } from 'lucide-react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
@@ -125,12 +126,18 @@ function DashboardContent() {
           <span className="font-bold text-xl">ilovehaccp.com</span>
         </Link>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500 hidden sm:inline">{user?.email}</span>
+          <div className="hidden md:flex flex-col items-end mr-2">
+             <span className="text-xs text-gray-400 font-medium">Logged in as</span>
+             <span className="text-sm font-bold text-gray-700">{user?.email}</span>
+          </div>
+          <Link href="/dashboard/settings" className="text-gray-400 hover:text-gray-600 transition-colors p-2">
+            <Settings className="h-5 w-5" />
+          </Link>
           <button 
             onClick={handleLogout}
-            className="text-gray-500 hover:text-red-600 transition-colors"
+            className="flex items-center gap-2 text-gray-500 hover:text-red-600 transition-colors bg-gray-100 hover:bg-red-50 px-3 py-2 rounded-lg text-sm font-medium"
           >
-            <LogOut className="h-5 w-5" />
+            <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Log Out</span>
           </button>
         </div>
       </nav>
