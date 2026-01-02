@@ -1,162 +1,114 @@
 "use client";
 
 import Link from 'next/link';
-import { ShieldCheck, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import { Menu, X, Heart } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import LanguageSelector from './LanguageSelector';
 
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const { t } = useLanguage();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-    };
-    getUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const navItems = [
+    { name: t('nav.builder'), href: '/builder' },
+    { name: t('nav.resources'), href: '/resources' },
+    { name: t('nav.about'), href: '/about' },
+    { name: t('nav.contact'), href: '/contact' },
+  ];
 
   return (
-    <header className="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <ShieldCheck className="h-8 w-8 text-blue-600 group-hover:scale-110 transition-transform" />
-          <span className="text-xl font-extrabold tracking-tight text-slate-900">ilovehaccp.com</span>
-        </Link>
-        
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex gap-8">
-          <Link href="/#features" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">{t('nav.features')}</Link>
-          <Link href="/#pricing" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">{t('nav.pricing')}</Link>
-          <Link href="/resources" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">{t('nav.resources')}</Link>
-          <Link href="/about" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">About</Link>
-        </nav>
+    <nav className="bg-white border-b border-slate-100 sticky top-0 z-50">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-1.5 group">
+            <span className="text-2xl font-black text-slate-900 tracking-tight">i</span>
+            <Heart className="w-6 h-6 text-rose-600 fill-rose-600 group-hover:scale-110 transition-transform" />
+            <span className="text-2xl font-black text-slate-900 tracking-tight">HACCP</span>
+          </Link>
 
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-6">
-          <LanguageSelector />
-          
-          <div className="h-6 w-px bg-slate-200" />
-
-          {user ? (
-            <>
-              <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-slate-900">Dashboard</Link>
-              <button 
-                onClick={() => supabase.auth.signOut()}
-                className="text-sm font-medium text-red-600 hover:text-red-700"
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`text-sm font-bold transition-colors ${
+                  pathname === item.href 
+                    ? 'text-blue-600' 
+                    : 'text-slate-600 hover:text-blue-600'
+                }`}
               >
-                Log out
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900">{t('nav.login')}</Link>
-              <Link href="/builder" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40">
-                {t('nav.getStarted')}
+                {item.name}
               </Link>
-            </>
-          )}
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden p-2 text-slate-600"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 right-0 bg-white border-b border-slate-100 p-4 shadow-xl flex flex-col gap-4 animate-in slide-in-from-top-5">
-          <Link 
-            href="/#features" 
-            className="text-base font-medium text-slate-600 py-2"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {t('nav.features')}
-          </Link>
-          <Link 
-            href="/#pricing" 
-            className="text-base font-medium text-slate-600 py-2"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {t('nav.pricing')}
-          </Link>
-          <Link 
-            href="/resources" 
-            className="text-base font-medium text-slate-600 py-2"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {t('nav.resources')}
-          </Link>
-          <Link 
-            href="/about" 
-            className="text-base font-medium text-slate-600 py-2"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            About
-          </Link>
-          
-          <div className="h-px bg-slate-100 my-2" />
-          
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500">Language</span>
+            ))}
             <LanguageSelector />
+            <Link 
+              href="/login"
+              className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors"
+            >
+              {t('nav.login')}
+            </Link>
+            <Link
+              href="/signup"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 hover:-translate-y-0.5"
+            >
+              {t('nav.getStarted')}
+            </Link>
           </div>
 
-          <div className="h-px bg-slate-100 my-2" />
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center gap-4">
+            <LanguageSelector />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+      </div>
 
-          {user ? (
-            <>
-              <Link 
-                href="/dashboard" 
-                className="text-base font-medium text-slate-600 py-2"
-                onClick={() => setIsMenuOpen(false)}
+      {/* Mobile Nav */}
+      {isOpen && (
+        <div className="md:hidden border-t border-slate-100 bg-white">
+          <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsOpen(false)}
+                className={`text-base font-bold py-2 ${
+                  pathname === item.href 
+                    ? 'text-blue-600' 
+                    : 'text-slate-600'
+                }`}
               >
-                Dashboard
+                {item.name}
               </Link>
-              <button 
-                onClick={() => {
-                  supabase.auth.signOut();
-                  setIsMenuOpen(false);
-                }}
-                className="text-base font-medium text-red-600 py-2 text-left"
-              >
-                Log out
-              </button>
-            </>
-          ) : (
-            <div className="flex flex-col gap-3">
-              <Link 
-                href="/login" 
-                className="text-center py-3 rounded-lg border border-slate-200 font-bold text-slate-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t('nav.login')}
-              </Link>
-              <Link 
-                href="/builder" 
-                className="text-center py-3 rounded-lg bg-blue-600 text-white font-bold shadow-lg"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t('nav.getStarted')}
-              </Link>
-            </div>
-          )}
+            ))}
+            <hr className="border-slate-100" />
+            <Link
+              href="/login"
+              onClick={() => setIsOpen(false)}
+              className="text-base font-bold text-slate-600 py-2"
+            >
+              {t('nav.login')}
+            </Link>
+            <Link
+              href="/signup"
+              onClick={() => setIsOpen(false)}
+              className="bg-blue-600 text-white px-5 py-3 rounded-xl font-bold text-center shadow-lg shadow-blue-500/20"
+            >
+              {t('nav.getStarted')}
+            </Link>
+          </div>
         </div>
       )}
-    </header>
+    </nav>
   );
 }

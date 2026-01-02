@@ -1,25 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import CookieConsent from "@/components/layout/CookieConsent";
-import LanguageHandler from "@/components/layout/LanguageHandler";
 import { Providers } from "@/components/providers";
+import SEO from "@/components/layout/SEO";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ilovehaccp.com | AI-Powered HACCP Plan Generator",
-  description: "Create professional, compliance-ready HACCP plans in minutes using AI. Verified by food safety experts.",
+  title: "iLoveHACCP | Free AI HACCP Plan Generator & Food Safety Tools",
+  description: "Create a professional HACCP plan in minutes with our free AI builder. Trusted by chefs and food businesses worldwide. 100% compliant & audit-ready.",
+  keywords: ["HACCP", "Food Safety", "HACCP Plan Generator", "AI HACCP", "Food Hygiene", "Restaurant Compliance"],
+  icons: {
+    icon: '/icon.svg',
+  }
 };
 
 export default function RootLayout({
@@ -28,18 +23,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
         <Providers>
-          <LanguageHandler />
+          <SEO />
           <Navbar />
-          <main className="flex-1">
+          <main className="min-h-screen">
             {children}
           </main>
           <Footer />
-          <CookieConsent />
         </Providers>
       </body>
     </html>

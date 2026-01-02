@@ -14,9 +14,19 @@ body {
   background: linear-gradient(to bottom right, #ffffff, #eff6ff, #f8fafc); /* white -> blue-50 -> slate-50 */
   background-attachment: fixed; /* Ensures gradient stays beautiful during scroll */
   min-height: 100vh;
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 20px;
+  }
 }
 
-@layer utilities {
+@layer base {
   .text-balance {
     text-wrap: balance;
   }
