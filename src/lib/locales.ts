@@ -7,6 +7,8 @@ export const translations = {
       features: "Features",
       resources: "Resources",
       pricing: "Pricing",
+      about: "About",
+      contact: "Contact",
       login: "Log In",
       getStarted: "Get Started"
     },
@@ -37,6 +39,8 @@ export const translations = {
       features: "Características",
       resources: "Recursos",
       pricing: "Precios",
+      about: "Sobre nosotros",
+      contact: "Contacto",
       login: "Iniciar Sesión",
       getStarted: "Empezar"
     },
@@ -66,6 +70,8 @@ export const translations = {
       features: "Fonctionnalités",
       resources: "Ressources",
       pricing: "Tarifs",
+      about: "À propos",
+      contact: "Contact",
       login: "Connexion",
       getStarted: "Commencer"
     },
@@ -95,6 +101,8 @@ export const translations = {
       features: "Funcionalidades",
       resources: "Recursos",
       pricing: "Preços",
+      about: "Sobre",
+      contact: "Contato",
       login: "Entrar",
       getStarted: "Começar"
     },
