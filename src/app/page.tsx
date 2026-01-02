@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link';
 import { 
   Clock, 
@@ -10,14 +12,17 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import InteractiveDemo from '@/components/landing/InteractiveDemo';
+import ExpertAdvisors from '@/components/landing/ExpertAdvisors';
 import Testimonials from '@/components/landing/Testimonials';
 import BlogPreview from '@/components/landing/BlogPreview';
 import Newsletter from '@/components/landing/Newsletter';
+import SampleDownload from '@/components/landing/SampleDownload';
 
 export default function Home() {
   return (
     <div className="font-sans">
       <main className="flex-1 pt-20">
+        <SampleDownload />
         {/* Beta Banner */}
         <div className="bg-indigo-600 text-white text-center py-3 px-4 font-medium text-sm flex justify-center items-center gap-2">
           <span className="bg-white/20 text-white px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide">Beta Launch</span>
@@ -52,9 +57,16 @@ export default function Home() {
                   <Link href="/builder" className="bg-blue-600 hover:bg-blue-700 text-white text-center px-8 py-4 rounded-xl text-lg font-bold transition-all shadow-xl hover:translate-y-[-2px]">
                     Build Your Plan Free
                   </Link>
-                  <Link href="#how-it-works" className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-center px-8 py-4 rounded-xl text-lg font-bold transition-all">
-                    See How It Works
-                  </Link>
+                  <button 
+                    onClick={() => {
+                        // We will trigger a hidden sample download
+                        const btn = document.getElementById('download-sample-trigger');
+                        btn?.click();
+                    }}
+                    className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-center px-8 py-4 rounded-xl text-lg font-bold transition-all flex items-center justify-center gap-2"
+                  >
+                    Download Sample PDF
+                  </button>
                 </div>
                 <div className="flex gap-6 text-sm text-slate-500 font-medium pt-4">
                   <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> No credit card required</span>
@@ -120,6 +132,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <ExpertAdvisors />
 
         {/* Pricing Section */}
         <section id="pricing" className="py-24 bg-slate-900 text-white relative overflow-hidden">

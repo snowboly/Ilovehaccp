@@ -272,6 +272,7 @@ export default function HACCPBuilder() {
 
   // --- QUESTIONS ---
   const questions = [
+    // --- SECTION 1: Business Context ---
     {
       id: 'businessLegalName',
       section: 'Business Context',
@@ -292,6 +293,25 @@ export default function HACCPBuilder() {
       placeholder: "e.g., The Healthy Grill"
     },
     {
+      id: 'country',
+      section: 'Regulatory Context',
+      question: "Country of operation",
+      description: "Regulations vary by region.",
+      type: 'text',
+      icon: <Globe className="w-6 h-6 text-green-500" />,
+      placeholder: "e.g., Portugal",
+      required: true
+    },
+    {
+      id: 'regulation',
+      section: 'Regulatory Context',
+      question: "Which primary regulation applies?",
+      description: "Select the legal framework you must comply with.",
+      type: 'radio',
+      icon: <Gavel className="w-6 h-6 text-amber-500" />,
+      options: ['Codex Alimentarius', 'EU (Reg. 852/2004)', 'FDA (21 CFR 117)', 'Other']
+    },
+    {
       id: 'businessType',
       section: 'Business Context',
       question: "Type of business",
@@ -302,6 +322,96 @@ export default function HACCPBuilder() {
       required: true
     },
     {
+      id: 'employeeCount',
+      section: 'Operational Context',
+      question: "Number of employees involved in food handling",
+      description: "Includes kitchen staff, servers, and handlers.",
+      type: 'number',
+      icon: <Users className="w-6 h-6 text-blue-600" />,
+      placeholder: "e.g., 12"
+    },
+    {
+      id: 'productionScale',
+      section: 'Operational Context',
+      question: "What is your production scale?",
+      type: 'radio',
+      icon: <BarChart3 className="w-6 h-6 text-indigo-500" />,
+      options: ['Small (<100 meals/day)', 'Medium', 'Large / industrial']
+    },
+    {
+      id: 'haccpScope',
+      section: 'Operational Context',
+      question: "Is this HACCP for a single or multiple sites?",
+      type: 'radio',
+      icon: <MapPin className="w-6 h-6 text-red-500" />,
+      options: ['Single site', 'Multiple sites']
+    },
+    {
+      id: 'certifications',
+      section: 'Regulatory Context',
+      question: "Are you required to comply with any of these?",
+      description: "Check all that apply.",
+      type: 'checkbox',
+      icon: <Award className="w-6 h-6 text-yellow-500" />,
+      options: ['ISO 22000', 'BRCGS', 'IFS']
+    },
+
+    // --- SECTION 2: Product Details ---
+    {
+      id: 'foodCategories',
+      section: 'Product Details',
+      question: "Which food categories do you handle?",
+      description: "Select all that apply to your operation.",
+      type: 'checkbox',
+      icon: <UtensilsCrossed className="w-6 h-6 text-orange-500" />,
+      options: ['Raw meat', 'Poultry', 'Fish / seafood', 'Dairy', 'Eggs', 'Produce', 'Ready-to-eat foods', 'Baked goods', 'Beverages'],
+      required: true
+    },
+    {
+      id: 'productStates',
+      section: 'Product Details',
+      question: "How are the products processed?",
+      description: "Check all that apply.",
+      type: 'checkbox',
+      icon: <Thermometer className="w-6 h-6 text-red-600" />,
+      options: ['Raw', 'Cooked', 'Ready-to-eat', 'Mixed']
+    },
+    {
+      id: 'productCharacteristics',
+      section: 'Product Details',
+      question: "Final product storage characteristics",
+      type: 'checkbox',
+      icon: <Snowflake className="w-6 h-6 text-blue-400" />,
+      options: ['Refrigerated', 'Frozen', 'Ambient']
+    },
+    {
+      id: 'shelfLife',
+      section: 'Product Details',
+      question: "Expected shelf life",
+      type: 'radio',
+      icon: <Calendar className="w-6 h-6 text-slate-500" />,
+      options: ['Short (< 3 days)', 'Medium (< 1 week)', 'Long (> 1 week)']
+    },
+    {
+      id: 'isVulnerable',
+      section: 'Intended Use',
+      question: "Is any product intended for vulnerable populations?",
+      description: "e.g., Children, elderly, or hospitals.",
+      type: 'radio',
+      icon: <Baby className="w-6 h-6 text-pink-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'packagingTypes',
+      section: 'Packaging',
+      question: "What type of packaging is used?",
+      type: 'checkbox',
+      icon: <Package className="w-6 h-6 text-amber-700" />,
+      options: ['Bulk', 'Vacuum', 'MAP', 'Open', 'Sealed']
+    },
+
+    // --- SECTION 3: Ingredients & Allergens ---
+    {
       id: 'mainIngredients',
       section: 'Ingredients',
       question: "List your main ingredients",
@@ -311,6 +421,45 @@ export default function HACCPBuilder() {
       placeholder: "e.g., Raw Beef, Eggs, Flour...",
       required: true
     },
+    {
+      id: 'allergens',
+      section: 'Allergens',
+      question: "Do you use any of these allergens?",
+      description: "Select all that apply.",
+      type: 'checkbox',
+      icon: <AlertOctagon className="w-6 h-6 text-red-500" />,
+      options: [
+        'Cereals containing gluten', 'Crustaceans', 'Eggs', 'Fish', 'Peanuts', 
+        'Soybeans', 'Milk', 'Nuts', 'Celery', 'Mustard', 'Sesame', 'Sulphites', 'Lupin', 'Molluscs'
+      ]
+    },
+    {
+      id: 'allergensHandled',
+      section: 'Allergen Management',
+      question: "Are allergens handled on-site?",
+      type: 'radio',
+      icon: <ShieldAlert className="w-6 h-6 text-orange-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'allergenSegregation',
+      section: 'Allergen Management',
+      question: "Is allergen segregation implemented?",
+      description: "Separate storage, utensils, or production times.",
+      type: 'radio',
+      icon: <ShieldCheck className="w-6 h-6 text-blue-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'allergenLabeling',
+      section: 'Allergen Management',
+      question: "Are allergen declarations required on labels?",
+      type: 'radio',
+      icon: <Tag className="w-6 h-6 text-purple-500" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 4: Process Overview ---
     {
       id: 'processSteps',
       section: 'Process Flow',
@@ -326,8 +475,155 @@ export default function HACCPBuilder() {
       required: true
     },
     {
+      id: 'customSteps',
+      section: 'Process Flow',
+      question: "Do you have any non-standard steps?",
+      description: "Describe any unique processes not listed above.",
+      type: 'text',
+      icon: <FileText className="w-6 h-6 text-slate-500" />,
+      placeholder: "e.g., Fermentation, Smoking, Sous-vide..."
+    },
+    {
+      id: 'outsourcedSteps',
+      section: 'Process Flow',
+      question: "Are any steps outsourced?",
+      description: "e.g., Delivery by third party.",
+      type: 'radio',
+      icon: <Truck className="w-6 h-6 text-orange-500" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 5: Receiving & Supplier Control ---
+    {
+      id: 'suppliersApproved',
+      section: 'Supplier Control',
+      question: "Are all your suppliers approved?",
+      description: "Based on audits, certifications, or performance.",
+      type: 'radio',
+      icon: <UserCheck className="w-6 h-6 text-blue-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'verificationChecks',
+      section: 'Receiving Controls',
+      question: "What do you verify on receipt?",
+      description: "Check all that apply.",
+      type: 'checkbox',
+      icon: <ClipboardCheck className="w-6 h-6 text-emerald-600" />,
+      options: ['Temperature', 'Packaging integrity', 'Documentation (Invoices/COA)']
+    },
+    {
+      id: 'tempControlledDelivery',
+      section: 'Receiving Controls',
+      question: "Are raw materials temperature-controlled on delivery?",
+      type: 'radio',
+      icon: <Thermometer className="w-6 h-6 text-red-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'rejectNonConforming',
+      section: 'Receiving Controls',
+      question: "Do you reject non-conforming deliveries?",
+      description: "e.g., Incorrect temp or damaged packaging.",
+      type: 'radio',
+      icon: <XCircle className="w-6 h-6 text-rose-600" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 6: Storage Conditions ---
+    {
+      id: 'storageTypes',
+      section: 'Storage',
+      question: "Which storage types do you use?",
+      type: 'checkbox',
+      icon: <Warehouse className="w-6 h-6 text-blue-600" />,
+      options: ['Ambient', 'Refrigerated', 'Frozen']
+    },
+    {
+      id: 'storageTemps',
+      section: 'Storage',
+      question: "Standard storage temperatures?",
+      description: "e.g., <5°C for fridge, <-18°C for freezer.",
+      type: 'text',
+      icon: <Thermometer className="w-6 h-6 text-red-500" />,
+      placeholder: "e.g., Chilled < 5°C, Frozen < -18°C"
+    },
+    {
+      id: 'fifoApplied',
+      section: 'Storage',
+      question: "Is FIFO (First-In, First-Out) applied?",
+      type: 'radio',
+      icon: <RefreshCcw className="w-6 h-6 text-emerald-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'rawRteSegregated',
+      section: 'Storage',
+      question: "Are raw and Ready-to-Eat (RTE) foods segregated?",
+      description: "Preventing cross-contamination in storage.",
+      type: 'radio',
+      icon: <Layers className="w-6 h-6 text-orange-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'storageAllergenSegregation',
+      section: 'Storage',
+      question: "Is allergen segregation applied in storage?",
+      type: 'radio',
+      icon: <ShieldAlert className="w-6 h-6 text-purple-500" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 7: Preparation & Handling ---
+    {
+      id: 'separateHandling',
+      section: 'Preparation',
+      question: "Are raw and cooked foods handled separately?",
+      description: "Preventing cross-contamination during prep.",
+      type: 'radio',
+      icon: <Scissors className="w-6 h-6 text-blue-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'separateUtensils',
+      section: 'Preparation',
+      question: "Are separate utensils/equipment used?",
+      description: "e.g., Color-coded boards for raw meat vs veg.",
+      type: 'radio',
+      icon: <UtensilsCrossed className="w-6 h-6 text-orange-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'handwashingEnforced',
+      section: 'Preparation',
+      question: "Is handwashing enforced before handling food?",
+      type: 'radio',
+      icon: <Hand className="w-6 h-6 text-emerald-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'prepTimeLimits',
+      section: 'Preparation',
+      question: "Are time limits applied during preparation?",
+      description: "e.g., High-risk foods out of fridge < 2 hours.",
+      type: 'radio',
+      icon: <Clock className="w-6 h-6 text-blue-400" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'chemicalsInPrep',
+      section: 'Preparation',
+      question: "Are chemicals used in prep areas?",
+      description: "e.g., Sanitizers or cleaning agents.",
+      type: 'radio',
+      icon: <FlaskConical className="w-6 h-6 text-purple-500" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 8: Cooking / Processing ---
+    {
       id: 'doYouCook',
-      section: 'Critical Steps',
+      section: 'Cooking',
       question: "Do you cook food on site?",
       description: "Cooking is often a Critical Control Point (CCP).",
       type: 'radio',
@@ -336,17 +632,43 @@ export default function HACCPBuilder() {
       required: true
     },
     {
+      id: 'cookingMethods',
+      section: 'Cooking',
+      question: "Which cooking methods are used?",
+      type: 'checkbox',
+      icon: <UtensilsCrossed className="w-6 h-6 text-blue-500" />,
+      options: ['Oven', 'Frying', 'Boiling', 'Sous-vide', 'Other']
+    },
+    {
       id: 'minCookingTemp',
-      section: 'Critical Steps',
+      section: 'Cooking',
       question: "Minimum internal cooking temperature?",
-      description: "Specificy the critical limit (e.g., 75°C).",
+      description: "Specify the critical limit (e.g., 75°C).",
       type: 'text',
       icon: <Thermometer className="w-6 h-6 text-red-600" />,
       placeholder: "e.g., 75°C (167°F) for 30 seconds"
     },
     {
+      id: 'tempRecorded',
+      section: 'Cooking',
+      question: "Is temperature measured and recorded?",
+      type: 'radio',
+      icon: <FileCheck className="w-6 h-6 text-emerald-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'cookingIsCcp',
+      section: 'Cooking',
+      question: "Is cooking considered a Critical Control Point (CCP)?",
+      type: 'radio',
+      icon: <ShieldCheck className="w-6 h-6 text-blue-600" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 9: Cooling & Reheating ---
+    {
       id: 'isFoodCooled',
-      section: 'Critical Steps',
+      section: 'Cooling',
       question: "Is food cooled after cooking?",
       description: "Cooling is a high-risk step for spore-forming bacteria.",
       type: 'radio',
@@ -354,14 +676,237 @@ export default function HACCPBuilder() {
       options: ['Yes', 'No']
     },
     {
+      id: 'coolingMethods',
+      section: 'Cooling',
+      question: "What cooling methods are used?",
+      type: 'checkbox',
+      icon: <Snowflake className="w-6 h-6 text-blue-600" />,
+      options: ['Blast chiller', 'Ambient', 'Refrigeration']
+    },
+    {
       id: 'coolingTimeLimit',
-      section: 'Critical Steps',
+      section: 'Cooling',
       question: "Cooling time limits?",
       description: "Standard: 60°C to 10°C in under 2 hours.",
       type: 'text',
       icon: <Clock className="w-6 h-6 text-slate-500" />,
       placeholder: "e.g., 2 hours max"
     },
+    {
+      id: 'coolingTempTarget',
+      section: 'Cooling',
+      question: "What are your cooling temperature targets?",
+      type: 'text',
+      icon: <Thermometer className="w-6 h-6 text-blue-500" />,
+      placeholder: "e.g., < 5°C"
+    },
+    {
+      id: 'isReheatingPerformed',
+      section: 'Reheating',
+      question: "Is reheating performed?",
+      type: 'radio',
+      icon: <RotateCcw className="w-6 h-6 text-orange-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'reheatingTempTarget',
+      section: 'Reheating',
+      question: "What is your reheating temperature target?",
+      type: 'text',
+      icon: <Thermometer className="w-6 h-6 text-red-500" />,
+      placeholder: "e.g., > 75°C"
+    },
+    {
+      id: 'reheatingLimitedOnce',
+      section: 'Reheating',
+      question: "Is reheating limited to only once?",
+      type: 'radio',
+      icon: <XCircle className="w-6 h-6 text-rose-600" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 10: Holding & Distribution ---
+    {
+      id: 'hotHoldingTemp',
+      section: 'Holding',
+      question: "Hot holding temperature target?",
+      type: 'text',
+      icon: <Flame className="w-6 h-6 text-red-500" />,
+      placeholder: "e.g., > 63°C"
+    },
+    {
+      id: 'coldHoldingTemp',
+      section: 'Holding',
+      question: "Cold holding temperature target?",
+      type: 'text',
+      icon: <Snowflake className="w-6 h-6 text-blue-500" />,
+      placeholder: "e.g., < 5°C"
+    },
+    {
+      id: 'maxHoldingTime',
+      section: 'Holding',
+      question: "Maximum holding time for display/service?",
+      type: 'text',
+      icon: <Timer className="w-6 h-6 text-slate-600" />,
+      placeholder: "e.g., 4 hours"
+    },
+    {
+      id: 'isTransported',
+      section: 'Distribution',
+      question: "Is food transported?",
+      description: "Delivery to customers or other sites.",
+      type: 'radio',
+      icon: <Truck className="w-6 h-6 text-blue-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'transportTempMethod',
+      section: 'Distribution',
+      question: "Transport temperature control method?",
+      description: "e.g., Insulated boxes, refrigerated vehicle.",
+      type: 'text',
+      icon: <Package className="w-6 h-6 text-amber-600" />,
+      placeholder: "e.g., Refrigerated Van"
+    },
+    {
+      id: 'transportTempMonitored',
+      section: 'Distribution',
+      question: "Is temperature monitored during transport?",
+      type: 'radio',
+      icon: <FileCheck className="w-6 h-6 text-emerald-600" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 11: Equipment & Facilities ---
+    {
+      id: 'keyEquipment',
+      section: 'Equipment',
+      question: "List key equipment used",
+      description: "Type an item and press Enter.",
+      type: 'list',
+      icon: <Wrench className="w-6 h-6 text-slate-600" />,
+      placeholder: "e.g., Industrial Oven, Walk-in Fridge"
+    },
+    {
+      id: 'devicesCalibrated',
+      section: 'Equipment',
+      question: "Are temperature-controlled devices calibrated?",
+      type: 'radio',
+      icon: <Settings className="w-6 h-6 text-blue-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'calibrationFrequency',
+      section: 'Equipment',
+      question: "What is the calibration frequency?",
+      type: 'text',
+      icon: <RefreshCcw className="w-6 h-6 text-emerald-500" />,
+      placeholder: "e.g., Annually, Every 6 months"
+    },
+    {
+      id: 'preventiveMaintenance',
+      section: 'Equipment',
+      question: "Is preventive maintenance in place?",
+      type: 'radio',
+      icon: <ShieldCheck className="w-6 h-6 text-blue-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'foreignBodyControls',
+      section: 'Equipment',
+      question: "Are foreign body controls in place?",
+      type: 'checkbox',
+      icon: <Filter className="w-6 h-6 text-orange-500" />,
+      options: ['Sieves', 'Magnets', 'Visual checks']
+    },
+
+    // --- SECTION 12: Cleaning & Chemicals ---
+    {
+      id: 'cleaningSchedulesDocumented',
+      section: 'Cleaning',
+      question: "Are cleaning schedules documented?",
+      type: 'radio',
+      icon: <Brush className="w-6 h-6 text-blue-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'cleaningFrequency',
+      section: 'Cleaning',
+      question: "How often is deep cleaning performed?",
+      type: 'text',
+      icon: <Calendar className="w-6 h-6 text-slate-500" />,
+      placeholder: "e.g., Daily, Weekly, Monthly"
+    },
+    {
+      id: 'cleaningChemicals',
+      section: 'Cleaning',
+      question: "List main cleaning chemicals used",
+      type: 'list',
+      icon: <FlaskConical className="w-6 h-6 text-purple-500" />,
+      placeholder: "e.g., Degreaser, Sanitizer"
+    },
+    {
+      id: 'chemicalsStoredSeparately',
+      section: 'Cleaning',
+      question: "Are chemicals stored separately from food?",
+      type: 'radio',
+      icon: <ShieldAlert className="w-6 h-6 text-red-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'cleaningVerified',
+      section: 'Cleaning',
+      question: "Is cleaning effectiveness verified?",
+      description: "e.g., ATP swabs, visual inspection.",
+      type: 'radio',
+      icon: <CheckCircle2 className="w-6 h-6 text-emerald-500" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 13: Personnel & Training ---
+    {
+      id: 'trainingReceived',
+      section: 'Personnel',
+      question: "Do food handlers receive food safety training?",
+      type: 'radio',
+      icon: <GraduationCap className="w-6 h-6 text-blue-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'trainingFrequency',
+      section: 'Personnel',
+      question: "Training frequency?",
+      type: 'text',
+      icon: <RefreshCcw className="w-6 h-6 text-slate-500" />,
+      placeholder: "e.g., On induction, Annually"
+    },
+    {
+      id: 'hygieneRulesDocumented',
+      section: 'Personnel',
+      question: "Are hygiene rules documented?",
+      type: 'radio',
+      icon: <BookOpen className="w-6 h-6 text-indigo-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'healthDeclarations',
+      section: 'Personnel',
+      question: "Are health declarations required?",
+      description: "For reporting illness (vomiting, diarrhea).",
+      type: 'radio',
+      icon: <FileText className="w-6 h-6 text-orange-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'ppeUsed',
+      section: 'Personnel',
+      question: "What PPE is used?",
+      type: 'checkbox',
+      icon: <UserCheck className="w-6 h-6 text-green-600" />,
+      options: ['Gloves', 'Hairnets', 'Aprons', 'Masks']
+    },
+
+    // --- SECTION 14: Monitoring & Records ---
     {
       id: 'ccpsMonitored',
       section: 'Monitoring',
@@ -371,6 +916,186 @@ export default function HACCPBuilder() {
       icon: <AlertTriangle className="w-6 h-6 text-amber-500" />,
       options: ['Yes', 'No'],
       required: true
+    },
+    {
+      id: 'monitoringFrequency',
+      section: 'Monitoring',
+      question: "General monitoring frequency?",
+      type: 'text',
+      icon: <History className="w-6 h-6 text-slate-500" />,
+      placeholder: "e.g., Every batch, Twice daily"
+    },
+    {
+      id: 'recordsKept',
+      section: 'Monitoring',
+      question: "Are records kept?",
+      type: 'radio',
+      icon: <FileText className="w-6 h-6 text-blue-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'retentionPeriod',
+      section: 'Monitoring',
+      question: "Record retention period?",
+      description: "How long do you keep records?",
+      type: 'text',
+      icon: <Calendar className="w-6 h-6 text-slate-500" />,
+      placeholder: "e.g., 12 months"
+    },
+    {
+      id: 'recordType',
+      section: 'Monitoring',
+      question: "Are records digital or paper?",
+      type: 'radio',
+      icon: <FileDigit className="w-6 h-6 text-purple-500" />,
+      options: ['Digital', 'Paper', 'Both']
+    },
+
+    // --- SECTION 15: Corrective Actions ---
+    {
+      id: 'correctiveActionsDefined',
+      section: 'Corrective Actions',
+      question: "Are corrective actions defined for CCP failures?",
+      type: 'radio',
+      icon: <Siren className="w-6 h-6 text-red-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'correctiveActionExamples',
+      section: 'Corrective Actions',
+      question: "Examples of corrective actions used",
+      type: 'checkbox',
+      icon: <Wrench className="w-6 h-6 text-slate-600" />,
+      options: ['Retraining', 'Recooking', 'Disposal of product', 'Equipment repair']
+    },
+    {
+      id: 'productIsolation',
+      section: 'Corrective Actions',
+      question: "Is product isolation (quarantine) implemented?",
+      type: 'radio',
+      icon: <ShieldCheck className="w-6 h-6 text-orange-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'rootCauseAnalysis',
+      section: 'Corrective Actions',
+      question: "Is root cause analysis performed?",
+      type: 'radio',
+      icon: <Search className="w-6 h-6 text-blue-500" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 16: Verification & Validation ---
+    {
+      id: 'internalAudits',
+      section: 'Verification',
+      question: "Are internal audits conducted?",
+      type: 'radio',
+      icon: <ClipboardCheck className="w-6 h-6 text-emerald-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'auditFrequency',
+      section: 'Verification',
+      question: "Audit frequency?",
+      type: 'text',
+      icon: <Calendar className="w-6 h-6 text-slate-500" />,
+      placeholder: "e.g., Quarterly"
+    },
+    {
+      id: 'externalAudits',
+      section: 'Verification',
+      question: "Are external audits conducted?",
+      description: "By local authority or third party.",
+      type: 'radio',
+      icon: <Globe className="w-6 h-6 text-blue-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'annualReview',
+      section: 'Verification',
+      question: "Is the HACCP plan reviewed annually?",
+      type: 'radio',
+      icon: <RefreshCcw className="w-6 h-6 text-purple-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'reviewTriggers',
+      section: 'Verification',
+      question: "Triggers for HACCP review?",
+      type: 'checkbox',
+      icon: <AlertTriangle className="w-6 h-6 text-amber-500" />,
+      options: ['Process change', 'Product change', 'Incident', 'Regulation change']
+    },
+
+    // --- SECTION 17: Pest Control ---
+    {
+      id: 'pestControlContract',
+      section: 'Pest Control',
+      question: "Is there a pest control contract in place?",
+      type: 'radio',
+      icon: <Bug className="w-6 h-6 text-slate-700" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'pestMonitoringDevices',
+      section: 'Pest Control',
+      question: "Which monitoring devices are used?",
+      type: 'checkbox',
+      icon: <Wrench className="w-6 h-6 text-slate-500" />,
+      options: ['Bait stations', 'Electric fly killers', 'Pheromone traps', 'Visual inspections']
+    },
+    {
+      id: 'pestSightingReporting',
+      section: 'Pest Control',
+      question: "Is there a system for reporting pest sightings?",
+      type: 'radio',
+      icon: <FileText className="w-6 h-6 text-orange-500" />,
+      options: ['Yes', 'No']
+    },
+
+    // --- SECTION 18: Professional Review (Upsell) ---
+    {
+      id: 'wantProfessionalReview',
+      section: 'Professional Review',
+      question: "Do you want a professional review of your plan?",
+      description: "Recommended for audit readiness and compliance assurance.",
+      type: 'radio',
+      icon: <Briefcase className="w-6 h-6 text-blue-600" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'reviewTurnaround',
+      section: 'Professional Review',
+      question: "Required turnaround time?",
+      type: 'radio',
+      icon: <Clock className="w-6 h-6 text-emerald-500" />,
+      options: ['Standard (7 days)', 'Express (48 hours)', 'Urgent (24 hours)']
+    },
+    {
+      id: 'regionComplianceCheck',
+      section: 'Professional Review',
+      question: "Require region-specific compliance check?",
+      type: 'radio',
+      icon: <Globe className="w-6 h-6 text-purple-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'auditReadyDocs',
+      section: 'Professional Review',
+      question: "Do you need audit-ready documentation?",
+      type: 'radio',
+      icon: <FileCheck className="w-6 h-6 text-amber-500" />,
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'certificationSupport',
+      section: 'Professional Review',
+      question: "Do you need support with certification?",
+      description: "Help with BRCGS, ISO 22000, etc.",
+      type: 'radio',
+      icon: <Award className="w-6 h-6 text-yellow-500" />,
+      options: ['Yes', 'No']
     }
   ];
 
@@ -885,6 +1610,47 @@ export default function HACCPBuilder() {
                                >
                                    {isPaying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Get Expert Plan'}
                                </button>
+                           </div>
+
+                           {/* NEW: Email Lead Capture */}
+                           <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                               <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+                                   <FileCheck className="w-4 h-4 text-blue-600" /> Save your work?
+                               </h4>
+                               <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                                   Enter your email to receive a backup copy of your plan and periodic compliance reminders.
+                               </p>
+                               <form 
+                                   onSubmit={async (e) => {
+                                       e.preventDefault();
+                                       const email = (e.target as any).email.value;
+                                       if (!email) return;
+                                       const btn = (e.target as any).querySelector('button');
+                                       btn.disabled = true;
+                                       btn.innerText = 'Saving...';
+                                       
+                                       await supabase.from('leads').insert({ 
+                                           email, 
+                                           plan_id: planId, 
+                                           source: 'builder_result' 
+                                       });
+                                       
+                                       btn.innerText = 'Saved!';
+                                       btn.classList.add('bg-green-600');
+                                   }}
+                                   className="flex flex-col gap-2"
+                               >
+                                   <input 
+                                       required
+                                       type="email" 
+                                       name="email"
+                                       placeholder="you@email.com" 
+                                       className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm focus:border-blue-500 outline-none" 
+                                   />
+                                   <button className="bg-slate-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-black transition-all">
+                                       Email Me My Plan
+                                   </button>
+                               </form>
                            </div>
                        </div>
                    )}

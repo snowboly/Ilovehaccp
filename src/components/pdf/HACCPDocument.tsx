@@ -452,6 +452,97 @@ const HACCPDocument = ({ data }: Props) => {
 
         <CommonFooter />
       </Page>
+
+      {/* PAGE 6: TOOLKIT - TEMPERATURE LOG */}
+      <Page size="A4" style={styles.page}>
+        <CommonHeader title="Toolkit: Monitoring Logs" />
+        <Text style={styles.sectionTitle}>Appendix A: Temperature Control Log</Text>
+        <Text style={{ ...styles.text, marginBottom: 10 }}>
+            Use this log to record temperatures for Critical Control Points (e.g., Cooking, Chilled Storage).
+        </Text>
+
+        <View style={styles.table}>
+            <View style={styles.tableHeaderRow}>
+                <View style={{ width: '15%', padding: 5 }}><Text style={styles.tableColHeader}>Date</Text></View>
+                <View style={{ width: '15%', padding: 5 }}><Text style={styles.tableColHeader}>Time</Text></View>
+                <View style={{ width: '25%', padding: 5 }}><Text style={styles.tableColHeader}>Item/Equipment</Text></View>
+                <View style={{ width: '15%', padding: 5 }}><Text style={styles.tableColHeader}>Temp (°C)</Text></View>
+                <View style={{ width: '15%', padding: 5 }}><Text style={styles.tableColHeader}>Action</Text></View>
+                <View style={{ width: '15%', padding: 5 }}><Text style={styles.tableColHeader}>Sign</Text></View>
+            </View>
+            {[...Array(15)].map((_, i) => (
+                <View key={i} style={styles.tableRow}>
+                    <View style={{ width: '15%', height: 20 }}></View>
+                    <View style={{ width: '15%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '25%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '15%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '15%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '15%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                </View>
+            ))}
+        </View>
+        <Text style={{ fontSize: 7, color: '#6B7280', marginTop: 5 }}>
+            *Corrective Action Required if Critical Limits are breached. Record actions taken in the 'Action' column.
+        </Text>
+        <CommonFooter />
+      </Page>
+
+      {/* PAGE 7: TOOLKIT - CLEANING LOG */}
+      <Page size="A4" style={styles.page}>
+        <CommonHeader title="Toolkit: Monitoring Logs" />
+        <Text style={styles.sectionTitle}>Appendix B: Daily Cleaning Checklist</Text>
+        
+        <View style={styles.table}>
+            <View style={styles.tableHeaderRow}>
+                <View style={{ width: '40%', padding: 5 }}><Text style={styles.tableColHeader}>Cleaning Task</Text></View>
+                <View style={{ width: '10%', padding: 5 }}><Text style={styles.tableColHeader}>Mon</Text></View>
+                <View style={{ width: '10%', padding: 5 }}><Text style={styles.tableColHeader}>Tue</Text></View>
+                <View style={{ width: '10%', padding: 5 }}><Text style={styles.tableColHeader}>Wed</Text></View>
+                <View style={{ width: '10%', padding: 5 }}><Text style={styles.tableColHeader}>Thu</Text></View>
+                <View style={{ width: '10%', padding: 5 }}><Text style={styles.tableColHeader}>Fri</Text></View>
+                <View style={{ width: '10%', padding: 5 }}><Text style={styles.tableColHeader}>Sat/Sun</Text></View>
+            </View>
+            {[
+                "Surfaces & Preparation Boards",
+                "Cooking Equipment (Ovens/Stoves)",
+                "Fridges & Handles",
+                "Sinks & Taps",
+                "Floors & Drains",
+                "Waste Bins (Emptied & Cleaned)",
+                "Staff Handwash Stations"
+            ].map((task, i) => (
+                <View key={i} style={styles.tableRow}>
+                    <View style={{ width: '40%', padding: 5 }}><Text style={styles.text}>{task}</Text></View>
+                    <View style={{ width: '10%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '10%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '10%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '10%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '10%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '10%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                </View>
+            ))}
+        </View>
+
+        <Text style={styles.sectionTitle}>Appendix C: Staff Training Record</Text>
+        <View style={styles.table}>
+            <View style={styles.tableHeaderRow}>
+                <View style={{ width: '30%', padding: 5 }}><Text style={styles.tableColHeader}>Employee Name</Text></View>
+                <View style={{ width: '40%', padding: 5 }}><Text style={styles.tableColHeader}>Training Description (e.g. HACCP Level 2)</Text></View>
+                <View style={{ width: '15%', padding: 5 }}><Text style={styles.tableColHeader}>Date</Text></View>
+                <View style={{ width: '15%', padding: 5 }}><Text style={styles.tableColHeader}>Sign</Text></View>
+            </View>
+            {[...Array(5)].map((_, i) => (
+                <View key={i} style={styles.tableRow}>
+                    <View style={{ width: '30%', height: 20 }}></View>
+                    <View style={{ width: '40%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '15%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                    <View style={{ width: '15%', height: 20, borderLeftWidth: 1, borderLeftColor: '#E5E7EB' }}></View>
+                </View>
+            ))}
+        </View>
+
+        <CommonFooter />
+      </Page>
     </Document>
   );
 };

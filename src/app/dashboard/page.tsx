@@ -209,47 +209,36 @@ function DashboardContent() {
                   </div>
                 </div>
                 <div className="border-t bg-gray-50 p-4 flex gap-2">
-                  {plan.payment_status === 'paid' ? (
-                    <>
-                        <Link 
-                            href={`/builder?id=${plan.id}`}
-                            className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
-                        >
-                            <Edit className="h-4 w-4" /> Edit
-                        </Link>
-                        <PDFDownloadLink
-                            document={
-                            <HACCPDocument 
-                                data={{
-                                businessName: plan.business_name,
-                                productName: plan.product_name,
-                                productDescription: `HACCP Plan for ${plan.business_type}`,
-                                intendedUse: plan.intended_use,
-                                storageType: plan.storage_type,
-                                analysis: plan.hazard_analysis,
-                                fullPlan: plan.full_plan
-                                }} 
-                            />
-                            }
-                            fileName={`${plan.business_name.replace(/\s+/g, '_')}_HACCP.pdf`}
-                            className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                        >
-                            {({ loading }) => (
-                            <>
-                                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                                {loading ? '...' : 'Export'}
-                            </>
-                            )}
-                        </PDFDownloadLink>
-                    </>
-                  ) : (
-                    <Link 
-                        href={`/builder?id=${plan.id}`}
-                        className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-lg text-sm font-bold hover:bg-black transition-colors"
-                    >
-                        <ShieldCheck className="h-4 w-4 text-amber-400" /> Upgrade to Download
-                    </Link>
-                  )}
+                  <Link 
+                      href={`/builder?id=${plan.id}`}
+                      className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+                  >
+                      <Edit className="h-4 w-4" /> Edit
+                  </Link>
+                  <PDFDownloadLink
+                      document={
+                      <HACCPDocument 
+                          data={{
+                          businessName: plan.business_name,
+                          productName: plan.product_name,
+                          productDescription: `HACCP Plan for ${plan.business_type}`,
+                          intendedUse: plan.intended_use,
+                          storageType: plan.storage_type,
+                          analysis: plan.hazard_analysis,
+                          fullPlan: plan.full_plan
+                          }} 
+                      />
+                      }
+                      fileName={`${plan.business_name.replace(/\s+/g, '_')}_HACCP.pdf`}
+                      className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                  >
+                      {({ loading }) => (
+                      <>
+                          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                          {loading ? '...' : 'Export'}
+                      </>
+                      )}
+                  </PDFDownloadLink>
                 </div>
               </div>
             ))}
