@@ -14,10 +14,15 @@ import {
   Edit,
   LogOut,
   Download,
-  Loader2
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Lock
 } from 'lucide-react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 interface Plan {
   id: string;
@@ -25,6 +30,7 @@ interface Plan {
   business_name: string;
   created_at: string;
   status: string;
+  payment_status: string;
   hazard_analysis: any;
   full_plan: any;
   intended_use: string;
@@ -32,13 +38,21 @@ interface Plan {
   business_type: string;
 }
 
-export default function Dashboard() {
+function DashboardContent() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
+    if (searchParams.get('session_id')) {
+        setShowSuccess(true);
+        // Clear URL params without reloading
+        window.history.replaceState({}, '', '/dashboard');
+    }
+
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -46,12 +60,12 @@ export default function Dashboard() {
         return;
       }
       setUser(session.user);
-      fetchPlans(session.user.id);
+      fetchPlans();
     };
     checkUser();
-  }, [router]);
+  }, [router, searchParams]);
 
-  const fetchPlans = async (userId: string) => {
+  const fetchPlans = async () => {
     try {
       const { data, error } = await supabase
         .from('plans')
@@ -118,6 +132,19 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {showSuccess && (
+            <div className="mb-8 bg-emerald-50 border border-emerald-200 text-emerald-800 px-6 py-4 rounded-2xl flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                    <span className="font-bold text-lg text-emerald-900">Payment Successful!</span>
+                    <span className="font-medium">Your plan is now unlocked for download.</span>
+                </div>
+                <button onClick={() => setShowSuccess(false)} className="text-emerald-400 hover:text-emerald-600">
+                    <XCircle className="w-5 h-5" />
+                </button>
+            </div>
+        )}
+
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">My Plans</h1>
@@ -152,8 +179,12 @@ export default function Dashboard() {
               <div key={plan.id} className="bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
                 <div className="p-6 flex-1">
                   <div className="flex justify-between items-start mb-4">
-                    <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                      {plan.status || 'Draft'}
+                    <div className="flex gap-2">
+                        <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                            plan.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
+                        }`}>
+                        {plan.payment_status === 'paid' ? 'Paid' : 'Draft'}
+                        </div>
                     </div>
                     <div className="relative group">
                       <button className="text-gray-400 hover:text-gray-600">
@@ -178,37 +209,47 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="border-t bg-gray-50 p-4 flex gap-2">
-                  <Link 
-                    href={`/builder?id=${plan.id}`}
-                    className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
-                  >
-                    <Edit className="h-4 w-4" /> Edit
-                  </Link>
-                  
-                  <PDFDownloadLink
-                    document={
-                      <HACCPDocument 
-                        data={{
-                          businessName: plan.business_name,
-                          productName: plan.product_name,
-                          productDescription: `HACCP Plan for ${plan.business_type}`,
-                          intendedUse: plan.intended_use,
-                          storageType: plan.storage_type,
-                          analysis: plan.hazard_analysis,
-                          fullPlan: plan.full_plan
-                        }} 
-                      />
-                    }
-                    fileName={`${plan.business_name.replace(/\s+/g, '_')}_HACCP.pdf`}
-                    className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                  >
-                    {({ loading }) => (
-                      <>
-                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                        {loading ? '...' : 'Export'}
-                      </>
-                    )}
-                  </PDFDownloadLink>
+                  {plan.payment_status === 'paid' ? (
+                    <>
+                        <Link 
+                            href={`/builder?id=${plan.id}`}
+                            className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+                        >
+                            <Edit className="h-4 w-4" /> Edit
+                        </Link>
+                        <PDFDownloadLink
+                            document={
+                            <HACCPDocument 
+                                data={{
+                                businessName: plan.business_name,
+                                productName: plan.product_name,
+                                productDescription: `HACCP Plan for ${plan.business_type}`,
+                                intendedUse: plan.intended_use,
+                                storageType: plan.storage_type,
+                                analysis: plan.hazard_analysis,
+                                fullPlan: plan.full_plan
+                                }} 
+                            />
+                            }
+                            fileName={`${plan.business_name.replace(/\s+/g, '_')}_HACCP.pdf`}
+                            className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                        >
+                            {({ loading }) => (
+                            <>
+                                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                                {loading ? '...' : 'Export'}
+                            </>
+                            )}
+                        </PDFDownloadLink>
+                    </>
+                  ) : (
+                    <Link 
+                        href={`/builder?id=${plan.id}`}
+                        className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-lg text-sm font-bold hover:bg-black transition-colors"
+                    >
+                        <ShieldCheck className="h-4 w-4 text-amber-400" /> Upgrade to Download
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
@@ -216,5 +257,13 @@ export default function Dashboard() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-blue-600" /></div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }

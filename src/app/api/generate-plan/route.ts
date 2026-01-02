@@ -1,8 +1,47 @@
 import { NextResponse } from 'next/server';
 import { groq } from '@/lib/groq';
+import { supabaseService } from '@/lib/supabase';
+
+const RATE_LIMIT_COUNT = 3;
+const RATE_LIMIT_WINDOW_HOURS = 1;
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for') || 'anonymous';
+    
+    // 1. Check Rate Limit
+    const { data: rateData, error: rateError } = await supabaseService
+      .from('rate_limits')
+      .select('*')
+      .eq('identifier', ip)
+      .single();
+
+    const now = new Date();
+
+    if (rateData) {
+      const lastRequest = new Date(rateData.last_request);
+      const hoursSinceLast = (now.getTime() - lastRequest.getTime()) / (1000 * 60 * 60);
+
+      if (hoursSinceLast < RATE_LIMIT_WINDOW_HOURS && rateData.request_count >= RATE_LIMIT_COUNT) {
+        return NextResponse.json(
+          { error: 'Rate limit exceeded. Please try again in an hour.' }, 
+          { status: 429 }
+        );
+      }
+
+      // Reset count if window passed, otherwise increment
+      const newCount = hoursSinceLast >= RATE_LIMIT_WINDOW_HOURS ? 1 : rateData.request_count + 1;
+      await supabaseService
+        .from('rate_limits')
+        .update({ last_request: now.toISOString(), request_count: newCount })
+        .eq('identifier', ip);
+    } else {
+      // First request from this IP
+      await supabaseService
+        .from('rate_limits')
+        .insert({ identifier: ip, last_request: now.toISOString(), request_count: 1 });
+    }
+
     const body = await req.json();
     
     // Destructure all 18 sections from the body

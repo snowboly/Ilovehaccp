@@ -69,6 +69,9 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '../pdf/HACCPDocument';
 import { useLanguage } from '@/lib/i18n';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 type Step = 'intro' | 'questions' | 'generating' | 'result';
 
@@ -104,8 +107,37 @@ export default function HACCPBuilder() {
   const [generatedAnalysis, setGeneratedAnalysis] = useState<HazardAnalysisItem[]>([]);
   const [fullPlan, setFullPlan] = useState<FullHACCPPlan | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [planId, setPlanId] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'paid'>('pending');
   const [isClient, setIsClient] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleCheckout = async (tier: 'starter' | 'pro') => {
+    setIsPaying(true);
+    try {
+      const response = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          tier, 
+          planId, 
+          businessName: formData.businessLegalName 
+        }),
+      });
+      const session = await response.json();
+      if (session.url) {
+          window.location.href = session.url;
+      } else {
+          throw new Error('No checkout URL received');
+      }
+    } catch (error) {
+      console.error('Payment Error:', error);
+      alert('Failed to initiate payment. Please try again.');
+    } finally {
+      setIsPaying(false);
+    }
+  };
   
   const searchParams = useSearchParams();
   const editId = searchParams.get('id');
@@ -403,19 +435,21 @@ export default function HACCPBuilder() {
       setGeneratedAnalysis(aiData.analysis);
       setFullPlan(aiData.full_plan);
 
-      // Save to Supabase
-      if (userId) {
-        await supabase.from('plans').insert({
-            business_name: formData.businessLegalName,
-            business_type: formData.businessType,
-            product_name: "HACCP Plan",
-            product_description: `Generated for ${formData.businessLegalName}`,
-            process_steps: formData.processSteps.map((name, i) => ({ id: String(i+1), name })),
-            hazard_analysis: aiData.analysis,
-            full_plan: aiData.full_plan,
-            user_id: userId,
-        });
-      }
+      // Save to Supabase (Always, to get an ID for payment)
+      const { data: savedPlan, error: saveError } = await supabase.from('plans').insert({
+          business_name: formData.businessLegalName,
+          business_type: formData.businessType,
+          product_name: "HACCP Plan",
+          product_description: `Generated for ${formData.businessLegalName}`,
+          process_steps: formData.processSteps.map((name, i) => ({ id: String(i+1), name })),
+          hazard_analysis: aiData.analysis,
+          full_plan: aiData.full_plan,
+          user_id: userId,
+          payment_status: 'pending'
+      }).select().single();
+
+      if (saveError) console.error("Supabase Save Error:", saveError);
+      if (savedPlan) setPlanId(savedPlan.id);
       
       // Clear storage on success
       localStorage.removeItem(STORAGE_KEY);
@@ -684,87 +718,176 @@ export default function HACCPBuilder() {
             key="result"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-5xl w-full pb-20"
+            className="max-w-5xl w-full pb-20 space-y-8"
           >
             <div className="bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100">
                {/* Success Header */}
-               <div className="bg-gradient-to-r from-emerald-500 to-green-600 p-10 text-white">
+               <div className={`p-10 text-white transition-colors duration-500 ${paymentStatus === 'paid' ? 'bg-gradient-to-r from-emerald-500 to-green-600' : 'bg-slate-900'}`}>
                    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="space-y-2">
                             <div className="flex items-center gap-3">
                                 <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
-                                    <CheckCircle2 className="w-8 h-8 text-white" />
+                                    {paymentStatus === 'paid' ? <CheckCircle2 className="w-8 h-8 text-white" /> : <ShieldCheck className="w-8 h-8 text-white" />}
                                 </div>
-                                <h1 className="text-3xl font-black">{t('wizard.success')}</h1>
+                                <h1 className="text-3xl font-black">
+                                    {paymentStatus === 'paid' ? t('wizard.success') : 'Draft Plan Generated'}
+                                </h1>
                             </div>
-                            <p className="text-green-50 font-medium text-lg opacity-90">Your professional HACCP plan is ready.</p>
+                            <p className="text-blue-50/80 font-medium text-lg">
+                                {paymentStatus === 'paid' 
+                                    ? 'Your professional HACCP plan is ready for download.' 
+                                    : 'Your initial hazard analysis is complete. Upgrade to unlock the full document.'}
+                            </p>
                         </div>
-                        {isClient && (
-                            <PDFDownloadLink
-                                document={
-                                <HACCPDocument 
-                                    data={{
-                                    businessName: formData.businessLegalName || "My Business",
-                                    productName: "Food Safety Plan",
-                                    productDescription: `HACCP Plan for ${formData.businessType}`,
-                                    intendedUse: formData.isVulnerable === 'Yes' ? 'Vulnerable Populations' : 'General Consumption',
-                                    storageType: formData.productCharacteristics.join(', '),
-                                    analysis: generatedAnalysis,
-                                    fullPlan: fullPlan
-                                    }} 
-                                />
-                                }
-                                fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
-                                className="bg-white text-green-700 px-8 py-4 rounded-xl font-bold hover:bg-green-50 transition-all shadow-xl flex items-center gap-3"
-                            >
-                                {({ loading }) => (
-                                <>
-                                    {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
-                                    {loading ? 'Preparing...' : t('wizard.download')}
-                                </>
-                                )}
-                            </PDFDownloadLink>
+                        
+                        {paymentStatus === 'paid' ? (
+                            isClient && (
+                                <PDFDownloadLink
+                                    document={
+                                    <HACCPDocument 
+                                        data={{
+                                        businessName: formData.businessLegalName || "My Business",
+                                        productName: "Food Safety Plan",
+                                        productDescription: `HACCP Plan for ${formData.businessType}`,
+                                        intendedUse: formData.isVulnerable === 'Yes' ? 'Vulnerable Populations' : 'General Consumption',
+                                        storageType: formData.productCharacteristics.join(', '),
+                                        analysis: generatedAnalysis,
+                                        fullPlan: fullPlan
+                                        }} 
+                                    />
+                                    }
+                                    fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
+                                    className="bg-white text-green-700 px-8 py-4 rounded-xl font-bold hover:bg-green-50 transition-all shadow-xl flex items-center gap-3"
+                                >
+                                    {({ loading }) => (
+                                    <>
+                                        {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
+                                        {loading ? 'Preparing...' : t('wizard.download')}
+                                    </>
+                                    )}
+                                </PDFDownloadLink>
+                            )
+                        ) : (
+                            <div className="bg-blue-600/20 px-4 py-2 rounded-lg border border-blue-400/30 backdrop-blur-sm text-sm font-bold text-blue-200">
+                                <ShieldCheck className="inline w-4 h-4 mr-2 mb-0.5" /> DRAFT MODE
+                            </div>
                         )}
                    </div>
                </div>
 
                {/* Preview Content */}
-               <div className="p-10">
-                   <div className="flex items-center justify-between mb-6">
-                       <h3 className="text-xl font-bold text-slate-900">Hazard Analysis Preview</h3>
-                       <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                           {generatedAnalysis.length} Process Steps
-                       </span>
+               <div className="p-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
+                   <div className="lg:col-span-2 space-y-6">
+                       <div className="flex items-center justify-between mb-6">
+                           <h3 className="text-xl font-bold text-slate-900">Hazard Analysis Preview</h3>
+                           <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">
+                               {generatedAnalysis.length} Process Steps
+                           </span>
+                       </div>
+                       
+                       <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm relative group">
+                            <table className="w-full text-left">
+                                <thead className="bg-slate-50 border-b border-slate-200">
+                                    <tr>
+                                        <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Step</th>
+                                        <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Critical?</th>
+                                        <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Control</th>
+                                    </tr>
+                                </thead>
+                                <tbody className={`divide-y divide-slate-100 ${paymentStatus === 'pending' ? 'select-none blur-[2px]' : ''}`}>
+                                    {generatedAnalysis.slice(0, paymentStatus === 'paid' ? 99 : 5).map((item, idx) => (
+                                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                                        <td className="p-4 font-bold text-slate-800">{item.step_name}</td>
+                                        <td className="p-4 text-center">
+                                        {item.is_ccp ? (
+                                            <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-black shadow-sm">CCP</span>
+                                        ) : (
+                                            <span className="text-slate-300 font-bold text-xs">-</span>
+                                        )}
+                                        </td>
+                                        <td className="p-4 text-sm text-slate-600">{item.control_measure}</td>
+                                    </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {paymentStatus === 'pending' && (
+                                <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
+                                    <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold shadow-2xl flex items-center gap-2">
+                                        <ShieldCheck className="w-4 h-4 text-blue-400" /> Upgrade to see full analysis
+                                    </div>
+                                </div>
+                            )}
+                       </div>
                    </div>
-                   
-                   <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-50 border-b border-slate-200">
-                                <tr>
-                                    <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Step</th>
-                                    <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Hazard</th>
-                                    <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Critical?</th>
-                                    <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Control</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {generatedAnalysis.map((item, idx) => (
-                                <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                                    <td className="p-4 font-bold text-slate-800">{item.step_name}</td>
-                                    <td className="p-4 text-sm text-slate-600">{item.hazards}</td>
-                                    <td className="p-4 text-center">
-                                    {item.is_ccp ? (
-                                        <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-black shadow-sm">CCP</span>
-                                    ) : (
-                                        <span className="text-slate-300 font-bold text-xs">-</span>
-                                    )}
-                                    </td>
-                                    <td className="p-4 text-sm text-slate-600">{item.control_measure}</td>
-                                </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                   </div>
+
+                   {/* Right: Pricing Paywall */}
+                   {paymentStatus === 'pending' && (
+                       <div className="space-y-6">
+                           <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                               <Sparkles className="w-5 h-5 text-amber-500" />
+                               Unlock Full Plan
+                           </h3>
+                           
+                           {/* Starter Card */}
+                           <div className="p-6 bg-white rounded-3xl border-2 border-slate-100 shadow-sm hover:border-blue-200 transition-all group">
+                               <div className="flex justify-between items-start mb-4">
+                                   <div>
+                                       <h4 className="text-lg font-black text-slate-900 leading-none">Starter</h4>
+                                       <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Self-Service</p>
+                                   </div>
+                                   <div className="text-2xl font-black text-slate-900 tracking-tight">€29</div>
+                               </div>
+                               <ul className="space-y-3 mb-6">
+                                   <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Instant PDF Download
+                                   </li>
+                                   <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Full Hazard Analysis
+                                   </li>
+                                   <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> PRPs & Control Chart
+                                   </li>
+                               </ul>
+                               <button 
+                                   onClick={() => handleCheckout('starter')}
+                                   disabled={isPaying}
+                                   className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                               >
+                                   {isPaying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Select Starter'}
+                               </button>
+                           </div>
+
+                           {/* Pro Card */}
+                           <div className="p-6 bg-blue-600 rounded-3xl border-2 border-blue-500 shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all relative overflow-hidden text-white">
+                               <div className="absolute top-0 right-0 p-2 bg-amber-400 text-[10px] font-black uppercase text-slate-900 rounded-bl-xl tracking-widest shadow-lg">Popular</div>
+                               <div className="flex justify-between items-start mb-4">
+                                   <div>
+                                       <h4 className="text-lg font-black leading-none">Expert Pro</h4>
+                                       <p className="text-xs text-blue-100 mt-1 uppercase tracking-widest font-bold">Review Included</p>
+                                   </div>
+                                   <div className="text-2xl font-black tracking-tight">€79</div>
+                               </div>
+                               <ul className="space-y-3 mb-6">
+                                   <li className="flex items-center gap-2 text-sm text-blue-50 font-medium">
+                                       <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Everything in Starter
+                                   </li>
+                                   <li className="flex items-center gap-2 text-sm text-blue-50 font-medium font-bold">
+                                       <CheckCircle2 className="w-4 h-4 text-amber-300 flex-shrink-0" /> 1-on-1 Expert Review
+                                   </li>
+                                   <li className="flex items-center gap-2 text-sm text-blue-50 font-medium">
+                                       <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Compliance Assurance
+                                   </li>
+                               </ul>
+                               <button 
+                                   onClick={() => handleCheckout('pro')}
+                                   disabled={isPaying}
+                                   className="w-full py-3 bg-white text-blue-600 rounded-xl font-black hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                               >
+                                   {isPaying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Get Expert Plan'}
+                               </button>
+                           </div>
+                       </div>
+                   )}
                </div>
             </div>
           </motion.div>

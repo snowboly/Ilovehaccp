@@ -18,3 +18,9 @@ if (supabaseUrl === 'https://placeholder.supabase.co' && typeof window === 'unde
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Server-side only: privileged client
+export const supabaseService = createClient(
+  supabaseUrl,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || supabaseKey
+);
