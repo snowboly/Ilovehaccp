@@ -42,7 +42,7 @@ export default function PrivacyPage() {
         </p>
         <ul>
           <li><strong>Processing:</strong> Your inputs are sent to our AI providers (e.g., Groq, OpenAI) via secure, encrypted APIs for the sole purpose of generation.</li>
-          <li><strong>Training:</strong> We have opted out of data sharing for model training where available. Your specific recipes are not used to train public AI models.</li>
+          <li><strong>Zero Training Policy:</strong> We strictly do <strong>NOT</strong> use your specific proprietary recipes, process flows, or ingredient lists to train, fine-tune, or improve our foundational AI models. Your business intelligence remains isolated and is not shared with other users.</li>
         </ul>
 
         <h2>3. Data Retention & Security</h2>

@@ -47,6 +47,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+export function getDictionary(lang: Language) {
+  return translations[lang];
+}
+
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (context === undefined) {

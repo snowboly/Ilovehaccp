@@ -68,7 +68,7 @@ import { supabase } from '@/lib/supabase';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '../pdf/HACCPDocument';
-import { useLanguage } from '@/lib/i18n';
+import { useLanguage, getDictionary } from '@/lib/i18n';
 import { loadStripe } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -100,8 +100,10 @@ interface FullHACCPPlan {
 
 const STORAGE_KEY = 'haccp_builder_state_v1';
 
+// ... (in component)
 export default function HACCPBuilder() {
   const { t, language } = useLanguage();
+  const dict = getDictionary(language).pdf; // Get PDF dictionary
   const [step, setStep] = useState<Step>('intro');
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [generatedAnalysis, setGeneratedAnalysis] = useState<HazardAnalysisItem[]>([]);
@@ -1470,6 +1472,7 @@ export default function HACCPBuilder() {
                                 <PDFDownloadLink
                                     document={
                                     <HACCPDocument 
+                                        dict={dict}
                                         data={{
                                         businessName: formData.businessLegalName || "My Business",
                                         productName: "Food Safety Plan",

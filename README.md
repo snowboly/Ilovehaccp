@@ -1,55 +1,43 @@
-# ilovehaccp.com - AI-Powered HACCP Planning
+# ilovehaccp.com - Professional AI HACCP Solutions
 
-A modern SaaS platform that automates the creation of Hazard Analysis and Critical Control Point (HACCP) plans for food businesses using AI.
+A high-authority SaaS platform that automates Hazard Analysis and Critical Control Point (HACCP) planning for food businesses worldwide.
 
-## 🚀 Current Status: Launch Ready (MVP)
+## 🚀 Status: Professional Standard (Launch Ready)
 
-### Core Features:
-1.  **High-Authority Landing Page:**
-    *   Interactive AI Demo (instant hazard analysis preview).
-    *   Professional SEO structure with high-converting hooks.
-    *   **3-Tier Pricing Model:**
-        *   **Free Preview (€0):** Readiness check, on-screen hazard list (No Download).
-        *   **Starter (€29/mo):** Full audit-ready PDF, complete CCP analysis.
-        *   **Professional (€79/mo):** Expert validation, Word/Excel exports.
-2.  **18-Section Gamified HACCP Wizard:**
-    *   Typeform-style single-question flow with smooth transitions.
-    *   Smart branching logic (skips irrelevant sections like "Cooking" or "Transport" based on user answers).
-    *   Covers the full scope: Business Context, Ingredients, Processing, Storage, Cleaning, Pest Control, Training, etc.
-3.  **Advanced AI Integration (Groq):**
-    *   Uses **Llama 3.3 70B** for ultra-fast generation.
-    *   Constructs comprehensive plans including Executive Summaries, Prerequisite Programs (PRPs), Hazard Analysis, and CCP tables.
-4.  **Monetization & Gating:**
-    *   **"Teaser" Mode:** Free users see a blurred/locked view of the critical data to drive upgrades.
-    *   **PDF Generation:** Client-side generation using `@react-pdf/renderer`, available only to paid/logged-in users.
-5.  **User Dashboard & Auth:**
-    *   Supabase Auth integration.
-    *   Dashboard to manage, edit, and delete projects.
-6.  **Support Infrastructure:**
-    *   **Resources Page:** Knowledge base with FAQs and scientific context.
-    *   **Legal Pages:** Terms of Service, Privacy Policy, Cookie Policy (with AI disclaimers).
-    *   **Contact:** Lead capture form for Enterprise inquiries.
-    *   **Sitemap:** Dynamic `sitemap.xml` for SEO.
+### 🌟 Key Enhancements:
+1.  **High-Authority UI/UX:**
+    *   **Expert Personas:** Integrated bio-profiles for Industry Veterans, Lead Auditors, and Scientists to signal trust and E-E-A-T.
+    *   **Advanced Article Engine:** Long-form (5000+ word) scientific articles with sticky Table of Contents and specialized typography.
+    *   **Traffic-First model:** Unlocked PDF generation for free users to maximize user acquisition and lead capture.
+2.  **Professional "Toolkit" PDF:**
+    *   **Audit-Ready Documents:** Cover pages, signature blocks, and version control.
+    *   **Operational Appendices:** Automatically appends blank Monitoring Logs (Temperature logs, Cleaning checklists, Training records) for daily use.
+3.  **HACCP Builder 2.0:**
+    *   **Persistent State:** Progress is saved automatically via `localStorage`.
+    *   **Expert Tooltips:** In-line "Expert Tips" explaining the compliance rationale for every question.
+    *   **Branching Logic:** Smartly skips irrelevant sections based on business type.
+4.  **Monetization & Lead Capture:**
+    *   **Stripe Integration:** Optional €29/€79 tiers for Expert Reviews and Compliance Assurance.
+    *   **Email Lead Capture:** "Email me my plan" functionality on the result page for conversion optimization.
+5.  **Security & Infrastructure:**
+    *   **Database-Backed Rate Limiting:** Prevents AI quota exhaustion (3 gens/hour/IP).
+    *   **Secure RLS:** Hardened Supabase policies ensuring data isolation.
+    *   **Hardened Legal Framework:** AI-specific disclaimers, zero-training privacy policy, and digital refund terms.
 
 ## 🛠 Tech Stack
 - **Frontend:** Next.js 15 (App Router), TypeScript, Tailwind CSS, Framer Motion.
-- **Backend:** Next.js API Routes.
-- **AI:** Groq SDK (Llama 3.3).
-- **Database:** Supabase (PostgreSQL).
+- **Backend:** Next.js API Routes + Supabase Service Role.
+- **AI:** Groq SDK (Llama 3.3 70B).
+- **Database:** Supabase (PostgreSQL) with RLS.
 - **PDF:** @react-pdf/renderer.
+- **Payments:** Stripe Checkout + Webhooks.
 
-## 📂 Project Structure
-- `/src/app`:
-  - `/builder`: The main 18-step wizard.
-  - `/dashboard`: User project management.
-  - `/resources`: SEO content and articles.
-  - `/contact`: Enterprise lead form.
-  - `/api/generate-plan`: The AI logic hub.
-- `/src/components`: Reusable UI (Builder, PDF, Auth).
-- `/src/db`: SQL migration scripts.
+## 📂 Key Scripts
+- `scripts/generate_expert_article.js`: Multi-step engine for high-quality content.
+- `scripts/regenerate_all.js`: Bulk content upgrader with rate-limit handling.
+- `scripts/dedupe_articles.js`: Safety script for data integrity.
 
-## 🛠 Deployment
-1. **Environment Variables:** Ensure `.env.local` is set up with Supabase and Groq keys.
+## 🛠 Deployment Checklist
+1. **Env Vars:** `STRIPE_SECRET_KEY`, `GROQ_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
 2. **Build:** `npm run build`.
-3. **Start:** `npm start`.
-4. **Vercel:** Connect the repository and deploy.
+3. **Pushed:** Changes are synced to GitHub `main` branch.

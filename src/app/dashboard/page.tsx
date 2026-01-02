@@ -23,6 +23,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import { getDictionary } from '@/lib/i18n';
 
 interface Plan {
   id: string;
@@ -39,6 +40,7 @@ interface Plan {
 }
 
 function DashboardContent() {
+  const dict = getDictionary('en').pdf;
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -218,6 +220,7 @@ function DashboardContent() {
                   <PDFDownloadLink
                       document={
                       <HACCPDocument 
+                          dict={dict}
                           data={{
                           businessName: plan.business_name,
                           productName: plan.product_name,
@@ -250,6 +253,8 @@ function DashboardContent() {
 }
 
 export default function Dashboard() {
+  const dict = getDictionary('en').pdf; // Default to EN for dashboard
+  const [plans, setPlans] = useState<Plan[]>([]);
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-blue-600" /></div>}>
       <DashboardContent />

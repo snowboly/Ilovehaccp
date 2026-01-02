@@ -4,6 +4,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '../pdf/HACCPDocument';
 import { Loader2, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { getDictionary } from '@/lib/i18n';
 
 const sampleData = {
   businessName: "The Artisanal Bakery",
@@ -35,6 +36,7 @@ const sampleData = {
 
 export default function SampleDownload() {
   const [isClient, setIsClient] = useState(false);
+  const dict = getDictionary('en').pdf;
 
   useEffect(() => {
     setIsClient(true);
@@ -46,7 +48,7 @@ export default function SampleDownload() {
     <div className="hidden">
       <PDFDownloadLink
         id="download-sample-trigger"
-        document={<HACCPDocument data={sampleData} />}
+        document={<HACCPDocument data={sampleData} dict={dict} />}
         fileName="Sample_Bakery_HACCP_Plan.pdf"
       >
         {({ loading }) => (loading ? 'Loading...' : 'Download')}
