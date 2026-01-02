@@ -3,14 +3,14 @@ export type Language = 'en' | 'es' | 'fr' | 'pt';
 export const translations = {
   en: {
     nav: {
-      builder: "Builder",
+      builder: "HACCP Builder",
       features: "Features",
       resources: "Resources",
       pricing: "Pricing",
       about: "About",
       contact: "Contact",
       login: "Log In",
-      getStarted: "Get Started"
+      getStarted: "Register an account"
     },
     hero: {
       title: "HACCP Plans Done in Minutes.",
@@ -114,14 +114,14 @@ export const translations = {
   },
   es: {
     nav: {
-      builder: "Constructor",
+      builder: "Constructor HACCP",
       features: "Características",
       resources: "Recursos",
       pricing: "Precios",
       about: "Sobre nosotros",
       contact: "Contacto",
       login: "Iniciar Sesión",
-      getStarted: "Empezar"
+      getStarted: "Registrar una cuenta"
     },
     hero: {
       title: "Planes HACCP en Minutos.",
@@ -218,14 +218,14 @@ export const translations = {
   },
   fr: {
     nav: {
-      builder: "Générateur",
+      builder: "Générateur HACCP",
       features: "Fonctionnalités",
       resources: "Ressources",
       pricing: "Tarifs",
       about: "À propos",
       contact: "Contact",
       login: "Connexion",
-      getStarted: "Commencer"
+      getStarted: "Créer un compte"
     },
     hero: {
       title: "Plans HACCP en quelques minutes.",
@@ -322,14 +322,14 @@ export const translations = {
   },
   pt: {
     nav: {
-      builder: "Criador",
+      builder: "Criador HACCP",
       features: "Funcionalidades",
       resources: "Recursos",
       pricing: "Preços",
       about: "Sobre",
       contact: "Contato",
       login: "Entrar",
-      getStarted: "Começar"
+      getStarted: "Registrar uma conta"
     },
     hero: {
       title: "Planos HACCP em Minutos.",
