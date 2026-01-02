@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, MapPin, Phone, Send } from 'lucide-react';
+import { Mail, Send } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ContactPage() {
@@ -33,20 +33,6 @@ export default function ContactPage() {
                   <div>
                     <p className="font-medium text-slate-900">Email</p>
                     <p className="text-slate-500">support@ilovehaccp.com</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <Phone className="w-6 h-6 text-blue-600" />
-                  <div>
-                    <p className="font-medium text-slate-900">Phone</p>
-                    <p className="text-slate-500">+1 (555) 123-4567</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <MapPin className="w-6 h-6 text-blue-600" />
-                  <div>
-                    <p className="font-medium text-slate-900">Office</p>
-                    <p className="text-slate-500">123 Safety Way, Food Tech City</p>
                   </div>
                 </div>
               </div>

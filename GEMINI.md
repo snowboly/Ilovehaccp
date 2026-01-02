@@ -3,6 +3,8 @@
 ## Implementation Status
 
 ### Professional Platform Overhaul (Jan 2026)
+- **Navigation Update:** Renamed "Builder" to "HACCP Builder" and "Get Started" to "Register an account" across all 4 languages (EN, ES, FR, PT).
+- **Contact Page Cleanup:** Removed Phone and Office address details to focus on email-first support.
 - **Expert Personas:** Created `ExpertAdvisors.tsx` and integrated 3 personas (Sarah Jenkins, Dr. Eleanor Vance, Marcus Thorne) into the homepage and article UI.
 - **Article UI:** Implemented sticky Table of Contents, authority signals, and `@tailwindcss/typography` optimization for 5000+ word deep-dives.
 - **Freemium Pivot:** Unlocked PDF generation for free users to drive traffic. PDF now includes operational logs (Toolkit).
@@ -21,6 +23,8 @@
 - `scripts/dedupe_articles.js`: Utility to clean up `articles.ts` during generation failures.
 
 ## Next Steps
+- Set up professional email inbox (Purelymail or Zoho Lite) and configure DNS at GoDaddy.
+- Update Contact Form logic to use Brevo SMTP for real email delivery.
 - Run `node scripts/regenerate_all.js` once Groq quota resets.
 - Monitor Stripe webhooks in production.
 - Capture first 100 leads using the new email capture.
