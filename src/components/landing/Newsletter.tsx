@@ -56,7 +56,7 @@ export default function Newsletter() {
                   <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
                     <CheckCircle2 className="w-8 h-8 text-green-400" />
                   </div>
-                  <h3 className="text-white font-bold text-xl">You're on the list!</h3>
+                  <h3 className="text-white font-bold text-xl">You&apos;re on the list!</h3>
                   <p className="text-slate-400">Check your inbox for your first guide soon.</p>
                   <button 
                     onClick={() => setStatus('idle')}

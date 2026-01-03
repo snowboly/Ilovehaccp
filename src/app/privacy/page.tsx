@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         </div>
 
         <p className="lead text-lg">
-          At <strong>ilovehaccp.com</strong> ("we", "our", or "us"), we understand that your food safety data is sensitive business intelligence. 
+          At <strong>ilovehaccp.com</strong> (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we understand that your food safety data is sensitive business intelligence. 
           This policy outlines how we handle the operational details you input to generate your plans, as well as your personal account information.
         </p>
 
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
         <ul>
           <li><strong>Access:</strong> Request a copy of all data we hold about you.</li>
           <li><strong>Rectification:</strong> Fix errors in your plans or profile.</li>
-          <li><strong>Erasure:</strong> Request total deletion of your account and all associated HACCP documents ("Right to be Forgotten").</li>
+          <li><strong>Erasure:</strong> Request total deletion of your account and all associated HACCP documents (&quot;Right to be Forgotten&quot;).</li>
           <li><strong>Portability:</strong> Download your plans in standard formats (PDF, JSON).</li>
         </ul>
 

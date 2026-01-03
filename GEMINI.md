@@ -3,6 +3,13 @@
 ## Implementation Status
 
 ### Professional Platform Overhaul (Jan 2026)
+- **Content Expansion:** Regenerated 60+ articles into 5000+ word "Premium Editorial" deep-dives.
+- **Team Branding:** Updated `ExpertAdvisors.tsx` and article writer personas to the new team: Dr. Joao, Dr. Margaret, Dr. Fabio, Dr. Claudia, and Dr. Elizabeth.
+- **AI Infrastructure:**
+    - Updated `scripts/regenerate_all.js` with **OpenAI (gpt-4o-mini)** fallback for robust bulk generation.
+    - Added `scripts/dedupe_articles.js` to clean, deduplicate, and sanitize the massive `articles.ts` file.
+    - Fixed build errors by stripping HTML comments and standardizing article objects.
+- **UI Refinements:** Fixed user input placeholders in Newsletter, Contact, and Auth forms to use generic examples (`you@company.com`) instead of the support email.
 - **Navigation Update:** Renamed "Builder" to "HACCP Builder" and "Get Started" to "Register an account" across all 4 languages (EN, ES, FR, PT).
 - **Contact Page Cleanup:** Removed Phone and Office address details to focus on email-first support.
 - **Expert Personas:** Created `ExpertAdvisors.tsx` and integrated 3 personas (Sarah Jenkins, Dr. Eleanor Vance, Marcus Thorne) into the homepage and article UI.
@@ -18,13 +25,15 @@
 - **SEO & Branding:** New "i [Heart] HACCP" logo, custom SVG favicon, and updated metadata.
 
 ### Infrastructure & Scripts
-- `scripts/generate_expert_article.js`: Outline-to-Section multi-step generator for long-form quality.
-- `scripts/regenerate_all.js`: Automatic bulk upgrader for legacy articles.
-- `scripts/dedupe_articles.js`: Utility to clean up `articles.ts` during generation failures.
+- `scripts/regenerate_all.js`: Automatic bulk upgrader with **OpenAI Fallback** and rate-limit handling.
+- `scripts/dedupe_articles.js`: Utility to clean up `articles.ts`, strip HTML comments, and fix syntax errors.
+- `scripts/generate_expert_article.js`: Single-article generator with "Premium Editorial" style.
+- `scripts/fix_articles.js`: Legacy utility for quick regex fixes.
 
 ## Next Steps
+- Monitor traffic and user engagement with the new long-form content.
+- Consider adding a "Related Articles" section to the bottom of the Builder flow.
 - Set up professional email inbox (Purelymail or Zoho Lite) and configure DNS at GoDaddy.
 - Update Contact Form logic to use Brevo SMTP for real email delivery.
-- Run `node scripts/regenerate_all.js` once Groq quota resets.
 - Monitor Stripe webhooks in production.
 - Capture first 100 leads using the new email capture.

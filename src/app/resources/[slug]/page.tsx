@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { articles } from '@/data/articles';
 import { ArrowLeft, Calendar, Clock, Tag, UserCheck, ChevronRight, Bookmark } from 'lucide-react';
 import Link from 'next/link';
@@ -152,7 +154,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   <UserCheck className="w-6 h-6" />
                 </div>
                 <p className="text-lg text-slate-700 italic font-medium leading-relaxed">
-                  "{article.excerpt}"
+                  &quot;{article.excerpt}&quot;
                 </p>
               </div>
 

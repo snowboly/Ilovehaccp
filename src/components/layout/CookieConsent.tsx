@@ -10,7 +10,7 @@ export default function CookieConsent() {
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
     if (!consent) {
-      setIsVisible(true);
+      setTimeout(() => setIsVisible(true), 0);
     }
   }, []);
 
@@ -32,7 +32,7 @@ export default function CookieConsent() {
         <div className="text-sm text-slate-300 flex-1">
           <p>
             <strong>We value your privacy.</strong> We use cookies to enhance your experience, remember your progress, and analyze traffic. 
-            By clicking "Accept", you consent to our use of cookies. 
+            By clicking &quot;Accept&quot;, you consent to our use of cookies. 
             See our <Link href="/cookies" className="text-blue-400 hover:underline">Cookie Policy</Link>.
           </p>
         </div>

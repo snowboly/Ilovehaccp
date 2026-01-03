@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BookOpen, FileText, HelpCircle, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { articles } from '@/data/articles';

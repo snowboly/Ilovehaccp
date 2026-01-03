@@ -13,7 +13,7 @@ const experts = [
   {
     name: "Dr. Margaret",
     role: "Lead Auditor (BRCGS/SQF)",
-    bio: "20+ years ensuring global compliance. Margaret's templates are built to pass the strictest inspections.",
+    bio: "20+ years ensuring global compliance. Margaret&apos;s templates are built to pass the strictest inspections.",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&h=300",
     badge: "Compliance"
   },
@@ -54,7 +54,7 @@ export default function ExpertAdvisors() {
             <span className="text-blue-600">Verified by Experts.</span>
           </h2>
           <p className="text-xl text-slate-500 leading-relaxed">
-            Our AI models are trained on the direct knowledge and experience of industry veterans, ensuring your plans aren't just generated—they're engineered for compliance.
+            Our AI models are trained on the direct knowledge and experience of industry veterans, ensuring your plans aren&apos;t just generated—they&apos;re engineered for compliance.
           </p>
         </div>
 
@@ -78,7 +78,7 @@ export default function ExpertAdvisors() {
                 <h3 className="text-xl font-black text-slate-900 mb-1">{expert.name}</h3>
                 <p className="text-sm font-bold text-blue-600 mb-4 uppercase tracking-wide">{expert.role}</p>
                 <p className="text-slate-500 leading-relaxed text-sm">
-                  "{expert.bio}"
+                  &quot;{expert.bio}&quot;
                 </p>
               </div>
 

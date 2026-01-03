@@ -32,10 +32,27 @@ A high-authority SaaS platform that automates Hazard Analysis and Critical Contr
 - **PDF:** @react-pdf/renderer.
 - **Payments:** Stripe Checkout + Webhooks.
 
-## 📂 Key Scripts
-- `scripts/generate_expert_article.js`: Multi-step engine for high-quality content.
-- `scripts/regenerate_all.js`: Bulk content upgrader with rate-limit handling.
-- `scripts/dedupe_articles.js`: Safety script for data integrity.
+## 🏗️ Development & Content
+
+### Content Generation
+The project includes a powerful suite of scripts to generate high-quality, long-form articles using AI.
+
+- **`node scripts/generate_expert_article.js "Title" [slug]`**: Generates a single 5000+ word article with a specific persona.
+- **`node scripts/regenerate_all.js`**: Batch processor that upgrades all placeholder articles in `articles.ts`.
+  - **Features:** Auto-fallback from Groq (Free) to OpenAI (`gpt-4o-mini`) when rate limits are hit.
+  - **Personas:** Articles are written by 5 distinct expert personas (Dr. Joao, Dr. Margaret, etc.) for variety and authority.
+- **`node scripts/dedupe_articles.js`**: Maintenance utility to clean `articles.ts`, remove duplicates, and fix syntax errors.
+
+### Environment Variables
+Ensure your `.env.local` includes:
+```env
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+STRIPE_SECRET_KEY=...
+GROQ_API_KEY=...    # Primary AI Provider
+OPENAI_API_KEY=...  # Fallback AI Provider
+```
 
 ## 🛠 Deployment Checklist
 1. **Env Vars:** `STRIPE_SECRET_KEY`, `GROQ_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.

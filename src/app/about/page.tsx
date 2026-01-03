@@ -49,7 +49,7 @@ export default function AboutPage() {
                   At <strong>ilovehaccp.com</strong>, we recognized that 80% of the hazard analysis process is standardized science. The remaining 20% is your unique operational context.
                 </p>
                 <p>
-                  We built an engine that codifies the logic of a Lead Auditor into an AI interface. It doesn't just "guess"—it applies strict rules based on <strong>Codex Alimentarius</strong> and <strong>FDA</strong> standards to your specific inputs.
+                  We built an engine that codifies the logic of a Lead Auditor into an AI interface. It doesn&apos;t just &quot;guess&quot;—it applies strict rules based on <strong>Codex Alimentarius</strong> and <strong>FDA</strong> standards to your specific inputs.
                 </p>
               </div>
               
@@ -97,7 +97,7 @@ export default function AboutPage() {
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl font-bold text-slate-900 mb-4">Built by Experts, Powered by Code</h2>
             <p className="text-slate-500 text-lg">
-              We aren't just developers. Our core team includes professionals who have walked the production floor and faced the auditors.
+              We aren&apos;t just developers. Our core team includes professionals who have walked the production floor and faced the auditors.
             </p>
           </div>
 
@@ -131,22 +131,22 @@ export default function AboutPage() {
           
           <div className="grid md:grid-cols-3 gap-12 max-w-4xl mx-auto">
             <TeamMember 
-              initials="JS"
-              name="Dr. J. Silva"
+              initials="DJ"
+              name="Dr. Joao"
               role="Lead Food Safety Scientist"
               desc="Ph.D. in Food Microbiology. 15 years auditing manufacturing plants across Europe."
             />
             <TeamMember 
-              initials="AL"
-              name="A. Laurent"
-              role="Head of Engineering"
-              desc="Ex-Silicon Valley senior engineer specializing in secure data systems and AI logic."
+              initials="DM"
+              name="Dr. Margaret"
+              role="Head of Compliance"
+              desc="Lead Auditor for BRCGS and SQF. Ensuring our templates pass the strictest inspections."
             />
             <TeamMember 
-              initials="MK"
-              name="M. Kowalski"
+              initials="DF"
+              name="Dr. Fabio"
               role="Operations Director"
-              desc="Former restaurant owner and HACCP consultant. Understands the reality of kitchen life."
+              desc="Industrial Operations Expert. Understanding the high-pressure reality of the factory floor."
             />
           </div>
         </div>
@@ -171,7 +171,16 @@ export default function AboutPage() {
   );
 }
 
-function StatsCard({ icon, title, value, color }: any) {
+interface CardProps {
+  icon: React.ReactNode;
+  title: string;
+  value?: string;
+  desc?: string;
+  color?: string;
+  bg?: string;
+}
+
+function StatsCard({ icon, title, value, color }: CardProps) {
   return (
     <div className={`${color} p-6 rounded-2xl text-center border border-slate-100`}>
       <div className="flex justify-center mb-4">{icon}</div>
@@ -181,7 +190,7 @@ function StatsCard({ icon, title, value, color }: any) {
   );
 }
 
-function ExpertiseCard({ icon, title, desc, bg }: any) {
+function ExpertiseCard({ icon, title, desc, bg }: CardProps) {
   return (
     <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 hover:translate-y-[-4px] transition-transform">
       <div className={`${bg} w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-md`}>
@@ -193,7 +202,14 @@ function ExpertiseCard({ icon, title, desc, bg }: any) {
   );
 }
 
-function TeamMember({ initials, name, role, desc }: any) {
+interface TeamMemberProps {
+  initials: string;
+  name: string;
+  role: string;
+  desc: string;
+}
+
+function TeamMember({ initials, name, role, desc }: TeamMemberProps) {
   return (
     <div className="flex flex-col items-center">
       <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-2xl font-bold mb-6 ring-4 ring-white shadow-lg">

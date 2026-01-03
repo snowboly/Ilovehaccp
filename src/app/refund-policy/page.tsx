@@ -25,11 +25,11 @@ export default function RefundPolicyPage() {
 
         <h2>1. Digital Products Policy</h2>
         <p>
-          Because our products are digital files (PDF, JSON, DOCX) that are generated and delivered instantly, they are deemed "used" upon delivery. Unlike physical goods, they cannot be returned. 
+          Because our products are digital files (PDF, JSON, DOCX) that are generated and delivered instantly, they are deemed &quot;used&quot; upon delivery. Unlike physical goods, they cannot be returned. 
           By purchasing a plan, you acknowledge and agree that:
         </p>
         <ul>
-          <li>You lose your right of withdrawal once the digital content has started to be delivered (i.e., when you click "Generate" or "Download").</li>
+          <li>You lose your right of withdrawal once the digital content has started to be delivered (i.e., when you click &quot;Generate&quot; or &quot;Download&quot;).</li>
           <li>All purchases are final and non-refundable.</li>
         </ul>
 
@@ -42,7 +42,7 @@ export default function RefundPolicyPage() {
           <li><strong>Major technical defects:</strong> Although all the products are thoroughly tested, unexpected errors may occur. If the AI engine fails to generate a readable file or generates a corrupted file, and our support team cannot fix it within 48 hours, a refund may be issued.</li>
         </ul>
         <p>
-          <strong>Note:</strong> "Not liking" the AI's phrasing or regulatory style is NOT considered a technical defect. The user has the ability to edit the generated content.
+          <strong>Note:</strong> &quot;Not liking&quot; the AI&apos;s phrasing or regulatory style is NOT considered a technical defect. The user has the ability to edit the generated content.
         </p>
 
         <h2>3. Subscription Cancellations</h2>

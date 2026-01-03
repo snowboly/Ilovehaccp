@@ -43,7 +43,7 @@ export default function ContactPage() {
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-slate-900">Get in Touch</h1>
           <p className="mt-4 text-lg text-slate-500">
-            Questions about our Enterprise plans or need audit support? We're here to help.
+            Questions about our Enterprise plans or need audit support? We&apos;re here to help.
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function ContactPage() {
                   <CheckCircle2 className="w-8 h-8 text-green-600" />
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900">Message Sent!</h3>
-                <p className="text-slate-500 mt-2">We'll get back to you within 24 hours.</p>
+                <p className="text-slate-500 mt-2">We&apos;ll get back to you within 24 hours.</p>
                 <button 
                   onClick={() => setSent(false)}
                   className="mt-6 text-blue-600 font-medium hover:underline"

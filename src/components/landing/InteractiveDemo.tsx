@@ -40,7 +40,7 @@ export default function InteractiveDemo() {
             Try it right now
           </h3>
           <p className="text-slate-400 text-sm">
-            Enter a food product (e.g., "Beef Jerky", "Sushi", "Ice Cream") to see a sample hazard analysis.
+            Enter a food product (e.g., &quot;Beef Jerky&quot;, &quot;Sushi&quot;, &quot;Ice Cream&quot;) to see a sample hazard analysis.
           </p>
         </div>
 

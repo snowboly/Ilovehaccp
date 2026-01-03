@@ -36,7 +36,7 @@ export default function CookiesPage() {
 
         <h2>3. Managing Your Preferences</h2>
         <p>
-          You can change your cookie preferences at any time by clicking the "Cookie Settings" link in the footer or by adjusting your browser settings.
+          You can change your cookie preferences at any time by clicking the &quot;Cookie Settings&quot; link in the footer or by adjusting your browser settings.
         </p>
 
         <h2>4. Updates to This Policy</h2>

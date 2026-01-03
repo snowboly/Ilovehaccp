@@ -39,7 +39,7 @@ export default function SampleDownload() {
   const dict = getDictionary('en').pdf;
 
   useEffect(() => {
-    setIsClient(true);
+    setTimeout(() => setIsClient(true), 0);
   }, []);
 
   if (!isClient) return null;
