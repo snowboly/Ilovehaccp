@@ -17,7 +17,7 @@ A high-authority SaaS platform that automates Hazard Analysis and Critical Contr
     *   **Expert Tooltips:** In-line "Expert Tips" explaining the compliance rationale for every question.
     *   **Branching Logic:** Smartly skips irrelevant sections based on business type.
 4.  **Monetization & Lead Capture:**
-    *   **Stripe Integration:** Optional €29/€79 tiers for Expert Reviews and Compliance Assurance.
+    *   **Stripe Integration:** Review-based pricing model (€79 Starter Review / Custom Enterprise).
     *   **Email Lead Capture:** "Email me my plan" functionality on the result page for conversion optimization.
 5.  **Security & Infrastructure:**
     *   **Database-Backed Rate Limiting:** Prevents AI quota exhaustion (3 gens/hour/IP).

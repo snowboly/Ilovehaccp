@@ -183,15 +183,15 @@ export default function Home() {
               {/* Starter Tier */}
               <div className="bg-blue-600 rounded-3xl p-8 border-2 border-blue-400 shadow-2xl relative flex flex-col transform scale-105 z-10">
                 <div className="absolute top-0 right-0 bg-yellow-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                  Self-Service
+                  Standard Review
                 </div>
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold text-white mb-2">Starter</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">Starter Review</h3>
                   <div className="flex items-baseline">
-                    <span className="text-5xl font-extrabold">€29</span>
-                    <span className="text-blue-200 ml-2">/month</span>
+                    <span className="text-5xl font-extrabold">€79</span>
+                    <span className="text-blue-200 ml-2">+ VAT</span>
                   </div>
-                  <p className="text-blue-100 mt-4 text-sm">Complete documentation for self-managed compliance.</p>
+                  <p className="text-blue-100 mt-4 text-sm">AI Plan + Expert Review for standard businesses.</p>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-center gap-3 text-sm font-bold">
@@ -204,43 +204,41 @@ export default function Home() {
                     <CheckCircle2 className="w-5 h-5 text-white" /> PDF Export Included
                   </li>
                   <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-white" /> Critical Limits & Monitoring
+                    <CheckCircle2 className="w-5 h-5 text-white" /> Expert Review Included
                   </li>
                   <li className="flex items-center gap-3 text-sm text-blue-200">
-                    <X className="w-5 h-5" /> No Professional Review
+                    <CheckCircle2 className="w-5 h-5 text-white" /> Audit Support
                   </li>
                 </ul>
-                <Link href="/signup?plan=starter" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-bold text-center transition-colors shadow-lg">
-                  Get Compliant
+                <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-bold text-center transition-colors shadow-lg">
+                  Get Started
                 </Link>
               </div>
 
               {/* Professional Tier */}
               <div className="bg-slate-800 rounded-3xl p-8 border border-slate-700 hover:border-slate-600 transition-colors flex flex-col">
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold text-white mb-2">Professional</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">Expert Pro</h3>
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-extrabold">€79</span>
-                    <span className="text-slate-400 ml-2">/month</span>
+                    <span className="text-4xl font-extrabold">Custom</span>
                   </div>
-                  <p className="text-slate-400 mt-2 text-xs">+ Custom Review Fee</p>
-                  <p className="text-slate-400 mt-4 text-sm">Validated by experts for high-risk or multi-site operations.</p>
+                  <p className="text-slate-400 mt-4 text-sm">For complex, multi-site, or industrial operations requiring bespoke solutions.</p>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-center gap-3 text-sm">
                     <CheckCircle2 className="w-5 h-5 text-blue-400" /> Everything in Starter
                   </li>
                   <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Word & Excel Exports
+                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Dedicated Consultant
                   </li>
                   <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Professional Validation
+                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Multi-site Management
                   </li>
                   <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Validation Statement
+                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> On-site Audit Options
                   </li>
                   <li className="flex items-center gap-3 text-sm font-bold text-yellow-400">
-                    <CheckCircle2 className="w-5 h-5" /> Audit Support
+                    <CheckCircle2 className="w-5 h-5" /> Priority Support
                   </li>
                 </ul>
                 <Link href="/contact" className="w-full py-4 rounded-xl border border-slate-600 hover:bg-slate-700 font-bold text-center transition-colors">

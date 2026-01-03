@@ -16,7 +16,7 @@
 - **Article UI:** Implemented sticky Table of Contents, authority signals, and `@tailwindcss/typography` optimization for 5000+ word deep-dives.
 - **Freemium Pivot:** Unlocked PDF generation for free users to drive traffic. PDF now includes operational logs (Toolkit).
 - **HACCP Builder:** Added `localStorage` persistence, educational tooltips, and validated 18-section flow.
-- **Stripe Integration:** Implemented `/api/create-checkout`, pricing cards, and `/api/webhook/stripe` for plan upgrades (€29/€79).
+- **Stripe Integration:** Implemented `/api/create-checkout`, pricing cards, and `/api/webhook/stripe` for plan upgrades (€79 Starter Review / Custom).
 - **Security Audit:**
     - Hardened Supabase RLS (restricted SELECT to owners).
     - Implemented database-backed Rate Limiting (3/hr/IP) in `/api/generate-plan`.

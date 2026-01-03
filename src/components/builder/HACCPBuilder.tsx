@@ -1561,14 +1561,14 @@ export default function HACCPBuilder() {
                            <div className="p-6 bg-white rounded-3xl border-2 border-slate-100 shadow-sm hover:border-blue-200 transition-all group">
                                <div className="flex justify-between items-start mb-4">
                                    <div>
-                                       <h4 className="text-lg font-black text-slate-900 leading-none">Starter</h4>
-                                       <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Self-Service</p>
+                                       <h4 className="text-lg font-black text-slate-900 leading-none">Starter Review</h4>
+                                       <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Standard Review</p>
                                    </div>
-                                   <div className="text-2xl font-black text-slate-900 tracking-tight">€29</div>
+                                   <div className="text-2xl font-black text-slate-900 tracking-tight">€79 <span className="text-xs font-normal text-slate-500">+ VAT</span></div>
                                </div>
                                <ul className="space-y-3 mb-6">
                                    <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Instant PDF Download
+                                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> AI Plan + Expert Review
                                    </li>
                                    <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
                                        <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Full Hazard Analysis
@@ -1582,7 +1582,7 @@ export default function HACCPBuilder() {
                                    disabled={isPaying}
                                    className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                                >
-                                   {isPaying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Select Starter'}
+                                   {isPaying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Get Started'}
                                </button>
                            </div>
 
@@ -1592,27 +1592,26 @@ export default function HACCPBuilder() {
                                <div className="flex justify-between items-start mb-4">
                                    <div>
                                        <h4 className="text-lg font-black leading-none">Expert Pro</h4>
-                                       <p className="text-xs text-blue-100 mt-1 uppercase tracking-widest font-bold">Review Included</p>
+                                       <p className="text-xs text-blue-100 mt-1 uppercase tracking-widest font-bold">Complex Operations</p>
                                    </div>
-                                   <div className="text-2xl font-black tracking-tight">€79</div>
+                                   <div className="text-2xl font-black tracking-tight">Custom</div>
                                </div>
                                <ul className="space-y-3 mb-6">
                                    <li className="flex items-center gap-2 text-sm text-blue-50 font-medium">
-                                       <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Everything in Starter
+                                       <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Multi-site / Industrial
                                    </li>
                                    <li className="flex items-center gap-2 text-sm text-blue-50 font-medium font-bold">
-                                       <CheckCircle2 className="w-4 h-4 text-amber-300 flex-shrink-0" /> 1-on-1 Expert Review
+                                       <CheckCircle2 className="w-4 h-4 text-amber-300 flex-shrink-0" /> Dedicated Consultant
                                    </li>
                                    <li className="flex items-center gap-2 text-sm text-blue-50 font-medium">
-                                       <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Compliance Assurance
+                                       <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Full Compliance Audit
                                    </li>
                                </ul>
                                <button 
-                                   onClick={() => handleCheckout('pro')}
-                                   disabled={isPaying}
-                                   className="w-full py-3 bg-white text-blue-600 rounded-xl font-black hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                                   onClick={() => window.location.href = '/contact'}
+                                   className="w-full py-3 bg-white text-blue-600 rounded-xl font-black hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-lg"
                                >
-                                   {isPaying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Get Expert Plan'}
+                                   Contact Sales
                                </button>
                            </div>
 

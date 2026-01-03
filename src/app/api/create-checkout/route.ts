@@ -13,9 +13,12 @@ export async function POST(req: Request) {
     const { tier, planId, businessName } = await req.json();
 
     const prices: Record<string, number> = {
-      starter: 2900, // €29.00
-      pro: 7900,     // €79.00
+      starter: 7900, // €79.00
     };
+
+    if (!prices[tier]) {
+      throw new Error('Invalid tier or custom pricing required');
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -24,10 +27,8 @@ export async function POST(req: Request) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: tier === 'pro' ? `HACCP Pro: ${businessName}` : `HACCP Starter: ${businessName}`,
-              description: tier === 'pro' 
-                ? 'AI Generated Plan + Professional Review' 
-                : 'AI Generated Plan (Instant Download)',
+              name: `HACCP Starter Review: ${businessName}`,
+              description: 'AI Generated Plan + Standard Review',
             },
             unit_amount: prices[tier],
           },
