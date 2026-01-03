@@ -67,13 +67,10 @@ export default function PrivacyPage() {
         </p>
 
         <h2>6. Contact & DPO</h2>
-        <p>
-          For data privacy requests, please contact our Data Protection Officer:
-          <br />
-          <strong>Email:</strong> privacy@ilovehaccp.com
-          <br />
-          <strong>Address:</strong> ilovehaccp.com, Tech Hub, Lisbon, Portugal
-        </p>
+          <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+            <p className="text-slate-700"><strong>Email:</strong> support@ilovehaccp.com</p>
+            <p className="text-slate-700"><strong>Address:</strong> Digital Services Division, ilovehaccp.com</p>
+          </div>
       </div>
     </div>
   );

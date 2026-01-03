@@ -69,7 +69,10 @@ export default function RefundPolicyPage() {
         <p>
           If you believe you have a valid case for a refund under Section 2, please contact us immediately:
           <br />
-          <strong>Email:</strong> billing@ilovehaccp.com
+          <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+            <p className="text-slate-700"><strong>Email:</strong> support@ilovehaccp.com</p>
+            <p className="text-slate-700"><strong>Response Time:</strong> Within 24-48 business hours</p>
+          </div>
         </p>
       </div>
     </div>

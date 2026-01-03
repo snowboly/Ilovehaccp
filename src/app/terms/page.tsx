@@ -82,9 +82,10 @@ export default function TermsPage() {
         </p>
 
         <h2>8. Contact</h2>
-        <p>
-          For legal notices or support questions, please contact us at: <a href="mailto:legal@ilovehaccp.com">legal@ilovehaccp.com</a>
-        </p>
+            <p className="text-slate-600 mb-4">
+              For legal notices or support questions, please contact us at: <a href="mailto:support@ilovehaccp.com" className="text-blue-600 hover:underline">support@ilovehaccp.com</a>
+            </p>
+          </section>
       </div>
     </div>
   );

@@ -16,24 +16,32 @@ if (titles.length === 0) {
 async function generateArticle(title) {
   console.log(`Generating article: "${title}"...`);
   
-  const prompt = `
-    You are an expert food safety scientist and editorial writer.
-    Write a high-quality, long-form, scientific, yet accessible article about: "${title}".
-    
-    Target Audience: Food business owners, chefs, and quality managers.
-    Tone: Professional, authoritative, educational, and slightly academic but practical.
-    
-    Output Format: JSON ONLY. No markdown fencing around the JSON.
-    {
-      "slug": "kebab-case-slug-based-on-title",
-      "title": "The Full Title",
-      "category": "One of: Fundamentals, Compliance, Operations, Technology, Microbiology, Culture",
-      "readTime": "X min read",
-      "excerpt": "A compelling 2-sentence summary.",
-      "content": "HTML string. Use <h2>, <h3>, <p>, <ul>, <li>, <strong>. Do NOT use <h1> or <html> tags. Focus on depth, citing standards like Codex or FDA where relevant."
-    }
-  `;
-
+      const prompt = `
+      You are an expert food safety scientist and editorial writer.
+      Write a high-quality, long-form, scientific, yet accessible article about: "${title}".
+      
+      Target Audience: Food business owners, chefs, and quality managers.
+      Tone: Professional, authoritative, educational, and slightly academic but practical.
+      
+      Instructions for Content:
+      - Use <h2> for main sections and <h3> for sub-sections.
+      - Use <p> for paragraphs. Keep them concise and varied in length.
+      - Use <ul> and <li> for lists of requirements, steps, or benefits.
+      - Use <blockquote> for "Expert Insights" or "Pro-Tips".
+      - Use <strong> to highlight critical concepts, temperatures, or regulations.
+      - Ensure there is a logical flow from introduction to actionable conclusion.
+      - Cite standards like Codex Alimentarius or FDA (21 CFR) where relevant.
+      
+      Output Format: JSON ONLY. No markdown fencing around the JSON.
+      {
+        "slug": "kebab-case-slug-based-on-title",
+        "title": "The Full Title",
+        "category": "One of: Fundamentals, Compliance, Operations, Technology, Microbiology, Culture",
+        "readTime": "15 min read",
+        "excerpt": "A compelling 2-sentence summary.",
+        "content": "HTML string. Focus on depth and editorial flair."
+      }
+    `;
   try {
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],

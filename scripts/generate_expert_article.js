@@ -115,11 +115,14 @@ async function generateSection(title, section, index, total, persona, previousCo
     Previous Context: ${previousContentSummary}
     
     Instructions:
-    - Write this specific section of the article.
-    - Target Word Count: 500-700 words.
+    - Write this specific section of the article with high editorial flair.
+    - Target Word Count: 600-800 words.
     - Tone: ${persona.tone}
     - Style: ${persona.style} ${persona.instruction}
     - Format: HTML. Use <h2> for the section title, <h3> for subsections, <p> for text, <ul>/<li> for lists.
+    - CRITICAL: Include one persona-specific insight block using <blockquote>. For example: "<blockquote><strong>Expert Insight:</strong> ...</blockquote>".
+    - Use <strong> to highlight critical concepts, temperatures, or regulatory sections.
+    - Break up long paragraphs. Use short, punchy sentences mixed with deep analysis.
     - Do NOT include an introduction to the whole article, just dive into this section's topic.
     - Cite regulations (e.g., "21 CFR 117") specifically where relevant. 
     
@@ -129,7 +132,7 @@ async function generateSection(title, section, index, total, persona, previousCo
   const completion = await groq.chat.completions.create({
     messages: [{ role: 'user', content: prompt }],
     model: MODEL,
-    temperature: 0.5, // Slightly higher for creativity within the persona
+    temperature: 0.6, // Slightly higher for more "editorial" flow
   });
 
   return completion.choices[0].message.content;
@@ -162,7 +165,10 @@ async function generateIntroAndMeta(title, persona, outline) {
         response_format: { type: 'json_object' }
       });
     
-      return JSON.parse(completion.choices[0].message.content);
+      const result = JSON.parse(completion.choices[0].message.content);
+      // Ensure the persona name is in the intro so the UI detects it
+      result.introHtml = `<!-- Written by ${persona.role.split(',')[0]} -->\n` + result.introHtml;
+      return result;
 }
 
 // --- MAIN PROCESS ---
