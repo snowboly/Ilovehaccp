@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Providers } from "@/components/providers";
 import SEO from "@/components/layout/SEO";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +28,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <SEO />
-          <Navbar />
+          <Suspense fallback={<div className="h-16 bg-white border-b border-slate-100" />}>
+            <Navbar />
+          </Suspense>
           <main className="min-h-screen">
             {children}
           </main>

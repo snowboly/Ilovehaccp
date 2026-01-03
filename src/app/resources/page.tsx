@@ -2,6 +2,7 @@ import { BookOpen, ShieldCheck } from 'lucide-react';
 import { articles } from '@/data/articles';
 import { faqs } from '@/data/faqs';
 import ResourceTabs from '@/components/resources/ResourceTabs';
+import { Suspense } from 'react';
 
 export const metadata = {
   title: 'HACCP Resources & Knowledge Base | ilovehaccp.com',
@@ -27,7 +28,9 @@ export default function ResourcesPage() {
       <div className="container mx-auto px-4 py-12">
         
         {/* Dynamic Content Tabs */}
-        <ResourceTabs articles={articles} faqs={faqs} />
+        <Suspense fallback={<div className="h-96 flex items-center justify-center text-slate-400">Loading resources...</div>}>
+          <ResourceTabs articles={articles} faqs={faqs} />
+        </Suspense>
 
         {/* Scientific Context Section */}
         <section className="bg-white rounded-2xl shadow-sm border p-8 md:p-12 mt-16">

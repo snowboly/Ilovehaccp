@@ -1,23 +1,18 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, Heart, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import LanguageSelector from './LanguageSelector';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false); // Mobile toggle
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { t } = useLanguage();
-
-  const navItems = [
-    { name: t('nav.builder'), href: '/builder' },
-    { name: t('nav.resources'), href: '/resources' },
-    { name: t('nav.about'), href: '/about' },
-    { name: t('nav.contact'), href: '/contact' },
-  ];
 
   return (
     <nav className="bg-white border-b border-slate-100 sticky top-0 z-50">
@@ -32,19 +27,49 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`text-sm font-bold transition-colors ${
-                  pathname === item.href 
-                    ? 'text-blue-600' 
-                    : 'text-slate-600 hover:text-blue-600'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            <Link
+              href="/builder"
+              className={`text-sm font-bold transition-colors ${pathname === '/builder' ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}
+            >
+              {t('nav.builder')}
+            </Link>
+
+            {/* Resources Dropdown (Desktop) */}
+            <div className="relative group">
+              <button className={`flex items-center gap-1 text-sm font-bold transition-colors ${pathname.startsWith('/resources') ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+                {t('nav.resources')}
+                <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform" />
+              </button>
+              
+              <div className="absolute top-full left-0 w-48 bg-white border border-slate-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform translate-y-2 group-hover:translate-y-0 p-2">
+                <Link 
+                  href="/resources?view=articles" 
+                  className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg"
+                >
+                  Articles
+                </Link>
+                <Link 
+                  href="/resources?view=faqs" 
+                  className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg"
+                >
+                  FAQs
+                </Link>
+              </div>
+            </div>
+
+            <Link
+              href="/about"
+              className={`text-sm font-bold transition-colors ${pathname === '/about' ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}
+            >
+              {t('nav.about')}
+            </Link>
+            <Link
+              href="/contact"
+              className={`text-sm font-bold transition-colors ${pathname === '/contact' ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}
+            >
+              {t('nav.contact')}
+            </Link>
+
             <LanguageSelector />
             <Link 
               href="/login"
@@ -77,20 +102,34 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden border-t border-slate-100 bg-white">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className={`text-base font-bold py-2 ${
-                  pathname === item.href 
-                    ? 'text-blue-600' 
-                    : 'text-slate-600'
-                }`}
+            <Link href="/builder" onClick={() => setIsOpen(false)} className="text-base font-bold text-slate-600">
+              {t('nav.builder')}
+            </Link>
+            
+            {/* Resources Mobile Accordion */}
+            <div>
+              <button 
+                onClick={() => setResourcesOpen(!resourcesOpen)}
+                className="flex items-center justify-between w-full text-base font-bold text-slate-600"
               >
-                {item.name}
-              </Link>
-            ))}
+                {t('nav.resources')}
+                <ChevronDown className={`w-5 h-5 transition-transform ${resourcesOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {resourcesOpen && (
+                <div className="pl-4 mt-2 space-y-2 border-l-2 border-slate-100 ml-1">
+                  <Link href="/resources?view=articles" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500">Articles</Link>
+                  <Link href="/resources?view=faqs" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500">FAQs</Link>
+                </div>
+              )}
+            </div>
+
+            <Link href="/about" onClick={() => setIsOpen(false)} className="text-base font-bold text-slate-600">
+              {t('nav.about')}
+            </Link>
+            <Link href="/contact" onClick={() => setIsOpen(false)} className="text-base font-bold text-slate-600">
+              {t('nav.contact')}
+            </Link>
+            
             <hr className="border-slate-100" />
             <Link
               href="/login"

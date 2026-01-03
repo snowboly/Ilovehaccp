@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from 'react';
-import { FileText, HelpCircle, ChevronDown, Mail } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { FileText, HelpCircle, ChevronDown, Mail, Plus, Minus } from 'lucide-react';
 import Link from 'next/link';
 import { Article } from '@/data/articles';
 import { FAQItem } from '@/data/faqs';
@@ -12,7 +13,24 @@ interface ResourceTabsProps {
 }
 
 export default function ResourceTabs({ articles, faqs }: ResourceTabsProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [view, setView] = useState<'articles' | 'faqs'>('articles');
+  
+  // Sync with URL
+  useEffect(() => {
+    const viewParam = searchParams.get('view');
+    if (viewParam === 'faqs') {
+      setView('faqs');
+    } else {
+      setView('articles');
+    }
+  }, [searchParams]);
+
+  const handleViewChange = (newView: 'articles' | 'faqs') => {
+    setView(newView);
+    router.push(`/resources?view=${newView}`, { scroll: false });
+  };
 
   return (
     <div>
@@ -21,7 +39,7 @@ export default function ResourceTabs({ articles, faqs }: ResourceTabsProps) {
         <div className="relative inline-block w-64">
           <select
             value={view}
-            onChange={(e) => setView(e.target.value as 'articles' | 'faqs')}
+            onChange={(e) => handleViewChange(e.target.value as 'articles' | 'faqs')}
             className="appearance-none w-full bg-white border-2 border-slate-200 text-slate-900 font-bold py-3 px-6 pr-10 rounded-xl cursor-pointer focus:outline-none focus:border-blue-500 shadow-sm transition-all"
           >
             <option value="articles">1. Articles</option>
@@ -61,13 +79,7 @@ export default function ResourceTabs({ articles, faqs }: ResourceTabsProps) {
           <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="space-y-4 mb-16">
               {faqs.map((faq, idx) => (
-                <div key={idx} className="bg-white rounded-xl border p-6 hover:border-blue-200 transition-colors shadow-sm">
-                  <h3 className="font-bold text-lg text-slate-900 mb-3 flex items-start gap-3">
-                    <HelpCircle className="w-6 h-6 text-blue-500 flex-shrink-0 mt-0.5" />
-                    {faq.q}
-                  </h3>
-                  <p className="text-slate-600 ml-9 leading-relaxed">{faq.a}</p>
-                </div>
+                <FAQAccordion key={idx} faq={faq} />
               ))}
             </div>
 
@@ -86,6 +98,33 @@ export default function ResourceTabs({ articles, faqs }: ResourceTabsProps) {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function FAQAccordion({ faq }: { faq: FAQItem }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="bg-white rounded-xl border hover:border-blue-200 transition-all shadow-sm overflow-hidden">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full text-left p-6 flex items-start gap-4 focus:outline-none"
+      >
+        <div className={`mt-1 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+            {isOpen ? <Minus className="w-5 h-5 text-blue-600" /> : <Plus className="w-5 h-5 text-slate-400" />}
+        </div>
+        <div>
+            <h3 className={`font-bold text-lg mb-1 transition-colors ${isOpen ? 'text-blue-600' : 'text-slate-900'}`}>
+                {faq.q}
+            </h3>
+            <div className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                <div className="overflow-hidden">
+                    <p className="text-slate-600 leading-relaxed mt-2">{faq.a}</p>
+                </div>
+            </div>
+        </div>
+      </button>
     </div>
   );
 }
