@@ -1611,7 +1611,7 @@ export default function HACCPBuilder() {
                                    onClick={() => window.location.href = '/contact'}
                                    className="w-full py-3 bg-white text-blue-600 rounded-xl font-black hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-lg"
                                >
-                                   Contact Sales
+                                   Contact for Quote
                                </button>
                            </div>
 

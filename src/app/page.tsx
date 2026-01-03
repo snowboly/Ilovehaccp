@@ -242,7 +242,7 @@ export default function Home() {
                   </li>
                 </ul>
                 <Link href="/contact" className="w-full py-4 rounded-xl border border-slate-600 hover:bg-slate-700 font-bold text-center transition-colors">
-                  Contact Sales
+                  Contact for Quote
                 </Link>
               </div>
             </div>
