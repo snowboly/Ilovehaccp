@@ -6,7 +6,7 @@ export const metadata = {
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-slate-50 py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-xl prose prose-slate prose-headings:text-slate-900 prose-p:text-slate-600">
+      <article className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-xl prose prose-slate prose-headings:text-slate-900 prose-p:text-slate-600">
         <h1 className="text-4xl font-extrabold mb-4">Terms of Service</h1>
         <p className="lead text-xl text-slate-500 mb-8 border-b pb-8">
           <strong>Effective Date:</strong> December 30, 2025
@@ -85,7 +85,7 @@ export default function TermsPage() {
         <p className="text-slate-600 mb-4">
           For legal notices or support questions, please contact us at: <a href="mailto:support@ilovehaccp.com" className="text-blue-600 hover:underline">support@ilovehaccp.com</a>
         </p>
-      </div>
+      </article>
     </div>
   );
 }
