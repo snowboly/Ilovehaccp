@@ -85,7 +85,6 @@ export default function TermsPage() {
             <p className="text-slate-600 mb-4">
               For legal notices or support questions, please contact us at: <a href="mailto:support@ilovehaccp.com" className="text-blue-600 hover:underline">support@ilovehaccp.com</a>
             </p>
-          </section>
       </div>
     </div>
   );

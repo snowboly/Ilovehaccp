@@ -93,7 +93,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
-                  <input name="email" type="email" required className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="support@ilovehaccp.com" />
+                  <input name="email" type="email" required className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="you@company.com" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">Subject</label>

@@ -77,7 +77,7 @@ export default function AuthForm({ type }: AuthFormProps) {
             type="email"
             required
             className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-            placeholder="support@ilovehaccp.com"
+            placeholder="name@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />

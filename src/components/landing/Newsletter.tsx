@@ -72,7 +72,7 @@ export default function Newsletter() {
                       type="email" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="support@ilovehaccp.com" 
+                      placeholder="you@company.com" 
                       className="w-full bg-white/5 border border-white/10 text-white rounded-2xl px-6 py-5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-lg placeholder:text-slate-500"
                       required
                     />

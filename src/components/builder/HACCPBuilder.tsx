@@ -1647,7 +1647,7 @@ export default function HACCPBuilder() {
                                        required
                                        type="email" 
                                        name="email"
-                                       placeholder="support@ilovehaccp.com" 
+                                       placeholder="you@company.com" 
                                        className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm focus:border-blue-500 outline-none" 
                                    />
                                    <button className="bg-slate-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-black transition-all">

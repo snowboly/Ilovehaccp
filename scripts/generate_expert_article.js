@@ -20,25 +20,39 @@ const MODEL = 'llama-3.3-70b-versatile';
 // --- PERSONAS ---
 const PERSONAS = [
   {
-    id: 'academic',
-    role: 'Dr. Eleanor Vance, PhD in Food Microbiology and Safety',
+    id: 'academic_joao',
+    role: 'Dr. Joao, PhD in Food Microbiology',
     tone: 'Academic, rigorous, evidence-based, precise.',
     style: 'Uses technical terminology, cites principles extensively, focuses on the "why" at a molecular/biological level.',
     instruction: 'Write as a professor educating advanced practitioners. Focus on the scientific validity of HACCP principles.'
   },
   {
-    id: 'veteran',
-    role: 'Marcus Thorne, 30-year Food Plant Operations Director',
+    id: 'auditor_margaret',
+    role: 'Dr. Margaret, Lead Auditor (BRCGS/SQF)',
+    tone: 'Professional, compliance-focused, detail-oriented, strict.',
+    style: 'Focuses on audit readiness, documentation, regulatory citations (CFR, EC 852/2004), and red flags.',
+    instruction: 'Write as if preparing a client for a surprise inspection. Focus on "passing the audit" and regulatory alignment.'
+  },
+  {
+    id: 'veteran_fabio',
+    role: 'Dr. Fabio, Industrial Operations Expert',
     tone: 'Practical, authoritative, no-nonsense, experience-driven.',
     style: 'Focuses on implementation, common pitfalls, "war stories", and what actually happens on the factory floor vs. the binder.',
     instruction: 'Write as a mentor to a new Quality Manager. Focus on operational reality and avoiding costly shutdowns.'
   },
   {
-    id: 'auditor',
-    role: 'Sarah Jenkins, Lead Auditor for BRCGS and SQF',
-    tone: 'Professional, compliance-focused, detail-oriented, strict.',
-    style: 'Focuses on audit readiness, documentation, regulatory citations (CFR, EC 852/2004), and red flags.',
-    instruction: 'Write as if preparing a client for a surprise inspection. Focus on "passing the audit" and regulatory alignment.'
+    id: 'academic_claudia',
+    role: 'Dr. Claudia, Food Science Professor',
+    tone: 'Educational, forward-looking, analytical.',
+    style: 'Focuses on emerging technologies, preservation methods, and the chemistry of food safety.',
+    instruction: 'Write as a researcher sharing the latest industry advancements and scientific consensus.'
+  },
+  {
+    id: 'auditor_elizabeth',
+    role: 'Dr. Elizabeth, Regulatory Compliance Specialist',
+    tone: 'Legalistic, precise, authoritative on standards.',
+    style: 'Focuses on FDA FSMA, EU Regulations, and legal liability.',
+    instruction: 'Write as a regulatory consultant ensuring the business is legally protected and compliant.'
   }
 ];
 
@@ -115,16 +129,20 @@ async function generateSection(title, section, index, total, persona, previousCo
     Previous Context: ${previousContentSummary}
     
     Instructions:
-    - Write this specific section of the article with high editorial flair.
+    - Write this specific section of the article with **premium editorial flair** (think Harvard Business Review meets Food Safety Magazine).
     - Target Word Count: 600-800 words.
     - Tone: ${persona.tone}
     - Style: ${persona.style} ${persona.instruction}
-    - Format: HTML. Use <h2> for the section title, <h3> for subsections, <p> for text, <ul>/<li> for lists.
-    - CRITICAL: Include one persona-specific insight block using <blockquote>. For example: "<blockquote><strong>Expert Insight:</strong> ...</blockquote>".
-    - Use <strong> to highlight critical concepts, temperatures, or regulatory sections.
-    - Break up long paragraphs. Use short, punchy sentences mixed with deep analysis.
-    - Do NOT include an introduction to the whole article, just dive into this section's topic.
-    - Cite regulations (e.g., "21 CFR 117") specifically where relevant. 
+    - **Formatting Rules (CRITICAL):**
+      - Use **short paragraphs** (maximum 3-4 lines). Wall of text = FAIL.
+      - Use **bullet points** (<ul>) or **numbered lists** (<ol>) whenever listing items.
+      - Use <h3> tags frequently to break up text.
+      - Use <strong>bolding</strong> for key terms, regulatory codes (e.g., "21 CFR 117"), and critical limits.
+    - **Structure:**
+      1. Start with a strong <h2>Title</h2>.
+      2. Dive immediately into the value/analysis.
+      3. Include one **"Expert Insight"** block using <blockquote>. Format: <blockquote><strong>Expert Insight:</strong> [Your specific, hard-won advice here]</blockquote>
+    - Cite regulations specifically where relevant.
     
     Output: HTML string ONLY.
   `;
@@ -132,7 +150,7 @@ async function generateSection(title, section, index, total, persona, previousCo
   const completion = await groq.chat.completions.create({
     messages: [{ role: 'user', content: prompt }],
     model: MODEL,
-    temperature: 0.6, // Slightly higher for more "editorial" flow
+    temperature: 0.6, 
   });
 
   return completion.choices[0].message.content;
@@ -148,7 +166,10 @@ async function generateIntroAndMeta(title, persona, outline) {
       Task:
       1. Write a compelling, SEO-optimized Title (can be slightly different from the input if better).
       2. Write a 2-sentence Excerpt/Meta Description.
-      3. Write the Introduction section (approx 400 words) ensuring it hooks the reader and sets up the deep dive.
+      3. Write the Introduction section (approx 400 words).
+         - Hook the reader immediately.
+         - Use short paragraphs.
+         - Use bullet points if listing what will be covered.
       
       Output Format: JSON ONLY.
       {
@@ -188,12 +209,16 @@ async function main() {
     // 4. Loop Sections
     let fullContent = meta.introHtml;
     let previousContext = "Introduction covering the importance of the topic.";
+    let totalWordCountEstimate = 400; // Start with intro
     
     for (let i = 0; i < sections.length; i++) {
       const sectionContent = await generateSection(targetTitle, sections[i], i, sections.length, persona, previousContext);
       fullContent += `\n${sectionContent}`;
       // Update context (keep it brief to save tokens)
       previousContext = `Section "${sections[i].title}" covered: ${sections[i].points.join(', ')}.`;
+      
+      // Rough word count update
+      totalWordCountEstimate += sectionContent.split(/\s+/).length;
     }
 
     // 5. Generate Conclusion
@@ -201,7 +226,8 @@ async function main() {
     const conclusionPrompt = `
         You are ${persona.role}.
         Wrap up the article "${targetTitle}".
-        Summarize key takeaways from the perspective of your persona.
+        Summarize key takeaways.
+        Use bullet points for the summary.
         Call to action: "Audit your current plan today" or similar.
         Output: HTML string.
     `;
@@ -210,7 +236,13 @@ async function main() {
         model: MODEL,
         temperature: 0.5
     });
-    fullContent += `\n${conclusionCompletion.choices[0].message.content}`;
+    const conclusionContent = conclusionCompletion.choices[0].message.content;
+    fullContent += `\n${conclusionContent}`;
+    totalWordCountEstimate += conclusionContent.split(/\s+/).length;
+
+    // Calculate Read Time
+    const readTimeMinutes = Math.ceil(totalWordCountEstimate / 200);
+    const readTime = `${readTimeMinutes} min read`;
 
     // 6. Update File
     const slug = forcedSlug || slugify(targetTitle);
@@ -218,7 +250,7 @@ async function main() {
         slug: slug,
         title: meta.finalTitle,
         category: "Compliance", // Default, could be inferred
-        readTime: "45 min read", // Estimate based on length
+        readTime: readTime,
         excerpt: meta.excerpt,
         publishedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         content: fullContent

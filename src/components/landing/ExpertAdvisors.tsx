@@ -4,25 +4,39 @@ import { CheckCircle2, UserCheck, ShieldCheck } from 'lucide-react';
 
 const experts = [
   {
-    name: "Dr. Eleanor Vance",
+    name: "Dr. Joao",
     role: "PhD in Food Microbiology",
-    bio: "Former FSA consultant specializing in pathogen control and molecular safety protocols.",
+    bio: "Scientific Lead specializing in pathogen control and molecular safety protocols.",
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&h=300",
     badge: "Scientific Lead"
   },
   {
-    name: "Sarah Jenkins",
+    name: "Dr. Margaret",
     role: "Lead Auditor (BRCGS/SQF)",
-    bio: "15+ years auditing high-risk facilities. Sarah ensures our templates pass the strictest inspections.",
+    bio: "20+ years ensuring global compliance. Margaret's templates are built to pass the strictest inspections.",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&h=300",
     badge: "Compliance"
   },
   {
-    name: "Marcus Thorne",
-    role: "Operations Director",
-    bio: "30-year veteran managing industrial food plants. He bridges the gap between theory and factory floor reality.",
+    name: "Dr. Fabio",
+    role: "Industrial Operations Expert",
+    bio: "Bridging the gap between academic theory and the high-pressure reality of the factory floor.",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&h=300",
     badge: "Operations"
+  },
+  {
+    name: "Dr. Claudia",
+    role: "Food Science Professor",
+    bio: "Educator and researcher focusing on emerging food safety technologies and preservation methods.",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea86b48e?auto=format&fit=crop&w=300&h=300",
+    badge: "Research"
+  },
+  {
+    name: "Dr. Elizabeth",
+    role: "Regulatory Specialist",
+    bio: "Expert in FDA FSMA and EU Regulation 852/2004, ensuring legal alignment across borders.",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&h=300",
+    badge: "Legal"
   }
 ];
 

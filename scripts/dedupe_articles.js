@@ -3,75 +3,85 @@ const path = require('path');
 
 const ARTICLES_PATH = path.join(__dirname, '../src/data/articles.ts');
 
-try {
-  let content = fs.readFileSync(ARTICLES_PATH, 'utf-8');
-
-  const slug = process.argv[2];
-  if (!slug) {
-    console.log("Usage: node scripts/dedupe_articles.js <slug>");
-    process.exit(1);
-  }
-  const slugSearch = `slug: "${slug}"`; // Use double quotes as seen in file
-
-  // Find all occurrences
-  const indices = [];
-  let pos = content.indexOf(slugSearch);
-  while (pos !== -1) {
-    indices.push(pos);
-    pos = content.indexOf(slugSearch, pos + 1);
-  }
-
-  console.log(`Found ${indices.length} occurrences of slug: ${slug}`);
-
-  if (indices.length < 2) {
-    console.log("No duplicates found (or only one exists).");
-    process.exit(0);
-  }
-
-  // We want to keep the LAST one (the new one).
-  // We want to remove the FIRST one (the old one).
-  const firstOccurrence = indices[0];
-
-  // Find the start of the object (backwards to {)
-  let startIndex = firstOccurrence;
-  while (content[startIndex] !== '{' && startIndex > 0) {
-    startIndex--;
-  }
-
-  // Find the end of the object (forwards to })
-  let braceCount = 0;
-  let endIndex = startIndex;
-  let foundStart = false;
-
-  for (let i = startIndex; i < content.length; i++) {
-    if (content[i] === '{') {
-      braceCount++;
-      foundStart = true;
-    } else if (content[i] === '}') {
-      braceCount--;
+function clean() {
+    console.log("Reading articles.ts...");
+    const content = fs.readFileSync(ARTICLES_PATH, 'utf-8');
+    
+    // Find all article blocks
+    const blocks = content.match(/\{\s*slug:[\s\S]*?content:\s*`[\s\S]*?`[\s\S]*?\}/g);
+    
+    if (!blocks) {
+        console.error("No articles found!");
+        return;
     }
 
-    if (foundStart && braceCount === 0) {
-      endIndex = i + 1;
-      break;
+    console.log(`Found ${blocks.length} blocks. Deduplicating...`);
+    
+    const uniqueMap = new Map();
+    
+    for (const block of blocks) {
+        const slugMatch = block.match(/slug:\s*["']([^"']+)["']/);
+        if (slugMatch) {
+            const slug = slugMatch[1];
+            uniqueMap.set(slug, block);
+        }
     }
-  }
 
-  // Check if there is a comma after
-  if (content[endIndex] === ',') {
-    endIndex++;
-  }
+    let newContent = "export interface Article {\n" +
+        "  slug: string;\n" +
+        "  title: string;\n" +
+        "  category: string;\n" +
+        "  readTime: string;\n" +
+        "  excerpt: string;\n" +
+        "  content: string;\n" +
+        "  publishedAt: string;\n" +
+        "}\n" +
+        "export const articles: Article[] = [\n";
 
-  console.log(`Removing object from index ${startIndex} to ${endIndex}`);
-  
-  const newContent = content.slice(0, startIndex) + content.slice(endIndex);
-  
-  // Cleanup potential empty lines or double commas (though we handled one comma)
-  const cleanedContent = newContent.replace(/,\s*,/g, ',').replace(/^\s*[\r\n]/gm, '');
+    for (const block of uniqueMap.values()) {
+        const getField = (name, isBacktick = false) => {
+            let pattern;
+            if (isBacktick) {
+                pattern = new RegExp(name + ':\s*`([\s\S]*?)`', 'g');
+            } else {
+                // Use a character class that excludes quotes
+                pattern = new RegExp(name + ':\s*["\']([^"\']*)["\']', 'g');
+            }
+            let val = null;
+            let m;
+            while ((m = pattern.exec(block)) !== null) {
+                val = m[1];
+            }
+            return val;
+        };
 
-  fs.writeFileSync(ARTICLES_PATH, cleanedContent);
-  console.log("Duplicate removed successfully.");
+        const slug = getField('slug');
+        const title = getField('title');
+        const category = getField('category');
+        const readTime = getField('readTime');
+        const excerpt = getField('excerpt');
+        const publishedAt = getField('publishedAt') || 'Jan 3, 2026';
+        let body = getField('content', true);
 
-} catch (err) {
-  console.error("Error:", err);
+        if (!slug || !title || !body) continue;
+
+        // Strip HTML comments
+        body = body.replace(/<!--[\s\S]*?-->/g, '');
+
+        newContent += "  {\n" +
+            "    slug: \"" + slug + "\",\n" +
+            "    title: \"" + title.replace(/\"/g, "'") + "\",\n" +
+            "    category: \"" + (category || "Compliance") + "\",\n" +
+            "    readTime: \"" + (readTime || "15 min read") + "\",\n" +
+            "    excerpt: \"" + (excerpt || "").replace(/\"/g, "'") + "\",\n" +
+            "    publishedAt: \"" + publishedAt + "\",\n" +
+            "    content: `" + body.replace(/`/g, "\\`").replace(/\$\{/g, "\\${ப்புகளை") + "`\n" +
+            "  },\n";
+    }
+
+    newContent += "];\n";
+    fs.writeFileSync(ARTICLES_PATH, newContent);
+    console.log("Done.");
 }
+
+clean();
