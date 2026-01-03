@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { BookOpen, FileText, HelpCircle, ShieldCheck } from 'lucide-react';
-import Link from 'next/link';
+import { BookOpen, ShieldCheck } from 'lucide-react';
 import { articles } from '@/data/articles';
+import { faqs } from '@/data/faqs';
+import ResourceTabs from '@/components/resources/ResourceTabs';
 
 export const metadata = {
   title: 'HACCP Resources & Knowledge Base | ilovehaccp.com',
@@ -25,22 +25,12 @@ export default function ResourcesPage() {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        {/* Articles Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {articles.map((article) => (
-            <ArticleCard 
-              key={article.slug}
-              slug={article.slug}
-              category={article.category}
-              title={article.title}
-              excerpt={article.excerpt}
-              readTime={article.readTime}
-            />
-          ))}
-        </div>
+        
+        {/* Dynamic Content Tabs */}
+        <ResourceTabs articles={articles} faqs={faqs} />
 
         {/* Scientific Context Section */}
-        <section className="bg-white rounded-2xl shadow-sm border p-8 md:p-12 mb-16">
+        <section className="bg-white rounded-2xl shadow-sm border p-8 md:p-12 mt-16">
           <div className="flex items-start gap-4">
             <ShieldCheck className="w-12 h-12 text-green-600 flex-shrink-0" />
             <div>
@@ -63,47 +53,8 @@ export default function ResourcesPage() {
             </div>
           </div>
         </section>
-
-        {/* FAQ Section */}
-        <section className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            <FAQ 
-              q="Is an AI-generated HACCP plan legal?" 
-              a="Yes, provided it accurately reflects your actual operations. The law requires a plan based on HACCP principles; the tool (AI or pen/paper) doesn't matter. However, verification by a qualified person is always recommended."
-            />
-            <FAQ 
-              q="Do I need to sign up to generate a plan?" 
-              a="You can draft your plan completely for free. To download the final professional PDF and save your progress, a free account is required."
-            />
-            <FAQ 
-              q="What if my menu changes?" 
-              a="Our platform allows you to edit your plan at any time. Simply log in, update your ingredients or steps, and re-generate the hazard analysis instantly."
-            />
-            <FAQ 
-              q="Does this cover me for local health inspections?" 
-              a="Our output is designed to meet international standards (Codex). Most local health authorities align with these principles. We recommend our Professional Review addon for guaranteed local compliance."
-            />
-          </div>
-        </section>
       </div>
     </div>
-  );
-}
-
-function ArticleCard({ title, excerpt, category, readTime, slug }: any) {
-  return (
-    <Link href={`/resources/${slug}`} className="group block bg-white rounded-xl border shadow-sm hover:shadow-md transition-all p-6">
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-xs font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-1 rounded">{category}</span>
-        <span className="text-xs text-slate-400">{readTime}</span>
-      </div>
-      <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{title}</h3>
-      <p className="text-slate-500 text-sm line-clamp-3">{excerpt}</p>
-      <div className="mt-4 flex items-center text-blue-600 font-medium text-sm">
-        Read Article <FileText className="w-4 h-4 ml-2" />
-      </div>
-    </Link>
   );
 }
 
@@ -121,14 +72,3 @@ function Citation({ source, title, link }: any) {
   );
 }
 
-function FAQ({ q, a }: any) {
-  return (
-    <div className="bg-white rounded-xl border p-6">
-      <h3 className="font-bold text-lg text-slate-900 mb-2 flex items-start gap-3">
-        <HelpCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-1" />
-        {q}
-      </h3>
-      <p className="text-slate-600 ml-8">{a}</p>
-    </div>
-  );
-}
