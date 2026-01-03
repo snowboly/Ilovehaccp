@@ -168,15 +168,15 @@ export default function Home() {
                   <li className="flex items-center gap-3 text-sm text-slate-500">
                     <X className="w-5 h-5" /> No Critical Limits
                   </li>
-                  <li className="flex items-center gap-3 text-sm text-slate-500">
-                    <X className="w-5 h-5" /> No PDF Download
+                  <li className="flex items-center gap-3 text-sm">
+                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> PDF Export Included
                   </li>
                   <li className="flex items-center gap-3 text-sm text-slate-500">
                     <X className="w-5 h-5" /> Not Audit-Ready
                   </li>
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl border border-slate-600 hover:bg-slate-700 font-bold text-center transition-colors">
-                  Start Preview
+                  Start Building
                 </Link>
               </div>
 
@@ -205,9 +205,6 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-3 text-sm">
                     <CheckCircle2 className="w-5 h-5 text-white" /> Expert Review Included
-                  </li>
-                  <li className="flex items-center gap-3 text-sm text-blue-200">
-                    <CheckCircle2 className="w-5 h-5 text-white" /> Audit Support
                   </li>
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-bold text-center transition-colors shadow-lg">

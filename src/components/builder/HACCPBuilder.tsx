@@ -1450,56 +1450,46 @@ export default function HACCPBuilder() {
           >
             <div className="bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100">
                {/* Success Header */}
-               <div className={`p-10 text-white transition-colors duration-500 ${paymentStatus === 'paid' ? 'bg-gradient-to-r from-emerald-500 to-green-600' : 'bg-slate-900'}`}>
+               <div className="p-10 text-white bg-gradient-to-r from-emerald-500 to-green-600">
                    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="space-y-2">
                             <div className="flex items-center gap-3">
                                 <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
-                                    {paymentStatus === 'paid' ? <CheckCircle2 className="w-8 h-8 text-white" /> : <ShieldCheck className="w-8 h-8 text-white" />}
+                                    <CheckCircle2 className="w-8 h-8 text-white" />
                                 </div>
-                                <h1 className="text-3xl font-black">
-                                    {paymentStatus === 'paid' ? t('wizard.success') : 'Draft Plan Generated'}
-                                </h1>
+                                <h1 className="text-3xl font-black">HACCP Plan Ready</h1>
                             </div>
                             <p className="text-blue-50/80 font-medium text-lg">
-                                {paymentStatus === 'paid' 
-                                    ? 'Your professional HACCP plan is ready for download.' 
-                                    : 'Your initial hazard analysis is complete. Upgrade to unlock the full document.'}
+                                Your HACCP plan has been generated successfully.
                             </p>
                         </div>
                         
-                        {paymentStatus === 'paid' ? (
-                            isClient && (
-                                <PDFDownloadLink
-                                    document={
-                                    <HACCPDocument 
-                                        dict={dict}
-                                        data={{
-                                        businessName: formData.businessLegalName || "My Business",
-                                        productName: "Food Safety Plan",
-                                        productDescription: `HACCP Plan for ${formData.businessType}`,
-                                        intendedUse: formData.isVulnerable === 'Yes' ? 'Vulnerable Populations' : 'General Consumption',
-                                        storageType: formData.productCharacteristics.join(', '),
-                                        analysis: generatedAnalysis,
-                                        fullPlan: fullPlan
-                                        }} 
-                                    />
-                                    }
-                                    fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
-                                    className="bg-white text-green-700 px-8 py-4 rounded-xl font-bold hover:bg-green-50 transition-all shadow-xl flex items-center gap-3"
-                                >
-                                    {({ loading }) => (
-                                    <>
-                                        {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
-                                        {loading ? 'Preparing...' : t('wizard.download')}
-                                    </>
-                                    )}
-                                </PDFDownloadLink>
-                            )
-                        ) : (
-                            <div className="bg-blue-600/20 px-4 py-2 rounded-lg border border-blue-400/30 backdrop-blur-sm text-sm font-bold text-blue-200">
-                                <ShieldCheck className="inline w-4 h-4 mr-2 mb-0.5" /> DRAFT MODE
-                            </div>
+                        {isClient && (
+                            <PDFDownloadLink
+                                document={
+                                <HACCPDocument 
+                                    dict={dict}
+                                    data={{
+                                    businessName: formData.businessLegalName || "My Business",
+                                    productName: "Food Safety Plan",
+                                    productDescription: `HACCP Plan for ${formData.businessType}`,
+                                    intendedUse: formData.isVulnerable === 'Yes' ? 'Vulnerable Populations' : 'General Consumption',
+                                    storageType: formData.productCharacteristics.join(', '),
+                                    analysis: generatedAnalysis,
+                                    fullPlan: fullPlan
+                                    }} 
+                                />
+                                }
+                                fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
+                                className="bg-white text-green-700 px-8 py-4 rounded-xl font-bold hover:bg-green-50 transition-all shadow-xl flex items-center gap-3"
+                            >
+                                {({ loading }) => (
+                                <>
+                                    {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
+                                    {loading ? 'Preparing...' : t('wizard.download')}
+                                </>
+                                )}
+                            </PDFDownloadLink>
                         )}
                    </div>
                </div>
@@ -1508,7 +1498,7 @@ export default function HACCPBuilder() {
                <div className="p-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
                    <div className="lg:col-span-2 space-y-6">
                        <div className="flex items-center justify-between mb-6">
-                           <h3 className="text-xl font-bold text-slate-900">Hazard Analysis Preview</h3>
+                           <h3 className="text-xl font-bold text-slate-900">Hazard Analysis</h3>
                            <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">
                                {generatedAnalysis.length} Process Steps
                            </span>
@@ -1523,8 +1513,8 @@ export default function HACCPBuilder() {
                                         <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Control</th>
                                     </tr>
                                 </thead>
-                                <tbody className={`divide-y divide-slate-100 ${paymentStatus === 'pending' ? 'select-none blur-[2px]' : ''}`}>
-                                    {generatedAnalysis.slice(0, paymentStatus === 'paid' ? 99 : 5).map((item, idx) => (
+                                <tbody className="divide-y divide-slate-100">
+                                    {generatedAnalysis.map((item, idx) => (
                                     <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                         <td className="p-4 font-bold text-slate-800">{item.step_name}</td>
                                         <td className="p-4 text-center">
@@ -1539,124 +1529,115 @@ export default function HACCPBuilder() {
                                     ))}
                                 </tbody>
                             </table>
-                            {paymentStatus === 'pending' && (
-                                <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
-                                    <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold shadow-2xl flex items-center gap-2">
-                                        <ShieldCheck className="w-4 h-4 text-blue-400" /> Upgrade to see full analysis
-                                    </div>
-                                </div>
-                            )}
                        </div>
                    </div>
 
-                   {/* Right: Pricing Paywall */}
-                   {paymentStatus === 'pending' && (
-                       <div className="space-y-6">
-                           <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                               <Sparkles className="w-5 h-5 text-amber-500" />
-                               Unlock Full Plan
-                           </h3>
-                           
-                           {/* Starter Card */}
-                           <div className="p-6 bg-white rounded-3xl border-2 border-slate-100 shadow-sm hover:border-blue-200 transition-all group">
-                               <div className="flex justify-between items-start mb-4">
-                                   <div>
-                                       <h4 className="text-lg font-black text-slate-900 leading-none">Starter Review</h4>
-                                       <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Standard Review</p>
-                                   </div>
-                                   <div className="text-2xl font-black text-slate-900 tracking-tight">€79 <span className="text-xs font-normal text-slate-500">+ VAT</span></div>
+                   {/* Right: Upgrades */}
+                   <div className="space-y-6">
+                       <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                           <Sparkles className="w-5 h-5 text-amber-500" />
+                           Get Professional Help
+                       </h3>
+                       
+                       {/* Starter Card */}
+                       <div className="p-6 bg-white rounded-3xl border-2 border-slate-100 shadow-sm hover:border-blue-200 transition-all group">
+                           <div className="flex justify-between items-start mb-4">
+                               <div>
+                                   <h4 className="text-lg font-black text-slate-900 leading-none">Starter Review</h4>
+                                   <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Standard Review</p>
                                </div>
-                               <ul className="space-y-3 mb-6">
-                                   <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> AI Plan + Expert Review
-                                   </li>
-                                   <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Full Hazard Analysis
-                                   </li>
-                                   <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> PRPs & Control Chart
-                                   </li>
-                               </ul>
-                               <button 
-                                   onClick={() => handleCheckout('starter')}
-                                   disabled={isPaying}
-                                   className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                               >
-                                   {isPaying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Get Started'}
-                               </button>
+                               <div className="text-2xl font-black text-slate-900 tracking-tight">€79 <span className="text-xs font-normal text-slate-500">+ VAT</span></div>
                            </div>
-
-                           {/* Pro Card */}
-                           <div className="p-6 bg-blue-600 rounded-3xl border-2 border-blue-500 shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all relative overflow-hidden text-white">
-                               <div className="absolute top-0 right-0 p-2 bg-amber-400 text-[10px] font-black uppercase text-slate-900 rounded-bl-xl tracking-widest shadow-lg">Popular</div>
-                               <div className="flex justify-between items-start mb-4">
-                                   <div>
-                                       <h4 className="text-lg font-black leading-none">Expert Pro</h4>
-                                       <p className="text-xs text-blue-100 mt-1 uppercase tracking-widest font-bold">Complex Operations</p>
-                                   </div>
-                                   <div className="text-2xl font-black tracking-tight">Custom</div>
-                               </div>
-                               <ul className="space-y-3 mb-6">
-                                   <li className="flex items-center gap-2 text-sm text-blue-50 font-medium">
-                                       <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Multi-site / Industrial
-                                   </li>
-                                   <li className="flex items-center gap-2 text-sm text-blue-50 font-medium font-bold">
-                                       <CheckCircle2 className="w-4 h-4 text-amber-300 flex-shrink-0" /> Dedicated Consultant
-                                   </li>
-                                   <li className="flex items-center gap-2 text-sm text-blue-50 font-medium">
-                                       <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Full Compliance Audit
-                                   </li>
-                               </ul>
-                               <button 
-                                   onClick={() => window.location.href = '/contact'}
-                                   className="w-full py-3 bg-white text-blue-600 rounded-xl font-black hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-lg"
-                               >
-                                   Contact for Quote
-                               </button>
-                           </div>
-
-                           {/* NEW: Email Lead Capture */}
-                           <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                               <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
-                                   <FileCheck className="w-4 h-4 text-blue-600" /> Save your work?
-                               </h4>
-                               <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-                                   Enter your email to receive a backup copy of your plan and periodic compliance reminders.
-                               </p>
-                               <form 
-                                   onSubmit={async (e) => {
-                                       e.preventDefault();
-                                       const email = (e.target as any).email.value;
-                                       if (!email) return;
-                                       const btn = (e.target as any).querySelector('button');
-                                       btn.disabled = true;
-                                       btn.innerText = 'Saving...';
-                                       
-                                       await supabase.from('leads').insert({ 
-                                           email, 
-                                           plan_id: planId, 
-                                           source: 'builder_result' 
-                                       });
-                                       
-                                       btn.innerText = 'Saved!';
-                                       btn.classList.add('bg-green-600');
-                                   }}
-                                   className="flex flex-col gap-2"
-                               >
-                                   <input 
-                                       required
-                                       type="email" 
-                                       name="email"
-                                       placeholder="you@company.com" 
-                                       className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm focus:border-blue-500 outline-none" 
-                                   />
-                                   <button className="bg-slate-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-black transition-all">
-                                       Email Me My Plan
-                                   </button>
-                               </form>
-                           </div>
+                           <ul className="space-y-3 mb-6">
+                               <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                   <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> AI Plan + Expert Review
+                               </li>
+                               <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                   <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Full Hazard Analysis
+                               </li>
+                               <li className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                   <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> PRPs & Control Chart
+                               </li>
+                           </ul>
+                           <button 
+                               onClick={() => handleCheckout('starter')}
+                               disabled={isPaying}
+                               className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                           >
+                               {isPaying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Get Started'}
+                           </button>
                        </div>
-                   )}
+
+                       {/* Pro Card */}
+                       <div className="p-6 bg-blue-600 rounded-3xl border-2 border-blue-500 shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all relative overflow-hidden text-white">
+                           <div className="absolute top-0 right-0 p-2 bg-amber-400 text-[10px] font-black uppercase text-slate-900 rounded-bl-xl tracking-widest shadow-lg">Popular</div>
+                           <div className="flex justify-between items-start mb-4">
+                               <div>
+                                   <h4 className="text-lg font-black leading-none">Expert Pro</h4>
+                                   <p className="text-xs text-blue-100 mt-1 uppercase tracking-widest font-bold">Complex Operations</p>
+                               </div>
+                               <div className="text-2xl font-black tracking-tight">Custom</div>
+                           </div>
+                           <ul className="space-y-3 mb-6">
+                               <li className="flex items-center gap-2 text-sm text-blue-50 font-medium">
+                                   <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Multi-site / Industrial
+                               </li>
+                               <li className="flex items-center gap-2 text-sm text-blue-50 font-medium font-bold">
+                                   <CheckCircle2 className="w-4 h-4 text-amber-300 flex-shrink-0" /> Dedicated Consultant
+                               </li>
+                               <li className="flex items-center gap-2 text-sm text-blue-50 font-medium">
+                                   <CheckCircle2 className="w-4 h-4 text-blue-200 flex-shrink-0" /> Full Compliance Audit
+                               </li>
+                           </ul>
+                           <button 
+                               onClick={() => window.location.href = '/contact'}
+                               className="w-full py-3 bg-white text-blue-600 rounded-xl font-black hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-lg"
+                           >
+                               Contact for Quote
+                           </button>
+                       </div>
+
+                       {/* Email Lead Capture */}
+                       <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                           <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+                               <FileCheck className="w-4 h-4 text-blue-600" /> Save your work?
+                           </h4>
+                           <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                               Enter your email to receive a backup copy of your plan and periodic compliance reminders.
+                           </p>
+                           <form 
+                               onSubmit={async (e) => {
+                                   e.preventDefault();
+                                   const email = (e.target as any).email.value;
+                                   if (!email) return;
+                                   const btn = (e.target as any).querySelector('button');
+                                   btn.disabled = true;
+                                   btn.innerText = 'Saving...';
+                                   
+                                   await supabase.from('leads').insert({ 
+                                       email, 
+                                       plan_id: planId, 
+                                       source: 'builder_result' 
+                                   });
+                                   
+                                   btn.innerText = 'Saved!';
+                                   btn.classList.add('bg-green-600');
+                               }}
+                               className="flex flex-col gap-2"
+                           >
+                               <input 
+                                   required
+                                   type="email" 
+                                   name="email"
+                                   placeholder="you@company.com" 
+                                   className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm focus:border-blue-500 outline-none" 
+                               />
+                               <button className="bg-slate-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-black transition-all">
+                                   Email Me My Plan
+                               </button>
+                           </form>
+                       </div>
+                   </div>
                </div>
             </div>
           </motion.div>
