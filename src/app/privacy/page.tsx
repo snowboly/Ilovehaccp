@@ -1,77 +1,170 @@
 export const metadata = {
   title: 'Privacy Policy | ilovehaccp.com',
-  description: 'Our commitment to data protection, GDPR compliance, and business confidentiality.',
+  description: 'How we handle your data, our zero-training AI policy, and your GDPR rights.',
 };
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-slate-50 py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-xl prose prose-slate prose-headings:text-slate-900 prose-p:text-slate-600 prose-a:text-blue-600">
-        <h1 className="text-4xl font-extrabold mb-4">Privacy Policy</h1>
-        <div className="flex items-center gap-4 text-sm text-slate-400 mb-8 border-b pb-8">
-          <span>Effective Date: December 30, 2025</span>
-          <span>•</span>
-          <span>Version 2.0</span>
+    <div className="min-h-screen bg-[#FAFAFA]">
+      <div className="max-w-5xl mx-auto py-20 px-6">
+        {/* Header */}
+        <div className="mb-16">
+          <span className="text-green-600 font-bold tracking-wider uppercase text-sm mb-2 block">Data Protection</span>
+          <h1 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">Privacy Policy</h1>
+          <div className="flex items-center gap-4 text-slate-500 font-medium">
+            <span>Effective: January 3, 2026</span>
+            <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+            <span>Version 2.0</span>
+          </div>
         </div>
 
-        <p className="lead text-lg">
-          At <strong>ilovehaccp.com</strong> (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we understand that your food safety data is sensitive business intelligence. 
-          This policy outlines how we handle the operational details you input to generate your plans, as well as your personal account information.
-        </p>
+        <div className="grid lg:grid-cols-12 gap-12">
+          {/* Main Content */}
+          <div className="lg:col-span-8 space-y-16">
+            
+            {/* Critical Privacy Promise */}
+            <section className="bg-green-50 border border-green-200 rounded-2xl p-8">
+              <h2 className="text-xl font-bold text-green-900 mb-4 flex items-center gap-2">
+                🔒 Our Core Privacy Promise: No AI Training
+              </h2>
+              <p className="text-green-800 leading-relaxed">
+                We know your recipes and processes are your trade secrets. <strong>We strictly do NOT use your specific proprietary data to train, fine-tune, or improve our public AI models.</strong> Your data is isolated and used solely to generate your requested documents.
+              </p>
+            </section>
 
-        <h2>1. Data We Collect</h2>
-        <h3>1.1. Account Information</h3>
-        <p>When you register, we collect your name, email address, and encrypted password. If you purchase a paid plan, our payment processor (Stripe) collects billing details; we do not store full credit card numbers.</p>
+            <Section 
+              number="1"
+              title="Data We Collect"
+              content={
+                <>
+                  <p>We collect two types of information:</p>
+                  <ul className="list-disc pl-5 space-y-2 mt-2">
+                    <li><strong>Account Data:</strong> Name, email, and billing history (handled via Stripe). We do not store credit card numbers.</li>
+                    <li><strong>Operational Data:</strong> The specific inputs you provide to the HACCP builder (ingredients, equipment, staff names, process flows).</li>
+                  </ul>
+                </>
+              }
+              summary="We collect your login info and the stuff you type into the builder. That's it."
+            />
 
-        <h3>1.2. HACCP Operational Data (Your Intellectual Property)</h3>
-        <p>To generate your plan, our Wizard collects detailed information about your:</p>
-        <ul>
-          <li>Recipes and Ingredients</li>
-          <li>Process Flows and Equipment</li>
-          <li>Supplier Details</li>
-          <li>Staff Training Records</li>
-        </ul>
-        <p>
-          <strong>Crucially:</strong> We treat this as your proprietary business information. We do not sell, rent, or share your specific operational data with third-party advertisers. 
-          It is processed solely to generate your documents.
-        </p>
+            <Section 
+              number="2"
+              title="How We Use Your Data"
+              content={
+                <p>
+                  Your data is used for one primary purpose: <strong>to provide the Service.</strong> This includes:
+                  <ul className="list-disc pl-5 space-y-2 mt-2">
+                    <li>Generating your HACCP plan via our AI providers (Groq/OpenAI).</li>
+                    <li>Sending you transactional emails (receipts, password resets).</li>
+                    <li>Improving the UX of the platform (analytics on <em>how</em> features are used, not <em>what</em> is written).</li>
+                  </ul>
+                </p>
+              }
+              summary="We use your data to build your plan and keep the lights on. We don't sell it."
+            />
 
-        <h2>2. How We Use AI (Artificial Intelligence)</h2>
-        <p>
-          Our service utilizes Large Language Models (LLMs) to analyze your inputs and draft your HACCP plan.
-        </p>
-        <ul>
-          <li><strong>Processing:</strong> Your inputs are sent to our AI providers (e.g., Groq, OpenAI) via secure, encrypted APIs for the sole purpose of generation.</li>
-          <li><strong>Zero Training Policy:</strong> We strictly do <strong>NOT</strong> use your specific proprietary recipes, process flows, or ingredient lists to train, fine-tune, or improve our foundational AI models. Your business intelligence remains isolated and is not shared with other users.</li>
-        </ul>
+             <Section 
+              number="3"
+              title="AI & Third-Party Processing"
+              content={
+                <>
+                  <p>
+                    We use trusted third-party APIs to power our intelligence. When you click "Generate":
+                  </p>
+                  <ul className="list-disc pl-5 space-y-2 mt-2">
+                    <li>Your text prompt is sent securely (TLS 1.3 encryption) to our inference partners (Groq Inc. or OpenAI).</li>
+                    <li>These partners are contractually bound <strong>not</strong> to retain your data for model training.</li>
+                    <li>Your data is ephemeral in their systems and persists only long enough to return the response.</li>
+                  </ul>
+                </>
+              }
+              summary="We send your text to the AI to get the result, but the AI company isn't allowed to keep it or learn from it."
+            />
 
-        <h2>3. Data Retention & Security</h2>
-        <p>
-          We employ enterprise-grade security including encryption at rest (AES-256) and in transit (TLS 1.3). 
-          Your generated HACCP plans are stored in your secure dashboard until you delete them. You may export and delete your data at any time.
-        </p>
+            <Section 
+              number="4"
+              title="Data Retention"
+              content={
+                <p>
+                  We store your generated plans in your secure dashboard indefinitely so you can access, edit, and re-download them. You may request the deletion of your account and all associated data at any time by contacting support or using the delete function in your dashboard.
+                </p>
+              }
+              summary="We keep your plans until you tell us to delete them."
+            />
 
-        <h2>4. Your Rights (GDPR & CCPA)</h2>
-        <p>You have the right to:</p>
-        <ul>
-          <li><strong>Access:</strong> Request a copy of all data we hold about you.</li>
-          <li><strong>Rectification:</strong> Fix errors in your plans or profile.</li>
-          <li><strong>Erasure:</strong> Request total deletion of your account and all associated HACCP documents (&quot;Right to be Forgotten&quot;).</li>
-          <li><strong>Portability:</strong> Download your plans in standard formats (PDF, JSON).</li>
-        </ul>
+            <Section 
+              number="5"
+              title="Your Rights (GDPR & CCPA)"
+              content={
+                <p>
+                  Under laws like GDPR and CCPA, you have the right to:
+                  <ul className="list-disc pl-5 space-y-2 mt-2">
+                    <li><strong>Access</strong> all data we hold on you.</li>
+                    <li><strong>Rectify</strong> any errors in your data.</li>
+                    <li><strong>Erase</strong> ("Right to be Forgotten") all your data.</li>
+                    <li><strong>Export</strong> your data in a portable format.</li>
+                  </ul>
+                  To exercise these rights, simply email privacy@ilovehaccp.com.
+                </p>
+              }
+              summary="You own your data. You can see it, fix it, or delete it whenever you want."
+            />
 
-        <h2>5. Cookies & Tracking</h2>
-        <p>
-          We use essential cookies to keep you logged in. For analytics, we use anonymized tools that do not track individual user behavior across the web. 
-          Please see our <a href="/cookies">Cookie Policy</a> for details.
-        </p>
+            <Section 
+              number="6"
+              title="Contact"
+              content={
+                <p>
+                  Data Protection Officer (DPO): <a href="mailto:privacy@ilovehaccp.com" className="text-blue-600 hover:underline">privacy@ilovehaccp.com</a>
+                </p>
+              }
+            />
 
-        <h2>6. Contact & DPO</h2>
-          <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-            <p className="text-slate-700"><strong>Email:</strong> support@ilovehaccp.com</p>
-            <p className="text-slate-700"><strong>Address:</strong> Digital Services Division, ilovehaccp.com</p>
           </div>
+
+          {/* Sidebar Navigation */}
+          <div className="hidden lg:block lg:col-span-4 relative">
+            <div className="sticky top-24 space-y-8">
+              <div className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100">
+                <h3 className="font-bold text-slate-900 mb-4">Contents</h3>
+                <nav className="space-y-3 text-sm font-medium text-slate-500">
+                  <a href="#" className="block hover:text-green-600 transition-colors">1. Data Collection</a>
+                  <a href="#" className="block hover:text-green-600 transition-colors">2. Data Usage</a>
+                  <a href="#" className="block hover:text-green-600 transition-colors">3. AI Processing</a>
+                  <a href="#" className="block hover:text-green-600 transition-colors">4. Retention</a>
+                  <a href="#" className="block hover:text-green-600 transition-colors">5. Your Rights</a>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
+    </div>
+  );
+}
+
+function Section({ number, title, content, summary }: any) {
+  return (
+    <div className="group relative">
+      <div className="absolute -left-12 top-0 text-slate-200 font-black text-6xl opacity-50 select-none hidden xl:block">
+        {number}
+      </div>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+        <span className="bg-slate-100 text-slate-500 text-sm px-2 py-1 rounded-md font-mono xl:hidden">#{number}</span>
+        {title}
+      </h2>
+      <div className="prose prose-slate max-w-none prose-p:leading-relaxed prose-a:text-blue-600">
+        {content}
+      </div>
+      {summary && (
+        <div className="mt-6 bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg">
+          <p className="text-sm text-slate-600 font-medium m-0">
+            <span className="uppercase text-xs font-bold text-slate-400 tracking-wider block mb-1">Plain English Summary</span>
+            {summary}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
