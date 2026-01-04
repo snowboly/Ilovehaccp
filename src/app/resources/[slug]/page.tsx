@@ -52,11 +52,11 @@ function highlightListTerms(html: string) {
 }
 
 const PERSONAS: Record<string, any> = {
-    "Dr. Joao": { name: "Dr. Joao", role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&gender=male" },
-    "Dr. Margarida": { name: "Dr. Margarida", role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&gender=female" },
-    "Dr. Fabio": { name: "Dr. Fabio", role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&gender=male" },
-    "Dr. Claudia": { name: "Dr. Claudia", role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&gender=female" },
-    "Dr. Isabel": { name: "Dr. Isabel", role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&gender=female" }
+    "Dr. Joao": { name: "Dr. Joao", role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&top=shortHair&facialHair=shortBeard&facialHairProbability=100&eyes=default&eyebrows=default" },
+    "Dr. Margarida": { name: "Dr. Margarida", role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&top=longHairBigHair&mouth=smile&eyes=default&eyebrows=defaultNatural" },
+    "Dr. Fabio": { name: "Dr. Fabio", role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&top=shortHairShortCurly&facialHair=shortBeard&facialHairProbability=100&eyes=default&eyebrows=default" },
+    "Dr. Claudia": { name: "Dr. Claudia", role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&top=longHairCurly&mouth=smile&eyes=default&eyebrows=defaultNatural" },
+    "Dr. Isabel": { name: "Dr. Isabel", role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&top=bob&mouth=smile&eyes=default&eyebrows=defaultNatural" }
 };
 
 function getExpertFromContent(content: string) {

@@ -10,36 +10,41 @@ const team = [
   {
     name: "Dr. Joao",
     role: "PhD in Food Microbiology",
-    bio: "Scientific Lead specializing in pathogen control and molecular safety protocols.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&gender=male",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&top=shortHair&facialHair=shortBeard&facialHairProbability=100&eyes=default&eyebrows=default",
+    bio: "The scientific visionary behind our AI logic.",
+    details: "Expert in microbial pathogensis and predictive modeling.",
     badge: "Scientific Lead"
   },
   {
     name: "Dr. Margarida",
     role: "Lead Auditor (BRCGS/SQF)",
-    bio: "20+ years ensuring global compliance. Margarida&apos;s templates are built to pass the strictest inspections.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&gender=female",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&top=longHairBigHair&mouth=smile&eyes=default&eyebrows=defaultNatural",
+    bio: "Ensures every plan meets global audit standards.",
+    details: "Over 500 successful audits across 12 countries.",
     badge: "Compliance"
   },
   {
     name: "Dr. Fabio",
-    role: "Industrial Operations Expert",
-    bio: "Bridging the gap between academic theory and the high-pressure reality of the factory floor.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&gender=male",
+    role: "Industrial Ops Expert",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&top=shortHairShortCurly&facialHair=shortBeard&facialHairProbability=100&eyes=default&eyebrows=default",
+    bio: "Bridging the gap between theory and factory floor.",
+    details: "Specialist in large-scale food manufacturing systems.",
     badge: "Operations"
   },
   {
     name: "Dr. Claudia",
     role: "Food Science Professor",
-    bio: "Educator and researcher focusing on emerging food safety technologies and preservation methods.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&gender=female",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&top=longHairCurly&mouth=smile&eyes=default&eyebrows=defaultNatural",
+    bio: "Leading research in preservation technologies.",
+    details: "Focuses on emerging technologies and shelf-life extension.",
     badge: "Research"
   },
   {
     name: "Dr. Isabel",
     role: "Regulatory Specialist",
-    bio: "Expert in FDA FSMA and EU Regulation 852/2004, ensuring legal alignment across borders.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&gender=female",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&top=bob&mouth=smile&eyes=default&eyebrows=defaultNatural",
+    bio: "Master of FDA FSMA and EU Food Law.",
+    details: "Consults for multi-national food conglomerates on legal compliance.",
     badge: "Legal"
   }
 ];

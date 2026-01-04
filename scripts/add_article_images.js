@@ -38,7 +38,6 @@ async function getPexelsImage(query, index = 0) {
 }
 
 function reflowContent(content) {
-    // Break long paragraphs
     let processed = content.replace(/<p>(.*?)<\/p>/g, (match, text) => {
         if (text.length > 400) {
             const sentences = text.match(/[^.!?]+[.!?]+/g);
@@ -54,72 +53,72 @@ function reflowContent(content) {
 }
 
 async function run() {
-  console.log("Reading articles...");
-  let articlesTs = fs.readFileSync(ARTICLES_PATH, 'utf-8');
-  
-  const articleBlocks = articlesTs.split('  {\n    slug:');
-  const header = articleBlocks.shift(); 
-  
-  const updatedBlocks = [];
+  console.log("Parsing articles.ts via regex blocks...");
+  const content = fs.readFileSync(ARTICLES_PATH, 'utf-8');
+  const blocks = content.split('  {').filter(b => b.includes('slug:'));
+  console.log(`Found ${blocks.length} blocks.`);
+
+  const processedArticles = [];
   const usedImages = new Set();
 
-  for (let i = 0; i < articleBlocks.length; i++) {
-    let block = '    slug:' + articleBlocks[i];
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+    const slug = (block.match(/slug:\s*['"](.*?)['"]/) || [])[1];
+    const title = (block.match(/title:\s*["'](.*?)["']/) || [])[1];
+    const category = (block.match(/category:\s*['"](.*?)['"]/) || [])[1];
+    const readTime = (block.match(/readTime:\s*['"](.*?)['"]/) || [])[1];
+    const excerpt = (block.match(/excerpt:\s*["']([\s\S]*?)["']\s*,/) || [])[1];
+    const publishedAt = (block.match(/publishedAt:\s*['"](.*?)['"]/) || [])[1];
     
-    const slugMatch = block.match(/slug:\s*['"](.*?)['"]/);
-    const titleMatch = block.match(/title:\s*["'](.*?)["']/);
-    const categoryMatch = block.match(/category:\s*['"](.*?)['"]/);
-    
-    if (!slugMatch || !titleMatch) {
-        updatedBlocks.push(block);
-        continue;
-    }
+    const contentStart = block.indexOf('content: `') + 10;
+    const contentEnd = block.lastIndexOf('`');
+    let articleContent = block.substring(contentStart, contentEnd);
 
-    const slug = slugMatch[1];
-    const title = titleMatch[1];
-    const category = categoryMatch ? categoryMatch[1] : "Food Safety";
-
-    console.log(`Processing [${i+1}/${articleBlocks.length}]: ${title}`);
+    if (!slug || !title) continue;
+    console.log(`Updating [${i+1}/${blocks.length}]: ${title}`);
 
     let headerImage = await getPexelsImage(title, i % 5);
-    if (usedImages.has(headerImage)) {
-        headerImage = await getPexelsImage(category, (i + 2) % 15);
-    }
+    if (usedImages.has(headerImage)) headerImage = await getPexelsImage(category, (i+2) % 15);
     usedImages.add(headerImage);
 
-    block = block.replace(/image:\s*['"].*?['"]/, `image: '${headerImage}'`);
-
-    let contentMatch = block.match(/content:\s*`([\s\S]*?)`,/);
-    if (contentMatch) {
-        let content = contentMatch[1];
-        content = reflowContent(content);
-
-        const innerImage = await getPexelsImage(`${category} inspection`, (i + 7) % 15);
-        
-        // Replace existing images or inject new one
-        if (content.includes('<img src=')) {
-            content = content.replace(/<img src=['"].*?['"]/, `<img src="${innerImage}"`);
-        } else {
-            const pTags = content.match(/<p>[\s\S]*?<\/p>/g);
-            if (pTags && pTags.length > 2) {
-                const imgHtml = `\n<figure class="my-12">\n  <img src="${innerImage}" alt="${title} documentation" class="w-full rounded-2xl shadow-lg" />\n</figure>\n`;
-                content = content.replace(pTags[1], pTags[1] + imgHtml);
-            }
+    articleContent = reflowContent(articleContent);
+    const innerImage = await getPexelsImage(`${category} safety`, (i + 7) % 15);
+    if (!articleContent.includes('<img')) {
+        const pTags = articleContent.match(/<p>[\s\S]*?<\/p>/g);
+        if (pTags && pTags.length > 2) {
+            const imgHtml = `\n<figure class="my-12">\n  <img src="${innerImage}" alt="${title} documentation" class="w-full rounded-2xl shadow-lg" />\n</figure>\n`;
+            articleContent = articleContent.replace(pTags[1], pTags[1] + imgHtml);
         }
-        
-        const startIdx = block.indexOf('content: `');
-        const endIdx = block.indexOf('`,', startIdx) + 2;
-        block = block.substring(0, startIdx) + 'content: `' + content + '`,' + block.substring(endIdx);
     }
 
-    updatedBlocks.push(block);
-    // Throttle slightly
-    await new Promise(r => setTimeout(r, 200));
+    processedArticles.push({
+        slug, title, category, readTime, excerpt, publishedAt,
+        image: headerImage,
+        content: articleContent
+    });
+
+    await new Promise(r => setTimeout(r, 100));
   }
 
-  const finalTs = header + updatedBlocks.join('  {\n    slug:');
-  fs.writeFileSync(ARTICLES_PATH, finalTs);
-  console.log("Success! 66+ articles updated with unique images and better flow.");
+  let output = "export interface Article {\n  slug: string;\n  title: string;\n  category: string;\n  readTime: string;\n  excerpt: string;\n  image?: string;\n  content: string;\n  publishedAt: string;\n}\n\nexport const articles: Article[] = [\n";
+
+  for (let i = 0; i < processedArticles.length; i++) {
+      const a = processedArticles[i];
+      output += "  {\n";
+      output += "    slug: '" + a.slug + "',\n";
+      output += "    title: '" + a.title.replace(/'/g, "'\'") + "',\n";
+      output += "    category: '" + a.category + "',\n";
+      output += "    readTime: '" + a.readTime + "',\n";
+      output += "    excerpt: '" + a.excerpt.replace(/'/g, "'\'").replace(/\n/g, ' ') + "',\n";
+      output += "    publishedAt: '" + a.publishedAt + "',\n";
+      output += "    image: '" + a.image + "',\n";
+      output += "    content: `" + a.content.replace(/`/g, '\`').replace(/\$/g, '\\$') + "`\n";
+      output += "  }" + (i === processedArticles.length - 1 ? "" : ",") + "\n";
+  }
+  output += "];\n";
+
+  fs.writeFileSync(ARTICLES_PATH, output);
+  console.log("Restoration Complete!");
 }
 
 run();
