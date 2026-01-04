@@ -1,44 +1,25 @@
-"use client";
+import { BookOpen, ShieldCheck } from 'lucide-react';
+import ResourceContent from '@/components/resources/ResourceContent';
+import JSONLD from '@/components/layout/JSONLD';
+import { Metadata } from 'next';
 
-import { useState, useEffect } from 'react';
-import { BookOpen, ShieldCheck, Search, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { faqs } from '@/data/faqs';
-import { articles as localArticles } from '@/data/articles';
-import ResourceTabs from '@/components/resources/ResourceTabs';
+export const metadata: Metadata = {
+  title: 'Food Safety Knowledge Base | HACCP Guides & Regulations',
+  description: 'Everything you need to understand HACCP, compliance, and audit readiness. Expert-curated articles on food microbiology and safety protocols.',
+  alternates: { canonical: '/resources' }
+};
 
 export default function ResourcesPage() {
-  const [articles, setArticles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    async function fetchArticles() {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (!error && data && data.length > 0) {
-        setArticles(data);
-      } else {
-        // Fallback to local data if DB is empty or fails
-        console.log("Supabase empty/error, using local fallback");
-        setArticles(localArticles);
-      }
-      setLoading(false);
-    }
-    fetchArticles();
-  }, []);
-
-  const filteredArticles = articles.filter(a => 
-    a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Food Safety Knowledge Base",
+    "description": "Guides and regulations for HACCP compliance."
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <JSONLD data={structuredData} />
       {/* Header */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-16 text-center">
@@ -50,33 +31,11 @@ export default function ResourcesPage() {
             Everything you need to understand HACCP, compliance, and audit readiness.
           </p>
           
-          {/* Search Bar */}
-          <div className="mt-10 max-w-xl mx-auto relative group">
-            <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
-              <Search className="w-5 h-5" />
-            </div>
-            <input 
-              type="text"
-              placeholder="Search guides, regulations, and hazards..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-600 focus:bg-white transition-all text-lg shadow-sm"
-            />
-          </div>
+          <ResourceContent />
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
-        
-        {loading ? (
-          <div className="h-96 flex flex-col items-center justify-center text-slate-400 gap-4">
-            <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
-            <p className="font-bold uppercase tracking-widest text-xs">Scanning Knowledge Base...</p>
-          </div>
-        ) : (
-          <ResourceTabs articles={filteredArticles} />
-        )}
-
+      <div className="container mx-auto px-4 pb-12">
         {/* Scientific Context Section */}
         <section className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 md:p-16 mt-20 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-green-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
@@ -122,4 +81,3 @@ function Citation({ source, title, link }: any) {
     </a>
   );
 }
-

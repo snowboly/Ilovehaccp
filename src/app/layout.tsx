@@ -16,11 +16,42 @@ const merriweather = Merriweather({
 });
 
 export const metadata: Metadata = {
-  title: "iLoveHACCP | Free AI HACCP Plan Generator & Food Safety Tools",
+  metadataBase: new URL('https://www.ilovehaccp.com'),
+  title: {
+    default: "iLoveHACCP | Free AI HACCP Plan Generator & Food Safety Tools",
+    template: "%s | iLoveHACCP"
+  },
   description: "Create a professional HACCP plan in minutes with our free AI builder. Trusted by chefs and food businesses worldwide. 100% compliant & precision-engineered.",
   keywords: ["HACCP", "Food Safety", "HACCP Plan Generator", "AI HACCP", "Food Hygiene", "Restaurant Compliance"],
+  authors: [{ name: "iLoveHACCP Team" }],
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://www.ilovehaccp.com',
+    siteName: 'iLoveHACCP',
+    title: 'iLoveHACCP | AI-Powered Food Safety Plans',
+    description: 'Generate audit-ready HACCP plans in minutes using Artificial Intelligence.',
+    images: [
+      {
+        url: '/og-image.jpg', // Ensure this exists in public/
+        width: 1200,
+        height: 630,
+        alt: 'iLoveHACCP Platform'
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'iLoveHACCP | AI Food Safety',
+    description: 'Generate audit-ready HACCP plans in minutes.',
+    images: ['/og-image.jpg'],
+  },
   icons: {
     icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
+  alternates: {
+    canonical: '/',
   }
 };
 

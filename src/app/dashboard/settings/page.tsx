@@ -57,18 +57,26 @@ export default function SettingsPage() {
     if (confirmed) {
       setLoading(true);
       try {
-        const { error } = await supabase.rpc('delete_user'); // We need to implement this RPC or handle via API
-        // Since client-side deleteUser is deprecated/restricted, we usually use an API route or just sign out for now if RPC is not set.
-        // For MVP: We will just sign out and show a message, or use a server action.
-        // Actually, let's use the API route approach for safety.
-        
-        const response = await fetch('/api/delete-account', { method: 'DELETE' });
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            alert("Please log in again.");
+            router.push('/login');
+            return;
+        }
+
+        const response = await fetch('/api/delete-account', { 
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${session.access_token}`
+            }
+        });
         
         if (response.ok) {
             await supabase.auth.signOut();
             router.push('/');
         } else {
-            alert('Failed to delete account. Please contact support.');
+            const data = await response.json();
+            alert(data.error || 'Failed to delete account. Please contact support.');
         }
       } catch (error) {
         console.error('Delete error:', error);

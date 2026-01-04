@@ -17,10 +17,25 @@ import HowItWorks from '@/components/landing/HowItWorks';
 import BlogPreview from '@/components/landing/BlogPreview';
 import Newsletter from '@/components/landing/Newsletter';
 import SampleDownload from '@/components/landing/SampleDownload';
+import JSONLD from '@/components/layout/JSONLD';
 
 export default function Home() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "iLoveHACCP",
+    "url": "https://www.ilovehaccp.com",
+    "logo": "https://www.ilovehaccp.com/icon.svg",
+    "description": "AI-powered HACCP plan generator for food businesses.",
+    "sameAs": [
+      "https://twitter.com/ilovehaccp", // Add actual social links if available
+      "https://linkedin.com/company/ilovehaccp"
+    ]
+  };
+
   return (
     <div className="font-sans">
+      <JSONLD data={structuredData} />
       <main className="flex-1 pt-20">
         <SampleDownload />
 

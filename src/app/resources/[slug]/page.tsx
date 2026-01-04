@@ -1,8 +1,9 @@
 import { supabase } from '@/lib/supabase';
 import { articles as localArticles } from '@/data/articles';
-import { Calendar, Clock, UserCheck, ChevronRight, Bookmark, ShieldAlert } from 'lucide-react';
+import { Calendar, Clock, UserCheck, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import JSONLD from '@/components/layout/JSONLD';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -16,7 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   if (!article) return { title: 'Article Not Found' };
-  return { title: `${article.title} | ilovehaccp.com`, description: article.excerpt };
+  return { 
+    title: `${article.title}`, 
+    description: article.excerpt,
+    alternates: { canonical: `/resources/${slug}` }
+  };
 }
 
 function getHeadings(html: string) {
@@ -39,8 +44,6 @@ function injectHeaderIds(html: string) {
 }
 
 function highlightListTerms(html: string) {
-  // Finds list items with colons and restructures them
-  // Transform: <li>Term: Description</li> -> <li><span class="block font-black text-slate-900">Term:</span><span class="block pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-blue-600 before:font-black before:text-xl">${desc}</span></li>
   return html.replace(/<li>\s*(?:<strong>)?(.*?)(?:<\/strong>)?\s*:\s*([\s\S]*?)\s*<\/li>/g, (match, term, desc) => {
     const cleanTerm = term.replace(/<[^>]+>/g, '').trim();
     const cleanDesc = desc.trim();
@@ -49,11 +52,11 @@ function highlightListTerms(html: string) {
 }
 
 const PERSONAS: Record<string, any> = {
-    "Dr. Joao": { role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&gender=male" },
-    "Dr. Margarida": { role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&gender=female" },
-    "Dr. Fabio": { role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&gender=male" },
-    "Dr. Claudia": { role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&gender=female" },
-    "Dr. Isabel": { role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&gender=female" }
+    "Dr. Joao": { name: "Dr. Joao", role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&gender=male" },
+    "Dr. Margarida": { name: "Dr. Margarida", role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&gender=female" },
+    "Dr. Fabio": { name: "Dr. Fabio", role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&gender=male" },
+    "Dr. Claudia": { name: "Dr. Claudia", role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&gender=female" },
+    "Dr. Isabel": { name: "Dr. Isabel", role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&gender=female" }
 };
 
 function getExpertFromContent(content: string) {
@@ -68,18 +71,13 @@ function getExpertFromContent(content: string) {
 export async function generateStaticParams() {
   const { data: articles } = await supabase.from('articles').select('slug');
   const dbSlugs = (articles || []).map((a) => ({ slug: a.slug }));
-  
-  // Merge with local slugs to ensure all are built
   const localSlugs = localArticles.map(a => ({ slug: a.slug }));
-  
-  // Deduplicate
   const allSlugs = [...dbSlugs];
   localSlugs.forEach(ls => {
     if (!allSlugs.find(ds => ds.slug === ls.slug)) {
       allSlugs.push(ls);
     }
   });
-
   return allSlugs;
 }
 
@@ -92,7 +90,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (data) {
     article = data;
   } else {
-    // Fallback to local
     article = localArticles.find(a => a.slug === slug);
   }
 
@@ -103,8 +100,30 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const expert = getExpertFromContent(article.content);
   const isHighAuthority = article.content.length > 5000;
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title,
+    "description": article.excerpt,
+    "image": article.image,
+    "author": {
+      "@type": "Person",
+      "name": expert.name
+    },
+    "datePublished": article.published_at,
+    "publisher": {
+      "@type": "Organization",
+      "name": "iLoveHACCP",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.ilovehaccp.com/icon.svg"
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
+      <JSONLD data={structuredData} />
       <div className="bg-white border-b border-slate-200">
         <div className="container mx-auto px-4 py-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
           <Link href="/" className="hover:text-blue-600">Home</Link>
@@ -122,8 +141,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <div className="text-blue-600 font-black uppercase tracking-widest text-sm mb-4">{article.category}</div>
               <h1 className="font-serif text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-6">{article.title}</h1>
               <div className="flex flex-wrap items-center gap-6 text-sm text-slate-500 border-y border-slate-100 py-4 mb-10 font-medium">
-                <div className="flex items-center gap-2"><Clock className="w-4 h-4" /><span>{article.read_time}</span></div>
-                <div className="flex items-center gap-2"><Calendar className="w-4 h-4" /><span>{article.published_at}</span></div>
+                <div className="flex items-center gap-2"><Clock className="w-4 h-4" /><span>{article.read_time || article.readTime}</span></div>
+                <div className="flex items-center gap-2"><Calendar className="w-4 h-4" /><span>{article.published_at || article.publishedAt}</span></div>
                 <div className="flex items-center gap-2"><UserCheck className="w-4 h-4 text-blue-600" /><span className="font-bold text-slate-900">Expert Reviewed</span></div>
               </div>
               {article.image && (
