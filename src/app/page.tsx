@@ -78,17 +78,6 @@ export default function Home() {
               <div className="relative">
                 <InteractiveDemo />
                 {/* Decorative Elements */}
-                <div className="absolute -bottom-10 -left-10 bg-white p-4 rounded-xl shadow-lg border animate-bounce duration-[3000ms]">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-100 p-2 rounded-full">
-                      <ShieldCheck className="w-6 h-6 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-slate-900">Audit Ready</p>
-                      <p className="text-xs text-slate-500">Industry Standard</p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

@@ -74,7 +74,7 @@ export default function ResourcesPage() {
             <p className="font-bold uppercase tracking-widest text-xs">Scanning Knowledge Base...</p>
           </div>
         ) : (
-          <ResourceTabs articles={filteredArticles} faqs={faqs} />
+          <ResourceTabs articles={filteredArticles} />
         )}
 
         {/* Scientific Context Section */}

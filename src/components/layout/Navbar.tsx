@@ -43,7 +43,7 @@ export default function Navbar() {
               
               <div className="absolute top-[100%] left-0 w-56 bg-white border border-slate-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform translate-y-2 group-hover:translate-y-0 p-2 z-[60]">
                 <Link 
-                  href="/resources#articles" 
+                  href="/resources" 
                   className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors"
                 >
                   <div className="bg-blue-100 p-1.5 rounded-lg">
@@ -52,7 +52,7 @@ export default function Navbar() {
                   Articles
                 </Link>
                 <Link 
-                  href="/resources#faqs" 
+                  href="/faqs" 
                   className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-colors"
                 >
                   <div className="bg-indigo-100 p-1.5 rounded-lg">

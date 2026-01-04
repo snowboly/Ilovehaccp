@@ -50,18 +50,18 @@ function highlightListTerms(html: string) {
 
 const PERSONAS: Record<string, any> = {
     "Dr. Joao": { role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&gender=male" },
-    "Dr. Margaret": { role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margaret is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margaret&gender=female" },
+    "Dr. Margarida": { role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&gender=female" },
     "Dr. Fabio": { role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&gender=male" },
     "Dr. Claudia": { role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&gender=female" },
-    "Dr. Elizabeth": { role: "Regulatory Compliance Specialist", bio: "Dr. Elizabeth is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elizabeth&gender=female" }
+    "Dr. Isabel": { role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&gender=female" }
 };
 
 function getExpertFromContent(content: string) {
     if (content.includes("Dr. Joao")) return PERSONAS["Dr. Joao"];
-    if (content.includes("Dr. Margaret")) return PERSONAS["Dr. Margaret"];
+    if (content.includes("Dr. Margarida")) return PERSONAS["Dr. Margarida"];
     if (content.includes("Dr. Fabio")) return PERSONAS["Dr. Fabio"];
     if (content.includes("Dr. Claudia")) return PERSONAS["Dr. Claudia"];
-    if (content.includes("Dr. Elizabeth")) return PERSONAS["Dr. Elizabeth"];
+    if (content.includes("Dr. Isabel")) return PERSONAS["Dr. Isabel"];
     return PERSONAS["Dr. Joao"];
 }
 

@@ -15,10 +15,10 @@ const team = [
     badge: "Scientific Lead"
   },
   {
-    name: "Dr. Margaret",
+    name: "Dr. Margarida",
     role: "Lead Auditor (BRCGS/SQF)",
-    bio: "20+ years ensuring global compliance. Margaret&apos;s templates are built to pass the strictest inspections.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margaret&gender=female",
+    bio: "20+ years ensuring global compliance. Margarida&apos;s templates are built to pass the strictest inspections.",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&gender=female",
     badge: "Compliance"
   },
   {
@@ -36,10 +36,10 @@ const team = [
     badge: "Research"
   },
   {
-    name: "Dr. Elizabeth",
+    name: "Dr. Isabel",
     role: "Regulatory Specialist",
     bio: "Expert in FDA FSMA and EU Regulation 852/2004, ensuring legal alignment across borders.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elizabeth&gender=female",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&gender=female",
     badge: "Legal"
   }
 ];

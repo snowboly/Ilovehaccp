@@ -8,10 +8,9 @@ import { FAQItem } from '@/data/faqs';
 
 interface ResourceTabsProps {
   articles: any[];
-  faqs: FAQItem[];
 }
 
-export default function ResourceTabs({ articles, faqs }: ResourceTabsProps) {
+export default function ResourceTabs({ articles }: ResourceTabsProps) {
   return (
     <div>
       <div className="space-y-24">
@@ -50,23 +49,6 @@ export default function ResourceTabs({ articles, faqs }: ResourceTabsProps) {
                     </div>
                   </div>
                 </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* FAQs Section */}
-        {faqs.length > 0 && (
-          <section id="faqs">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="bg-indigo-100 p-2 rounded-xl">
-                <HelpCircle className="w-6 h-6 text-indigo-600" />
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tight">Frequently Asked Questions</h2>
-            </div>
-            <div className="max-w-4xl space-y-4">
-              {faqs.map((faq, idx) => (
-                <FAQAccordion key={idx} faq={faq} />
               ))}
             </div>
           </section>
