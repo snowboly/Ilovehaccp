@@ -83,6 +83,12 @@ interface HazardAnalysisItem {
 
 interface FullHACCPPlan {
   executive_summary: string;
+  benchmarking?: {
+    score: number;
+    industry_avg: number;
+    analysis_summary: string;
+    recommendations: { title: string; impact: string; desc: string }[];
+  };
   prerequisite_programs: { program: string; details: string }[];
   process_flow_narrative: string;
   hazard_analysis: HazardAnalysisItem[];
@@ -460,8 +466,8 @@ export default function HACCPBuilder() {
                   </div>
                   <div className="flex gap-6">
                     <div className="bg-slate-900/80 p-6 rounded-[2rem] border border-slate-800 backdrop-blur-md text-center min-w-[140px] shadow-2xl">
-                        <div className="text-5xl font-black text-white mb-1">{generatedAnalysis.filter(x=>x.is_ccp).length}</div>
-                        <div className="text-[10px] uppercase text-slate-500 font-black tracking-widest">CCPs Detected</div>
+                        <div className="text-5xl font-black text-emerald-400 mb-1">{fullPlan?.benchmarking?.score || 0}%</div>
+                        <div className="text-[10px] uppercase text-slate-500 font-black tracking-widest">Safety Score</div>
                     </div>
                     <div className="bg-slate-900/80 p-6 rounded-[2rem] border border-slate-800 backdrop-blur-md text-center min-w-[140px] shadow-2xl">
                         <div className="text-5xl font-black text-blue-500 mb-1">{generatedAnalysis.length}</div>
@@ -473,6 +479,56 @@ export default function HACCPBuilder() {
 
               <div className="p-12 grid lg:grid-cols-12 gap-16">
                 <div className="lg:col-span-8 space-y-16">
+                  
+                  {/* NEW: Benchmarking & Recommendations */}
+                  {fullPlan?.benchmarking && (
+                    <div className="bg-blue-50/50 rounded-[2.5rem] p-10 border-2 border-blue-100/50 space-y-8">
+                        <div className="flex items-center gap-4">
+                            <div className="p-4 bg-blue-600 rounded-2xl text-white shadow-lg"><BarChart3 className="w-8 h-8" /></div>
+                            <div>
+                                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Industry Benchmarking</h3>
+                                <p className="text-slate-500 font-medium text-lg">Comparison against {formData.businessType} sector averages.</p>
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-10">
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-end mb-2">
+                                    <span className="font-black text-slate-900 uppercase tracking-widest text-xs">Your Score</span>
+                                    <span className="font-black text-blue-600 text-2xl">{fullPlan.benchmarking.score}%</span>
+                                </div>
+                                <div className="h-4 bg-white rounded-full overflow-hidden border border-blue-100">
+                                    <motion.div 
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${fullPlan.benchmarking.score}%` }}
+                                        className="h-full bg-blue-600"
+                                    />
+                                </div>
+                                <p className="text-sm text-slate-500 font-medium italic">Industry average for your sector is {fullPlan.benchmarking.industry_avg}%.</p>
+                            </div>
+                            <div className="bg-white p-6 rounded-3xl border border-blue-100 shadow-sm">
+                                <p className="text-slate-600 font-medium leading-relaxed">{fullPlan.benchmarking.analysis_summary}</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <h4 className="font-black text-slate-900 uppercase tracking-[0.2em] text-xs">Expert Recommendations</h4>
+                            <div className="grid gap-4">
+                                {fullPlan.benchmarking.recommendations.map((rec: any, i: number) => (
+                                    <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 flex gap-5 items-start">
+                                        <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${rec.impact === 'High' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
+                                            {rec.impact}
+                                        </div>
+                                        <div>
+                                            <p className="font-black text-slate-900 mb-1">{rec.title}</p>
+                                            <p className="text-sm text-slate-500 font-medium">{rec.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                  )}
                   
                   {/* CCP Action Cards */}
                   {fullPlan?.ccp_summary && fullPlan.ccp_summary.length > 0 && (

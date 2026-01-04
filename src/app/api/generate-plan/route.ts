@@ -9,7 +9,6 @@ export async function POST(req: Request) {
   try {
     const ip = req.headers.get('x-forwarded-for') || 'anonymous';
     
-    // 1. Check Rate Limit
     const { data: rateData } = await supabaseService
       .from('rate_limits')
       .select('*')
@@ -44,75 +43,72 @@ export async function POST(req: Request) {
     
     const {
       language = 'en',
-      businessLegalName, tradingName, country, regulation, businessType, productionScale,
+      businessLegalName, tradingName, country, businessType, productionScale,
       foodCategories, productStates, storageTypes, shelfLife, isVulnerable,
       mainIngredients, allergens, allergenSegregation, allergenLabeling,
       processSteps, customSteps, outsourcedSteps,
-      verificationChecks, tempControlledDelivery,
+      suppliersApproved, verificationChecks, tempControlledDelivery,
       storageTemps, fifoApplied, rawRteSegregated,
       separateHandling, separateUtensils, handwashingEnforced,
-      cookingMethods, minCookingTemp, cookingIsCcp,
-      coolingMethods, coolingTempTarget, coolingTimeLimit, isReheatingPerformed, reheatingTempTarget,
+      cookingMethods, minCookingTemp,
+      coolingTempTarget, coolingTimeLimit, isReheatingPerformed,
       hotHoldingTemp, coldHoldingTemp, transportTempMethod,
-      keyEquipment, equipmentCalibration, // New
-      cleaningFrequency, cleaningChemicals,
-      pestControlContract, pestMonitoringDevices,
-      trainingFrequency, recordType
+      keyEquipment, equipmentCalibration, trainingReceived,
+      cleaningFrequency, recordType
     } = body;
 
     const tempUnit = (country || '').toLowerCase().includes('usa') || (country || '').toLowerCase().includes('united states') ? '°F' : '°C';
 
     const systemPrompt = `You are an expert Food Safety Consultant and HACCP Lead Auditor. 
-    Your task is to generate a professional, high-authority HACCP Plan based on the user's detailed inputs.
+    Your task is to generate a professional, high-authority HACCP Plan.
     
     IMPORTANT: 
-    1. You MUST generate all text content in the following language: ${language}.
-    2. TEMPERATURE UNITS: Use ${tempUnit} for all temperature references.
+    1. Language: ${language}.
+    2. TEMPERATURE UNITS: Use ${tempUnit}.
     
-    Output Format:
-    Strict JSON object with the following structure:
+    Output Format (JSON):
     {
-      "executive_summary": "A brief professional summary of the business context and scope.",
-      "prerequisite_programs": [
-        {"program": "Cleaning & Sanitation", "details": "Summary of their cleaning protocols..."},
-        {"program": "Maintenance & Calibration", "details": "Summary of equipment maintenance and the ${equipmentCalibration} calibration status..."},
-        {"program": "Pest Control", "details": "Summary..."},
-        {"program": "Allergen Management", "details": "Summary..."}
-      ],
-      "process_flow_narrative": "A text description of the process flow from receiving to dispatch.",
+      "executive_summary": "...",
+      "benchmarking": {
+        "score": 0-100 integer,
+        "industry_avg": 70,
+        "analysis_summary": "Comparison to typical ${businessType} standards.",
+        "recommendations": [{"title": "...", "impact": "High/Medium", "desc": "..."}]
+      },
+      "prerequisite_programs": [{"program": "...", "details": "..."}],
+      "process_flow_narrative": "...",
       "hazard_analysis": [
         {
           "step_id": "1",
           "step_name": "Receiving",
-          "hazards": "Biological (Pathogens), Physical (Foreign bodies)",
-          "control_measure": "Visual inspection, Temp check",
+          "hazards": "...",
+          "control_measure": "...",
           "is_ccp": false,
           "critical_limit": "N/A"
         }
       ],
       "ccp_summary": [
         {
-          "ccp_step": "Cooking",
-          "hazard": "Survival of pathogens",
-          "critical_limit": "75°C for 30s",
-          "monitoring": "Core temp check",
-          "corrective_action": "Continue cooking"
+          "ccp_step": "...",
+          "hazard": "...",
+          "critical_limit": "...",
+          "monitoring": "...",
+          "corrective_action": "..."
         }
       ]
     }
 
-    Validation Rules:
-    1. If 'isVulnerable' is Yes, increase hazard significance.
-    2. 'hazard_analysis' must cover every step in user process steps.
-    3. Use ${tempUnit} exclusively.
+    Benchmarking Logic:
+    - Base score 70. 
+    - Adjust +10 for Calibration='Yes', +10 for Training='Yes', +10 for Approved Suppliers='Yes'.
+    - Adjust -10 if 'isVulnerable' is 'Yes' but controls look basic.
     `;
 
     const userPrompt = `
-      Name: ${businessLegalName} (${tradingName}) | Type: ${businessType} | Region: ${country}
+      Business: ${businessLegalName} | Type: ${businessType} | Country: ${country}
       Ingredients: ${mainIngredients?.join(', ')} | Allergens: ${allergens?.join(', ')}
-      Steps: ${processSteps?.map((s: any) => s.name).join(', ')} | Custom: ${customSteps}
-      Controls: Calibration=${equipmentCalibration}, CookingTemp=${minCookingTemp}, CoolingTarget=${coolingTempTarget}
-      Storage: ${storageTypes?.join(', ')} | Scales: ${productionScale}
+      Steps: ${processSteps?.map((s: any) => s.name).join(', ')}
+      Controls: Calibration=${equipmentCalibration}, Training=${trainingReceived}, Suppliers=${suppliersApproved}
     `;
 
     const completion = await groq.chat.completions.create({
@@ -126,7 +122,7 @@ export async function POST(req: Request) {
     });
 
     const content = completion.choices[0]?.message?.content;
-    if (!content) throw new Error('No content received from AI');
+    if (!content) throw new Error('No content');
 
     const parsedContent = JSON.parse(content);
     return NextResponse.json({
@@ -135,7 +131,7 @@ export async function POST(req: Request) {
     });
 
   } catch (error) {
-    console.error('AI Generation Error:', error);
-    return NextResponse.json({ error: 'Failed to generate plan' }, { status: 500 });
+    console.error('AI Error:', error);
+    return NextResponse.json({ error: 'Failed' }, { status: 500 });
   }
 }

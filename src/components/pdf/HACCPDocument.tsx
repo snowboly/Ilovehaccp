@@ -218,6 +218,12 @@ interface Props {
     analysis: any[];
     fullPlan?: {
       executive_summary: string;
+      benchmarking?: {
+        score: number;
+        industry_avg: number;
+        analysis_summary: string;
+        recommendations: { title: string; impact: string; desc: string }[];
+      };
       prerequisite_programs: { program: string; details: string }[];
       process_flow_narrative: string;
       hazard_analysis: any[];
@@ -477,7 +483,48 @@ const HACCPDocument = ({ data, dict }: Props) => {
         <CommonFooter dict={dict} />
       </Page>
 
-      {/* PAGE 6: TOOLKIT - TEMPERATURE LOG */}
+      {/* PAGE 6: BENCHMARKING & BEST PRACTICES */}
+      {fullPlan?.benchmarking && (
+        <Page size="A4" style={styles.page}>
+          <CommonHeader title={data.businessName} dict={dict} />
+          
+          <Text style={styles.sectionTitle}>Safety Benchmarking & Best Practices</Text>
+          
+          <View style={{ marginBottom: 20, padding: 15, backgroundColor: '#F3F4F6', borderRadius: 8 }}>
+            <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#1E3A8A', marginBottom: 5 }}>
+              Safety Score: {fullPlan.benchmarking.score}%
+            </Text>
+            <Text style={styles.text}>
+              {fullPlan.benchmarking.analysis_summary} (Industry average: {fullPlan.benchmarking.industry_avg}%)
+            </Text>
+          </View>
+
+          <Text style={styles.subHeader}>Actionable Recommendations</Text>
+          <View style={styles.table}>
+            <View style={styles.tableHeaderRow}>
+              <View style={{ width: '20%', padding: 6 }}><Text style={styles.tableColHeader}>Impact</Text></View>
+              <View style={{ width: '80%', padding: 6 }}><Text style={styles.tableColHeader}>Recommendation</Text></View>
+            </View>
+            {fullPlan.benchmarking.recommendations.map((rec, index) => (
+              <View key={index} style={styles.tableRow}>
+                <View style={{ width: '20%', padding: 6 }}>
+                  <Text style={{ fontSize: 7, fontWeight: 'bold', color: rec.impact === 'High' ? '#B91C1C' : '#D97706' }}>
+                    {rec.impact.toUpperCase()}
+                  </Text>
+                </View>
+                <View style={{ width: '80%', padding: 6 }}>
+                  <Text style={{ fontSize: 9, fontWeight: 'bold' }}>{rec.title}</Text>
+                  <Text style={{ fontSize: 8, color: '#6B7280' }}>{rec.desc}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          <CommonFooter dict={dict} />
+        </Page>
+      )}
+
+      {/* PAGE 7: TOOLKIT - TEMPERATURE LOG */}
       <Page size="A4" style={styles.page}>
         <CommonHeader title={dict.tk_title} dict={dict} />
         <Text style={styles.sectionTitle}>{dict.tk_temp_title}</Text>
