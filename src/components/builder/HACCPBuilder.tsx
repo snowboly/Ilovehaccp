@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronRight, 
@@ -62,7 +63,9 @@ import {
   Briefcase,
   Sparkles,
   Info,
-  ArrowDown
+  ArrowDown,
+  Mail,
+  Send
 } from 'lucide-react';
 
 import { supabase } from '@/lib/supabase';
@@ -700,38 +703,40 @@ export default function HACCPBuilder() {
                         </div>
                         <div className="text-2xl font-black tracking-tight">€0</div>
                     </div>
-                    <ul className="space-y-4 mb-8">
-                        <li className="flex items-center gap-3 text-sm text-slate-300 font-bold"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Full Process Flow</li>
-                        <li className="flex items-center gap-3 text-sm text-slate-300 font-bold"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Hazard List Included</li>
-                        <li className="flex items-center gap-3 text-sm text-slate-300 font-bold"><CheckCircle2 className="w-4 h-4 text-blue-500" /> PDF Export Ready</li>
-                    </ul>
-                    {isClient && (
-                        <PDFDownloadLink
-                            document={
-                            <HACCPDocument 
-                                dict={dict}
-                                data={{
-                                businessName: formData.businessLegalName || "My Business",
-                                productName: "HACCP Plan",
-                                productDescription: `Food Safety Plan for ${formData.businessType}`,
-                                intendedUse: "General Consumption",
-                                storageType: "Multiple",
-                                analysis: generatedAnalysis,
-                                fullPlan: fullPlan
-                                }} 
-                            />
-                            }
-                            fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
-                            className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-center shadow-xl hover:bg-slate-100 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                        >
-                            {({ loading }) => (
-                            <>
-                                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
-                                {loading ? 'Preparing...' : 'Download PDF Plan'}
-                            </>
-                            )}
-                        </PDFDownloadLink>
-                    )}
+                    
+                    <LeadCapture 
+                        planId={planId} 
+                        businessName={formData.businessLegalName}
+                        onSuccess={() => {}} // Optional: trigger some tracking
+                    >
+                        {isClient && (
+                            <PDFDownloadLink
+                                document={
+                                <HACCPDocument 
+                                    dict={dict}
+                                    data={{
+                                    businessName: formData.businessLegalName || "My Business",
+                                    productName: "HACCP Plan",
+                                    productDescription: `Food Safety Plan for ${formData.businessType}`,
+                                    intendedUse: "General Consumption",
+                                    storageType: "Multiple",
+                                    analysis: generatedAnalysis,
+                                    fullPlan: fullPlan
+                                    }} 
+                                />
+                                }
+                                fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
+                                className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-center shadow-xl hover:bg-slate-100 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                {({ loading }) => (
+                                <>
+                                    {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
+                                    {loading ? 'Preparing...' : 'Download PDF Plan'}
+                                </>
+                                )}
+                            </PDFDownloadLink>
+                        )}
+                    </LeadCapture>
                   </div>
 
                   {/* Starter Review Card */}
@@ -764,6 +769,23 @@ export default function HACCPBuilder() {
                         Request Quote
                     </button>
                   </div>
+
+                  {/* Hire an Expert CTA */}
+                  <div className="p-8 bg-gradient-to-br from-indigo-600 to-blue-700 text-white rounded-[2.5rem] shadow-xl relative overflow-hidden group">
+                    <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
+                        <Users className="w-32 h-32" />
+                    </div>
+                    <h4 className="text-xl font-black mb-2">Need Expert Help?</h4>
+                    <p className="text-blue-100 text-sm mb-6 font-medium leading-relaxed">
+                        Confused by the hazard analysis? Our certified auditors can review your plan 1-on-1.
+                    </p>
+                    <Link 
+                        href="/contact"
+                        className="block w-full py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-2xl font-black text-center transition-all"
+                    >
+                        Talk to an Expert
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -772,4 +794,76 @@ export default function HACCPBuilder() {
       </AnimatePresence>
     </div>
   );
+}
+
+function LeadCapture({ planId, businessName, children, onSuccess }: { planId: string | null, businessName: string, children: React.ReactNode, onSuccess: () => void }) {
+    const [email, setEmail] = useState('');
+    const [captured, setCaptured] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const handleCapture = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const { error } = await supabase.from('leads').insert({
+                email,
+                business_name: businessName,
+                plan_id: planId
+            });
+            if (error) throw error;
+            setCaptured(true);
+            onSuccess();
+        } catch (err) {
+            console.error("Lead capture failed:", err);
+            // Even if capture fails, we don't want to block the user forever, 
+            // but let's try to get them to retry once.
+            alert("Please enter a valid email to continue.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (captured) {
+        return (
+            <div className="space-y-4 animate-in fade-in zoom-in duration-500">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                    <p className="text-emerald-400 text-xs font-black uppercase tracking-widest">Plan Sent to {email}</p>
+                </div>
+                {children}
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            <div className="space-y-2">
+                <div className="flex items-center gap-2 mb-2">
+                    <Mail className="w-4 h-4 text-blue-500" />
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Email me this plan:</p>
+                </div>
+                <form onSubmit={handleCapture} className="flex flex-col gap-3">
+                    <input 
+                        type="email" 
+                        required 
+                        placeholder="chef@restaurant.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-600"
+                    />
+                    <button 
+                        type="submit" 
+                        disabled={loading}
+                        className="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-black text-sm shadow-lg transition-all flex items-center justify-center gap-2 group"
+                    >
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
+                        Send & Download PDF
+                    </button>
+                </form>
+            </div>
+            <p className="text-[10px] text-slate-500 leading-relaxed italic">
+                We respect your privacy. By continuing, you agree to our <Link href="/terms" className="underline">Terms</Link>.
+            </p>
+        </div>
+    );
 }
