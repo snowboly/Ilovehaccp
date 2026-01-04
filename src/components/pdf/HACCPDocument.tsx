@@ -329,9 +329,31 @@ const HACCPDocument = ({ data, dict }: Props) => {
 
         <View style={{ marginBottom: 15 }}>
             <Text style={styles.subHeader}>{dict.s1_process}</Text>
-            <Text style={styles.text}>
+            <Text style={{...styles.text, marginBottom: 10}}>
             {fullPlan?.process_flow_narrative || "Process follows standard flow: Receiving -> Storage -> Prep -> Cook -> Service."}
             </Text>
+            
+            {/* Visual Process Flow in PDF */}
+            <View style={{ marginTop: 10, padding: 10, backgroundColor: '#F9FAFB', borderRadius: 8 }}>
+                {data.analysis.map((item, i) => (
+                    <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                        <View style={{ 
+                            width: 12, 
+                            height: 12, 
+                            borderRadius: 6, 
+                            backgroundColor: item.is_ccp ? '#B91C1C' : '#1E3A8A',
+                            marginRight: 8
+                        }} />
+                        <Text style={{ 
+                            fontSize: 8, 
+                            fontWeight: item.is_ccp ? 'bold' : 'normal',
+                            color: item.is_ccp ? '#B91C1C' : '#374151'
+                        }}>
+                            {i + 1}. {item.step_name} {item.is_ccp ? '(CCP)' : ''}
+                        </Text>
+                    </View>
+                ))}
+            </View>
         </View>
 
         <CommonFooter dict={dict} />

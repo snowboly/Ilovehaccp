@@ -125,7 +125,7 @@ const AI_LOG_MESSAGES = [
   "Determining Critical Control Points (CCPs)...",
   "Calculating Scientific Critical Limits...",
   "Drafting Standard Operating Procedures...",
-  "Compiling Audit-Ready PDF Document..."
+  "Compiling Professional PDF Document..."
 ];
 
 export default function HACCPBuilder() {
@@ -180,8 +180,13 @@ export default function HACCPBuilder() {
     cleaningFrequency: '',
     trainingReceived: 'No',
     pestControlContract: 'No',
+    equipmentCalibration: 'Yes, scheduled', // New field
     ccpsMonitored: 'No',
   });
+
+  // Helper to determine temperature unit
+  const tempUnit = formData.country.toLowerCase().includes('usa') || formData.country.toLowerCase().includes('united states') ? '°F' : '°C';
+
 
   useEffect(() => {
     setIsClient(true);
@@ -233,7 +238,7 @@ export default function HACCPBuilder() {
     
     // 5. Processing
     { id: 'doYouCook', section: 'Processing', question: "Do you cook food on-site?", type: 'radio', options: ['Yes', 'No'], icon: <Flame />, required: true },
-    { id: 'minCookingTemp', section: 'Processing', question: "Target internal cooking temperature?", type: 'text', icon: <Thermometer />, placeholder: "e.g., 75°C for 30s" },
+    { id: 'minCookingTemp', section: 'Processing', question: `Target internal cooking temperature (${tempUnit})?`, type: 'text', icon: <Thermometer />, placeholder: `e.g., ${tempUnit === '°C' ? '75°C' : '165°F'} for 30s` },
     { id: 'isFoodCooled', section: 'Processing', question: "Do you cool food after cooking?", type: 'radio', options: ['Yes', 'No'], icon: <Wind /> },
     { id: 'isReheatingPerformed', section: 'Processing', question: "Is reheating performed?", type: 'radio', options: ['Yes', 'No'], icon: <RotateCcw /> },
     
@@ -241,6 +246,9 @@ export default function HACCPBuilder() {
     { id: 'cleaningFrequency', section: 'Hygiene', question: "Frequency of deep cleaning?", type: 'radio', options: ['Daily', 'Weekly', 'Shift-based'], icon: <Brush /> },
     { id: 'trainingReceived', section: 'Personnel', question: "Have all staff received food hygiene training?", type: 'radio', options: ['Yes', 'No'], icon: <GraduationCap /> },
     { id: 'pestControlContract', section: 'Safety', question: "Is a pest control contract in place?", type: 'radio', options: ['Yes', 'No'], icon: <Bug /> },
+    
+    // New Section or Step
+    { id: 'equipmentCalibration', section: 'Maintenance', question: "Are critical thermometers and equipment calibrated regularly?", type: 'radio', options: ['Yes, scheduled', 'Occasionally', 'No'], icon: <Wrench />, required: true },
     
     // 7. Monitoring
     { id: 'ccpsMonitored', section: 'Compliance', question: "Will you monitor Critical Control Points?", type: 'radio', options: ['Yes', 'No'], icon: <ClipboardCheck />, required: true },

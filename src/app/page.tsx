@@ -46,7 +46,7 @@ export default function Home() {
                   </span>
                 </h1>
                 <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
-                  Stop wrestling with Word documents. Our AI consultant generates audit-ready food safety plans tailored to your menu, customized to your region.
+                  Ditch the manual paperwork. Our AI assistant automates your food safety documentation, creating comprehensive plans tailored to your specific menu and regional requirements.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center gap-6">
                   <Link href="/builder" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-center px-10 py-5 rounded-2xl text-xl font-black transition-all shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
@@ -167,7 +167,7 @@ export default function Home() {
                       <div className="w-32 h-32 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 ring-8 ring-emerald-50/50">
                         <CheckCircle2 className="w-16 h-16 text-emerald-500" />
                       </div>
-                      <h3 className="text-3xl font-black text-slate-900">Audit-Ready Logic</h3>
+                      <h3 className="text-3xl font-black text-slate-900">Expert-Validated Logic</h3>
                       <p className="text-slate-500 font-medium">Every Critical Control Point (CCP) identified by our engine includes scientific critical limits and corrective actions verified for audit submission.</p>
                       <div className="pt-6">
                         <span className="bg-slate-900 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">Validated for 2026</span>

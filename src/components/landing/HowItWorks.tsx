@@ -29,7 +29,7 @@ export default function HowItWorks() {
           </div>
           <h2 className="text-4xl font-black text-slate-900 mb-6 tracking-tight">How It Works</h2>
           <p className="text-xl text-slate-500 font-medium">
-            Go from blank page to audit-ready in three simple steps.
+            Go from blank page to fully compliant in three simple steps.
           </p>
         </div>
 

@@ -17,7 +17,7 @@ const merriweather = Merriweather({
 
 export const metadata: Metadata = {
   title: "iLoveHACCP | Free AI HACCP Plan Generator & Food Safety Tools",
-  description: "Create a professional HACCP plan in minutes with our free AI builder. Trusted by chefs and food businesses worldwide. 100% compliant & audit-ready.",
+  description: "Create a professional HACCP plan in minutes with our free AI builder. Trusted by chefs and food businesses worldwide. 100% compliant & precision-engineered.",
   keywords: ["HACCP", "Food Safety", "HACCP Plan Generator", "AI HACCP", "Food Hygiene", "Restaurant Compliance"],
   icons: {
     icon: '/icon.svg',
