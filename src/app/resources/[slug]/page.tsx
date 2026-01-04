@@ -30,6 +30,8 @@ function injectHeaderIds(html: string) {
 }
 
 function highlightListTerms(html: string) {
+  // Finds list items with colons and restructures them
+  // Transform: <li>Term: Description</li> -> <li><span class="block font-black text-slate-900">Term:</span><span class="block pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-blue-600 before:font-black before:text-xl">${desc}</span></li>
   return html.replace(/<li>\s*(?:<strong>)?(.*?)(?:<\/strong>)?\s*:\s*([\s\S]*?)\s*<\/li>/g, (match, term, desc) => {
     const cleanTerm = term.replace(/<[^>]+>/g, '').trim();
     const cleanDesc = desc.trim();

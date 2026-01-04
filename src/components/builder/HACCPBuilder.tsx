@@ -227,6 +227,7 @@ export default function HACCPBuilder() {
     
     // 4. Workflow
     { id: 'processSteps', section: 'Workflow', question: "Applicable process steps", type: 'checkbox', options: ['Receiving', 'Storage', 'Thawing', 'Prep', 'Cooking', 'Cooling', 'Reheating', 'Holding', 'Packaging'], icon: <Workflow />, required: true },
+    { id: 'keyEquipment', section: 'Equipment', question: "Key equipment used", type: 'list', icon: <Wrench />, required: true },
     { id: 'suppliersApproved', section: 'Suppliers', question: "Are all suppliers approved & audited?", type: 'radio', options: ['Yes', 'No'], icon: <UserCheck /> },
     
     // 5. Processing
