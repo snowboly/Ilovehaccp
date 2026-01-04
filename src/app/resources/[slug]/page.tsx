@@ -160,7 +160,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             )}
 
             <div 
-              className="prose prose-lg md:prose-xl max-w-none font-serif prose-headings:text-slate-900 prose-h2:text-3xl md:prose-h2:text-5xl prose-h2:mt-32 prose-h2:mb-12 prose-h2:pb-8 prose-h2:border-b-4 prose-h2:border-slate-900 prose-h2:before:content-['ANALYSIS_UNIT'] prose-h2:before:block prose-h2:before:text-[11px] prose-h2:before:text-blue-600 prose-h2:before:tracking-[0.5em] prose-h2:before:font-sans prose-h2:before:mb-4 prose-p:leading-[2.0] prose-ul:list-none prose-ul:pl-0 prose-blockquote:border-l-8 prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50/50 prose-blockquote:py-10 prose-blockquote:px-12"
+              className="prose prose-slate prose-lg md:prose-2xl max-w-none font-serif 
+                prose-headings:text-slate-900 prose-headings:font-black prose-headings:tracking-tight
+                prose-h2:text-3xl md:prose-h2:text-5xl prose-h2:mt-32 prose-h2:mb-12 prose-h2:pb-8 prose-h2:border-b-4 prose-h2:border-slate-900 
+                prose-h2:before:content-['ANALYSIS_UNIT'] prose-h2:before:block prose-h2:before:text-[11px] prose-h2:before:text-blue-600 prose-h2:before:tracking-[0.5em] prose-h2:before:font-sans prose-h2:before:mb-4 
+                prose-p:leading-[1.8] prose-p:text-slate-700 prose-p:text-justify md:prose-p:text-left
+                prose-ul:list-none prose-ul:pl-0 
+                prose-blockquote:border-l-8 prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50/50 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:rounded-r-3xl prose-blockquote:not-italic
+                prose-strong:text-slate-900 prose-strong:font-black"
               dangerouslySetInnerHTML={{ __html: processedContent }}
             />
 

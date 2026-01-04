@@ -1,11 +1,7 @@
 require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('@supabase/supabase-js');
+const fs = require('fs');
 const path = require('path');
-
-// We'll use dynamic import or just require if we compile it to JS temporarily
-// But the easiest way is to use the existing data if we can load it.
-// Since it's a huge TS file, let's try a different approach:
-// We'll use a simplified parser that reads the file line by line.
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -13,54 +9,52 @@ const supabase = createClient(
 );
 
 async function migrate() {
-  console.log("Loading articles data...");
+  console.log("Parsing articles.ts via regex blocks...");
   
-  // Directly requiring the TS file might fail in a standard node env.
-  // We'll use a hack: read the file, remove the types, and save as a temp JS file.
-  const fs = require('fs');
   const tsPath = path.join(__dirname, '../src/data/articles.ts');
-  const jsPath = path.join(__dirname, 'temp_articles.cjs');
-  
-  let content = fs.readFileSync(tsPath, 'utf-8');
-  // Strip potential markdown code blocks like ```html ... ``` that AI might have included
-  content = content.replace(/```html/g, '').replace(/```/g, '');
-  
-  // Remove the interface and the type annotation
-  content = content.replace(/export interface Article \{[\s\S]*?\}/, '');
-  content = content.replace(/: Article\[\]/g, '');
-  content = content.replace(/export const articles =/g, 'const articles =');
-  content = content.replace(/export const articles: Article\[\] =/g, 'const articles =');
-  content += '\nmodule.exports = { articles };';
-  
-  fs.writeFileSync(jsPath, content);
-  
-  const { articles } = require('./temp_articles.cjs');
-  console.log(`Loaded ${articles.length} articles.`);
+  const content = fs.readFileSync(tsPath, 'utf-8');
 
-  for (const article of articles) {
+  // Split by article objects
+  const blocks = content.split('  {').filter(b => b.includes('slug:'));
+  console.log(`Found ${blocks.length} blocks.`);
+
+  for (let block of blocks) {
+    const slug = (block.match(/slug:\s*['"](.*?)['"]/) || [])[1];
+    const title = (block.match(/title:\s*["'](.*?)["']/) || [])[1];
+    const category = (block.match(/category:\s*['"](.*?)['"]/) || [])[1];
+    const readTime = (block.match(/readTime:\s*['"](.*?)['"]/) || [])[1];
+    const excerpt = (block.match(/excerpt:\s*["']([\s\S]*?)["']/) || [])[1];
+    const image = (block.match(/image:\s*['"](.*?)['"]/) || [])[1];
+    const publishedAt = (block.match(/publishedAt:\s*['"](.*?)['"]/) || [])[1];
+    
+    // Extract content (everything between content: ` and `, )
+    const contentStart = block.indexOf('content: `') + 10;
+    const contentEnd = block.lastIndexOf('`,');
+    const articleContent = block.substring(contentStart, contentEnd);
+
+    if (!slug || !title) continue;
+
     const { error } = await supabase
       .from('articles')
       .upsert({
-        slug: article.slug,
-        title: article.title,
-        category: article.category,
-        read_time: article.readTime,
-        excerpt: article.excerpt,
-        image: article.image,
-        content: article.content,
-        published_at: article.publishedAt
+        slug,
+        title,
+        category,
+        read_time: readTime,
+        excerpt,
+        image,
+        content: articleContent,
+        published_at: publishedAt
       }, { onConflict: 'slug' });
 
     if (error) {
-      console.error(`Error uploading ${article.slug}:`, error.message);
+      console.error(`Error uploading ${slug}:`, error.message);
     } else {
-      console.log(`Uploaded: ${article.title}`);
+      console.log(`Uploaded: ${title}`);
     }
   }
 
-  // Cleanup
-  fs.unlinkSync(jsPath);
-  console.log("Migration complete!");
+  console.log("Migration complete.");
 }
 
 migrate();
