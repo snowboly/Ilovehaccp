@@ -14,7 +14,7 @@ export const translations = {
     },
     hero: {
       title: "HACCP Plans Done in Minutes.",
-      subtitle: "Ditch the manual paperwork. Our AI assistant automates your food safety documentation, creating comprehensive plans tailored to your specific menu and regional requirements.",
+      subtitle: "Ditch the manual paperwork. Our AI assistant automates your food safety documentation, creating comprehensive plans tailored to your specific product and regional requirements.",
       cta: "Build Your Plan Free"
     },
     wizard: {

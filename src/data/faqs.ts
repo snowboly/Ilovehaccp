@@ -20,7 +20,7 @@ export const faqs: FAQItem[] = [
   
   // Technical & Usage
   {
-    q: "What if my menu changes?",
+    q: "What if my product lineup changes?",
     a: "Our platform allows you to edit your plan at any time. Simply log in, update your ingredients or steps, and re-generate the hazard analysis instantly."
   },
   {
@@ -65,7 +65,7 @@ export const faqs: FAQItem[] = [
   },
   {
     q: "How often should I review my HACCP plan?",
-    a: "You should review your plan at least annually, or whenever there is a significant change to your menu, equipment, suppliers, or regulations."
+    a: "You should review your plan at least annually, or whenever there is a significant change to your product, equipment, suppliers, or regulations."
   },
   {
     q: "Do you support VACCP and TACCP?",

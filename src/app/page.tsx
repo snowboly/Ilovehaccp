@@ -9,7 +9,8 @@ import {
   X,
   Gavel,
   UserCheck,
-  ShieldCheck
+  ShieldCheck,
+  ChevronRight
 } from 'lucide-react';
 import InteractiveDemo from '@/components/landing/InteractiveDemo';
 import ExpertAdvisors from '@/components/landing/ExpertAdvisors';
@@ -61,7 +62,7 @@ export default function Home() {
                   </span>
                 </h1>
                 <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
-                  Ditch the manual paperwork. Our AI assistant automates your food safety documentation, creating comprehensive plans tailored to your specific menu and regional requirements.
+                  Ditch the manual paperwork. Our AI assistant automates your food safety documentation, creating comprehensive plans tailored to your specific product and regional requirements.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center gap-6">
                   <Link href="/builder" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-center px-10 py-5 rounded-2xl text-xl font-black transition-all shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
@@ -177,14 +178,27 @@ export default function Home() {
               </div>
               
               <div className="relative">
-                <div className="aspect-square bg-white rounded-[3rem] shadow-2xl p-12 border border-slate-100 flex items-center justify-center text-center">
+                <div className="aspect-square bg-white rounded-[3rem] shadow-2xl p-8 md:p-12 border border-slate-100 flex flex-col items-center justify-center text-center overflow-hidden">
                    <div className="space-y-6">
-                      <div className="w-32 h-32 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 ring-8 ring-emerald-50/50">
-                        <CheckCircle2 className="w-16 h-16 text-emerald-500" />
+                      <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 relative">
+                        <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">CCP Decision Tree</div>
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="w-16 h-10 rounded-lg border-2 border-slate-200 bg-white flex items-center justify-center text-[8px] font-bold text-slate-400">Hazard?</div>
+                          <ChevronRight className="w-3 h-3 text-slate-300" />
+                          <div className="w-16 h-10 rounded-lg border-2 border-blue-500 bg-blue-50 flex items-center justify-center text-[8px] font-black text-blue-600">Control?</div>
+                          <ChevronRight className="w-3 h-3 text-slate-300" />
+                          <div className="w-16 h-10 rounded-lg bg-emerald-500 flex flex-col items-center justify-center text-[8px] font-black text-white shadow-lg shadow-emerald-500/40">
+                            <ShieldCheck className="w-3 h-3" />
+                            CCP
+                          </div>
+                        </div>
+                        {/* Connecting line */}
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-200"></div>
                       </div>
+
                       <h3 className="text-3xl font-black text-slate-900">Expert-Validated Logic</h3>
                       <p className="text-slate-500 font-medium">Every Critical Control Point (CCP) identified by our engine includes scientific critical limits and corrective actions verified for audit submission.</p>
-                      <div className="pt-6">
+                      <div className="pt-2">
                         <span className="bg-slate-900 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">Validated for 2026</span>
                       </div>
                    </div>

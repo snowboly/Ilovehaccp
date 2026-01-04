@@ -4,8 +4,8 @@ import Link from 'next/link';
 const steps = [
   {
     icon: <ClipboardCheck className="w-8 h-8 text-blue-600" />,
-    title: "1. Enter Menu Details",
-    desc: "Tell us what you cook and how. Our smart wizard guides you through identifying your key ingredients and processes."
+    title: "1. Enter Product Details",
+    desc: "Tell us what you make and how. Our smart wizard guides you through identifying your key ingredients and processes."
   },
   {
     icon: <Sparkles className="w-8 h-8 text-purple-600" />,
