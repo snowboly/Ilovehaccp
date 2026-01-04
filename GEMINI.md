@@ -2,6 +2,15 @@
 
 ## Implementation Status
 
+### v3.1 Avatar & Authority Refinements (Jan 4, 2026)
+- **Avatar System Upgrade:** 
+    - Migrated from DiceBear 7.x to 9.x to resolve broken image issues caused by API versioning.
+    - Simplified avatar URLs (removed complex query parameters) for better stability and faster loading.
+- **Team Persona Consistency:** 
+    - Standardized expert names across all touchpoints (About Us, Homepage, Resource Detail).
+    - Updated references to ensure "Dr. Margarida" and "Dr. Isabel" are consistently used instead of earlier variants.
+- **Resource Page UX:** Fixed indentation and code structure in the article detail template for better maintainability.
+
 ### v3.0 Professional Launch Refinements (Jan 3, 2026)
 - **About Us Overhaul (Sobel Inspired):** Completely redesigned the "About Us" page to mirror high-authority regulatory consultancy standards.
     - Added a mission-driven Hero section focused on democratizing compliance.

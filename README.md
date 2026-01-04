@@ -40,7 +40,7 @@ The project includes a powerful suite of scripts to generate high-quality, long-
 - **`node scripts/generate_expert_article.js "Title" [slug]`**: Generates a single 5000+ word article with a specific persona.
 - **`node scripts/regenerate_all.js`**: Batch processor that upgrades all placeholder articles in `articles.ts`.
   - **Features:** Auto-fallback from Groq (Free) to OpenAI (`gpt-4o-mini`) when rate limits are hit.
-  - **Personas:** Articles are written by 5 distinct expert personas (Dr. Joao, Dr. Margaret, etc.) for variety and authority.
+  - **Personas:** Articles are written by 5 distinct expert personas (Dr. Joao, Dr. Margarida, etc.) for variety and authority.
 - **`node scripts/dedupe_articles.js`**: Maintenance utility to clean `articles.ts`, remove duplicates, and fix syntax errors.
 
 ### Environment Variables
