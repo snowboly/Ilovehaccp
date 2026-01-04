@@ -2,38 +2,41 @@
 
 ## Implementation Status
 
-### Professional Platform Overhaul (Jan 2026)
-- **Content Expansion:** Regenerated 60+ articles into 5000+ word "Premium Editorial" deep-dives.
-- **Team Branding:** Updated `ExpertAdvisors.tsx` and article writer personas to the new team: Dr. Joao, Dr. Margaret, Dr. Fabio, Dr. Claudia, and Dr. Elizabeth.
-- **AI Infrastructure:**
-    - Updated `scripts/regenerate_all.js` with **OpenAI (gpt-4o-mini)** fallback for robust bulk generation.
-    - Added `scripts/dedupe_articles.js` to clean, deduplicate, and sanitize the massive `articles.ts` file.
-    - Fixed build errors by stripping HTML comments and standardizing article objects.
-- **UI Refinements:** Fixed user input placeholders in Newsletter, Contact, and Auth forms to use generic examples (`you@company.com`) instead of the support email.
-- **Navigation Update:** Renamed "Builder" to "HACCP Builder" and "Get Started" to "Register an account" across all 4 languages (EN, ES, FR, PT).
-- **Contact Page Cleanup:** Removed Phone and Office address details to focus on email-first support.
-- **Expert Personas:** Created `ExpertAdvisors.tsx` and integrated 3 personas (Sarah Jenkins, Dr. Eleanor Vance, Marcus Thorne) into the homepage and article UI.
-- **Article UI:** Implemented sticky Table of Contents, authority signals, and `@tailwindcss/typography` optimization for 5000+ word deep-dives.
-- **Freemium Pivot:** Unlocked PDF generation for free users to drive traffic. PDF now includes operational logs (Toolkit).
-- **HACCP Builder:** Added `localStorage` persistence, educational tooltips, and validated 18-section flow.
-- **Stripe Integration:** Implemented `/api/create-checkout`, pricing cards, and `/api/webhook/stripe` for plan upgrades (€79 Starter Review / Custom).
-- **Security Audit:**
-    - Hardened Supabase RLS (restricted SELECT to owners).
-    - Implemented database-backed Rate Limiting (3/hr/IP) in `/api/generate-plan`.
-    - Added `supabaseService` client for privileged operations.
-- **Legal Hardening:** Updated Terms/Privacy with explicit AI training opt-outs and Free Tier liability waivers.
-- **SEO & Branding:** New "i [Heart] HACCP" logo, custom SVG favicon, and updated metadata.
+### v3.0 Professional Launch Refinements (Jan 3, 2026)
+- **About Us Overhaul (Sobel Inspired):** Completely redesigned the "About Us" page to mirror high-authority regulatory consultancy standards.
+    - Added a mission-driven Hero section focused on democratizing compliance.
+    - Implemented "Leadership Insights" featuring prominent quotes from Dr. Joao and Dr. Margaret.
+    - Added a "Core Pillars" section (Precision, Innovation, Integrity, etc.) with detailed icons.
+    - Relocated the entire expert team from the homepage to this page to strengthen authority.
+- **Team Visuals & Balanced Layout:**
+    - Transitioned all team members to modern `api.dicebear.com` avatars.
+    - Structured the team grid into a balanced 3+2 layout (Joao, Margaret, Fabio on top; Claudia, Elizabeth centered below).
+    - Verified gender seeds for avatars (Joao = male).
+- **Homepage Streamlining:** Removed the team section from the homepage to focus exclusively on the core product value and pricing.
+- **Legal Hardening:** Overhauled Terms, Privacy, and Refund policies with "Plain English Summaries" and explicit AI-liability disclaimers.
+- **Resources Search Engine:** 
+    - Replaced the tab-switcher with a unified, real-time search interface for 66 articles and 15+ FAQs.
+    - Integrated high-quality, category-specific Unsplash images for every article.
+    - Implemented FAQ Accordions for improved mobile UX.
+- **Navigation UX:** 
+    - Converted "Resources" into a professional hover-dropdown with icons and anchor links (#articles, #faqs).
+    - Moved the Language Selector to the far end of the Navbar per standard SaaS patterns.
+- **Freemium Pivot:** Unlocked PDF Export for free users and focused the Starter tier purely on "Expert Review."
+- **Developer Infrastructure:**
+    - Resolved Turbopack workspace root inference issues via `next.config.ts`.
+    - Fixed UTF-16 encoding corruption in `articles.ts` using Node.js sanitization.
 
 ### Infrastructure & Scripts
-- `scripts/regenerate_all.js`: Automatic bulk upgrader with **OpenAI Fallback** and rate-limit handling.
-- `scripts/dedupe_articles.js`: Utility to clean up `articles.ts`, strip HTML comments, and fix syntax errors.
-- `scripts/generate_expert_article.js`: Single-article generator with "Premium Editorial" style.
-- `scripts/fix_articles.js`: Legacy utility for quick regex fixes.
+- `scripts/regenerate_all.js`: Automatic bulk upgrader with **OpenAI Fallback**.
+- `scripts/dedupe_articles.js`: Utility to clean up `articles.ts` and fix syntax errors.
+- `scripts/add_article_images.js`: (Completed) Automatically assigned relevant imagery to the article catalog.
+
+## Current Pricing Model
+- **Free Tier:** AI-Generated HACCP Plan + Instant PDF Export + PRPs.
+- **Starter Review (€79 + VAT):** AI Plan + Expert 1-on-1 Human Review + Compliance Stamp.
+- **Expert Pro (Custom):** Multi-site operations, industrial audits, and bespoke consultancy.
 
 ## Next Steps
-- Monitor traffic and user engagement with the new long-form content.
-- Consider adding a "Related Articles" section to the bottom of the Builder flow.
-- Set up professional email inbox (Purelymail or Zoho Lite) and configure DNS at GoDaddy.
-- Update Contact Form logic to use Brevo SMTP for real email delivery.
-- Monitor Stripe webhooks in production.
-- Capture first 100 leads using the new email capture.
+- Monitor traffic and search queries on the new Resources engine.
+- Integrate Brevo for automated lead nurturing after PDF download.
+- Final production verification and DNS cutover.

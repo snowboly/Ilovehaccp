@@ -12,7 +12,7 @@ const ARTICLES_PATH = path.join(__dirname, '../src/data/articles.ts');
 
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
 const OPENAI_MODEL = 'gpt-4o-mini'; // Extremely cheap fallback
-const WORD_COUNT_TARGET = 5000;
+const WORD_COUNT_TARGET = 4500;
 
 // --- PERSONAS ---
 const PERSONAS = [
@@ -24,32 +24,11 @@ const PERSONAS = [
     instruction: 'Write as a professor educating advanced practitioners. Focus on the scientific validity of HACCP principles.'
   },
   {
-    id: 'auditor_margaret',
-    role: 'Dr. Margaret, Lead Auditor (BRCGS/SQF)',
+    id: 'auditor_margarida',
+    role: 'Dr. Margarida, Lead Auditor (BRCGS/SQF)',
     tone: 'Professional, compliance-focused, detail-oriented, strict.',
     style: 'Focuses on audit readiness, documentation, regulatory citations (CFR, EC 852/2004), and red flags.',
     instruction: 'Write as if preparing a client for a surprise inspection. Focus on "passing the audit" and regulatory alignment.'
-  },
-  {
-    id: 'veteran_fabio',
-    role: 'Dr. Fabio, Industrial Operations Expert',
-    tone: 'Practical, authoritative, no-nonsense, experience-driven.',
-    style: 'Focuses on implementation, common pitfalls, "war stories", and what actually happens on the factory floor vs. the binder.',
-    instruction: 'Write as a mentor to a new Quality Manager. Focus on operational reality and avoiding costly shutdowns.'
-  },
-  {
-    id: 'academic_claudia',
-    role: 'Dr. Claudia, Food Science Professor',
-    tone: 'Educational, forward-looking, analytical.',
-    style: 'Focuses on emerging technologies, preservation methods, and the chemistry of food safety.',
-    instruction: 'Write as a researcher sharing the latest industry advancements and scientific consensus.'
-  },
-  {
-    id: 'auditor_elizabeth',
-    role: 'Dr. Elizabeth, Regulatory Compliance Specialist',
-    tone: 'Legalistic, precise, authoritative on standards.',
-    style: 'Focuses heavily on FDA FSMA, EU Regulations, and legal liability.',
-    instruction: 'Write as a regulatory consultant ensuring the business is legally protected and compliant.'
   }
 ];
 
@@ -114,24 +93,22 @@ async function safeAiCall(messages, temperature, jsonMode = false) {
     }
 }
 
-// --- GENERATORS ---
-
 async function generateOutline(title, persona) {
-  console.log(`Generating outline for "${title}"...`);
+  console.log(`Generating exhaustive outline for "${title}"...`);
   const prompt = `
     You are ${persona.role}.
     Context: ${FDA_CONTEXT}
-    Task: Create a comprehensive, detailed outline for a ${WORD_COUNT_TARGET}-word article titled "${title}".
+    Task: Create a definitive, high-authority outline for a ${WORD_COUNT_TARGET}-word article titled "${title}".
     
     Requirements:
-    - The outline must have at least 8-10 main sections (excluding Intro/Conclusion).
+    - The outline must have at least 12-15 detailed sections (excluding Intro/Conclusion).
     - Each section must have 3-5 detailed sub-points.
-    - Structure it logically: Theory -> Application -> Compliance -> Advanced Nuances.
+    - Structure it logically: Theory -> Global Regulatory Landscapes -> Implementation -> Scientific Depth -> Case Studies.
     
     Output Format: JSON ONLY.
     {
       "sections": [
-        { "title": "Section Title", "points": ["Subpoint 1", "Subpoint 2", ...] },
+        { "title": "Section Title", "points": ["Detailed Subpoint 1", "Detailed Subpoint 2", ...] },
         ...
       ]
     }
@@ -155,17 +132,18 @@ async function generateSection(title, section, index, total, persona) {
     Sub-points: ${JSON.stringify(section.points)} 
     
     Instructions:
-    - Write with **premium editorial flair**.
-    - Target Word Count: 500-700 words.
+    - Write with **premium editorial authority** (Food Safety Magazine style).
+    - Target Word Count: 400-500 words.
     - Tone: ${persona.tone}
     - Style: ${persona.style}
     - **Formatting Rules:**
       - Short paragraphs (3-4 lines max).
+      - Use <h3> and <h4> to nest information.
       - Use bullet points (<ul>) or numbered lists (<ol>) frequently.
-      - Use <h3> tags for subsections.
-      - Use <strong> for emphasis.
+      - Use <strong> for emphasis on regulations and critical limits.
       - Include one <blockquote><strong>Expert Insight:</strong> ...</blockquote>
-    - Cite regulations (21 CFR 117, EC 852/2004) where relevant.
+    - Cite specific regulations (21 CFR 117, EC 852/2004) where relevant.
+    - Suggest an image placement with [IMAGE_SUGGESTION: description].
     
     Output: HTML string ONLY. No markdown code blocks.
   `;

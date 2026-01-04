@@ -5,6 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui'],
+        serif: ['var(--font-merriweather)', 'ui-serif', 'Georgia', 'serif'],
+      },
       typography: {
         DEFAULT: {
           css: {

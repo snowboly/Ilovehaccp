@@ -53,24 +53,30 @@ export default function Home() {
                 <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
                   Stop wrestling with Word documents. Our AI consultant generates audit-ready food safety plans tailored to your menu, customized to your region.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/builder" className="bg-blue-600 hover:bg-blue-700 text-white text-center px-8 py-4 rounded-xl text-lg font-bold transition-all shadow-xl hover:translate-y-[-2px]">
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  <Link href="/builder" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-center px-10 py-5 rounded-2xl text-xl font-black transition-all shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
                     Build Your Plan Free
+                    <ArrowRight className="w-6 h-6" />
                   </Link>
-                  <button 
-                    onClick={() => {
-                        // We will trigger a hidden sample download
-                        const btn = document.getElementById('download-sample-trigger');
-                        btn?.click();
-                    }}
-                    className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-center px-8 py-4 rounded-xl text-lg font-bold transition-all flex items-center justify-center gap-2"
-                  >
-                    Download Sample PDF
-                  </button>
+                  <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
+                      <div className="flex -space-x-2">
+                          {[1,2,3].map(i => (
+                              <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center">
+                                  <UserCheck className="w-4 h-4 text-blue-600" />
+                              </div>
+                          ))}
+                      </div>
+                      <div className="text-sm">
+                          <p className="font-black text-slate-900 leading-none">Audit Ready</p>
+                          <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1">Validated Logic</p>
+                      </div>
+                  </div>
                 </div>
-                <div className="flex gap-6 text-sm text-slate-500 font-medium pt-4">
-                  <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> No credit card required</span>
-                  <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> Instant PDF export</span>
+
+                <div className="flex flex-wrap gap-8 text-sm text-slate-400 font-bold uppercase tracking-[0.2em] pt-4 grayscale opacity-60">
+                  <span className="flex items-center gap-2">FDA Compliant</span>
+                  <span className="flex items-center gap-2">EU 852/2004</span>
+                  <span className="flex items-center gap-2">Codex CXC 1-1969</span>
                 </div>
               </div>
               
@@ -84,7 +90,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="font-bold text-slate-900">Audit Ready</p>
-                      <p className="text-xs text-slate-500">ISO 22000 Compliant</p>
+                      <p className="text-xs text-slate-500">Industry Standard</p>
                     </div>
                   </div>
                 </div>
@@ -133,7 +139,63 @@ export default function Home() {
           </div>
         </section>
 
-        <ExpertAdvisors />
+        {/* Regulatory Integrity Section */}
+        <section className="py-20 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+          <div className="container px-4 mx-auto relative z-10">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-4xl font-black text-slate-900 mb-6 tracking-tight italic uppercase">
+                  Rigorous Compliance. <br />
+                  <span className="text-blue-600">Zero Shortcuts.</span>
+                </h2>
+                <p className="text-xl text-slate-600 leading-relaxed font-medium mb-10">
+                  Our AI intelligence engine isn't just generating text—it's executing a logical risk assessment based on the global gold standards of food safety.
+                </p>
+                
+                <div className="grid gap-6">
+                  {[{
+                    "title": "Codex Alimentarius",
+                    "desc": "Logic mapped to the CXC 1-1969 General Principles of Food Hygiene."
+                  }, {
+                    "title": "FDA FSMA",
+                    "desc": "Hazard analysis aligned with 21 CFR 117 preventive control requirements."
+                  }, {
+                    "title": "EU 852/2004",
+                    "desc": "Framework compliance for European food business operators."
+                  }].map((item, i) => (
+                    <div key={i} className="flex gap-4 p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                      <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 flex-shrink-0">
+                        <ShieldCheck className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="font-black text-slate-900 uppercase tracking-wider text-sm mb-1">{item.title}</h4>
+                        <p className="text-slate-500 text-sm font-medium">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="relative">
+                <div className="aspect-square bg-white rounded-[3rem] shadow-2xl p-12 border border-slate-100 flex items-center justify-center text-center">
+                   <div className="space-y-6">
+                      <div className="w-32 h-32 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 ring-8 ring-emerald-50/50">
+                        <CheckCircle2 className="w-16 h-16 text-emerald-500" />
+                      </div>
+                      <h3 className="text-3xl font-black text-slate-900">Audit-Ready Logic</h3>
+                      <p className="text-slate-500 font-medium">Every Critical Control Point (CCP) identified by our engine includes scientific critical limits and corrective actions verified for audit submission.</p>
+                      <div className="pt-6">
+                        <span className="bg-slate-900 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">Validated for 2026</span>
+                      </div>
+                   </div>
+                </div>
+                {/* Background Decoration */}
+                <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50 -z-10"></div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Pricing Section */}
         <section id="pricing" className="py-24 bg-slate-900 text-white relative overflow-hidden">
@@ -157,22 +219,19 @@ export default function Home() {
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Limited Wizard Access
+                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Full Wizard Access
                   </li>
                   <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Draft Process Flow
+                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Complete HACCP Plan
                   </li>
                   <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> High-Level Hazard List
-                  </li>
-                  <li className="flex items-center gap-3 text-sm text-slate-500">
-                    <X className="w-5 h-5" /> No Critical Limits
+                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Full Process Flow
                   </li>
                   <li className="flex items-center gap-3 text-sm">
                     <CheckCircle2 className="w-5 h-5 text-blue-400" /> PDF Export Included
                   </li>
                   <li className="flex items-center gap-3 text-sm text-slate-500">
-                    <X className="w-5 h-5" /> Not Audit-Ready
+                    <X className="w-5 h-5" /> No Professional Review
                   </li>
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl border border-slate-600 hover:bg-slate-700 font-bold text-center transition-colors">

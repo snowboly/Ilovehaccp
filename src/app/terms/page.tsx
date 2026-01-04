@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Terms of Service | ilovehaccp.com',
-  description: 'Terms and conditions for using our AI-powered HACCP builder.',
+  title: 'Terms and Conditions | ilovehaccp.com',
+  description: 'Terms and conditions for using our AI-powered HACCP builder and consultancy services.',
 };
 
 export default function TermsPage() {
@@ -9,12 +9,12 @@ export default function TermsPage() {
       <div className="max-w-5xl mx-auto py-20 px-6">
         {/* Header */}
         <div className="mb-16">
-          <span className="text-blue-600 font-bold tracking-wider uppercase text-sm mb-2 block">Legal Information</span>
-          <h1 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">Terms of Service</h1>
+          <span className="text-blue-600 font-bold tracking-wider uppercase text-sm mb-2 block">Legal Agreement</span>
+          <h1 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">Terms and Conditions</h1>
           <div className="flex items-center gap-4 text-slate-500 font-medium">
             <span>Effective: January 3, 2026</span>
             <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-            <span>Version 2.1</span>
+            <span>Version 3.0</span>
           </div>
         </div>
 
@@ -22,140 +22,195 @@ export default function TermsPage() {
           {/* Main Content */}
           <div className="lg:col-span-8 space-y-16">
             
-            {/* Section 0: Critical AI Disclaimer */}
+            {/* Section 0: Critical AI Disclaimer (Essential for HACCP AI) */}
             <section className="bg-amber-50 border border-amber-200 rounded-2xl p-8">
               <h2 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
-                ⚠️ Critical Disclaimer: Artificial Intelligence
+                ⚠️ CRITICAL DISCLAIMER: AI-GENERATED CONTENT
               </h2>
               <div className="prose prose-amber prose-sm max-w-none">
                 <p>
-                  <strong>This is the most important part of these terms.</strong> ilovehaccp.com uses Artificial Intelligence (LLMs) to draft your documents. While powerful, AI can "hallucinate" (make mistakes).
-                </p>
-                <p>
-                  <strong>You acknowledge that:</strong>
+                  <strong>Please read carefully:</strong> ilovehaccp.com uses Artificial Intelligence to assist in drafting Hazard Analysis and Critical Control Point (HACCP) plans. 
                 </p>
                 <ul>
-                  <li>The output is a <strong>draft/template</strong> only.</li>
-                  <li>The AI is <strong>not</strong> a certified food safety consultant or lawyer.</li>
-                  <li><strong>You maintain 100% responsibility</strong> for verifying every temperature, critical limit, and procedure against your local laws (e.g., FDA, EFSA, FSA).</li>
-                  <li>We are a software provider, not a food safety guarantor.</li>
+                  <li><strong>Not Final Documentation:</strong> The output is a draft template and does <strong>NOT</strong> constitute a finalized legal or safety document.</li>
+                  <li><strong>Human Verification Required:</strong> You (the User) maintain 100% responsibility for reviewing, validating, and implementing the plan. </li>
+                  <li><strong>No Consulting Relationship:</strong> Use of the tool does not establish a food safety consultancy relationship unless a separate Expert Review is purchased.</li>
                 </ul>
               </div>
             </section>
 
             <Section 
               number="1"
-              title="Acceptance of Terms"
+              title="Agreement to Terms"
               content={
                 <p>
-                  By accessing ilovehaccp.com ("Service"), creating an account, or purchasing a plan, you agree to be bound by these Terms. If you do not agree, you must stop using the Service immediately. These terms constitute a legally binding agreement between you ("User") and ilovehaccp.com ("Company", "We").
+                  By accessing ilovehaccp.com ("Website", "Service"), you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. These terms, along with our Privacy Statement and Cookie Policy, constitute a binding agreement between you and ilovehaccp.com.
                 </p>
               }
-              summary="If you use the site, you agree to the rules. If you don't agree, please don't use the site."
+              summary="By using our site, you agree to follow these rules."
             />
 
             <Section 
               number="2"
-              title="The Service & No Professional Advice"
+              title="Electronic Communication"
               content={
-                <>
-                  <p>
-                    The Service provides software tools to assist in the creation of food safety documentation. It does not provide medical, legal, or certified food safety advice. The Service is not a substitute for hiring a qualified Food Safety Consultant or verifying compliance with your local Environmental Health Officer (EHO).
-                  </p>
-                  <p className="mt-4">
-                    We explicitly disclaim any warranty that the documents generated will guarantee a pass on any specific audit (BRCGS, SQF, ISO 22000, or local inspection). Compliance relies on your physical implementation of the plan, not just the paperwork.
-                  </p>
-                </>
+                <p>
+                  By using this Website or communicating with us by electronic means, you agree and acknowledge that we may communicate with you electronically on our website or by sending an email to you, and you agree that all agreements, notices, disclosures, and other communications that we provide to you electronically satisfy any legal requirement that such communications be in writing.
+                </p>
               }
-              summary="We provide the software 'pen', you write the safety story. We aren't your lawyer or your health inspector."
+              summary="We will communicate via email and through the site, and that counts as 'in writing' legally."
             />
 
             <Section 
               number="3"
-              title="User Responsibilities"
+              title="Intellectual Property"
               content={
-                <ul className="list-disc pl-5 space-y-2">
-                  <li><strong>Accuracy:</strong> You are responsible for the accuracy of the data you input (ingredients, processes).</li>
-                  <li><strong>Verification:</strong> You must review every line of the generated plan. If the AI suggests cooking chicken to 50°C, and your local law requires 75°C, you must correct it.</li>
-                  <li><strong>Security:</strong> You are responsible for keeping your account credentials secure.</li>
-                  <li><strong>Lawful Use:</strong> You may not use the Service to generate fraudulent or misleading compliance documents.</li>
-                </ul>
+                <>
+                  <p>
+                    We or our licensors own and control all of the copyright and other intellectual property rights in the Website and the data, information, and other resources displayed by or accessible within the Website.
+                  </p>
+                  <p className="mt-4 font-bold text-slate-900">Limited License:</p>
+                  <p>
+                    Unless specific content indicates otherwise, you are granted a limited, non-exclusive, non-sublicensable, and non-transferable license to use the resources solely for your personal or internal business purposes related to food safety management. You may not copy, reproduce, or commercialize the underlying software or AI models.
+                  </p>
+                </>
               }
-              summary="You input the data, you check the output, and you keep your password safe. Don't fake safety records."
+              summary="We own the technology. You get a license to use it for your business safety plans, but you can't sell our software as your own."
             />
 
             <Section 
               number="4"
-              title="Intellectual Property Rights"
+              title="Third-party Property"
               content={
-                <>
-                  <p>
-                    <strong>Our IP:</strong> The software, code, design, and AI prompt engineering are the exclusive property of ilovehaccp.com.
-                  </p>
-                  <p className="mt-4">
-                    <strong>Your Output:</strong> Upon payment, you are granted a perpetual, non-exclusive, worldwide license to use the generated HACCP documents for your business operations. You own the specific plan you created.
-                  </p>
-                  <p className="mt-4">
-                    <strong>Restrictions:</strong> You may not resell the generated plans as a service to third parties (e.g., acting as a consultant using our tool) without an Enterprise Agency license.
-                  </p>
-                </>
+                <p>
+                  Our Website may include hyperlinks or other references to other party’s websites. We do not monitor or review the content of other party’s websites which are linked to from this Website. We are not responsible for the privacy practices or content of these sites.
+                </p>
               }
-              summary="We own the tool. You own the plan you build. You can't resell our plans to others without a special license."
+              summary="If we link to other sites, we aren't responsible for what happens there."
             />
 
             <Section 
               number="5"
-              title="Limitation of Liability"
+              title="Responsible Use"
               content={
-                <p className="uppercase text-sm font-bold tracking-wide">
-                  TO THE MAXIMUM EXTENT PERMITTED BY LAW, ILOVEHACCP.COM SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES. OUR TOTAL LIABILITY FOR ANY CLAIM ARISING OUT OF THESE TERMS SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE PAST 12 MONTHS. WE ARE SPECIFICALLY NOT LIABLE FOR ANY FOODBORNE ILLNESS, BUSINESS CLOSURE, OR REGULATORY FINES RESULTING FROM YOUR USE OF THE SERVICE.
-                </p>
+                <>
+                  <p>
+                    By visiting our Website, you agree to use it only for the purposes intended and as permitted by these Terms. You must not use our Website to:
+                  </p>
+                  <ul className="list-disc pl-5 mt-4 space-y-2">
+                    <li>Publish or distribute malicious software (viruses, etc.).</li>
+                    <li>Conduct systematic or automated data collection activities (scraping, data mining).</li>
+                    <li>Engage in any activity that causes, or may cause, damage to the Website or interference with its performance.</li>
+                  </ul>
+                </>
               }
-              summary="We cap our liability at what you paid us. We aren't liable if you get fined or someone gets sick—that's your operational responsibility."
+              summary="Don't hack us, don't scrape our data, and don't use the site to do anything illegal."
             />
 
             <Section 
               number="6"
-              title="Termination"
+              title="Idea Submission"
               content={
                 <p>
-                  We reserve the right to suspend or terminate your access to the Service at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users of the Service, us, or third parties, or for any other reason.
+                  Do not submit any ideas, inventions, works of authorship, or other information that can be considered your own intellectual property that you would like to present to us unless we have first signed an agreement regarding the intellectual property or a non-disclosure agreement. If you disclose it without such agreement, you grant us a worldwide, irrevocable, non-exclusive, royalty-free license to use it.
                 </p>
               }
-              summary="Play nice or we can ban you."
+              summary="Don't send us 'secret ideas' unless we have an NDA. If you send them anyway, we can use them."
             />
 
-             <Section 
+            <Section 
               number="7"
-              title="Contact"
+              title="Termination of Use"
               content={
                 <p>
-                  For legal notices: <a href="mailto:support@ilovehaccp.com" className="text-blue-600 hover:underline">support@ilovehaccp.com</a>
+                  We may, in our sole discretion, at any time modify or discontinue access to, temporarily or permanently, the Website or any Service thereon. You agree that we will not be liable to you or any third party for any such modification, suspension or discontinuance of your access to, or use of, the Website or any content that you may have shared on the Website.
                 </p>
+              }
+              summary="We can stop the service or ban users if needed, without being held liable."
+            />
+
+            <Section 
+              number="8"
+              title="Warranties and Liability"
+              content={
+                <>
+                  <p className="font-bold">The Website and all content are provided on an "as is" and "as available" basis.</p>
+                  <p className="mt-4">
+                    Nothing on this Website constitutes or is meant to constitute, legal, financial or medical advice of any kind. If you require advice you should consult an appropriate professional.
+                  </p>
+                  <p className="mt-4 uppercase text-xs font-bold tracking-tight bg-slate-100 p-4 rounded-lg">
+                    TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, WE WILL NOT BE LIABLE FOR ANY DIRECT OR INDIRECT LOSS OR DAMAGE (INCLUDING LOSS OF PROFITS, REVENUE, OR DATA) ARISING OUT OF OR IN CONNECTION WITH THE USE OF OUR SERVICES. OUR MAXIMUM LIABILITY TO YOU FOR ALL DAMAGES SHALL BE LIMITED TO THE TOTAL PRICE PAID BY YOU TO US FOR THE PRODUCT OR SERVICE.
+                  </p>
+                </>
+              }
+              summary="We aren't your lawyer or your safety officer. If something goes wrong, our maximum liability is limited to what you paid us."
+            />
+
+            <Section 
+              number="9"
+              title="Export Restrictions & Legal Compliance"
+              content={
+                <p>
+                  Access to the Website from territories or countries where the Content or purchase of the products or Services sold on the Website is illegal is prohibited. You must not use this Website in violation of export laws and regulations.
+                </p>
+              }
+              summary="Don't use our site if it's illegal in your country."
+            />
+
+            <Section 
+              number="10"
+              title="Language"
+              content={
+                <p>
+                  These Terms and Conditions will be interpreted and construed exclusively in English, Portuguese, Spanish, and French. All notices and correspondence will be written exclusively in those languages.
+                </p>
+              }
+              summary="We operate in 4 main languages: EN, PT, ES, FR."
+            />
+
+            <Section 
+              number="11"
+              title="Choice of Law and Jurisdiction"
+              content={
+                <p>
+                  These Terms and Conditions shall be governed by the laws of the jurisdiction in which our business is registered. Any disputes relating to these Terms and Conditions shall be subject to the jurisdiction of the courts of such country.
+                </p>
+              }
+              summary="Legal disputes will be handled in the country where we are registered."
+            />
+
+            <Section 
+              number="12"
+              title="Contact Information"
+              content={
+                <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                  <p className="text-slate-700"><strong>Website:</strong> ilovehaccp.com</p>
+                  <p className="text-slate-700"><strong>Email:</strong> support@ilovehaccp.com</p>
+                </div>
               }
             />
 
           </div>
 
-          {/* Sidebar Navigation (Sticky) */}
+          {/* Sidebar Navigation */}
           <div className="hidden lg:block lg:col-span-4 relative">
             <div className="sticky top-24 space-y-8">
               <div className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100">
-                <h3 className="font-bold text-slate-900 mb-4">Quick Navigation</h3>
+                <h3 className="font-bold text-slate-900 mb-4">Quick Links</h3>
                 <nav className="space-y-3 text-sm font-medium text-slate-500">
-                  <a href="#" className="block hover:text-blue-600 transition-colors">1. Acceptance</a>
-                  <a href="#" className="block hover:text-blue-600 transition-colors">2. No Professional Advice</a>
-                  <a href="#" className="block hover:text-blue-600 transition-colors">3. User Responsibilities</a>
-                  <a href="#" className="block hover:text-blue-600 transition-colors">4. Intellectual Property</a>
-                  <a href="#" className="block hover:text-blue-600 transition-colors">5. Liability</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">AI Disclaimer</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">3. Intellectual Property</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">5. Responsible Use</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">8. Liability</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">11. Jurisdiction</a>
                 </nav>
               </div>
               
               <div className="bg-blue-600 rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20">
-                <h3 className="font-bold mb-2">Need help?</h3>
-                <p className="text-blue-100 text-sm mb-4">If you have questions about these terms, our support team is available.</p>
+                <h3 className="font-bold mb-2">Legal Questions?</h3>
+                <p className="text-blue-100 text-sm mb-4">Our compliance team is here to clarify any points in this agreement.</p>
                 <a href="mailto:support@ilovehaccp.com" className="inline-block bg-white text-blue-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-50 transition-colors">
-                  Contact Legal
+                  Email Support
                 </a>
               </div>
             </div>

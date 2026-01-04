@@ -1,15 +1,6 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, ShieldAlert, Zap, FileText } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { articles } from '@/data/articles';
-
-const getArticleStyle = (index: number) => {
-  const styles = [
-    { icon: <BookOpen className="w-10 h-10 text-white opacity-80" />, color: "bg-blue-500" },
-    { icon: <ShieldAlert className="w-10 h-10 text-white opacity-80" />, color: "bg-red-500" },
-    { icon: <Zap className="w-10 h-10 text-white opacity-80" />, color: "bg-purple-500" }
-  ];
-  return styles[index % styles.length];
-};
 
 export default function BlogPreview() {
   const latestArticles = articles.slice(0, 3);
@@ -29,13 +20,14 @@ export default function BlogPreview() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {latestArticles.map((article, i) => {
-            const style = getArticleStyle(i);
             return (
               <Link key={article.slug} href={`/resources/${article.slug}`} className="group cursor-pointer">
                 <div className="bg-white rounded-xl overflow-hidden border shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
-                  <div className={`h-48 ${style.color} w-full flex items-center justify-center`}>
-                    {style.icon}
-                  </div>
+                  {article.image && (
+                    <div className="h-48 overflow-hidden relative">
+                      <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    </div>
+                  )}
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">{article.category}</span>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { Menu, X, Heart, ChevronDown } from 'lucide-react';
+import { Menu, X, Heart, ChevronDown, FileText, HelpCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import LanguageSelector from './LanguageSelector';
 
@@ -35,23 +35,29 @@ export default function Navbar() {
             </Link>
 
             {/* Resources Dropdown (Desktop) */}
-            <div className="relative group">
+            <div className="relative group h-16 flex items-center">
               <button className={`flex items-center gap-1 text-sm font-bold transition-colors ${pathname.startsWith('/resources') ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
                 {t('nav.resources')}
                 <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform" />
               </button>
               
-              <div className="absolute top-full left-0 w-48 bg-white border border-slate-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform translate-y-2 group-hover:translate-y-0 p-2">
+              <div className="absolute top-[100%] left-0 w-56 bg-white border border-slate-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform translate-y-2 group-hover:translate-y-0 p-2 z-[60]">
                 <Link 
-                  href="/resources?view=articles" 
-                  className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg"
+                  href="/resources#articles" 
+                  className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors"
                 >
+                  <div className="bg-blue-100 p-1.5 rounded-lg">
+                    <FileText className="w-4 h-4 text-blue-600" />
+                  </div>
                   Articles
                 </Link>
                 <Link 
-                  href="/resources?view=faqs" 
-                  className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg"
+                  href="/resources#faqs" 
+                  className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-colors"
                 >
+                  <div className="bg-indigo-100 p-1.5 rounded-lg">
+                    <HelpCircle className="w-4 h-4 text-indigo-600" />
+                  </div>
                   FAQs
                 </Link>
               </div>
@@ -70,7 +76,6 @@ export default function Navbar() {
               {t('nav.contact')}
             </Link>
 
-            <LanguageSelector />
             <Link 
               href="/login"
               className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors"
@@ -83,17 +88,18 @@ export default function Navbar() {
             >
               {t('nav.getStarted')}
             </Link>
+            <LanguageSelector />
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-4">
-            <LanguageSelector />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-slate-600 hover:text-slate-900 transition-colors"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
+            <LanguageSelector />
           </div>
         </div>
       </div>
@@ -117,8 +123,8 @@ export default function Navbar() {
               </button>
               {resourcesOpen && (
                 <div className="pl-4 mt-2 space-y-2 border-l-2 border-slate-100 ml-1">
-                  <Link href="/resources?view=articles" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500">Articles</Link>
-                  <Link href="/resources?view=faqs" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500">FAQs</Link>
+                  <Link href="/resources#articles" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500">Articles</Link>
+                  <Link href="/resources#faqs" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500">FAQs</Link>
                 </div>
               )}
             </div>

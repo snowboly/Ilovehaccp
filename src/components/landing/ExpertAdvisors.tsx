@@ -1,46 +1,49 @@
 "use client";
 
-import { CheckCircle2, UserCheck, ShieldCheck } from 'lucide-react';
+import { UserCheck, ShieldCheck } from 'lucide-react';
 
 const experts = [
   {
     name: "Dr. Joao",
     role: "PhD in Food Microbiology",
     bio: "Scientific Lead specializing in pathogen control and molecular safety protocols.",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&h=300",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&gender=male",
     badge: "Scientific Lead"
   },
   {
     name: "Dr. Margaret",
     role: "Lead Auditor (BRCGS/SQF)",
     bio: "20+ years ensuring global compliance. Margaret&apos;s templates are built to pass the strictest inspections.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&h=300",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margaret&gender=female",
     badge: "Compliance"
   },
   {
     name: "Dr. Fabio",
     role: "Industrial Operations Expert",
     bio: "Bridging the gap between academic theory and the high-pressure reality of the factory floor.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&h=300",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&gender=male",
     badge: "Operations"
   },
   {
     name: "Dr. Claudia",
     role: "Food Science Professor",
     bio: "Educator and researcher focusing on emerging food safety technologies and preservation methods.",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea86b48e?auto=format&fit=crop&w=300&h=300",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&gender=female",
     badge: "Research"
   },
   {
     name: "Dr. Elizabeth",
     role: "Regulatory Specialist",
     bio: "Expert in FDA FSMA and EU Regulation 852/2004, ensuring legal alignment across borders.",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&h=300",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elizabeth&gender=female",
     badge: "Legal"
   }
 ];
 
 export default function ExpertAdvisors() {
+  const topRow = experts.slice(0, 3);
+  const bottomRow = experts.slice(3, 5);
+
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-4">
@@ -58,36 +61,23 @@ export default function ExpertAdvisors() {
           </p>
         </div>
 
-        {/* Experts Grid */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {experts.map((expert, idx) => (
-            <div key={idx} className="group relative bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100 hover:border-blue-200 transition-all hover:shadow-xl hover:-translate-y-1">
-              
-              {/* Image */}
-              <div className="relative mb-8">
-                <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg mx-auto transform group-hover:scale-110 transition-transform duration-500">
-                  <img src={expert.image} alt={expert.name} className="w-full h-full object-cover" />
-                </div>
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full tracking-widest shadow-md">
-                  {expert.badge}
-                </div>
-              </div>
+        {/* Experts Layout */}
+        <div className="space-y-8">
+          {/* Top Row (3 members) */}
+          <div className="grid md:grid-cols-3 gap-8">
+            {topRow.map((expert, idx) => (
+              <ExpertCard key={idx} expert={expert} />
+            ))}
+          </div>
 
-              {/* Content */}
-              <div className="text-center">
-                <h3 className="text-xl font-black text-slate-900 mb-1">{expert.name}</h3>
-                <p className="text-sm font-bold text-blue-600 mb-4 uppercase tracking-wide">{expert.role}</p>
-                <p className="text-slate-500 leading-relaxed text-sm">
-                  &quot;{expert.bio}&quot;
-                </p>
+          {/* Bottom Row (2 members centered) */}
+          <div className="flex flex-col md:flex-row justify-center gap-8">
+            {bottomRow.map((expert, idx) => (
+              <div key={idx} className="w-full md:w-[calc(33.333%-1.33rem)]">
+                <ExpertCard expert={expert} />
               </div>
-
-              {/* Verification Tick */}
-              <div className="absolute top-6 right-6 text-slate-300 group-hover:text-blue-500 transition-colors">
-                <UserCheck className="w-6 h-6" />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Trust Stats */}
@@ -106,5 +96,35 @@ export default function ExpertAdvisors() {
         </div>
       </div>
     </section>
+  );
+}
+
+function ExpertCard({ expert }: { expert: typeof experts[0] }) {
+  return (
+    <div className="group relative bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100 hover:border-blue-200 transition-all hover:shadow-xl hover:-translate-y-1 h-full">
+      {/* Image */}
+      <div className="relative mb-8">
+        <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg mx-auto transform group-hover:scale-110 transition-transform duration-500 bg-white">
+          <img src={expert.image} alt={expert.name} className="w-full h-full object-contain" />
+        </div>
+        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full tracking-widest shadow-md">
+          {expert.badge}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="text-center">
+        <h3 className="text-xl font-black text-slate-900 mb-1">{expert.name}</h3>
+        <p className="text-sm font-bold text-blue-600 mb-4 uppercase tracking-wide">{expert.role}</p>
+        <p className="text-slate-500 leading-relaxed text-sm">
+          &quot;{expert.bio}&quot;
+        </p>
+      </div>
+
+      {/* Verification Tick */}
+      <div className="absolute top-6 right-6 text-slate-300 group-hover:text-blue-500 transition-colors">
+        <UserCheck className="w-6 h-6" />
+      </div>
+    </div>
   );
 }

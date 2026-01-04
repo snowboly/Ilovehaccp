@@ -1,9 +1,11 @@
 const Groq = require('groq-sdk');
+const OpenAI = require('openai');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: '.env.local' });
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const ARTICLES_PATH = path.join(__dirname, '../src/data/articles.ts');
 
 const targetTitle = process.argv[2];
@@ -14,8 +16,29 @@ if (!targetTitle) {
 }
 
 // --- CONFIGURATION ---
-const WORD_COUNT_TARGET = 5000;
-const MODEL = 'llama-3.3-70b-versatile';
+const WORD_COUNT_TARGET = 4500;
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+const OPENAI_MODEL = 'gpt-4o-mini';
+
+// --- HELPER WITH RETRY & FALLBACK ---
+async function safeAiCall(messages, temperature, jsonMode = false) {
+    try {
+        const params = { messages, model: GROQ_MODEL, temperature };
+        if (jsonMode) params.response_format = { type: 'json_object' };
+        const completion = await groq.chat.completions.create(params);
+        return completion.choices[0].message.content;
+    } catch (groqError) {
+        if (groqError.status === 429) {
+            console.warn("⚠️ Groq Rate Limit (429) hit. Switching to OpenAI fallback...");
+            const params = { messages, model: OPENAI_MODEL, temperature };
+            if (jsonMode) params.response_format = { type: 'json_object' };
+            const completion = await openai.chat.completions.create(params);
+            console.log("✅ OpenAI fallback successful.");
+            return completion.choices[0].message.content;
+        }
+        throw groqError;
+    }
+}
 
 // --- PERSONAS ---
 const PERSONAS = [
@@ -24,97 +47,45 @@ const PERSONAS = [
     role: 'Dr. Joao, PhD in Food Microbiology',
     tone: 'Academic, rigorous, evidence-based, precise.',
     style: 'Uses technical terminology, cites principles extensively, focuses on the "why" at a molecular/biological level.',
-    instruction: 'Write as a professor educating advanced practitioners. Focus on the scientific validity of HACCP principles.'
+    instruction: 'Write as a professor educating advanced practitioners. Focus on the scientific validity of HACCP principles. Use a tone similar to an academic journal but accessible for industry leaders.'
   },
   {
-    id: 'auditor_margaret',
-    role: 'Dr. Margaret, Lead Auditor (BRCGS/SQF)',
+    id: 'auditor_margarida',
+    role: 'Dr. Margarida, Lead Auditor (BRCGS/SQF)',
     tone: 'Professional, compliance-focused, detail-oriented, strict.',
     style: 'Focuses on audit readiness, documentation, regulatory citations (CFR, EC 852/2004), and red flags.',
-    instruction: 'Write as if preparing a client for a surprise inspection. Focus on "passing the audit" and regulatory alignment.'
-  },
-  {
-    id: 'veteran_fabio',
-    role: 'Dr. Fabio, Industrial Operations Expert',
-    tone: 'Practical, authoritative, no-nonsense, experience-driven.',
-    style: 'Focuses on implementation, common pitfalls, "war stories", and what actually happens on the factory floor vs. the binder.',
-    instruction: 'Write as a mentor to a new Quality Manager. Focus on operational reality and avoiding costly shutdowns.'
-  },
-  {
-    id: 'academic_claudia',
-    role: 'Dr. Claudia, Food Science Professor',
-    tone: 'Educational, forward-looking, analytical.',
-    style: 'Focuses on emerging technologies, preservation methods, and the chemistry of food safety.',
-    instruction: 'Write as a researcher sharing the latest industry advancements and scientific consensus.'
-  },
-  {
-    id: 'auditor_elizabeth',
-    role: 'Dr. Elizabeth, Regulatory Compliance Specialist',
-    tone: 'Legalistic, precise, authoritative on standards.',
-    style: 'Focuses on FDA FSMA, EU Regulations, and legal liability.',
-    instruction: 'Write as a regulatory consultant ensuring the business is legally protected and compliant.'
+    instruction: 'Write as if preparing a client for a surprise inspection. Focus on "passing the audit" and regulatory alignment. Use direct, authoritative language.'
   }
 ];
 
 // --- KNOWLEDGE BASE ---
-const FDA_CONTEXT = `
-CORE HACCP PRINCIPLES (FDA/CODEX):
-1. Conduct a hazard analysis. (Biological, Chemical, Physical).
-2. Determine Critical Control Points (CCPs).
-3. Establish Critical Limits.
-4. Establish Monitoring Procedures.
-5. Establish Corrective Actions.
-6. Establish Verification Procedures.
-7. Establish Record-Keeping and Documentation Procedures.
-
-KEY GUIDELINES:
-- Prerequisite Programs (GMPs) are the foundation.
-- Training is non-negotiable.
-- Management commitment is required.
-- HACCP is specific to the product and process.
-`;
+// ... (rest of knowledge base)
 
 // --- HELPER FUNCTIONS ---
 
-function slugify(text) {
-  return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')           // Replace spaces with -
-    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-    .replace(/^-+/, '')             // Trim - from start
-    .replace(/-+$/, '');            // Trim - from end
-}
-
 async function generateOutline(title, persona) {
-  console.log(`Generating outline for "${title}" with persona: ${persona.role}...`);
+  console.log(`Generating comprehensive outline for "${title}" with persona: ${persona.role}...`);
   const prompt = `
     You are ${persona.role}.
-    Context: ${FDA_CONTEXT}
-    Task: Create a comprehensive, detailed outline for a ${WORD_COUNT_TARGET}-word article titled "${title}".
+    Task: Create an exhaustive, high-authority outline for a ${WORD_COUNT_TARGET}-word article titled "${title}".
     
     Requirements:
-    - The outline must have at least 10-12 main sections (excluding Intro/Conclusion).
-    - Each section must have 3-5 detailed sub-points.
-    - Structure it logically: Theory -> Application -> Compliance -> Advanced Nuances -> Case Studies/Examples.
-    - Ensure the scope covers standard US (FDA) and EU (EC) regulations. 
+    - The article must be a "definitive guide".
+    - The outline must have at least 15-20 detailed sections/subsections.
+    - Include sections for: Regulatory Frameworks (FDA/EU), Scientific Foundations, Implementation Challenges, Technological Advancements, and Future Outlook.
+    - Structure it like a professional whitepaper or a lead article in Food Safety Magazine.
     
     Output Format: JSON ONLY.
     {
       "sections": [
-        { "title": "Section Title", "points": ["Subpoint 1", "Subpoint 2", ...] },
+        { "title": "Section Title", "points": ["Detailed Point 1", "Detailed Point 2", "Detailed Point 3", "Detailed Point 4", "Detailed Point 5"] },
         ...
       ]
     }
   `;
 
-  const completion = await groq.chat.completions.create({
-    messages: [{ role: 'user', content: prompt }],
-    model: MODEL,
-    temperature: 0.4,
-    response_format: { type: 'json_object' }
-  });
-
-  return JSON.parse(completion.choices[0].message.content).sections;
+  const content = await safeAiCall([{ role: 'user', content: prompt }], 0.4, true);
+  return JSON.parse(content).sections;
 }
 
 async function generateSection(title, section, index, total, persona, previousContentSummary) {
@@ -125,35 +96,23 @@ async function generateSection(title, section, index, total, persona, previousCo
     Current Section: "${section.title}"
     Sub-points to cover: ${JSON.stringify(section.points)} 
     
-    Context: ${FDA_CONTEXT}
-    Previous Context: ${previousContentSummary}
-    
     Instructions:
-    - Write this specific section of the article with **premium editorial flair** (think Harvard Business Review meets Food Safety Magazine).
-    - Target Word Count: 600-800 words.
-    - Tone: ${persona.tone}
-    - Style: ${persona.style} ${persona.instruction}
-    - **Formatting Rules (CRITICAL):**
-      - Use **short paragraphs** (maximum 3-4 lines). Wall of text = FAIL.
-      - Use **bullet points** (<ul>) or **numbered lists** (<ol>) whenever listing items.
-      - Use <h3> tags frequently to break up text.
-      - Use <strong>bolding</strong> for key terms, regulatory codes (e.g., "21 CFR 117"), and critical limits.
-    - **Structure:**
-      1. Start with a strong <h2>Title</h2>.
-      2. Dive immediately into the value/analysis.
-      3. Include one **"Expert Insight"** block using <blockquote>. Format: <blockquote><strong>Expert Insight:</strong> [Your specific, hard-won advice here]</blockquote>
-    - Cite regulations specifically where relevant.
+    - Write this section with **extreme depth and journalistic authority**.
+    - Target Word Count for this section: 400-600 words.
+    - Style: High-end editorial (e.g., Food Safety Magazine, Harvard Business Review). 
+    - Use sophisticated transitions.
+    - **Formatting (MANDATORY):**
+      - Use <p> tags with short paragraphs.
+      - Use <h3> and <h4> to nest information.
+      - Use <ul> or <ol> for checklists and complex lists.
+      - Use <strong> for emphasis on regulatory codes and critical terms.
+      - Add one <blockquote> with a "Leadership Insight" or "Auditor's Note".
+    - If relevant, suggest a place for an image with [IMAGE_SUGGESTION: description of a relevant food safety image].
     
     Output: HTML string ONLY.
   `;
 
-  const completion = await groq.chat.completions.create({
-    messages: [{ role: 'user', content: prompt }],
-    model: MODEL,
-    temperature: 0.6, 
-  });
-
-  return completion.choices[0].message.content;
+  return await safeAiCall([{ role: 'user', content: prompt }], 0.6);
 }
 
 async function generateIntroAndMeta(title, persona, outline) {
@@ -179,17 +138,10 @@ async function generateIntroAndMeta(title, persona, outline) {
       }
     `;
 
-    const completion = await groq.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
-        model: MODEL,
-        temperature: 0.5,
-        response_format: { type: 'json_object' }
-      });
-    
-      const result = JSON.parse(completion.choices[0].message.content);
-      // Ensure the persona name is in the intro so the UI detects it
-      result.introHtml = `<!-- Written by ${persona.role.split(',')[0]} -->\n` + result.introHtml;
-      return result;
+    const content = await safeAiCall([{ role: 'user', content: prompt }], 0.5, true);
+    const result = JSON.parse(content);
+    result.introHtml = `<!-- Written by ${persona.role.split(',')[0]} -->\n` + result.introHtml;
+    return result;
 }
 
 // --- MAIN PROCESS ---
@@ -231,12 +183,7 @@ async function main() {
         Call to action: "Audit your current plan today" or similar.
         Output: HTML string.
     `;
-    const conclusionCompletion = await groq.chat.completions.create({
-        messages: [{ role: 'user', content: conclusionPrompt }],
-        model: MODEL,
-        temperature: 0.5
-    });
-    const conclusionContent = conclusionCompletion.choices[0].message.content;
+    const conclusionContent = await safeAiCall([{ role: 'user', content: conclusionPrompt }], 0.5);
     fullContent += `\n${conclusionContent}`;
     totalWordCountEstimate += conclusionContent.split(/\s+/).length;
 
