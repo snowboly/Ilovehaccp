@@ -165,6 +165,7 @@ export default function HACCPBuilder() {
     allergenLabeling: 'No',
     processSteps: [] as string[],
     customSteps: '',
+    keyEquipment: [] as string[],
     suppliersApproved: 'No',
     verificationChecks: [] as string[],
     tempControlledDelivery: 'No',
@@ -289,7 +290,22 @@ export default function HACCPBuilder() {
 
   const handleCheckout = async (tier: string) => {
     setIsPaying(true);
-    const res = await fetch('/api/create-checkout', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ tier, planId, businessName: formData.businessLegalName }) });
+    const { data: { session: authSession } } = await supabase.auth.getSession();
+    
+    if (!authSession) {
+        alert("Please log in to purchase.");
+        setIsPaying(false);
+        return;
+    }
+
+    const res = await fetch('/api/create-checkout', { 
+        method: 'POST', 
+        headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${authSession.access_token}`
+        }, 
+        body: JSON.stringify({ tier, planId, businessName: formData.businessLegalName }) 
+    });
     const session = await res.json();
     if (session.url) window.location.href = session.url;
     setIsPaying(false);
@@ -331,9 +347,9 @@ export default function HACCPBuilder() {
                 <div className="space-y-4 mb-8">
                   <span className="text-xs font-black text-slate-400 uppercase tracking-widest block">Quick Add Suggestions:</span>
                   <div className="flex flex-wrap gap-2">
-                    {(PREDEFINED_INGREDIENTS[formData.businessType] || PREDEFINED_INGREDIENTS['default']).map((item: string) => (
+                    {((currentQ.id === 'keyEquipment' ? PREDEFINED_EQUIPMENT : PREDEFINED_INGREDIENTS)[formData.businessType] || (currentQ.id === 'keyEquipment' ? PREDEFINED_EQUIPMENT : PREDEFINED_INGREDIENTS)['default']).map((item: string) => (
                         <button key={item} onClick={() => {
-                            const cur = (formData as any)[currentQ.id];
+                            const cur = (formData as any)[currentQ.id] || [];
                             if(!cur.includes(item)) updateFormData(currentQ.id, [...cur, item]);
                         }} className="bg-slate-50 border border-slate-100 px-4 py-2 rounded-full text-sm font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all">+ {item}</button>
                     ))}

@@ -15,6 +15,7 @@ export default function AuthForm({ type }: AuthFormProps) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -29,9 +30,7 @@ export default function AuthForm({ type }: AuthFormProps) {
           password,
         });
         if (error) throw error;
-        // Auto login or show success message
-        alert('Account created! You can now log in.');
-        router.push('/login');
+        setSuccess(true);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -46,6 +45,26 @@ export default function AuthForm({ type }: AuthFormProps) {
       setLoading(false);
     }
   };
+
+  if (success) {
+    return (
+      <div className="w-full max-w-md mx-auto p-8 bg-white rounded-xl shadow-sm border text-center">
+        <div className="flex justify-center mb-6">
+          <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
+            <ShieldCheck className="h-8 w-8 text-blue-600" />
+          </div>
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Check your inbox</h2>
+        <p className="text-gray-600 mb-8 leading-relaxed">
+          We&apos;ve sent a confirmation link to <span className="font-bold text-gray-900">{email}</span>. 
+          Please click the link to activate your account.
+        </p>
+        <Link href="/login" className="text-blue-600 font-bold hover:underline">
+          Return to Login
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-md mx-auto p-8 bg-white rounded-xl shadow-sm border">
