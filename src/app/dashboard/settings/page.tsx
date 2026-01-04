@@ -22,14 +22,24 @@ export default function SettingsPage() {
   const handleManageBilling = async () => {
     setLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert('Please log in again.');
+        router.push('/login');
+        return;
+      }
+
       const response = await fetch('/api/create-portal', {
         method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${session.access_token}`
+        }
       });
       const data = await response.json();
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert('Failed to open billing portal');
+        alert(data.error || 'Failed to open billing portal');
       }
     } catch (error) {
       console.error('Billing error:', error);

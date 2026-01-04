@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { supabaseService } from '@/lib/supabase'; // We need to get the user's stripe_customer_id if we stored it, or create one.
+import { supabaseService } from '@/lib/supabase';
 
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2025-01-27.acacia' as any })
@@ -10,29 +10,35 @@ export async function POST(req: Request) {
   if (!stripe) return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
 
   try {
-    // 1. Get the current user from Supabase Auth
-    // We need the user's email to find/create their Stripe Customer record
-    // Since this is an API route called from the client, we should verify the session.
-    // For simplicity in this MVP step, we'll assume the frontend handles auth, 
-    // but in production, we should validate the auth token here.
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseService.auth.getUser(token);
+
+    if (authError || !user || !user.email) {
+        return NextResponse.json({ error: 'User not found' }, { status: 401 });
+    }
+
+    // Find Stripe Customer by email
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
-    // NOTE: To make this robust, we should pass the user's email or ID from the client,
-    // or use createServerClient from @supabase/ssr to get the session cookie.
-    
-    // For now, let's create a portal for a "guest" or handle it if we have a customer ID.
-    // Since we didn't store stripe_customer_id in our 'users' table yet (we only have 'plans'),
-    // we might not be able to link them easily without an update.
-    
-    // Strategy:
-    // If we rely on one-off payments, users might not have a "Customer" account in Stripe unless we saved it.
-    // If they paid, Stripe created a Customer. We can find it by email.
-    
-    // Let's return a dummy URL for now if we can't find the customer, or ask the user to contact support.
-    // BUT, for a "Billing Portal" to work, we MUST have a customer ID.
-    
-    return NextResponse.json({ error: 'Billing Portal requires a subscription model. For one-off payments, please check your email for invoices.' }, { status: 400 });
+    if (customers.data.length === 0) {
+        return NextResponse.json({ error: 'No billing history found for this account.' }, { status: 404 });
+    }
+
+    const customer = customers.data[0];
+
+    // Create Portal Session
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customer.id,
+      return_url: `${req.headers.get('origin')}/dashboard/settings`,
+    });
+
+    return NextResponse.json({ url: session.url });
 
   } catch (error: any) {
+    console.error('Portal error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
