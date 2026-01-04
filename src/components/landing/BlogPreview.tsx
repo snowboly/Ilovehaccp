@@ -3,26 +3,17 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { articles as localArticles } from '@/data/articles';
 
 export default function BlogPreview() {
-  const [latestArticles, setLatestArticles] = useState<any[]>([]);
+  const [randomArticles, setRandomArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchLatest() {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(3);
-      
-      if (!error && data) {
-        setLatestArticles(data);
-      }
-      setLoading(false);
-    }
-    fetchLatest();
+    // Shuffle and pick 3 articles
+    const shuffled = [...localArticles].sort(() => 0.5 - Math.random());
+    setRandomArticles(shuffled.slice(0, 3));
+    setLoading(false);
   }, []);
 
   return (
@@ -44,7 +35,7 @@ export default function BlogPreview() {
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-8">
-            {latestArticles.map((article) => {
+            {randomArticles.map((article) => {
               return (
                 <Link key={article.slug} href={`/resources/${article.slug}`} className="group cursor-pointer">
                   <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all h-full flex flex-col hover:-translate-y-1">
@@ -58,7 +49,7 @@ export default function BlogPreview() {
                     )}
                     <div className="p-8 flex-1 flex flex-col">
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{article.read_time}</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{article.readTime}</span>
                       </div>
                       <h3 className="text-xl font-black mb-3 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">{article.title}</h3>
                       <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-3 font-medium leading-relaxed">{article.excerpt}</p>

@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import InteractiveDemo from '@/components/landing/InteractiveDemo';
 import ExpertAdvisors from '@/components/landing/ExpertAdvisors';
-import Testimonials from '@/components/landing/Testimonials';
+import HowItWorks from '@/components/landing/HowItWorks';
 import BlogPreview from '@/components/landing/BlogPreview';
 import Newsletter from '@/components/landing/Newsletter';
 import SampleDownload from '@/components/landing/SampleDownload';
@@ -280,7 +280,7 @@ export default function Home() {
           </div>
         </section>
 
-        <Testimonials />
+        <HowItWorks />
         <BlogPreview />
         <Newsletter />
 
