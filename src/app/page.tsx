@@ -208,96 +208,87 @@ export default function Home() {
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {/* Free Tier - Preview */}
-              <div className="bg-slate-800 rounded-3xl p-8 border border-slate-700 hover:border-slate-600 transition-colors flex flex-col">
+              {/* Free Tier */}
+              <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 hover:border-slate-700 transition-colors flex flex-col shadow-2xl">
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold text-white mb-2">HACCP Preview</h3>
+                  <h3 className="text-xl font-black text-white mb-2">Free Plan</h3>
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-extrabold">€0</span>
+                    <span className="text-4xl font-black text-white">€0</span>
                   </div>
-                  <p className="text-slate-400 mt-4 text-sm">For assessing risks and process flow only.</p>
+                  <p className="text-slate-500 mt-4 text-sm font-medium leading-relaxed">Complete self-service plan generation.</p>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Full Wizard Access
+                  <li className="flex items-center gap-3 text-sm text-slate-300">
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> Full Wizard Access
                   </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Complete HACCP Plan
+                  <li className="flex items-center gap-3 text-sm text-slate-300">
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> Complete HACCP Plan
                   </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Full Process Flow
+                  <li className="flex items-center gap-3 text-sm text-slate-300">
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> Full Process Flow
                   </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> PDF Export Included
-                  </li>
-                  <li className="flex items-center gap-3 text-sm text-slate-500">
-                    <X className="w-5 h-5" /> No Professional Review
+                  <li className="flex items-center gap-3 text-sm text-slate-300 text-slate-500">
+                    <X className="w-5 h-5 text-slate-700" /> No Professional Review
                   </li>
                 </ul>
-                <Link href="/builder" className="w-full py-4 rounded-xl border border-slate-600 hover:bg-slate-700 font-bold text-center transition-colors">
+                <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-slate-900 font-black text-center transition-all hover:bg-slate-100 shadow-xl">
                   Start Building
                 </Link>
               </div>
 
-              {/* Starter Tier */}
-              <div className="bg-blue-600 rounded-3xl p-8 border-2 border-blue-400 shadow-2xl relative flex flex-col transform scale-105 z-10">
-                <div className="absolute top-0 right-0 bg-yellow-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                  Standard Review
+              {/* Starter Review */}
+              <div className="bg-blue-600 rounded-[2.5rem] p-8 border-2 border-blue-400 shadow-2xl relative flex flex-col transform lg:scale-110 z-10">
+                <div className="absolute top-0 right-0 bg-yellow-400 text-slate-900 text-[10px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-[0.2em]">
+                  Recommended
                 </div>
-                <div className="mb-8">
-                  <h3 className="text-xl font-bold text-white mb-2">Starter Review</h3>
+                <div className="mb-8 pt-4">
+                  <h3 className="text-xl font-black text-white mb-2">Starter Review</h3>
                   <div className="flex items-baseline">
-                    <span className="text-5xl font-extrabold">€79</span>
-                    <span className="text-blue-200 ml-2">+ VAT</span>
+                    <span className="text-5xl font-black text-white">€79</span>
+                    <span className="text-blue-200 ml-2 font-bold">+ VAT</span>
                   </div>
-                  <p className="text-blue-100 mt-4 text-sm">AI Plan + Expert Review for standard businesses.</p>
+                  <p className="text-blue-100 mt-4 text-sm font-medium">Everything in Free + Professional Review.</p>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
-                  <li className="flex items-center gap-3 text-sm font-bold">
-                    <CheckCircle2 className="w-5 h-5 text-white" /> Full Wizard Access
+                  <li className="flex items-center gap-3 text-sm font-bold text-white">
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> Everything in Free
                   </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-white" /> Complete HACCP Plan
+                  <li className="flex items-center gap-3 text-sm text-white">
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> <strong>Editable Files</strong> (Word/Excel)
                   </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-white" /> PDF Export Included
-                  </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-white" /> Expert Review Included
+                  <li className="flex items-center gap-3 text-sm text-white">
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> <strong>Basic Professional Review</strong>
                   </li>
                 </ul>
-                <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-bold text-center transition-colors shadow-lg">
+                <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-black text-center transition-all shadow-xl">
                   Get Started
                 </Link>
               </div>
 
-              {/* Professional Tier */}
-              <div className="bg-slate-800 rounded-3xl p-8 border border-slate-700 hover:border-slate-600 transition-colors flex flex-col">
+              {/* Strategic Enterprise */}
+              <div className="bg-amber-50 rounded-[2.5rem] p-8 border border-amber-200 hover:border-amber-300 transition-all flex flex-col shadow-lg shadow-amber-900/5">
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold text-white mb-2">Expert Pro</h3>
+                  <h3 className="text-xl font-black text-amber-900 mb-2">Strategic Enterprise</h3>
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-extrabold">Custom</span>
+                    <span className="text-4xl font-black text-amber-900">Custom</span>
                   </div>
-                  <p className="text-slate-400 mt-4 text-sm">For complex, multi-site, or industrial operations requiring bespoke solutions.</p>
+                  <p className="text-amber-700/70 mt-4 text-sm font-medium leading-relaxed">For complex, multi-site, or industrial operations.</p>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Everything in Starter
+                  <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> <strong>Full HACCP Plan Review</strong>
                   </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Dedicated Consultant
+                  <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> On-site Audit Options
                   </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> Multi-site Management
+                  <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> Dedicated Consultant
                   </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400" /> On-site Audit Options
-                  </li>
-                  <li className="flex items-center gap-3 text-sm font-bold text-yellow-400">
-                    <CheckCircle2 className="w-5 h-5" /> Priority Support
+                  <li className="flex items-center gap-3 text-sm text-amber-800 font-black">
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> Priority Support
                   </li>
                 </ul>
-                <Link href="/contact" className="w-full py-4 rounded-xl border border-slate-600 hover:bg-slate-700 font-bold text-center transition-colors">
+                <Link href="/contact" className="w-full py-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-center transition-all shadow-lg shadow-amber-600/20">
                   Contact for Quote
                 </Link>
               </div>

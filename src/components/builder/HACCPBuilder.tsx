@@ -612,18 +612,18 @@ export default function HACCPBuilder() {
                   </div>
 
                   {/* Free Tier Card */}
-                  <div className="p-8 bg-white rounded-[2.5rem] border-2 border-slate-50 shadow-lg group">
+                  <div className="p-8 bg-slate-950 rounded-[2.5rem] border border-slate-800 shadow-xl group text-white">
                     <div className="flex justify-between items-start mb-6">
                         <div className="space-y-1">
-                            <h4 className="text-xl font-black text-slate-900">Free Download</h4>
-                            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest">Full Self-Service Plan</p>
+                            <h4 className="text-xl font-black">Free Plan</h4>
+                            <p className="text-[10px] text-emerald-400 font-black uppercase tracking-widest">Instant Access</p>
                         </div>
-                        <div className="text-2xl font-black text-slate-900 tracking-tight">€0</div>
+                        <div className="text-2xl font-black tracking-tight">€0</div>
                     </div>
                     <ul className="space-y-4 mb-8">
-                        <li className="flex items-center gap-3 text-sm text-slate-500 font-bold"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Full Process Flow</li>
-                        <li className="flex items-center gap-3 text-sm text-slate-500 font-bold"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Hazard List Included</li>
-                        <li className="flex items-center gap-3 text-sm text-slate-500 font-bold"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PDF Export Ready</li>
+                        <li className="flex items-center gap-3 text-sm text-slate-300 font-bold"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Full Process Flow</li>
+                        <li className="flex items-center gap-3 text-sm text-slate-300 font-bold"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Hazard List Included</li>
+                        <li className="flex items-center gap-3 text-sm text-slate-300 font-bold"><CheckCircle2 className="w-4 h-4 text-blue-500" /> PDF Export Ready</li>
                     </ul>
                     {isClient && (
                         <PDFDownloadLink
@@ -642,7 +642,7 @@ export default function HACCPBuilder() {
                             />
                             }
                             fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
-                            className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-center shadow-xl hover:bg-black transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                            className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-center shadow-xl hover:bg-slate-100 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
                         >
                             {({ loading }) => (
                             <>
@@ -654,16 +654,34 @@ export default function HACCPBuilder() {
                     )}
                   </div>
 
-                  {/* Upsell Card */}
-                  <div className="p-8 bg-slate-950 text-white rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 bg-blue-600 text-[10px] font-black uppercase tracking-widest rounded-bl-2xl">Recommended</div>
+                  {/* Starter Review Card */}
+                  <div className="p-8 bg-blue-600 text-white rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 bg-yellow-400 text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-bl-2xl">Recommended</div>
                     <div className="space-y-1 mb-6">
                         <h4 className="text-xl font-black">Starter Review</h4>
-                        <div className="text-3xl font-black">€79 <span className="text-xs font-bold text-slate-500">+ VAT</span></div>
+                        <div className="text-3xl font-black">€79 <span className="text-xs font-bold text-blue-100">+ VAT</span></div>
                     </div>
-                    <p className="text-slate-400 text-sm font-medium mb-8 leading-relaxed">Everything in Free + <strong>Professional Audit Review</strong> + Editable Files (Word/Excel).</p>
-                    <button onClick={() => handleCheckout('starter')} disabled={isPaying} className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black shadow-xl shadow-blue-600/30 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
-                        {isPaying ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Upgrade to Expert Review'}
+                    <ul className="space-y-4 mb-8">
+                        <li className="flex items-center gap-3 text-sm font-bold text-blue-50"><CheckCircle2 className="w-4 h-4 text-blue-200" /> Editable Word/Excel</li>
+                        <li className="flex items-center gap-3 text-sm font-bold text-blue-50"><CheckCircle2 className="w-4 h-4 text-blue-200" /> Basic Prof. Review</li>
+                    </ul>
+                    <button onClick={() => handleCheckout('starter')} disabled={isPaying} className="w-full py-4 bg-white text-blue-600 rounded-2xl font-black shadow-xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+                        {isPaying ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Get Reviewed Plan'}
+                    </button>
+                  </div>
+
+                  {/* Strategic Enterprise Card */}
+                  <div className="p-8 bg-white rounded-[2.5rem] border-2 border-amber-100 shadow-lg">
+                    <div className="space-y-1 mb-6">
+                        <h4 className="text-xl font-black text-amber-900">Strategic Enterprise</h4>
+                        <div className="text-2xl font-black text-amber-900 tracking-tight">Custom</div>
+                    </div>
+                    <ul className="space-y-4 mb-8">
+                        <li className="flex items-center gap-3 text-sm text-slate-600 font-bold"><CheckCircle2 className="w-4 h-4 text-amber-500" /> Full Audit Support</li>
+                        <li className="flex items-center gap-3 text-sm text-slate-600 font-bold"><CheckCircle2 className="w-4 h-4 text-amber-500" /> Dedicated Consultant</li>
+                    </ul>
+                    <button onClick={() => window.location.href='/contact'} className="w-full py-4 bg-amber-600 text-white rounded-2xl font-black shadow-xl shadow-amber-600/30 transition-all transform hover:scale-105 active:scale-95">
+                        Request Quote
                     </button>
                   </div>
                 </div>
