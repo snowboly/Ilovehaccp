@@ -15,10 +15,10 @@ const team = [
     badge: "Scientific Lead"
   },
   {
-    name: "Dr. Margaret",
+    name: "Dr. Margarida",
     role: "Lead Auditor (BRCGS/SQF)",
-    bio: "20+ years ensuring global compliance. Margaret&apos;s templates are built to pass the strictest inspections.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margaret&gender=female",
+    bio: "20+ years ensuring global compliance. Margarida&apos;s templates are built to pass the strictest inspections.",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida&gender=female",
     badge: "Compliance"
   },
   {
@@ -36,10 +36,10 @@ const team = [
     badge: "Research"
   },
   {
-    name: "Dr. Elizabeth",
+    name: "Dr. Isabel",
     role: "Regulatory Specialist",
     bio: "Expert in FDA FSMA and EU Regulation 852/2004, ensuring legal alignment across borders.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elizabeth&gender=female",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel&gender=female",
     badge: "Legal"
   }
 ];
@@ -95,7 +95,7 @@ export default function AboutPage() {
                 </div>
             </div>
 
-            {/* Dr. Margaret Perspective */}
+            {/* Dr. Margarida Perspective */}
             <div className="bg-slate-900 rounded-[3rem] p-12 text-white relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
                 <blockquote className="text-2xl font-bold leading-relaxed mb-10 relative z-10">
