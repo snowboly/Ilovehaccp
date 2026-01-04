@@ -23,11 +23,6 @@ export default function Home() {
     <div className="font-sans">
       <main className="flex-1 pt-20">
         <SampleDownload />
-        {/* Beta Banner */}
-        <div className="bg-indigo-600 text-white text-center py-3 px-4 font-medium text-sm flex justify-center items-center gap-2">
-          <span className="bg-white/20 text-white px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide">Beta Launch</span>
-          <span>We are currently in public beta. All features (including PDF export) are <strong>free</strong> for a limited time!</span>
-        </div>
 
         {/* Hero Section */}
         <section className="relative overflow-hidden py-20 lg:py-32">

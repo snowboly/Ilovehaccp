@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { BookOpen, ShieldCheck, Search, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { faqs } from '@/data/faqs';
+import { articles as localArticles } from '@/data/articles';
 import ResourceTabs from '@/components/resources/ResourceTabs';
 
 export default function ResourcesPage() {
@@ -18,8 +19,12 @@ export default function ResourcesPage() {
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (!error && data) {
+      if (!error && data && data.length > 0) {
         setArticles(data);
+      } else {
+        // Fallback to local data if DB is empty or fails
+        console.log("Supabase empty/error, using local fallback");
+        setArticles(localArticles);
       }
       setLoading(false);
     }

@@ -1,11 +1,20 @@
 import { supabase } from '@/lib/supabase';
+import { articles as localArticles } from '@/data/articles';
 import { Calendar, Clock, UserCheck, ChevronRight, Bookmark, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const { data: article } = await supabase.from('articles').select('title, excerpt').eq('slug', slug).single();
+  let article;
+  
+  const { data } = await supabase.from('articles').select('title, excerpt').eq('slug', slug).single();
+  if (data) {
+    article = data;
+  } else {
+    article = localArticles.find(a => a.slug === slug);
+  }
+
   if (!article) return { title: 'Article Not Found' };
   return { title: `${article.title} | ilovehaccp.com`, description: article.excerpt };
 }
@@ -40,30 +49,53 @@ function highlightListTerms(html: string) {
 }
 
 const PERSONAS: Record<string, any> = {
-    "Dr. Joao": { role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao" },
-    "Dr. Margarida": { role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margarida" },
-    "Dr. Fabio": { role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio" },
-    "Dr. Claudia": { role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia" },
-    "Dr. Isabel": { role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isabel" }
+    "Dr. Joao": { role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Joao&gender=male" },
+    "Dr. Margaret": { role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margaret is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Margaret&gender=female" },
+    "Dr. Fabio": { role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fabio&gender=male" },
+    "Dr. Claudia": { role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Claudia&gender=female" },
+    "Dr. Elizabeth": { role: "Regulatory Compliance Specialist", bio: "Dr. Elizabeth is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elizabeth&gender=female" }
 };
 
 function getExpertFromContent(content: string) {
     if (content.includes("Dr. Joao")) return PERSONAS["Dr. Joao"];
-    if (content.includes("Dr. Margarida")) return PERSONAS["Dr. Margarida"];
+    if (content.includes("Dr. Margaret")) return PERSONAS["Dr. Margaret"];
     if (content.includes("Dr. Fabio")) return PERSONAS["Dr. Fabio"];
     if (content.includes("Dr. Claudia")) return PERSONAS["Dr. Claudia"];
-    if (content.includes("Dr. Isabel")) return PERSONAS["Dr. Isabel"];
+    if (content.includes("Dr. Elizabeth")) return PERSONAS["Dr. Elizabeth"];
     return PERSONAS["Dr. Joao"];
 }
 
 export async function generateStaticParams() {
   const { data: articles } = await supabase.from('articles').select('slug');
-  return (articles || []).map((a) => ({ slug: a.slug }));
+  const dbSlugs = (articles || []).map((a) => ({ slug: a.slug }));
+  
+  // Merge with local slugs to ensure all are built
+  const localSlugs = localArticles.map(a => ({ slug: a.slug }));
+  
+  // Deduplicate
+  const allSlugs = [...dbSlugs];
+  localSlugs.forEach(ls => {
+    if (!allSlugs.find(ds => ds.slug === ls.slug)) {
+      allSlugs.push(ls);
+    }
+  });
+
+  return allSlugs;
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const { data: article } = await supabase.from('articles').select('*').eq('slug', slug).single();
+  
+  let article;
+  const { data } = await supabase.from('articles').select('*').eq('slug', slug).single();
+  
+  if (data) {
+    article = data;
+  } else {
+    // Fallback to local
+    article = localArticles.find(a => a.slug === slug);
+  }
+
   if (!article) notFound();
 
   const headings = getHeadings(article.content);
