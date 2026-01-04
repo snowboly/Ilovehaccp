@@ -1,16 +1,27 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight, AlertTriangle, CheckCircle2, Loader2, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
-const EXAMPLES = ["Sushi", "Beef Jerky", "Kombucha", "Mayo", "Cooked Ham"];
+const ALL_EXAMPLES = [
+  "Sushi", "Beef Jerky", "Kombucha", "Mayo", "Cooked Ham", 
+  "Ice Cream", "Cold Brew", "Kimchi", "Sourdough", "Smoked Salmon",
+  "Oysters", "Pasta Sauce", "Protein Bars", "Baby Food", "Frozen Pizza"
+];
 
 export default function InteractiveDemo() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{hazard: string; control: string} | null>(null);
+  const [examples, setExamples] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Pick 5 random examples on mount
+    const shuffled = [...ALL_EXAMPLES].sort(() => 0.5 - Math.random());
+    setExamples(shuffled.slice(0, 5));
+  }, []);
 
   const handleAnalyze = async (e: React.FormEvent | string) => {
     if (typeof e !== 'string') e.preventDefault();
@@ -76,7 +87,7 @@ export default function InteractiveDemo() {
 
             <div className="flex flex-wrap items-center justify-center gap-2">
                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mr-2">Quick Start:</span>
-                {EXAMPLES.map(ex => (
+                {examples.map(ex => (
                     <button 
                         key={ex} 
                         onClick={() => handleAnalyze(ex)}

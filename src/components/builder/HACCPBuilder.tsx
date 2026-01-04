@@ -104,8 +104,6 @@ interface FullHACCPPlan {
   }[];
 }
 
-const STORAGE_KEY = 'haccp_builder_state_v3';
-
 const PREDEFINED_INGREDIENTS: any = {
   'Restaurant': ['Raw Meat', 'Poultry', 'Fish', 'Eggs', 'Dairy', 'Fresh Produce', 'Dry Goods', 'Frozen Goods', 'Oils & Fats'],
   'Bakery': ['Flour', 'Sugar', 'Eggs', 'Yeast', 'Butter', 'Milk', 'Nuts', 'Chocolate', 'Fruit Fillings', 'Spices'],
@@ -199,20 +197,12 @@ export default function HACCPBuilder() {
 
   useEffect(() => {
     setIsClient(true);
-    const savedState = localStorage.getItem(STORAGE_KEY);
-    if (savedState) {
-        try { setFormData(prev => ({ ...prev, ...JSON.parse(savedState) })); } catch (e) { console.error(e); }
-    }
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) setUserId(session.user.id);
     };
     checkUser();
   }, []);
-
-  useEffect(() => {
-      if (isClient) localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-  }, [formData, isClient]);
 
   useEffect(() => {
     if (step === 'generating') {
