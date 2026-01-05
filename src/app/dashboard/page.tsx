@@ -109,6 +109,31 @@ function DashboardContent() {
     router.push('/');
   };
 
+  const handleDownloadWord = async (plan: Plan) => {
+      try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) return;
+
+          const res = await fetch(`/api/download-word?planId=${plan.id}`, {
+              headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+          
+          if (!res.ok) throw new Error('Download failed');
+          
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+      } catch (e) {
+          console.error(e);
+          alert('Failed to download Word document.');
+      }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -220,13 +245,14 @@ function DashboardContent() {
                     Last edited {new Date(plan.created_at).toLocaleDateString()}
                   </div>
                 </div>
-                <div className="border-t bg-gray-50 p-4 flex gap-2">
+                <div className="border-t bg-gray-50 p-4 grid grid-cols-3 gap-2">
                   <Link 
                       href={`/builder?id=${plan.id}`}
-                      className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+                      className="flex items-center justify-center gap-1 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors"
                   >
-                      <Edit className="h-4 w-4" /> Edit
+                      <Edit className="h-3 w-3" /> Edit
                   </Link>
+                  
                   <PDFDownloadLink
                       document={
                       <HACCPDocument 
@@ -243,15 +269,29 @@ function DashboardContent() {
                       />
                       }
                       fileName={`${plan.business_name.replace(/\s+/g, '_')}_HACCP.pdf`}
-                      className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                      className="flex items-center justify-center gap-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors"
                   >
                       {({ loading }) => (
                       <>
-                          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                          {loading ? '...' : 'Export'}
+                          {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
+                          PDF
                       </>
                       )}
                   </PDFDownloadLink>
+
+                  {plan.payment_status === 'paid' ? (
+                      <button
+                          onClick={() => handleDownloadWord(plan)}
+                          className="flex items-center justify-center gap-1 bg-blue-800 text-white py-2 rounded-lg text-xs font-medium hover:bg-blue-900 transition-colors"
+                          title="Download Editable Word Doc"
+                      >
+                          <FileText className="h-3 w-3" /> DOCX
+                      </button>
+                  ) : (
+                      <button disabled className="flex items-center justify-center gap-1 bg-gray-100 text-gray-400 py-2 rounded-lg text-xs font-medium cursor-not-allowed" title="Upgrade to Unlock Word">
+                          <Lock className="h-3 w-3" /> DOCX
+                      </button>
+                  )}
                 </div>
               </div>
             ))}

@@ -339,24 +339,64 @@ const HACCPDocument = ({ data, dict }: Props) => {
             {fullPlan?.process_flow_narrative || "Process follows standard flow: Receiving -> Storage -> Prep -> Cook -> Service."}
             </Text>
             
-            {/* Visual Process Flow in PDF */}
-            <View style={{ marginTop: 10, padding: 10, backgroundColor: '#F9FAFB', borderRadius: 8 }}>
+            {/* Visual Process Flow in PDF - Enhanced Card Style */}
+            <View style={{ marginTop: 15, padding: 10 }}>
                 {data.analysis.map((item, i) => (
-                    <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                    <View key={i} style={{ alignItems: 'center', width: '100%' }}>
                         <View style={{ 
-                            width: 12, 
-                            height: 12, 
-                            borderRadius: 6, 
-                            backgroundColor: item.is_ccp ? '#B91C1C' : '#1E3A8A',
-                            marginRight: 8
-                        }} />
-                        <Text style={{ 
-                            fontSize: 8, 
-                            fontWeight: item.is_ccp ? 'bold' : 'normal',
-                            color: item.is_ccp ? '#B91C1C' : '#374151'
+                            flexDirection: 'row', 
+                            alignItems: 'center', 
+                            width: '80%', 
+                            padding: 10,
+                            borderRadius: 4,
+                            borderWidth: 1,
+                            borderColor: item.is_ccp ? '#FECACA' : '#E5E7EB', // Red-200 vs Gray-200
+                            backgroundColor: item.is_ccp ? '#FEF2F2' : '#FFFFFF', // Red-50 vs White
+                            marginBottom: 4
                         }}>
-                            {i + 1}. {item.step_name} {item.is_ccp ? '(CCP)' : ''}
-                        </Text>
+                            {/* Step Number Box */}
+                            <View style={{ 
+                                width: 24, 
+                                height: 24, 
+                                borderRadius: 4, 
+                                backgroundColor: item.is_ccp ? '#EF4444' : '#F3F4F6', // Red-500 vs Gray-100
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                marginRight: 10
+                            }}>
+                                <Text style={{ 
+                                    color: item.is_ccp ? '#FFFFFF' : '#6B7280', 
+                                    fontSize: 10, 
+                                    fontWeight: 'bold' 
+                                }}>
+                                    {i + 1}
+                                </Text>
+                            </View>
+
+                            {/* Step Details */}
+                            <View style={{ flex: 1 }}>
+                                <Text style={{ 
+                                    fontSize: 10, 
+                                    fontWeight: 'bold', 
+                                    color: item.is_ccp ? '#991B1B' : '#1F2937' // Red-800 vs Gray-800
+                                }}>
+                                    {item.step_name}
+                                </Text>
+                                <Text style={{ 
+                                    fontSize: 7, 
+                                    color: item.is_ccp ? '#B91C1C' : '#9CA3AF', 
+                                    textTransform: 'uppercase',
+                                    marginTop: 2
+                                }}>
+                                    {item.is_ccp ? 'CRITICAL CONTROL POINT' : 'PREREQUISITE STEP'}
+                                </Text>
+                            </View>
+                        </View>
+                        
+                        {/* Connecting Arrow */}
+                        {i < data.analysis.length - 1 && (
+                            <Text style={{ fontSize: 12, color: '#D1D5DB', marginBottom: 4 }}>↓</Text>
+                        )}
                     </View>
                 ))}
             </View>
