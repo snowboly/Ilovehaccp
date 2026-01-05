@@ -5,7 +5,7 @@ const path = require('path');
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 async function migrate() {
@@ -27,10 +27,21 @@ async function migrate() {
     const image = (block.match(/image:\s*['"](.*?)['"]/) || [])[1];
     const publishedAt = (block.match(/publishedAt:\s*['"](.*?)['"]/) || [])[1];
     
-    // Extract content (everything between content: ` and `, )
-    const contentStart = block.indexOf('content: `') + 10;
-    const contentEnd = block.lastIndexOf('`,');
-    const articleContent = block.substring(contentStart, contentEnd);
+    // Extract content (everything between content: ` and the last `)
+    const contentStartMarker = 'content: `';
+    const contentStartIndex = block.indexOf(contentStartMarker);
+    
+    if (contentStartIndex === -1) continue;
+    
+    const contentStart = contentStartIndex + contentStartMarker.length;
+    const contentEnd = block.lastIndexOf('`');
+    
+    if (contentEnd <= contentStart) continue;
+
+    let articleContent = block.substring(contentStart, contentEnd);
+    
+    // Unescape backticks and ${}
+    articleContent = articleContent.replace(/\\`/g, '`').replace(/\\\${/g, '${');
 
     if (!slug || !title) continue;
 

@@ -12185,8 +12185,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <p>In conclusion, small food businesses must understand and comply with food safety regulations to ensure the safety of their products and protect public health.</p><p> By focusing on key areas such as hazard analysis, sanitation, record-keeping, supply chain management, and employee training, small food businesses can build trust with regulators and avoid legal and financial consequences.  By following the guidelines and standards outlined in the Codex Alimentarius and the FDA's FSMA, small food businesses can ensure compliance and provide safe and healthy food products to their customers.</p>
       <ul>
          <li>Codex Alimentarius: <a href='https://www.fao.org/fao-who-codexalimentarius/home/en/'>https://www.fao.org/fao-who-codexalimentarius/home/en/</a></li>
-         <li>FDA's Food Safety Modernization Act (FSMA): <a href='https://www.fda.gov/food/food-safety-modernization-act-fsma'>https://www.fda.gov/food/food-safety-modernization-act-fsma</a></li>
-         <li>FDA's Model Food Code: <a href='https://www.fda.gov/food/retail-food-protection/model-food-code'>https://www.fda.gov/food/retail-food-protection/model-food-code</a></li>
+         <li>FDA's Food Safety Modernization Act (FSMA): <a href='https://www.fda.gov/food/guidance-regulation-food-and-dietary-supplements/food-safety-modernization-act-fsma'>https://www.fda.gov/food/guidance-regulation-food-and-dietary-supplements/food-safety-modernization-act-fsma</a></li>
+         <li>FDA's Model Food Code: <a href='https://www.fda.gov/food/fda-food-code/food-code-2022'>https://www.fda.gov/food/fda-food-code/food-code-2022</a></li>
       </ul>`
   },
   {
