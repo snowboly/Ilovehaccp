@@ -1,6 +1,5 @@
 import { supabase } from '@/lib/supabase';
 import { articles as localArticles } from '@/data/articles';
-import { Calendar, Clock, UserCheck, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import JSONLD from '@/components/layout/JSONLD';
@@ -122,78 +121,127 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD]">
+    <div className="min-h-screen bg-white">
       <JSONLD data={structuredData} />
-      <div className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 py-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-          <Link href="/" className="hover:text-blue-600">Home</Link>
-          <ChevronRight className="w-3 h-3" />
-          <Link href="/resources" className="hover:text-blue-600">Resources</Link>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-slate-900 truncate">{article.category}</span>
+      
+      {/* Wiki-style Header / Navbar substitute */}
+      <div className="border-b border-slate-200 bg-slate-50/50">
+        <div className="container mx-auto px-4 py-2 flex items-center gap-2 text-xs font-sans text-slate-500">
+          <Link href="/" className="hover:underline text-blue-600">Main Page</Link>
+          <span>›</span>
+          <Link href="/resources" className="hover:underline text-blue-600">Resources</Link>
+          <span>›</span>
+          <span className="text-slate-700">{article.category}</span>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16">
-          <main className="lg:w-2/3">
-            <header className="mb-10">
-              <div className="text-blue-600 font-black uppercase tracking-widest text-sm mb-4">{article.category}</div>
-              <h1 className="font-serif text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-6">{article.title}</h1>
-              <div className="flex flex-wrap items-center gap-6 text-sm text-slate-500 border-y border-slate-100 py-4 mb-10 font-medium">
-                <div className="flex items-center gap-2"><Clock className="w-4 h-4" /><span>{article.read_time || article.readTime}</span></div>
-                <div className="flex items-center gap-2"><Calendar className="w-4 h-4" /><span>{article.published_at || article.publishedAt}</span></div>
-                <div className="flex items-center gap-2"><UserCheck className="w-4 h-4 text-blue-600" /><span className="font-bold text-slate-900">Expert Reviewed</span></div>
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12">
+          
+          <main className="lg:w-3/4 min-w-0"> {/* min-w-0 fixes flex overflow */}
+            <header className="mb-6 border-b border-slate-300 pb-4">
+              <h1 className="font-serif text-3xl md:text-4xl font-normal text-black leading-tight mb-2 italic border-b-0">
+                {article.title}
+              </h1>
+              <div className="text-sm text-slate-500 font-sans">
+                From iLoveHACCP, the free encyclopedia of food safety.
               </div>
-              {article.image && (
-                <figure className="mb-12">
-                  <img src={article.image} alt={article.title} className="w-full rounded-xl shadow-sm max-h-[500px] object-cover" />
-                </figure>
-              )}
             </header>
 
+            {/* Wiki-style warning/info banner if high authority */}
             {isHighAuthority && (
-                <div className="mb-12 p-10 bg-slate-50 border-l-8 border-blue-600 rounded-r-3xl">
-                    <h4 className="font-serif text-2xl font-black text-slate-900 mb-4 tracking-tight uppercase">Technical Abstract</h4>
-                    <p className="text-slate-700 text-xl leading-relaxed font-medium italic">&quot;{article.excerpt}&quot;</p>
+                <div className="mb-6 p-4 bg-slate-50 border border-slate-200 text-sm text-slate-800 flex gap-4 items-start">
+                    <div className="mt-1 min-w-[20px] text-center font-serif font-bold text-slate-500">i</div>
+                    <div className="italic">
+                      &quot;{article.excerpt}&quot;
+                    </div>
                 </div>
             )}
 
-            <div 
-              className="prose prose-slate prose-lg md:prose-2xl max-w-none font-serif 
-                prose-headings:text-slate-900 prose-headings:font-black prose-headings:tracking-tight
-                prose-h2:text-3xl md:prose-h2:text-5xl prose-h2:mt-32 prose-h2:mb-12 prose-h2:pb-8 prose-h2:border-b-4 prose-h2:border-slate-900 
-                prose-h2:before:content-['ANALYSIS_UNIT'] prose-h2:before:block prose-h2:before:text-[11px] prose-h2:before:text-blue-600 prose-h2:before:tracking-[0.5em] prose-h2:before:font-sans prose-h2:before:mb-4 
-                prose-p:leading-[1.8] prose-p:text-slate-700 prose-p:text-justify md:prose-p:text-left
-                prose-ul:list-none prose-ul:pl-0 
-                prose-blockquote:border-l-8 prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50/50 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:rounded-r-3xl prose-blockquote:not-italic
-                prose-strong:text-slate-900 prose-strong:font-black"
-              dangerouslySetInnerHTML={{ __html: processedContent }}
-            />
+            <div className="flex flex-col-reverse lg:flex-row gap-8 items-start">
+              {/* Main Content Column */}
+              <div className="flex-1 min-w-0">
+                 {/* TOC for Mobile */}
+                 <div className="lg:hidden mb-8 p-3 bg-slate-50 border border-slate-200 inline-block rounded-sm min-w-[200px]">
+                    <div className="font-sans font-bold text-center text-sm mb-2">Contents</div>
+                    <nav className="text-xs space-y-1">
+                      {headings.map((h, i) => (
+                        <a key={i} href={`#${h.id}`} className={`block hover:underline text-blue-600 ${h.level === 3 ? 'pl-4' : 'pl-0'}`}>
+                          <span className="text-slate-500 mr-1">{i + 1}</span> {h.text}
+                        </a>
+                      ))}
+                    </nav>
+                 </div>
 
-            <div className="mt-20 p-10 bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-10 items-center">
-                <img src={expert.image} alt={expert.role} className="w-24 h-24 rounded-full object-cover shadow-lg ring-4 ring-blue-50" />
-                <div>
-                    <h5 className="font-serif text-2xl font-black text-slate-900 mb-3">About the Author</h5>
-                    <p className="text-slate-600 leading-relaxed mb-6 font-medium text-lg">{expert.bio}</p>
-                    <span className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">{expert.role}</span>
+                 <div 
+                  className="prose prose-slate max-w-none font-sans text-[15px] leading-7 text-[#202122]
+                    prose-headings:font-serif prose-headings:font-normal prose-headings:text-black
+                    prose-h2:text-2xl prose-h2:border-b prose-h2:border-slate-300 prose-h2:pb-1 prose-h2:mt-8 prose-h2:mb-4
+                    prose-h3:text-lg prose-h3:font-bold prose-h3:mt-6 prose-h3:mb-2
+                    prose-p:my-3 prose-p:text-justify md:prose-p:text-left
+                    prose-a:text-[#3366cc] prose-a:no-underline hover:prose-a:underline
+                    prose-ul:list-disc prose-ul:pl-5 prose-ul:my-3
+                    prose-li:my-0.5
+                    prose-img:my-6 prose-img:border prose-img:border-slate-200 prose-img:p-1 prose-img:bg-white
+                    prose-blockquote:border-l-4 prose-blockquote:border-slate-200 prose-blockquote:pl-4 prose-blockquote:text-slate-600 prose-blockquote:italic
+                    prose-strong:font-bold prose-strong:text-black"
+                  dangerouslySetInnerHTML={{ __html: processedContent }}
+                />
+
+                {/* References / Author Section (Wiki Style) */}
+                <div className="mt-12 pt-4 border-t border-slate-300">
+                    <h2 className="font-serif text-xl font-normal border-b border-slate-300 pb-1 mb-4">References & Authors</h2>
+                    <div className="text-sm text-slate-600">
+                        <p className="mb-2">This article was reviewed by <strong>{expert.name}</strong> ({expert.role}).</p>
+                        <p className="italic">{expert.bio}</p>
+                        <p className="mt-4 text-xs text-slate-400">Last edited on {article.published_at || article.publishedAt}</p>
+                    </div>
                 </div>
+              </div>
+
+              {/* Desktop Sidebar (TOC + Infobox) */}
+              <aside className="hidden lg:block w-[300px] shrink-0 space-y-6">
+                 {/* Infobox Image */}
+                 {article.image && (
+                    <div className="border border-slate-200 bg-slate-50 p-1 text-xs">
+                      <img src={article.image} alt={article.title} className="w-full mb-2 bg-white" />
+                      <div className="px-2 pb-1 text-slate-600 text-center leading-tight">
+                        Figure 1: {article.title} visualization.
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Desktop TOC */}
+                  <div className="bg-[#f8f9fa] border border-[#a2a9b1] p-4 text-sm rounded-sm">
+                    <div className="font-sans font-bold text-center mb-3">Contents</div>
+                    <nav className="space-y-1.5 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                      {headings.map((h, i) => (
+                        <a key={i} href={`#${h.id}`} className={`block hover:underline text-[#3366cc] ${h.level === 3 ? 'pl-4 text-xs' : 'font-medium'}`}>
+                          <span className="text-black inline-block w-4 mr-1">{i + 1}</span>{h.text}
+                        </a>
+                      ))}
+                    </nav>
+                  </div>
+                  
+                  {/* CTA Box (Wiki style ad/box) */}
+                  <div className="border border-[#a2a9b1] bg-blue-50/30 p-4 text-center">
+                    <div className="font-serif font-bold text-sm mb-2">HACCP Plan Generator</div>
+                    <p className="text-xs text-slate-600 mb-3">Create a compliant HACCP plan for your facility in minutes.</p>
+                    <Link href="/builder" className="inline-block bg-[#3366cc] text-white px-4 py-1.5 text-sm font-bold rounded-sm hover:underline">Start Builder</Link>
+                  </div>
+              </aside>
             </div>
           </main>
 
-          <aside className="lg:w-1/3 space-y-12">
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm sticky top-24">
-              <div className="text-slate-900 font-serif font-black text-2xl border-b-2 border-slate-900 pb-2 mb-6">Table of Contents</div>
-              <nav className="space-y-4">
-                {headings.map((h, i) => (
-                  <a key={i} href={`#${h.id}`} className={`block text-base transition-all border-l-2 pl-4 hover:text-blue-700 ${h.level === 3 ? 'ml-4 text-slate-500 italic' : 'text-slate-800 font-bold font-serif'}`}>{h.text}</a>
-                ))}
-              </nav>
-              <div className="mt-10 pt-10 border-t border-slate-100 text-center">
-                <Link href="/builder" className="block w-full bg-blue-600 text-white py-4 rounded-xl font-black shadow-lg hover:scale-[1.02] transition-all">Generate Free Plan</Link>
-              </div>
-            </div>
+          <aside className="lg:w-1/4 hidden lg:block border-l border-slate-200 pl-8">
+             <div className="text-xs text-slate-500 font-sans uppercase tracking-widest mb-4">Related Topics</div>
+             <ul className="space-y-2 text-sm">
+                <li><Link href="/resources" className="text-[#3366cc] hover:underline">All Resources</Link></li>
+                <li><Link href="/builder" className="text-[#3366cc] hover:underline">HACCP Builder Tool</Link></li>
+                <li><Link href="/about" className="text-[#3366cc] hover:underline">About the Experts</Link></li>
+             </ul>
           </aside>
+
         </div>
       </div>
     </div>
