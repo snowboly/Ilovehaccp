@@ -18,7 +18,7 @@ const team = [
   {
     name: "Dr. Margarida",
     role: "Lead Auditor (BRCGS/SQF)",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Margarida",
+    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Margarida&hairColor=brown&top=longHair&skinColor=light&mouth=smile",
     bio: "Ensures every plan meets global audit standards.",
     details: "Over 500 successful audits across 12 countries.",
     badge: "Compliance"
@@ -26,7 +26,7 @@ const team = [
   {
     name: "Dr. Fabio",
     role: "Industrial Ops Expert",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Fabio",
+    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Fabio&hairColor=brown&top=shortHair&facialHair=beardMedium&mouth=smile&skinColor=light",
     bio: "Bridging the gap between theory and factory floor.",
     details: "Specialist in large-scale food manufacturing systems.",
     badge: "Operations"
@@ -34,7 +34,7 @@ const team = [
   {
     name: "Dr. Claudia",
     role: "Food Science Professor",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Claudia",
+    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Claudia&hairColor=brown&top=curly&skinColor=light",
     bio: "Leading research in preservation technologies.",
     details: "Focuses on emerging technologies and shelf-life extension.",
     badge: "Research"
@@ -42,7 +42,7 @@ const team = [
   {
     name: "Dr. Isabel",
     role: "Regulatory Specialist",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Isabel",
+    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Isabel&hairColor=blonde&top=longHair&skinColor=light",
     bio: "Master of FDA FSMA and EU Food Law.",
     details: "Consults for multi-national food conglomerates on legal compliance.",
     badge: "Legal"

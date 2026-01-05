@@ -52,10 +52,10 @@ function highlightListTerms(html: string) {
 
 const PERSONAS: Record<string, any> = {
   "Dr. Joao": { name: "Dr. Joao", role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Joao" },
-  "Dr. Margarida": { name: "Dr. Margarida", role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Margarida" },
-  "Dr. Fabio": { name: "Dr. Fabio", role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Fabio" },
-  "Dr. Claudia": { name: "Dr. Claudia", role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Claudia" },
-  "Dr. Isabel": { name: "Dr. Isabel", role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Isabel" }
+  "Dr. Margarida": { name: "Dr. Margarida", role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Margarida&hairColor=brown&top=longHair&skinColor=light&mouth=smile" },
+  "Dr. Fabio": { name: "Dr. Fabio", role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Fabio&hairColor=brown&top=shortHair&facialHair=beardMedium&mouth=smile&skinColor=light" },
+  "Dr. Claudia": { name: "Dr. Claudia", role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Claudia&hairColor=brown&top=curly&skinColor=light" },
+  "Dr. Isabel": { name: "Dr. Isabel", role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Isabel&hairColor=blonde&top=longHair&skinColor=light" }
 };
 
 function getExpertFromContent(content: string) {
