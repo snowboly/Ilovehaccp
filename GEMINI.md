@@ -2,6 +2,27 @@
 
 ## Implementation Status
 
+### v3.2 Editorial & Functional Polish (Jan 5, 2026)
+- **Content Integrity:** 
+    - Deduplicated article database (removed 1 corrupted/duplicate entry).
+    - Fixed 404 links to FDA FSMA/Food Code guidance.
+    - Implemented **Smart Image Deduplication**: Replaced 101 duplicate image instances with context-aware, unique Pexels assets.
+- **Editorial Redesign:** 
+    - Transformed Article Detail pages (`/resources/[slug]`) into a clean, "Wikipedia-style" layout (sans-serif body, serif headers, sidebar TOC/Infobox) to improve readability and authority.
+- **Wizard Enhancements:** 
+    - Added "Infrastructure Maintenance" and "Preventative Maintenance" steps to the builder wizard.
+    - Updated PDF generation logic to include these new compliance controls.
+    - Visual Process Flow in PDF now matches the web UI "card" style (red/white theme with arrows).
+- **Monetization & Admin:**
+    - **Admin Dashboard:** Created a secure `/admin/dashboard` (server-side email whitelist) to view paid plans.
+    - **Word Export:** Implemented `.docx` generation for paid users (and admins).
+    - **Stripe:** Updated API version to `2025-12-15.clover` and verified webhook configuration for automatic plan unlocking.
+- **Internationalization (i18n):**
+    - Extended translation dictionary to cover the **entire Landing Page** (Hero, Features, Pricing, How It Works).
+    - Refactored components to use dynamic `t()` hooks, ensuring full page translation when switching languages.
+- **Visuals:**
+    - Reverted expert avatars to stable DiceBear v9 `avataaars` seeds (Joao/Fabio=Male, others=Female) to ensure reliability.
+
 ### v3.1 Avatar & Authority Refinements (Jan 4, 2026)
 - **Avatar System Upgrade:** 
     - Migrated from DiceBear 7.x to 9.x to resolve broken image issues caused by API versioning.
@@ -42,7 +63,7 @@
 
 ## Current Pricing Model
 - **Free Tier:** AI-Generated HACCP Plan + Instant PDF Export + PRPs.
-- **Starter Review (€79 + VAT):** AI Plan + Expert 1-on-1 Human Review + Compliance Stamp.
+- **Starter Review (€79 + VAT):** AI Plan + Expert 1-on-1 Human Review + Compliance Stamp + **Editable Word Doc**.
 - **Expert Pro (Custom):** Multi-site operations, industrial audits, and bespoke consultancy.
 
 ## Next Steps
