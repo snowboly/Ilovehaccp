@@ -54,7 +54,7 @@ export async function POST(req: Request) {
       coolingTempTarget, coolingTimeLimit, isReheatingPerformed,
       hotHoldingTemp, coldHoldingTemp, transportTempMethod,
       keyEquipment, equipmentCalibration, trainingReceived,
-      cleaningFrequency, recordType
+      cleaningFrequency, recordType, infrastructureMaintenance, preventativeMaintenance
     } = body;
 
     const tempUnit = (country || '').toLowerCase().includes('usa') || (country || '').toLowerCase().includes('united states') ? '°F' : '°C';
@@ -101,6 +101,7 @@ export async function POST(req: Request) {
     Benchmarking Logic:
     - Base score 70. 
     - Adjust +10 for Calibration='Yes', +10 for Training='Yes', +10 for Approved Suppliers='Yes'.
+    - Adjust +5 for Infrastructure='Yes' and +5 for Preventative Maintenance='Yes'.
     - Adjust -10 if 'isVulnerable' is 'Yes' but controls look basic.
     `;
 
@@ -108,7 +109,7 @@ export async function POST(req: Request) {
       Business: ${businessLegalName} | Type: ${businessType} | Country: ${country}
       Ingredients: ${mainIngredients?.join(', ')} | Allergens: ${allergens?.join(', ')}
       Steps: ${processSteps?.map((s: any) => s.name).join(', ')}
-      Controls: Calibration=${equipmentCalibration}, Training=${trainingReceived}, Suppliers=${suppliersApproved}
+      Controls: Calibration=${equipmentCalibration}, Training=${trainingReceived}, Suppliers=${suppliersApproved}, Infrastructure=${infrastructureMaintenance}, Maintenance=${preventativeMaintenance}
     `;
 
     const completion = await groq.chat.completions.create({

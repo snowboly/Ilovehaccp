@@ -187,6 +187,8 @@ export default function HACCPBuilder() {
     cleaningFrequency: '',
     trainingReceived: 'No',
     pestControlContract: 'No',
+    infrastructureMaintenance: 'Yes',
+    preventativeMaintenance: 'Yes',
     equipmentCalibration: 'Yes, scheduled', // New field
     ccpsMonitored: 'No',
   });
@@ -245,6 +247,10 @@ export default function HACCPBuilder() {
     { id: 'cleaningFrequency', section: 'Hygiene', question: "Frequency of deep cleaning?", type: 'radio', options: ['Daily', 'Weekly', 'Shift-based'], icon: <Brush /> },
     { id: 'trainingReceived', section: 'Personnel', question: "Have all staff received food hygiene training?", type: 'radio', options: ['Yes', 'No'], icon: <GraduationCap /> },
     { id: 'pestControlContract', section: 'Safety', question: "Is a pest control contract in place?", type: 'radio', options: ['Yes', 'No'], icon: <Bug /> },
+    
+    // New PRPs
+    { id: 'infrastructureMaintenance', section: 'Infrastructure', question: "Are premises maintained to prevent contamination (lighting, drainage, ventilation)?", type: 'radio', options: ['Yes', 'No'], icon: <Warehouse /> },
+    { id: 'preventativeMaintenance', section: 'Maintenance', question: "Is there a preventative maintenance schedule for key equipment?", type: 'radio', options: ['Yes', 'No'], icon: <Wrench /> },
     
     // New Section or Step
     { id: 'equipmentCalibration', section: 'Maintenance', question: "Are critical thermometers and equipment calibrated regularly?", type: 'radio', options: ['Yes, scheduled', 'Occasionally', 'No'], icon: <Wrench />, required: true },
