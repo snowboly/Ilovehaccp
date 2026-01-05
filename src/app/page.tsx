@@ -13,14 +13,16 @@ import {
   ChevronRight
 } from 'lucide-react';
 import InteractiveDemo from '@/components/landing/InteractiveDemo';
-import ExpertAdvisors from '@/components/landing/ExpertAdvisors';
 import HowItWorks from '@/components/landing/HowItWorks';
 import BlogPreview from '@/components/landing/BlogPreview';
 import Newsletter from '@/components/landing/Newsletter';
 import SampleDownload from '@/components/landing/SampleDownload';
 import JSONLD from '@/components/layout/JSONLD';
+import { useLanguage } from '@/lib/i18n';
 
 export default function Home() {
+  const { t } = useLanguage();
+  
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -29,7 +31,7 @@ export default function Home() {
     "logo": "https://www.ilovehaccp.com/icon.svg",
     "description": "AI-powered HACCP plan generator for food businesses.",
     "sameAs": [
-      "https://twitter.com/ilovehaccp", // Add actual social links if available
+      "https://twitter.com/ilovehaccp", 
       "https://linkedin.com/company/ilovehaccp"
     ]
   };
@@ -53,20 +55,20 @@ export default function Home() {
               <div className="space-y-8">
                 <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold">
                   <Star className="w-4 h-4 fill-blue-700" />
-                  Rated #1 AI Food Safety Tool
+                  {t('landing.hero.badge')}
                 </div>
                 <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1]">
-                  HACCP Plans <br />
+                  {t('landing.hero.titlePart1')} <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                    Done in Minutes.
+                    {t('landing.hero.titlePart2')}
                   </span>
                 </h1>
                 <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
-                  Ditch the manual paperwork. Our AI assistant automates your food safety documentation, creating comprehensive plans tailored to your specific product and regional requirements.
+                  {t('landing.hero.subtitle')}
                 </p>
                 <div className="flex flex-col sm:flex-row items-center gap-6">
                   <Link href="/builder" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-center px-10 py-5 rounded-2xl text-xl font-black transition-all shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
-                    Build Your Plan Free
+                    {t('landing.hero.cta')}
                     <ArrowRight className="w-6 h-6" />
                   </Link>
                   <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
@@ -78,22 +80,21 @@ export default function Home() {
                           ))}
                       </div>
                       <div className="text-sm">
-                          <p className="font-black text-slate-900 leading-none">Audit Ready</p>
-                          <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1">Validated Logic</p>
+                          <p className="font-black text-slate-900 leading-none">{t('landing.hero.auditReady')}</p>
+                          <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1">{t('landing.hero.validated')}</p>
                       </div>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-8 text-sm text-slate-400 font-bold uppercase tracking-[0.2em] pt-4 grayscale opacity-60">
-                  <span className="flex items-center gap-2">FDA Compliant</span>
-                  <span className="flex items-center gap-2">EU 852/2004</span>
-                  <span className="flex items-center gap-2">Codex CXC 1-1969</span>
+                  <span className="flex items-center gap-2">{t('landing.hero.compliance.fda')}</span>
+                  <span className="flex items-center gap-2">{t('landing.hero.compliance.eu')}</span>
+                  <span className="flex items-center gap-2">{t('landing.hero.compliance.codex')}</span>
                 </div>
               </div>
               
               <div className="relative">
                 <InteractiveDemo />
-                {/* Decorative Elements */}
               </div>
             </div>
           </div>
@@ -103,9 +104,9 @@ export default function Home() {
         <section id="features" className="py-24 bg-white text-slate-900">
           <div className="container px-4 mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-20">
-              <h2 className="text-3xl font-bold mb-4">Why Food Businesses Love Us</h2>
+              <h2 className="text-3xl font-bold mb-4">{t('landing.features.title')}</h2>
               <p className="text-lg text-slate-500">
-                We combine the speed of Artificial Intelligence with the rigour of Codex Alimentarius standards.
+                {t('landing.features.subtitle')}
               </p>
             </div>
             
@@ -113,18 +114,18 @@ export default function Home() {
               {[
                 {
                   icon: <Clock className="w-6 h-6" />,
-                  title: "Lightning Fast",
-                  desc: "What used to take 2 weeks now takes 20 minutes. Answer our smart questionnaire and get a full plan instantly."
+                  title: t('landing.features.f1_title'),
+                  desc: t('landing.features.f1_desc')
                 },
                 {
                   icon: <Gavel className="w-6 h-6" />,
-                  title: "Global Compliance",
-                  desc: "Whether you're under FDA, EU, or UK regulations, our system adapts the hazard analysis to your region."
+                  title: t('landing.features.f2_title'),
+                  desc: t('landing.features.f2_desc')
                 },
                 {
                   icon: <UserCheck className="w-6 h-6" />,
-                  title: "Expert Verification",
-                  desc: "AI does the heavy lifting, but our certified food safety experts provide the final stamp of approval."
+                  title: t('landing.features.f3_title'),
+                  desc: t('landing.features.f3_desc')
                 }
               ].map((feature, i) => (
                 <div key={i} className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-colors text-slate-900">
@@ -139,7 +140,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Regulatory Integrity Section */}
+        {/* Regulatory Integrity Section (Kept mostly static for now as names are standard, but headers translated) */}
         <section className="py-20 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
           <div className="container px-4 mx-auto relative z-10">
@@ -196,7 +197,7 @@ export default function Home() {
                         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-200"></div>
                       </div>
 
-                      <h3 className="text-3xl font-black text-slate-900">Expert-Validated Logic</h3>
+                      <h3 className="text-3xl font-black text-slate-900">{t('landing.hero.validated')}</h3>
                       <p className="text-slate-500 font-medium">Every Critical Control Point (CCP) identified by our engine includes scientific critical limits and corrective actions verified for audit submission.</p>
                       <div className="pt-2">
                         <span className="bg-slate-900 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">Validated for 2026</span>
@@ -214,9 +215,9 @@ export default function Home() {
         <section id="pricing" className="py-24 bg-slate-900 text-white relative overflow-hidden">
           <div className="container px-4 mx-auto relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-20">
-              <h2 className="text-3xl lg:text-4xl font-bold mb-6">Choose Your Compliance Level</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold mb-6">{t('landing.pricing.title')}</h2>
               <p className="text-lg text-slate-400">
-                From a quick readiness check to a fully validated professional system.
+                {t('landing.pricing.subtitle')}
               </p>
             </div>
 
@@ -224,85 +225,85 @@ export default function Home() {
               {/* Free Tier */}
               <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 hover:border-slate-700 transition-colors flex flex-col shadow-2xl">
                 <div className="mb-8">
-                  <h3 className="text-xl font-black text-white mb-2">Free Plan</h3>
+                  <h3 className="text-xl font-black text-white mb-2">{t('landing.pricing.free.title')}</h3>
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-black text-white">€0</span>
+                    <span className="text-4xl font-black text-white">{t('landing.pricing.free.price')}</span>
                   </div>
-                  <p className="text-slate-500 mt-4 text-sm font-medium leading-relaxed">Complete self-service plan generation.</p>
+                  <p className="text-slate-500 mt-4 text-sm font-medium leading-relaxed">{t('landing.pricing.free.desc')}</p>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-center gap-3 text-sm text-slate-300">
-                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> Full Wizard Access
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> {t('landing.pricing.free.f1')}
                   </li>
                   <li className="flex items-center gap-3 text-sm text-slate-300">
-                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> Complete HACCP Plan
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> {t('landing.pricing.free.f2')}
                   </li>
                   <li className="flex items-center gap-3 text-sm text-slate-300">
-                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> Full Process Flow
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> {t('landing.pricing.free.f3')}
                   </li>
                   <li className="flex items-center gap-3 text-sm text-slate-300 text-slate-500">
-                    <X className="w-5 h-5 text-slate-700" /> No Professional Review
+                    <X className="w-5 h-5 text-slate-700" /> {t('landing.pricing.free.f4')}
                   </li>
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-slate-900 font-black text-center transition-all hover:bg-slate-100 shadow-xl">
-                  Start Building
+                  {t('landing.pricing.free.cta')}
                 </Link>
               </div>
 
               {/* Starter Review */}
               <div className="bg-blue-600 rounded-[2.5rem] p-8 border-2 border-blue-400 shadow-2xl relative flex flex-col transform lg:scale-110 z-10">
                 <div className="absolute top-0 right-0 bg-yellow-400 text-slate-900 text-[10px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-[0.2em]">
-                  Recommended
+                  {t('landing.pricing.starter.badge')}
                 </div>
                 <div className="mb-8 pt-4">
-                  <h3 className="text-xl font-black text-white mb-2">Starter Review</h3>
+                  <h3 className="text-xl font-black text-white mb-2">{t('landing.pricing.starter.title')}</h3>
                   <div className="flex items-baseline">
-                    <span className="text-5xl font-black text-white">€79</span>
+                    <span className="text-5xl font-black text-white">{t('landing.pricing.starter.price')}</span>
                     <span className="text-blue-200 ml-2 font-bold">+ VAT</span>
                   </div>
-                  <p className="text-blue-100 mt-4 text-sm font-medium">Everything in Free + Professional Review.</p>
+                  <p className="text-blue-100 mt-4 text-sm font-medium">{t('landing.pricing.starter.desc')}</p>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-center gap-3 text-sm font-bold text-white">
-                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> Everything in Free
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> {t('landing.pricing.starter.f1')}
                   </li>
                   <li className="flex items-center gap-3 text-sm text-white">
-                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> <strong>Editable Files</strong> (Word/Excel)
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> <strong>{t('landing.pricing.starter.f2')}</strong>
                   </li>
                   <li className="flex items-center gap-3 text-sm text-white">
-                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> <strong>Basic Professional Review</strong>
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> <strong>{t('landing.pricing.starter.f3')}</strong>
                   </li>
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-black text-center transition-all shadow-xl">
-                  Get Started
+                  {t('landing.pricing.starter.cta')}
                 </Link>
               </div>
 
               {/* Strategic Enterprise */}
               <div className="bg-amber-50 rounded-[2.5rem] p-8 border border-amber-200 hover:border-amber-300 transition-all flex flex-col shadow-lg shadow-amber-900/5">
                 <div className="mb-8">
-                  <h3 className="text-xl font-black text-amber-900 mb-2">Strategic Enterprise</h3>
+                  <h3 className="text-xl font-black text-amber-900 mb-2">{t('landing.pricing.enterprise.title')}</h3>
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-black text-amber-900">Custom</span>
+                    <span className="text-4xl font-black text-amber-900">{t('landing.pricing.enterprise.price')}</span>
                   </div>
-                  <p className="text-amber-700/70 mt-4 text-sm font-medium leading-relaxed">For complex, multi-site, or industrial operations.</p>
+                  <p className="text-amber-700/70 mt-4 text-sm font-medium leading-relaxed">{t('landing.pricing.enterprise.desc')}</p>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> <strong>Full HACCP Plan Review</strong>
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> <strong>{t('landing.pricing.enterprise.f1')}</strong>
                   </li>
                   <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> On-site Audit Options
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> {t('landing.pricing.enterprise.f2')}
                   </li>
                   <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> Dedicated Consultant
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> {t('landing.pricing.enterprise.f3')}
                   </li>
                   <li className="flex items-center gap-3 text-sm text-amber-800 font-black">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> Priority Support
+                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> {t('landing.pricing.enterprise.f4')}
                   </li>
                 </ul>
                 <Link href="/contact" className="w-full py-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-center transition-all shadow-lg shadow-amber-600/20">
-                  Contact for Quote
+                  {t('landing.pricing.enterprise.cta')}
                 </Link>
               </div>
             </div>
@@ -316,11 +317,11 @@ export default function Home() {
         {/* Final CTA */}
         <section className="py-24 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center">
           <div className="container px-4 mx-auto max-w-4xl">
-            <h2 className="text-4xl font-bold mb-8">Ready to get compliant?</h2>
+            <h2 className="text-4xl font-bold mb-8">{t('landing.finalCta.title')}</h2>
             <Link href="/builder" className="inline-block bg-white text-blue-600 px-10 py-5 rounded-full text-xl font-bold shadow-2xl hover:scale-105 transition-transform">
-              Create Your Free Plan
+              {t('landing.finalCta.btn')}
             </Link>
-            <p className="mt-6 text-blue-200">No credit card required. Cancel anytime.</p>
+            <p className="mt-6 text-blue-200">{t('landing.finalCta.sub')}</p>
           </div>
         </section>
       </main>

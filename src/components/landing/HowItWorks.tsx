@@ -1,35 +1,40 @@
+"use client";
+
 import { ClipboardCheck, Sparkles, FileCheck, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-
-const steps = [
-  {
-    icon: <ClipboardCheck className="w-8 h-8 text-blue-600" />,
-    title: "1. Enter Product Details",
-    desc: "Tell us what you make and how. Our smart wizard guides you through identifying your key ingredients and processes."
-  },
-  {
-    icon: <Sparkles className="w-8 h-8 text-purple-600" />,
-    title: "2. AI Identifies Hazards",
-    desc: "Our engine cross-references your inputs with global food safety databases to spot biological, chemical, and physical risks."
-  },
-  {
-    icon: <FileCheck className="w-8 h-8 text-green-600" />,
-    title: "3. Get Your Plan",
-    desc: "Download a fully compliant HACCP document, complete with Critical Control Points (CCPs) and monitoring forms."
-  }
-];
+import { useLanguage } from '@/lib/i18n';
 
 export default function HowItWorks() {
+  const { t } = useLanguage();
+
+  const steps = [
+    {
+      icon: <ClipboardCheck className="w-8 h-8 text-blue-600" />,
+      title: t('landing.howItWorks.s1_title'),
+      desc: t('landing.howItWorks.s1_desc')
+    },
+    {
+      icon: <Sparkles className="w-8 h-8 text-purple-600" />,
+      title: t('landing.howItWorks.s2_title'),
+      desc: t('landing.howItWorks.s2_desc')
+    },
+    {
+      icon: <FileCheck className="w-8 h-8 text-green-600" />,
+      title: t('landing.howItWorks.s3_title'),
+      desc: t('landing.howItWorks.s3_desc')
+    }
+  ];
+
   return (
     <section className="py-24 bg-white">
       <div className="container px-4 mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-widest mb-6">
-            Simple Process
+            {t('landing.howItWorks.badge')}
           </div>
-          <h2 className="text-4xl font-black text-slate-900 mb-6 tracking-tight">How It Works</h2>
+          <h2 className="text-4xl font-black text-slate-900 mb-6 tracking-tight">{t('landing.howItWorks.title')}</h2>
           <p className="text-xl text-slate-500 font-medium">
-            Go from blank page to fully compliant in three simple steps.
+            {t('landing.howItWorks.subtitle')}
           </p>
         </div>
 
@@ -55,7 +60,7 @@ export default function HowItWorks() {
             href="/builder" 
             className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl hover:-translate-y-1"
           >
-            Start Your Plan Now <ArrowRight className="w-5 h-5" />
+            {t('landing.howItWorks.cta')} <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </div>

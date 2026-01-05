@@ -751,21 +751,6 @@ export default function HACCPBuilder() {
                     </button>
                   </div>
 
-                  {/* Strategic Enterprise Card */}
-                  <div className="p-8 bg-white rounded-[2.5rem] border-2 border-amber-100 shadow-lg">
-                    <div className="space-y-1 mb-6">
-                        <h4 className="text-xl font-black text-amber-900">Strategic Enterprise</h4>
-                        <div className="text-2xl font-black text-amber-900 tracking-tight">Custom</div>
-                    </div>
-                    <ul className="space-y-4 mb-8">
-                        <li className="flex items-center gap-3 text-sm text-slate-600 font-bold"><CheckCircle2 className="w-4 h-4 text-amber-500" /> Full Audit Support</li>
-                        <li className="flex items-center gap-3 text-sm text-slate-600 font-bold"><CheckCircle2 className="w-4 h-4 text-amber-500" /> Dedicated Consultant</li>
-                    </ul>
-                    <button onClick={() => window.location.href='/contact'} className="w-full py-4 bg-amber-600 text-white rounded-2xl font-black shadow-xl shadow-amber-600/30 transition-all transform hover:scale-105 active:scale-95">
-                        Request Quote
-                    </button>
-                  </div>
-
                   {/* Hire an Expert CTA */}
                   <div className="p-8 bg-gradient-to-br from-indigo-600 to-blue-700 text-white rounded-[2.5rem] shadow-xl relative overflow-hidden group">
                     <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
