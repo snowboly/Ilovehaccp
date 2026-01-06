@@ -45,13 +45,13 @@ export const translations = {
       },
       features: {
         title: "Why Food Businesses Love Us",
-        subtitle: "We combine the speed of Artificial Intelligence with the rigour of Codex Alimentarius standards.",
-        f1_title: "Lightning Fast",
-        f1_desc: "What used to take 2 weeks now takes 20 minutes. Answer our smart questionnaire and get a full plan instantly.",
-        f2_title: "Global Compliance",
-        f2_desc: "Whether you're under FDA, EU, or UK regulations, our system adapts the hazard analysis to your region.",
-        f3_title: "Expert Verification",
-        f3_desc: "AI does the heavy lifting, but our certified food safety experts provide the final stamp of approval."
+        subtitle: "We prioritize your business outcomes over complex technology.",
+        f1_title: "Custom Tailored",
+        f1_desc: "Generate a full HACCP plan tailored to your exact process.",
+        f2_title: "Simple & Accessible",
+        f2_desc: "No food safety expertise required.",
+        f3_title: "Inspection Ready",
+        f3_desc: "Export-ready documents for inspections."
       },
       howItWorks: {
         badge: "Simple Process",
@@ -242,13 +242,13 @@ export const translations = {
       },
       features: {
         title: "Por qué las empresas nos aman",
-        subtitle: "Combinamos la velocidad de la IA con el rigor del Codex Alimentarius.",
-        f1_title: "Ultrarrápido",
-        f1_desc: "Lo que tomaba 2 semanas ahora toma 20 minutos. Responda nuestro cuestionario y obtenga un plan completo.",
-        f2_title: "Cumplimiento Global",
-        f2_desc: "Ya sea FDA, UE o Reino Unido, nuestro sistema adapta el análisis de peligros a su región.",
-        f3_title: "Verificación de Expertos",
-        f3_desc: "La IA hace el trabajo pesado, pero nuestros expertos certificados dan el sello final de aprobación."
+        subtitle: "Priorizamos los resultados de su negocio sobre la tecnología compleja.",
+        f1_title: "A Medida",
+        f1_desc: "Genere un plan HACCP completo adaptado a su proceso exacto.",
+        f2_title: "Simple y Accesible",
+        f2_desc: "No se requiere experiencia en seguridad alimentaria.",
+        f3_title: "Listo para Inspección",
+        f3_desc: "Documentos listos para exportar para inspecciones."
       },
       howItWorks: {
         badge: "Proceso Simple",
@@ -439,13 +439,13 @@ export const translations = {
       },
       features: {
         title: "Pourquoi les entreprises nous aiment",
-        subtitle: "Nous combinons la vitesse de l'IA avec la rigueur des normes du Codex Alimentarius.",
-        f1_title: "Ultra-rapide",
-        f1_desc: "Ce qui prenait 2 semaines prend maintenant 20 minutes. Répondez à notre questionnaire et obtenez un plan complet.",
-        f2_title: "Conformité Mondiale",
-        f2_desc: "Que vous soyez sous FDA, UE ou UK, notre système adapte l'analyse des dangers à votre région.",
-        f3_title: "Vérification par Experts",
-        f3_desc: "L'IA fait le gros du travail, mais nos experts certifiés donnent le sceau final d'approbation."
+        subtitle: "Nous privilégions vos résultats commerciaux plutôt que la technologie complexe.",
+        f1_title: "Sur Mesure",
+        f1_desc: "Générez un plan HACCP complet adapté à votre processus exact.",
+        f2_title: "Simple & Accessible",
+        f2_desc: "Aucune expertise en sécurité alimentaire requise.",
+        f3_title: "Prêt pour l'Inspection",
+        f3_desc: "Documents prêts à l'exportation pour les inspections."
       },
       howItWorks: {
         badge: "Processus Simple",
@@ -636,13 +636,13 @@ export const translations = {
       },
       features: {
         title: "Por que as empresas nos amam",
-        subtitle: "Combinamos a velocidade da IA com o rigor dos padrões do Codex Alimentarius.",
-        f1_title: "Relâmpago Rápido",
-        f1_desc: "O que levava 2 semanas agora leva 20 minutos. Responda nosso questionário e obtenha um plano completo.",
-        f2_title: "Conformidade Global",
-        f2_desc: "Seja sob FDA, UE ou Reino Unido, nosso sistema adapta a análise de perigos à sua região.",
-        f3_title: "Verificação de Especialistas",
-        f3_desc: "A IA faz o trabalho pesado, mas nossos especialistas certificados dão o selo final de aprovação."
+        subtitle: "Priorizamos os resultados do seu negócio sobre tecnologia complexa.",
+        f1_title: "Feito à Medida",
+        f1_desc: "Gere um plano HACCP completo adaptado ao seu processo exato.",
+        f2_title: "Simples & Acessível",
+        f2_desc: "Não é necessária experiência em segurança alimentar.",
+        f3_title: "Pronto para Inspeção",
+        f3_desc: "Documentos prontos para exportar para inspeções."
       },
       howItWorks: {
         badge: "Processo Simples",
