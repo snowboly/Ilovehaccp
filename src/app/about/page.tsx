@@ -113,7 +113,7 @@ export default function AboutPage() {
                     </div>
                     <div>
                         <p className="font-bold text-white text-lg">{team[1].name}</p>
-                        <p className="text-blue-400 font-bold text-sm uppercase tracking-wider">Head of Global Operations</p>
+                        <p className="text-blue-400 font-bold text-sm uppercase tracking-wider">Head of Compliance</p>
                     </div>
                 </div>
             </div>
