@@ -28,6 +28,14 @@ export default function ContactPage() {
         .insert([data]);
 
       if (submitError) throw submitError;
+
+      // Notify owner via email (don't block UI if it fails)
+      fetch('/api/send-contact-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(console.error);
+
       setSent(true);
     } catch (err: any) {
       console.error('Contact error:', err);
