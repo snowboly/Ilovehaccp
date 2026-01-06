@@ -12,40 +12,40 @@ const team = [
     name: "Dr. Joao",
     role: "Scientific Lead & Founder",
     image: "/team/joao.svg",
-    bio: "The scientific visionary behind our AI logic.",
-    details: "Expert in microbial pathogensis and predictive modeling.",
+    bio: "Leading the vision to democratize food safety with AI and rigorous science.",
+    details: "Expert in microbial pathogenesis and predictive modeling.",
     badge: "Founder"
   },
   {
     name: "Dr. Margarida",
     role: "Head of Compliance",
     image: "/team/margarida.svg",
-    bio: "Ensures every plan meets global audit standards.",
-    details: "Over 500 successful audits across 12 countries.",
+    bio: "Overseeing global regulatory alignment and audit standards.",
+    details: "Ensures every generated plan meets the strictest BRCGS/SQF criteria.",
     badge: "Compliance"
   },
   {
     name: "Dr. Fabio",
     role: "Lead Auditor",
     image: "/team/fabio.svg",
-    bio: "Bridging the gap between theory and factory floor.",
-    details: "Specialist in large-scale food manufacturing systems.",
+    bio: "Ensuring practical applicability and audit readiness.",
+    details: "Specialist in translating complex regulations into factory-floor reality.",
     badge: "Auditor"
   },
   {
     name: "Dr. Claudia",
     role: "Technical Lead",
     image: "/team/claudia.svg",
-    bio: "Leading research in preservation technologies.",
-    details: "Focuses on emerging technologies and shelf-life extension.",
+    bio: "Driving the technological innovation behind our hazard analysis.",
+    details: "Focuses on the intersection of food science and machine learning algorithms.",
     badge: "Technical"
   },
   {
     name: "Dr. Isabel",
     role: "Head of Ops",
     image: "/team/isabel.svg",
-    bio: "Master of FDA FSMA and EU Food Law.",
-    details: "Consults for multi-national food conglomerates on legal compliance.",
+    bio: "Managing operational excellence and customer success frameworks.",
+    details: "Expert in optimizing workflows for multi-site food conglomerates.",
     badge: "Operations"
   }
 ];

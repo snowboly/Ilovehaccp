@@ -51,11 +51,11 @@ function highlightListTerms(html: string) {
 }
 
 const PERSONAS: Record<string, any> = {
-  "Dr. Joao": { name: "Dr. Joao", role: "Scientific Lead & Founder", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "/team/joao.svg" },
-  "Dr. Margarida": { name: "Dr. Margarida", role: "Head of Compliance", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "/team/margarida.svg" },
-  "Dr. Fabio": { name: "Dr. Fabio", role: "Lead Auditor", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "/team/fabio.svg" },
-  "Dr. Claudia": { name: "Dr. Claudia", role: "Technical Lead", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "/team/claudia.svg" },
-  "Dr. Isabel": { name: "Dr. Isabel", role: "Head of Ops", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "/team/isabel.svg" }
+  "Dr. Joao": { name: "Dr. Joao", role: "Scientific Lead & Founder", bio: "Leading the vision to democratize food safety with AI and rigorous science.", image: "/team/joao.svg" },
+  "Dr. Margarida": { name: "Dr. Margarida", role: "Head of Compliance", bio: "Overseeing global regulatory alignment and audit standards.", image: "/team/margarida.svg" },
+  "Dr. Fabio": { name: "Dr. Fabio", role: "Lead Auditor", bio: "Ensuring practical applicability and audit readiness on the factory floor.", image: "/team/fabio.svg" },
+  "Dr. Claudia": { name: "Dr. Claudia", role: "Technical Lead", bio: "Driving the technological innovation behind our hazard analysis engine.", image: "/team/claudia.svg" },
+  "Dr. Isabel": { name: "Dr. Isabel", role: "Head of Ops", bio: "Managing operational excellence and customer success frameworks.", image: "/team/isabel.svg" }
 };
 
 function getExpertFromContent(content: string) {

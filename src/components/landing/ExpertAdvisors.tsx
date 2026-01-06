@@ -7,35 +7,35 @@ const experts = [
   {
     name: "Dr. Joao",
     role: "Scientific Lead & Founder",
-    bio: "Scientific Lead specializing in pathogen control and molecular safety protocols.",
+    bio: "Leading the vision to democratize food safety with AI and rigorous science.",
     image: "/team/joao.svg",
     badge: "Founder"
   },
   {
     name: "Dr. Margarida",
     role: "Head of Compliance",
-    bio: "20+ years ensuring global compliance. Margarida&apos;s templates are built to pass the strictest inspections.",
+    bio: "Overseeing global regulatory alignment and audit standards for all generated plans.",
     image: "/team/margarida.svg",
     badge: "Compliance"
   },
   {
     name: "Dr. Fabio",
     role: "Lead Auditor",
-    bio: "Bridging the gap between academic theory and the high-pressure reality of the factory floor.",
+    bio: "Ensuring practical applicability and audit readiness on the factory floor.",
     image: "/team/fabio.svg",
     badge: "Auditor"
   },
   {
     name: "Dr. Claudia",
     role: "Technical Lead",
-    bio: "Educator and researcher focusing on emerging food safety technologies and preservation methods.",
+    bio: "Driving the technological innovation behind our hazard analysis engine.",
     image: "/team/claudia.svg",
     badge: "Technical"
   },
   {
     name: "Dr. Isabel",
     role: "Head of Ops",
-    bio: "Expert in FDA FSMA and EU Regulation 852/2004, ensuring legal alignment across borders.",
+    bio: "Managing operational excellence and customer success frameworks.",
     image: "/team/isabel.svg",
     badge: "Operations"
   }
