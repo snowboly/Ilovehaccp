@@ -1,5 +1,6 @@
 import { ShieldCheck, Globe, Award, Microscope, BrainCircuit, ChefHat, FileSearch, Quote, Heart, Target, Lightbulb, Users, BarChart, Search, Wrench, Mail } from 'lucide-react';
 import Link from 'next/link';
+import SafeAvatar from '@/components/team/SafeAvatar';
 
 export const metadata = {
   title: 'About Us | ilovehaccp.com',
@@ -91,7 +92,7 @@ export default function AboutPage() {
                 </blockquote>
                 <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-slate-100 bg-slate-50">
-                        <img src={team[0].image} alt={team[0].name} className="w-full h-full object-contain" />
+                        <SafeAvatar name={team[0].name} />
                     </div>
                     <div>
                         <p className="font-bold text-slate-900 text-lg">{team[0].name}</p>
@@ -108,7 +109,7 @@ export default function AboutPage() {
                 </blockquote>
                 <div className="flex items-center gap-4 relative z-10">
                     <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-white/10 bg-white/5">
-                        <img src={team[1].image} alt={team[1].name} className="w-full h-full object-contain" />
+                        <SafeAvatar name={team[1].name} />
                     </div>
                     <div>
                         <p className="font-bold text-white text-lg">{team[1].name}</p>
@@ -237,7 +238,7 @@ function ExpertCard({ expert }: { expert: typeof team[0] }) {
       <div className="group relative bg-white rounded-[2.5rem] p-8 border border-slate-100 hover:border-blue-200 transition-all hover:shadow-xl hover:-translate-y-1 h-full">
         <div className="relative mb-8 text-center">
           <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-slate-50 shadow-lg mx-auto transform group-hover:scale-110 transition-transform duration-500 bg-slate-50">
-            <img src={expert.image} alt={expert.name} className="w-full h-full object-contain" />
+            <SafeAvatar name={expert.name} />
           </div>
           <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full tracking-widest shadow-md">
             {expert.badge}
