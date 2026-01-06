@@ -863,18 +863,16 @@ function LeadCapture({ planId, businessName, children, onSuccess }: { planId: st
         setLoading(true);
         try {
             const { error } = await supabase.from('leads').insert({
-                email,
+                email: email.trim(),
                 business_name: businessName,
                 plan_id: planId
             });
             if (error) throw error;
             setCaptured(true);
             onSuccess();
-        } catch (err) {
+        } catch (err: any) {
             console.error("Lead capture failed:", err);
-            // Even if capture fails, we don't want to block the user forever, 
-            // but let's try to get them to retry once.
-            alert("Please enter a valid email to continue.");
+            alert(`Failed to save: ${err.message || "Please check your email and try again."}`);
         } finally {
             setLoading(false);
         }
