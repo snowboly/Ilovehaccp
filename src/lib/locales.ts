@@ -43,6 +43,12 @@ export const translations = {
           "Industrial-scale chemical manufacturing"
         ]
       },
+      founder: {
+        title: "A Note from the Founder",
+        text: "I built iLoveHACCP because traditional consulting is too slow and expensive for small businesses. We democratize access to the same high-standard safety systems used by major corporations.",
+        role: "Scientific Lead & Founder",
+        name: "Dr. Joao"
+      },
       features: {
         title: "Why Food Businesses Love Us",
         subtitle: "We prioritize your business outcomes over complex technology.",
@@ -239,6 +245,12 @@ export const translations = {
           "Tiene un sistema gestionado por un consultor a tiempo completo",
           "Fabricación de productos químicos a escala industrial"
         ]
+      },
+      founder: {
+        title: "Una Nota del Fundador",
+        text: "Creé iLoveHACCP porque la consultoría tradicional es demasiado lenta y costosa para las pequeñas empresas. Democratizamos el acceso a los mismos sistemas de seguridad de alto nivel utilizados por las grandes corporaciones.",
+        role: "Líder Científico y Fundador",
+        name: "Dr. Joao"
       },
       features: {
         title: "Por qué las empresas nos aman",
@@ -437,6 +449,12 @@ export const translations = {
           "Fabrication chimique à l'échelle industrielle"
         ]
       },
+      founder: {
+        title: "Le mot du fondateur",
+        text: "J'ai créé iLoveHACCP car le conseil traditionnel est trop lent et coûteux pour les petites entreprises. Nous démocratisons l'accès aux mêmes systèmes de sécurité de haut niveau utilisés par les grandes entreprises.",
+        role: "Responsable Scientifique & Fondateur",
+        name: "Dr. Joao"
+      },
       features: {
         title: "Pourquoi les entreprises nous aiment",
         subtitle: "Nous privilégions vos résultats commerciaux plutôt que la technologie complexe.",
@@ -633,6 +651,12 @@ export const translations = {
           "Tem um sistema gerido por um consultor a tempo inteiro",
           "Fabrico químico à escala industrial"
         ]
+      },
+      founder: {
+        title: "Uma Nota do Fundador",
+        text: "Criei o iLoveHACCP porque a consultoria tradicional é demasiado lenta e cara para as pequenas empresas. Democratizamos o acesso aos mesmos sistemas de segurança de alto padrão usados por grandes corporações.",
+        role: "Líder Científico e Fundador",
+        name: "Dr. Joao"
       },
       features: {
         title: "Por que as empresas nos amam",

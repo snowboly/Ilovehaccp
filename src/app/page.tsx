@@ -17,6 +17,7 @@ import HowItWorks from '@/components/landing/HowItWorks';
 import BlogPreview from '@/components/landing/BlogPreview';
 import Newsletter from '@/components/landing/Newsletter';
 import SampleDownload from '@/components/landing/SampleDownload';
+import FounderNote from '@/components/landing/FounderNote';
 import JSONLD from '@/components/layout/JSONLD';
 import { useLanguage } from '@/lib/i18n';
 
@@ -274,6 +275,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <FounderNote />
 
         {/* Pricing Section */}
         <section id="pricing" className="py-24 bg-slate-900 text-white relative overflow-hidden">
