@@ -128,6 +128,7 @@ export const translations = {
     wizard: {
       title: "Let's Build Your HACCP Plan",
       subtitle: "Answer a few questions and our AI will draft a complete, compliance-ready document.",
+      reassurance: "No HACCP knowledge needed. You can skip questions or edit later.",
       start: "Start Builder",
       next: "Next",
       back: "Back",
@@ -331,6 +332,7 @@ export const translations = {
     wizard: {
       title: "Vamos a crear su plan HACCP",
       subtitle: "Responda unas preguntas y nuestra IA redactará un documento completo y listo para cumplir.",
+      reassurance: "No se necesita experiencia. Puede omitir preguntas o editar después.",
       start: "Iniciar Constructor",
       next: "Siguiente",
       back: "Atrás",
@@ -534,6 +536,7 @@ export const translations = {
     wizard: {
       title: "Créons votre plan HACCP",
       subtitle: "Répondez à quelques questions et notre IA rédigera un document complet.",
+      reassurance: "Aucune expertise requise. Vous pouvez passer des questions ou éditer plus tard.",
       start: "Démarrer",
       next: "Suivant",
       back: "Retour",
@@ -737,6 +740,7 @@ export const translations = {
     wizard: {
       title: "Vamos criar o seu plano HACCP",
       subtitle: "Responda a algumas perguntas e nossa IA redigirá um documento completo.",
+      reassurance: "Não é necessário conhecimento prévio. Pode pular perguntas ou editar depois.",
       start: "Iniciar Criador",
       next: "Próximo",
       back: "Voltar",

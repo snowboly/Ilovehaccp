@@ -363,6 +363,9 @@ export default function HACCPBuilder() {
             <div className="space-y-3">
                 <h1 className="text-4xl font-black tracking-tight">{t('wizard.title')}</h1>
                 <p className="text-lg text-slate-500 font-medium">{t('wizard.subtitle')}</p>
+                <div className="bg-emerald-50 text-emerald-800 text-sm font-bold py-2 px-4 rounded-full inline-flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" /> {t('wizard.reassurance' as any)}
+                </div>
             </div>
             <button onClick={() => setStep('questions')} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-black text-xl shadow-xl shadow-blue-500/20 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
                 {t('wizard.start')} <ChevronRight className="w-6 h-6" />
