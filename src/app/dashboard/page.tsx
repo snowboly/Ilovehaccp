@@ -21,7 +21,8 @@ import {
   Search,
   LayoutGrid,
   List as ListIcon,
-  Settings
+  Settings,
+  ArrowRight
 } from 'lucide-react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
@@ -181,6 +182,26 @@ function DashboardContent() {
                 </button>
             </div>
         )}
+
+        {/* Promo Banner for Review Service */}
+        <div className="mb-8 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+            <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 bg-blue-500/20 text-blue-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 border border-blue-500/30">
+                    New Service
+                </div>
+                <h2 className="text-2xl font-black mb-2">Have an old HACCP plan?</h2>
+                <p className="text-slate-300 max-w-xl">
+                    Get it reviewed by our certified experts. We'll update it to meet the latest 2026 regulations (FDA/EU) and provide a detailed action report.
+                </p>
+            </div>
+            <Link 
+                href="/contact?subject=Review" 
+                className="relative z-10 whitespace-nowrap bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors shadow-lg flex items-center gap-2"
+            >
+                Get Reviewed <span className="text-blue-600">€99</span> <ArrowRight className="w-4 h-4" />
+            </Link>
+        </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>

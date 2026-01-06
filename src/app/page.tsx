@@ -221,7 +221,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-4 gap-8 max-w-[1400px] mx-auto">
               {/* Free Tier */}
               <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 hover:border-slate-700 transition-colors flex flex-col shadow-2xl">
                 <div className="mb-8">
@@ -276,6 +276,32 @@ export default function Home() {
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-black text-center transition-all shadow-xl">
                   {t('landing.pricing.starter.cta')}
+                </Link>
+              </div>
+
+              {/* Expert Review (New Card) */}
+              <div className="bg-slate-900 rounded-[2.5rem] p-8 border border-slate-700 hover:border-slate-600 transition-all flex flex-col shadow-lg">
+                <div className="mb-8">
+                  <h3 className="text-xl font-black text-white mb-2">{t('landing.pricing.review.title')}</h3>
+                  <div className="flex items-baseline">
+                    <span className="text-4xl font-black text-white">{t('landing.pricing.review.price')}</span>
+                    <span className="text-slate-400 ml-2 font-bold">+ VAT</span>
+                  </div>
+                  <p className="text-slate-400 mt-4 text-sm font-medium leading-relaxed">{t('landing.pricing.review.desc')}</p>
+                </div>
+                <ul className="space-y-4 mb-8 flex-1">
+                  <li className="flex items-center gap-3 text-sm text-slate-300 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" /> <strong>{t('landing.pricing.review.f1')}</strong>
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-300 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" /> {t('landing.pricing.review.f2')}
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-300 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" /> {t('landing.pricing.review.f3')}
+                  </li>
+                </ul>
+                <Link href="/contact?subject=Review" className="w-full py-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-center transition-all border border-slate-700">
+                  {t('landing.pricing.review.cta')}
                 </Link>
               </div>
 

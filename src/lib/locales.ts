@@ -68,6 +68,15 @@ export const translations = {
           f3: "Basic Professional Review",
           cta: "Get Started"
         },
+        review: {
+          title: "Expert Review",
+          price: "€99",
+          desc: "Refresh an existing HACCP plan.",
+          f1: "Full Professional Audit",
+          f2: "Latest Regulation Update",
+          f3: "Detailed Action Report",
+          cta: "Book Review"
+        },
         enterprise: {
           title: "Strategic Enterprise",
           price: "Custom",
@@ -235,6 +244,15 @@ export const translations = {
           f2: "Archivos Editables (Word/Excel)",
           f3: "Revisión Profesional Básica",
           cta: "Empezar"
+        },
+        review: {
+          title: "Revisión Experta",
+          price: "€99",
+          desc: "Actualice un plan HACCP existente.",
+          f1: "Auditoría Profesional Completa",
+          f2: "Actualización de Normativas",
+          f3: "Informe Detallado de Acciones",
+          cta: "Reservar Revisión"
         },
         enterprise: {
           title: "Empresa Estratégica",
@@ -404,6 +422,15 @@ export const translations = {
           f3: "Revue Professionnelle De Base",
           cta: "Démarrer"
         },
+        review: {
+          title: "Revue d'Expert",
+          price: "€99",
+          desc: "Mise à jour d'un plan existant.",
+          f1: "Audit Professionnel Complet",
+          f2: "Mise à jour Réglementaire",
+          f3: "Rapport d'Action Détaillé",
+          cta: "Réserver"
+        },
         enterprise: {
           title: "Entreprise Stratégique",
           price: "Sur Mesure",
@@ -571,6 +598,15 @@ export const translations = {
           f2: "Arquivos Editáveis (Word/Excel)",
           f3: "Revisão Profissional Básica",
           cta: "Começar"
+        },
+        review: {
+          title: "Revisão de Especialista",
+          price: "€99",
+          desc: "Atualize um plano HACCP existente.",
+          f1: "Auditoria Profissional Completa",
+          f2: "Atualização de Regulamentos",
+          f3: "Relatório Detalhado",
+          cta: "Agendar Revisão"
         },
         enterprise: {
           title: "Empresa Estratégica",
