@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     // Send notification to the site owner
     await resend.emails.send({
       from: 'iLoveHACCP Alerts <onboarding@resend.dev>',
-      to: ['info@ilovehaccp.com'], // Update to your email
+      to: ['support@ilovehaccp.com'], // Updated to correct email
       subject: `New Contact Message: ${subject}`,
       html: `
         <h2>New Inquiry from ilovehaccp.com</h2>
