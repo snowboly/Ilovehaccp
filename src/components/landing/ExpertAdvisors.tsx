@@ -1,7 +1,7 @@
 "use client";
 
 import { UserCheck, ShieldCheck } from 'lucide-react';
-import SafeAvatar from '../team/SafeAvatar';
+import { TeamAvatar } from '../team/TeamAvatars';
 
 const experts = [
   {
@@ -106,7 +106,7 @@ function ExpertCard({ expert }: { expert: typeof experts[0] }) {
       {/* Image */}
       <div className="relative mb-8">
         <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg mx-auto transform group-hover:scale-110 transition-transform duration-500 bg-white">
-          <SafeAvatar name={expert.name} />
+          <TeamAvatar name={expert.name} className="w-full h-full object-contain" />
         </div>
         <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full tracking-widest shadow-md">
           {expert.badge}
