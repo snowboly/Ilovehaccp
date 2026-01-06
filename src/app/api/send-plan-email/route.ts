@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     const { data, error } = await resend.emails.send({
-      from: 'iLoveHACCP <onboarding@resend.dev>', // Update this to your verified domain
+      from: 'iLoveHACCP <noreply@ilovehaccp.com>', // Professional domain sender
       to: [email],
       subject: `Your HACCP Plan for ${businessName}`,
       html: `

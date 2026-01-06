@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     // Send notification to the site owner
     await resend.emails.send({
-      from: 'iLoveHACCP Alerts <onboarding@resend.dev>',
+      from: 'iLoveHACCP Alerts <noreply@ilovehaccp.com>',
       to: ['support@ilovehaccp.com'], // Updated to correct email
       subject: `New Contact Message: ${subject}`,
       html: `
