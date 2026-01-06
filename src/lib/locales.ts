@@ -26,6 +26,23 @@ export const translations = {
         validated: "Validated Logic",
         compliance: { fda: "FDA Compliant", eu: "EU 852/2004", codex: "Codex CXC 1-1969" }
       },
+      audience: {
+        title: "Is iLoveHACCP Right for You?",
+        subtitle: "We prioritize speed and practical compliance for small to medium food operations.",
+        for_title: "Perfect For:",
+        for_items: [
+          "Small & medium food businesses",
+          "Restaurants, bakeries, cafés & food trucks",
+          "First-time HACCP plan creation",
+          "Businesses preparing for an upcoming inspection"
+        ],
+        not_for_title: "Not Ideal If:",
+        not_for_items: [
+          "You require enterprise ISO 22000 certification",
+          "You have a full-time consultant-managed system",
+          "Industrial-scale chemical manufacturing"
+        ]
+      },
       features: {
         title: "Why Food Businesses Love Us",
         subtitle: "We combine the speed of Artificial Intelligence with the rigour of Codex Alimentarius standards.",
@@ -205,6 +222,23 @@ export const translations = {
         auditReady: "Listo para Auditoría",
         validated: "Lógica Validada",
         compliance: { fda: "Cumple con FDA", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
+      },
+      audience: {
+        title: "¿Es iLoveHACCP adecuado para usted?",
+        subtitle: "Priorizamos la velocidad y el cumplimiento práctico para pequeñas y medianas empresas alimentarias.",
+        for_title: "Perfecto Para:",
+        for_items: [
+          "Pequeñas y medianas empresas alimentarias",
+          "Restaurantes, panaderías, cafés y food trucks",
+          "Creación de planes HACCP por primera vez",
+          "Negocios que se preparan para una inspección próxima"
+        ],
+        not_for_title: "No es Ideal Si:",
+        not_for_items: [
+          "Requiere certificación enterprise ISO 22000",
+          "Tiene un sistema gestionado por un consultor a tiempo completo",
+          "Fabricación de productos químicos a escala industrial"
+        ]
       },
       features: {
         title: "Por qué las empresas nos aman",
@@ -386,6 +420,23 @@ export const translations = {
         validated: "Logique Validée",
         compliance: { fda: "Conforme FDA", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
+      audience: {
+        title: "iLoveHACCP est-il fait pour vous ?",
+        subtitle: "Nous privilégions la rapidité et la conformité pratique pour les petites et moyennes entreprises alimentaires.",
+        for_title: "Parfait Pour :",
+        for_items: [
+          "Petites et moyennes entreprises alimentaires",
+          "Restaurants, boulangeries, cafés et food trucks",
+          "Création d'un premier plan HACCP",
+          "Entreprises se préparant à une inspection imminente"
+        ],
+        not_for_title: "Pas Idéal Si :",
+        not_for_items: [
+          "Vous avez besoin d'une certification ISO 22000 d'entreprise",
+          "Vous avez un système géré par un consultant à plein temps",
+          "Fabrication chimique à l'échelle industrielle"
+        ]
+      },
       features: {
         title: "Pourquoi les entreprises nous aiment",
         subtitle: "Nous combinons la vitesse de l'IA avec la rigueur des normes du Codex Alimentarius.",
@@ -565,6 +616,23 @@ export const translations = {
         auditReady: "Pronto para Auditoria",
         validated: "Lógica Validada",
         compliance: { fda: "Compatível com FDA", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
+      },
+      audience: {
+        title: "O iLoveHACCP é ideal para si?",
+        subtitle: "Priorizamos a rapidez e a conformidade prática para pequenas e médias operações alimentares.",
+        for_title: "Perfeito Para:",
+        for_items: [
+          "Pequenas e médias empresas alimentares",
+          "Restaurantes, padarias, cafés e food trucks",
+          "Criação de planos HACCP pela primeira vez",
+          "Negócios a preparar-se para uma inspeção próxima"
+        ],
+        not_for_title: "Não é Ideal Se:",
+        not_for_items: [
+          "Necessita de certificação ISO 22000 empresarial",
+          "Tem um sistema gerido por um consultor a tempo inteiro",
+          "Fabrico químico à escala industrial"
+        ]
       },
       features: {
         title: "Por que as empresas nos amam",

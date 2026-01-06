@@ -226,6 +226,55 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Audience Segmentation Section */}
+        <section className="py-24 bg-white">
+          <div className="container px-4 mx-auto max-w-5xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-black text-slate-900 mb-4">{t('landing.audience.title' as any)}</h2>
+              <p className="text-lg text-slate-500 font-medium">{t('landing.audience.subtitle' as any)}</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Perfect For */}
+              <div className="bg-emerald-50/50 rounded-[2rem] p-8 lg:p-10 border border-emerald-100 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+                <h3 className="text-2xl font-black text-emerald-900 mb-8 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  {t('landing.audience.for_title' as any)}
+                </h3>
+                <ul className="space-y-4">
+                  {(t('landing.audience.for_items' as any) as unknown as string[]).map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></div>
+                      <span className="text-slate-700 font-bold text-lg leading-tight">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Not Ideal For */}
+              <div className="bg-slate-50 rounded-[2rem] p-8 lg:p-10 border border-slate-200 relative overflow-hidden group">
+                <h3 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-slate-400 rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <X className="w-6 h-6" />
+                  </div>
+                  {t('landing.audience.not_for_title' as any)}
+                </h3>
+                <ul className="space-y-4 opacity-70">
+                  {(t('landing.audience.not_for_items' as any) as unknown as string[]).map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></div>
+                      <span className="text-slate-600 font-medium text-lg leading-tight">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Pricing Section */}
         <section id="pricing" className="py-24 bg-slate-900 text-white relative overflow-hidden">
           <div className="container px-4 mx-auto relative z-10">
