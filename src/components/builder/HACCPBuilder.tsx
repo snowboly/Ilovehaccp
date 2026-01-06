@@ -151,6 +151,7 @@ export default function HACCPBuilder() {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [currentIngredient, setCurrentIngredient] = useState('');
   const [history, setHistory] = useState<number[]>([]);
+  const [hasSavedProgress, setHasSavedProgress] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -216,18 +217,39 @@ export default function HACCPBuilder() {
       if (session) setUserId(session.user.id);
     };
     checkUser();
+
+    // Check for saved progress
+    const saved = localStorage.getItem('haccp_builder_progress');
+    if (saved) setHasSavedProgress(true);
   }, []);
 
+  // Auto-save progress
   useEffect(() => {
-    if (step === 'generating') {
-      let i = 0;
-      const interval = setInterval(() => {
-        setLoadingMessage(AI_LOG_MESSAGES[i % AI_LOG_MESSAGES.length]);
-        i++;
-      }, 1200);
-      return () => clearInterval(interval);
+    if (step === 'questions' && isClient) {
+        const progress = {
+            formData,
+            currentQuestionIdx,
+            history
+        };
+        localStorage.setItem('haccp_builder_progress', JSON.stringify(progress));
     }
-  }, [step]);
+  }, [formData, currentQuestionIdx, history, step, isClient]);
+
+  const handleResume = () => {
+    const saved = localStorage.getItem('haccp_builder_progress');
+    if (saved) {
+        const { formData: savedData, currentQuestionIdx: savedIdx, history: savedHistory } = JSON.parse(saved);
+        setFormData(savedData);
+        setCurrentQuestionIdx(savedIdx);
+        setHistory(savedHistory);
+        setStep('questions');
+    }
+  };
+
+  const handleClearProgress = () => {
+    localStorage.removeItem('haccp_builder_progress');
+    setHasSavedProgress(false);
+  };
 
   const questions = [
     // 1. Identity
@@ -335,6 +357,11 @@ export default function HACCPBuilder() {
           user_id: userId 
       }).select().single();
       if (saved) setPlanId(saved.id);
+      
+      // Clear progress after success
+      localStorage.removeItem('haccp_builder_progress');
+      setHasSavedProgress(false);
+
       setStep('result');
     } catch (e) { console.error(e); alert("Generation failed. Please check your inputs."); setStep('questions'); }
   };
@@ -379,9 +406,29 @@ export default function HACCPBuilder() {
                     <CheckCircle2 className="w-4 h-4" /> {t('wizard.reassurance' as any)}
                 </div>
             </div>
-            <button onClick={() => setStep('questions')} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-black text-xl shadow-xl shadow-blue-500/20 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
-                {t('wizard.start')} <ChevronRight className="w-6 h-6" />
-            </button>
+            
+            <div className="space-y-4">
+                <button onClick={() => setStep('questions')} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-black text-xl shadow-xl shadow-blue-500/20 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+                    {t('wizard.start')} <ChevronRight className="w-6 h-6" />
+                </button>
+
+                {hasSavedProgress && (
+                    <div className="flex flex-col gap-2">
+                        <button 
+                            onClick={handleResume} 
+                            className="w-full bg-emerald-50 text-emerald-700 py-4 rounded-2xl font-bold text-lg border-2 border-emerald-100 hover:bg-emerald-100 transition-all flex items-center justify-center gap-2"
+                        >
+                            <History className="w-5 h-5" /> Resume Last Session
+                        </button>
+                        <button 
+                            onClick={handleClearProgress}
+                            className="text-xs text-slate-400 hover:text-red-500 font-bold uppercase tracking-widest transition-colors"
+                        >
+                            Clear saved progress
+                        </button>
+                    </div>
+                )}
+            </div>
           </motion.div>
         )}
 
