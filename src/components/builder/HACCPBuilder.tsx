@@ -152,6 +152,7 @@ export default function HACCPBuilder() {
   const [currentIngredient, setCurrentIngredient] = useState('');
   const [history, setHistory] = useState<number[]>([]);
   const [hasSavedProgress, setHasSavedProgress] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const topRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -297,7 +298,14 @@ export default function HACCPBuilder() {
     { id: 'template', section: 'Style', question: "Choose a document style", type: 'template_select', icon: <LayoutTemplate />, options: ['Minimal', 'Corporate', 'Modern'], required: true },
   ];
 
-  const updateFormData = (id: string, value: any) => setFormData(prev => ({ ...prev, [id]: value }));
+  const updateFormData = (id: string, value: any) => {
+      setFormData(prev => ({ ...prev, [id]: value }));
+      if (errors[id]) {
+          const newErrors = { ...errors };
+          delete newErrors[id];
+          setErrors(newErrors);
+      }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -312,9 +320,18 @@ export default function HACCPBuilder() {
   const handleNext = () => {
     const q = questions[currentQuestionIdx];
     const val = (formData as any)[q.id];
-    // Skip validation for logo as it is optional (or logic inside validation)
-    if (q.required && (!val || (Array.isArray(val) && val.length === 0))) return alert("This field is required.");
     
+    // Validation
+    if (q.required) {
+        if (!val || (Array.isArray(val) && val.length === 0)) {
+            setErrors({ [q.id]: "This field is required to ensure compliance." });
+            return;
+        }
+    }
+    
+    // Clear errors if valid
+    setErrors({});
+
     // Save current index to history before moving
     setHistory(prev => [...prev, currentQuestionIdx]);
 
@@ -462,11 +479,12 @@ export default function HACCPBuilder() {
                 {currentQ.type === 'radio' ? (
                     <div className="grid gap-3">
                     {currentQ.options?.map(opt => (
-                        <button key={opt} onClick={() => updateFormData(currentQ.id, opt)} className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold text-lg flex justify-between items-center ${ (formData as any)[currentQ.id] === opt ? 'border-blue-600 bg-blue-50/50 text-blue-700 shadow-md' : 'border-slate-100 hover:border-slate-200 text-slate-600' }`}>
+                        <button key={opt} onClick={() => updateFormData(currentQ.id, opt)} className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold text-lg flex justify-between items-center ${ (formData as any)[currentQ.id] === opt ? 'border-blue-600 bg-blue-50/50 text-blue-700 shadow-md' : errors[currentQ.id] ? 'border-red-300 bg-red-50/50 text-red-800' : 'border-slate-100 hover:border-slate-200 text-slate-600' }`}>
                             {opt}
                             { (formData as any)[currentQ.id] === opt && <CheckCircle2 className="w-6 h-6 text-blue-600" /> }
                         </button>
                     ))}
+                    {errors[currentQ.id] && <p className="text-red-500 text-sm font-bold mt-2 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> {errors[currentQ.id]}</p>}
                     </div>
                 ) : currentQ.type === 'checkbox' ? (
                     <div className="grid gap-3">
@@ -476,12 +494,13 @@ export default function HACCPBuilder() {
                             <button key={opt} onClick={() => {
                                 const cur = (formData as any)[currentQ.id];
                                 updateFormData(currentQ.id, isSelected ? cur.filter((x:string)=>x!==opt) : [...cur, opt]);
-                            }} className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold text-lg flex justify-between items-center ${ isSelected ? 'border-blue-600 bg-blue-50/50 text-blue-700 shadow-md' : 'border-slate-100 hover:border-slate-200 text-slate-600' }`}>
+                            }} className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold text-lg flex justify-between items-center ${ isSelected ? 'border-blue-600 bg-blue-50/50 text-blue-700 shadow-md' : errors[currentQ.id] ? 'border-red-300 bg-red-50/50 text-red-800' : 'border-slate-100 hover:border-slate-200 text-slate-600' }`}>
                                 {opt}
                                 { isSelected && <CheckCircle2 className="w-6 h-6 text-blue-600" /> }
                             </button>
                         );
                     })}
+                    {errors[currentQ.id] && <p className="text-red-500 text-sm font-bold mt-2 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> {errors[currentQ.id]}</p>}
                     </div>
                 ) : currentQ.type === 'list' ? (
                     <div className="space-y-6">
@@ -496,6 +515,7 @@ export default function HACCPBuilder() {
                         </div>
                         ))}
                     </div>
+                    {errors[currentQ.id] && <p className="text-red-500 text-sm font-bold mt-2 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> {errors[currentQ.id]}</p>}
                     </div>
                 ) : currentQ.type === 'file' ? (
                     <div className="flex flex-col items-center justify-center p-10 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors">
@@ -553,7 +573,10 @@ export default function HACCPBuilder() {
                         ))}
                     </div>
                 ) : (
-                    <input type="text" autoFocus value={(formData as any)[currentQ.id]} onChange={e => updateFormData(currentQ.id, e.target.value)} onKeyDown={e => e.key === 'Enter' && handleNext()} className="w-full text-3xl py-6 border-b-4 border-slate-100 outline-none focus:border-blue-600 bg-transparent font-black placeholder:text-slate-200 transition-all" placeholder="Enter detail..." />
+                    <div className="w-full">
+                        <input type="text" autoFocus value={(formData as any)[currentQ.id]} onChange={e => updateFormData(currentQ.id, e.target.value)} onKeyDown={e => e.key === 'Enter' && handleNext()} className={`w-full text-3xl py-6 border-b-4 outline-none bg-transparent font-black placeholder:text-slate-200 transition-all ${errors[currentQ.id] ? 'border-red-400 placeholder:text-red-200' : 'border-slate-100 focus:border-blue-600'}`} placeholder="Enter detail..." />
+                        {errors[currentQ.id] && <p className="text-red-500 text-sm font-bold mt-4 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> {errors[currentQ.id]}</p>}
+                    </div>
                 )}
               </div>
 
