@@ -150,6 +150,7 @@ export default function HACCPBuilder() {
   const [isPaying, setIsPaying] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [currentIngredient, setCurrentIngredient] = useState('');
+  const [history, setHistory] = useState<number[]>([]);
   const topRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -292,6 +293,9 @@ export default function HACCPBuilder() {
     // Skip validation for logo as it is optional (or logic inside validation)
     if (q.required && (!val || (Array.isArray(val) && val.length === 0))) return alert("This field is required.");
     
+    // Save current index to history before moving
+    setHistory(prev => [...prev, currentQuestionIdx]);
+
     // Skip logic
     if (q.id === 'doYouCook' && formData.doYouCook === 'No') {
         const nextIdx = questions.findIndex(q => q.id === 'cleaningFrequency');
@@ -301,6 +305,14 @@ export default function HACCPBuilder() {
 
     if (currentQuestionIdx < questions.length - 1) setCurrentQuestionIdx(currentQuestionIdx + 1);
     else handleGenerate();
+  };
+
+  const handleBack = () => {
+    if (history.length === 0) return; // Can't go back further
+    
+    const prevIdx = history[history.length - 1];
+    setHistory(prev => prev.slice(0, -1)); // Pop from stack
+    setCurrentQuestionIdx(prevIdx);
   };
 
   const handleGenerate = async () => {
@@ -499,7 +511,11 @@ export default function HACCPBuilder() {
               </div>
 
               <div className="flex justify-between items-center mt-12 pt-10 border-t border-slate-50">
-                <button onClick={() => setCurrentQuestionIdx(Math.max(0, currentQuestionIdx-1))} className="text-slate-400 hover:text-slate-900 font-black uppercase tracking-widest text-sm transition-colors flex items-center gap-2">
+                <button 
+                    onClick={handleBack} 
+                    disabled={history.length === 0}
+                    className={`text-slate-400 hover:text-slate-900 font-black uppercase tracking-widest text-sm transition-colors flex items-center gap-2 ${history.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
                     <ChevronLeft className="w-5 h-5" /> Back
                 </button>
                 <button onClick={handleNext} className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl font-black text-lg shadow-xl shadow-blue-500/20 transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
