@@ -70,9 +70,9 @@ export const translations = {
         },
         review: {
           title: "Expert Review",
-          price: "€99",
+          price: "From €99",
           desc: "Refresh an existing HACCP plan.",
-          f1: "Full Professional Audit",
+          f1: "Full Professional Review",
           f2: "Latest Regulation Update",
           f3: "Detailed Action Report",
           cta: "Book Review"
@@ -247,9 +247,9 @@ export const translations = {
         },
         review: {
           title: "Revisión Experta",
-          price: "€99",
+          price: "Desde €99",
           desc: "Actualice un plan HACCP existente.",
-          f1: "Auditoría Profesional Completa",
+          f1: "Revisión Profesional Completa",
           f2: "Actualización de Normativas",
           f3: "Informe Detallado de Acciones",
           cta: "Reservar Revisión"
@@ -424,9 +424,9 @@ export const translations = {
         },
         review: {
           title: "Revue d'Expert",
-          price: "€99",
+          price: "À partir de €99",
           desc: "Mise à jour d'un plan existant.",
-          f1: "Audit Professionnel Complet",
+          f1: "Revue Professionnelle Complète",
           f2: "Mise à jour Réglementaire",
           f3: "Rapport d'Action Détaillé",
           cta: "Réserver"
@@ -601,9 +601,9 @@ export const translations = {
         },
         review: {
           title: "Revisão de Especialista",
-          price: "€99",
+          price: "Desde €99",
           desc: "Atualize um plano HACCP existente.",
-          f1: "Auditoria Profissional Completa",
+          f1: "Revisão Profissional Completa",
           f2: "Atualização de Regulamentos",
           f3: "Relatório Detalhado",
           cta: "Agendar Revisão"

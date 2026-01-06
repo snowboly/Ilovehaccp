@@ -199,7 +199,7 @@ function DashboardContent() {
                 href="/contact?subject=Review" 
                 className="relative z-10 whitespace-nowrap bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors shadow-lg flex items-center gap-2"
             >
-                Get Reviewed <span className="text-blue-600">€99</span> <ArrowRight className="w-4 h-4" />
+                Get Reviewed <span className="text-blue-600 font-medium">From</span> <span className="text-blue-600">€99</span> <ArrowRight className="w-4 h-4" />
             </Link>
         </div>
 
