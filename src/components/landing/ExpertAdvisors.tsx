@@ -7,7 +7,7 @@ const experts = [
   {
     name: "Dr. Joao",
     role: "Scientific Lead & Founder",
-    bio: "Leading the vision to democratize food safety with AI and rigorous science.",
+    bio: "The scientific visionary behind our tool logic.",
     image: "/team/joao.svg",
     badge: "Founder"
   },

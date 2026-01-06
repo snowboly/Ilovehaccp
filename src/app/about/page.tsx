@@ -12,7 +12,7 @@ const team = [
     name: "Dr. Joao",
     role: "Scientific Lead & Founder",
     image: "/team/joao.svg",
-    bio: "Leading the vision to democratize food safety with AI and rigorous science.",
+    bio: "The scientific visionary behind our tool logic.",
     details: "Expert in microbial pathogenesis and predictive modeling.",
     badge: "Founder"
   },
