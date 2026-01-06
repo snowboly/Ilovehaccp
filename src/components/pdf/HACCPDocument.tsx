@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
 // --- STYLES ---
 const styles = StyleSheet.create({
@@ -209,6 +209,8 @@ const styles = StyleSheet.create({
 });
 
 interface Props {
+  logo?: string | null;
+  template?: string;
   data: {
     businessName: string;
     productName: string;
@@ -239,13 +241,14 @@ interface Props {
   dict: any; // The locale dictionary for PDF
 }
 
-const CommonHeader = ({ title, dict }: { title: string, dict: any }) => (
-  <View style={styles.headerContainer} fixed>
+const CommonHeader = ({ title, dict, logo, theme }: { title: string, dict: any, logo?: string | null, theme?: any }) => (
+  <View style={{ ...styles.headerContainer, borderBottomColor: theme?.primary || '#1E3A8A' }} fixed>
     <View style={styles.headerLeft}>
-      <Text style={styles.headerTitle}>{title}</Text>
+      <Text style={{ ...styles.headerTitle, color: theme?.primary || '#1E3A8A' }}>{title}</Text>
       <Text style={styles.headerSubtitle}>{dict.subtitle}</Text>
     </View>
     <View style={styles.headerRight}>
+      {logo && <Image src={logo} style={{ width: 30, height: 30, objectFit: 'contain', marginBottom: 5 }} />}
       <Text>{dict.confidential}</Text>
       <Text>{dict.version}</Text>
     </View>
@@ -259,16 +262,32 @@ const CommonFooter = ({ dict }: { dict: any }) => (
   </View>
 );
 
-const HACCPDocument = ({ data, dict }: Props) => {
+const HACCPDocument = ({ data, dict, logo, template = 'Minimal' }: Props) => {
   const { fullPlan } = data;
   const today = new Date().toLocaleDateString();
+
+  // Template Theme Config
+  const theme = {
+    primary: template === 'Corporate' ? '#1E3A8A' : template === 'Modern' ? '#059669' : '#333333', // Blue-900, Emerald-600, Dark Gray
+    secondary: template === 'Corporate' ? '#F3F4F6' : template === 'Modern' ? '#ECFDF5' : '#FFFFFF',
+    accent: template === 'Corporate' ? '#B91C1C' : template === 'Modern' ? '#D97706' : '#000000',
+    headerBg: template === 'Corporate' ? '#1E3A8A' : template === 'Modern' ? '#059669' : '#FFFFFF',
+    headerText: template === 'Minimal' ? '#1E3A8A' : '#FFFFFF',
+  };
 
   return (
     <Document>
       {/* PAGE 1: COVER PAGE */}
       <Page size="A4" style={styles.coverPage}>
         <View style={styles.coverBox}>
-          <Text style={styles.coverTitle}>{dict.title}</Text>
+          {logo && (
+            <Image 
+                src={logo} 
+                style={{ width: 100, height: 100, objectFit: 'contain', marginBottom: 20 }} 
+            />
+          )}
+          
+          <Text style={{...styles.coverTitle, color: theme.primary}}>{dict.title}</Text>
           <Text style={styles.coverSubtitle}>{dict.subtitle}</Text>
           
           <View style={{ width: '100%', height: 1, backgroundColor: '#E5E7EB', marginVertical: 20 }} />
@@ -300,9 +319,9 @@ const HACCPDocument = ({ data, dict }: Props) => {
 
       {/* PAGE 2: PLAN OVERVIEW */}
       <Page size="A4" style={styles.page}>
-        <CommonHeader title={data.businessName} dict={dict} />
+        <CommonHeader title={data.businessName} dict={dict} logo={logo} theme={theme} />
         
-        <Text style={styles.sectionTitle}>{dict.s1_title}</Text>
+        <Text style={{ ...styles.sectionTitle, borderLeftColor: theme.primary, color: template === 'Minimal' ? '#111827' : theme.primary }}>{dict.s1_title}</Text>
         
         <View style={{ marginBottom: 15 }}>
             <Text style={styles.subHeader}>{dict.s1_executive}</Text>
@@ -407,7 +426,7 @@ const HACCPDocument = ({ data, dict }: Props) => {
 
       {/* PAGE 3: PREREQUISITE PROGRAMS */}
       <Page size="A4" style={styles.page}>
-        <CommonHeader title={data.businessName} dict={dict} />
+        <CommonHeader title={data.businessName} dict={dict} logo={logo} theme={theme} />
         
         <Text style={styles.sectionTitle}>{dict.s2_title}</Text>
         <Text style={{ ...styles.text, marginBottom: 10 }}>
@@ -432,7 +451,7 @@ const HACCPDocument = ({ data, dict }: Props) => {
 
       {/* PAGE 4: HAZARD ANALYSIS */}
       <Page size="A4" style={styles.page}>
-        <CommonHeader title={data.businessName} dict={dict} />
+        <CommonHeader title={data.businessName} dict={dict} logo={logo} theme={theme} />
         
         <Text style={styles.sectionTitle}>{dict.s3_title}</Text>
         
@@ -465,7 +484,7 @@ const HACCPDocument = ({ data, dict }: Props) => {
 
       {/* PAGE 5: HACCP PLAN SUMMARY */}
       <Page size="A4" style={styles.page}>
-        <CommonHeader title={data.businessName} dict={dict} />
+        <CommonHeader title={data.businessName} dict={dict} logo={logo} theme={theme} />
         
         <Text style={styles.sectionTitle}>{dict.s4_title}</Text>
         <Text style={{ ...styles.text, marginBottom: 15 }}>
@@ -526,7 +545,7 @@ const HACCPDocument = ({ data, dict }: Props) => {
       {/* PAGE 6: BENCHMARKING & BEST PRACTICES */}
       {fullPlan?.benchmarking && (
         <Page size="A4" style={styles.page}>
-          <CommonHeader title={data.businessName} dict={dict} />
+          <CommonHeader title={data.businessName} dict={dict} logo={logo} theme={theme} />
           
           <Text style={styles.sectionTitle}>Safety Benchmarking & Best Practices</Text>
           
@@ -566,8 +585,7 @@ const HACCPDocument = ({ data, dict }: Props) => {
 
       {/* PAGE 7: TOOLKIT - TEMPERATURE LOG */}
       <Page size="A4" style={styles.page}>
-        <CommonHeader title={dict.tk_title} dict={dict} />
-        <Text style={styles.sectionTitle}>{dict.tk_temp_title}</Text>
+<CommonHeader title={dict.tk_title} dict={dict} logo={logo} theme={theme} />
         <Text style={{ ...styles.text, marginBottom: 10 }}>
             {dict.tk_temp_desc}
         </Text>
@@ -600,7 +618,7 @@ const HACCPDocument = ({ data, dict }: Props) => {
 
       {/* PAGE 7: TOOLKIT - CLEANING LOG */}
       <Page size="A4" style={styles.page}>
-        <CommonHeader title={dict.tk_title} dict={dict} />
+        <CommonHeader title={dict.tk_title} dict={dict} logo={logo} theme={theme} />
         <Text style={styles.sectionTitle}>{dict.tk_clean_title}</Text>
         
         <View style={styles.table}>

@@ -65,7 +65,9 @@ import {
   Info,
   ArrowDown,
   Mail,
-  Send
+  Send,
+  Image as ImageIcon,
+  LayoutTemplate
 } from 'lucide-react';
 
 import { supabase } from '@/lib/supabase';
@@ -191,6 +193,8 @@ export default function HACCPBuilder() {
     preventativeMaintenance: 'Yes',
     equipmentCalibration: 'Yes, scheduled', // New field
     ccpsMonitored: 'No',
+    logo: null as string | null,
+    template: 'Minimal',
   });
 
   // Helper to determine temperature unit
@@ -257,13 +261,28 @@ export default function HACCPBuilder() {
     
     // 7. Monitoring
     { id: 'ccpsMonitored', section: 'Compliance', question: "Will you monitor Critical Control Points?", type: 'radio', options: ['Yes', 'No'], icon: <ClipboardCheck />, required: true },
+
+    // 8. Customization
+    { id: 'logo', section: 'Branding', question: "Upload your business logo", type: 'file', icon: <ImageIcon />, description: "It will appear on the cover of your PDF (Optional)." },
+    { id: 'template', section: 'Style', question: "Choose a document style", type: 'template_select', icon: <LayoutTemplate />, options: ['Minimal', 'Corporate', 'Modern'], required: true },
   ];
 
   const updateFormData = (id: string, value: any) => setFormData(prev => ({ ...prev, [id]: value }));
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        updateFormData('logo', event.target?.result);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
   const handleNext = () => {
     const q = questions[currentQuestionIdx];
     const val = (formData as any)[q.id];
+    // Skip validation for logo as it is optional (or logic inside validation)
     if (q.required && (!val || (Array.isArray(val) && val.length === 0))) return alert("This field is required.");
     
     // Skip logic
@@ -408,6 +427,61 @@ export default function HACCPBuilder() {
                         </div>
                         ))}
                     </div>
+                    </div>
+                ) : currentQ.type === 'file' ? (
+                    <div className="flex flex-col items-center justify-center p-10 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors">
+                        <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={handleFileChange} 
+                            className="hidden" 
+                            id="logo-upload"
+                        />
+                        <label htmlFor="logo-upload" className="cursor-pointer flex flex-col items-center gap-4">
+                            {formData.logo ? (
+                                <img src={formData.logo} alt="Logo Preview" className="h-32 object-contain" />
+                            ) : (
+                                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                                    <ImageIcon className="w-10 h-10" />
+                                </div>
+                            )}
+                            <span className="font-bold text-slate-600 text-lg">
+                                {formData.logo ? 'Change Logo' : 'Click to Upload Logo'}
+                            </span>
+                            <span className="text-sm text-slate-400">PNG, JPG up to 2MB</span>
+                        </label>
+                        {formData.logo && (
+                            <button onClick={() => updateFormData('logo', null)} className="mt-6 text-red-500 font-bold text-sm flex items-center gap-2 hover:underline">
+                                <Trash2 className="w-4 h-4" /> Remove Logo
+                            </button>
+                        )}
+                    </div>
+                ) : currentQ.type === 'template_select' ? (
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {currentQ.options?.map(opt => (
+                            <button 
+                                key={opt} 
+                                onClick={() => updateFormData('template', opt)}
+                                className={`p-6 rounded-2xl border-2 text-left transition-all relative overflow-hidden group ${formData.template === opt ? 'border-blue-600 bg-blue-50 ring-4 ring-blue-600/10' : 'border-slate-200 hover:border-blue-300'}`}
+                            >
+                                <div className={`h-32 w-full mb-4 rounded-xl border border-slate-200 shadow-sm ${opt === 'Minimal' ? 'bg-white' : opt === 'Corporate' ? 'bg-slate-900' : 'bg-blue-600'}`}>
+                                    {/* Mock Preview */}
+                                    <div className="p-3">
+                                        <div className={`w-1/2 h-2 rounded-full mb-2 ${opt === 'Minimal' ? 'bg-slate-200' : 'bg-white/20'}`}></div>
+                                        <div className={`w-3/4 h-2 rounded-full ${opt === 'Minimal' ? 'bg-slate-100' : 'bg-white/10'}`}></div>
+                                    </div>
+                                </div>
+                                <h3 className="font-black text-lg text-slate-900">{opt}</h3>
+                                <p className="text-sm text-slate-500 font-medium">
+                                    {opt === 'Minimal' ? 'Clean & Simple' : opt === 'Corporate' ? 'Professional & Bold' : 'Modern & Colorful'}
+                                </p>
+                                {formData.template === opt && (
+                                    <div className="absolute top-4 right-4 bg-blue-600 text-white p-1 rounded-full">
+                                        <CheckCircle2 className="w-4 h-4" />
+                                    </div>
+                                )}
+                            </button>
+                        ))}
                     </div>
                 ) : (
                     <input type="text" autoFocus value={(formData as any)[currentQ.id]} onChange={e => updateFormData(currentQ.id, e.target.value)} onKeyDown={e => e.key === 'Enter' && handleNext()} className="w-full text-3xl py-6 border-b-4 border-slate-100 outline-none focus:border-blue-600 bg-transparent font-black placeholder:text-slate-200 transition-all" placeholder="Enter detail..." />
@@ -710,6 +784,8 @@ export default function HACCPBuilder() {
                                 document={
                                 <HACCPDocument 
                                     dict={dict}
+                                    logo={formData.logo}
+                                    template={formData.template}
                                     data={{
                                     businessName: formData.businessLegalName || "My Business",
                                     productName: "HACCP Plan",
