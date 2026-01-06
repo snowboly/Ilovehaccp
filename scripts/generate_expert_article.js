@@ -42,20 +42,18 @@ async function safeAiCall(messages, temperature, jsonMode = false) {
 
 // --- PERSONAS ---
 const PERSONAS = [
-  {
-    id: 'academic_joao',
-    role: 'Dr. Joao, PhD in Food Microbiology',
-    tone: 'Academic, rigorous, evidence-based, precise.',
-    style: 'Uses technical terminology, cites principles extensively, focuses on the "why" at a molecular/biological level.',
-    instruction: 'Write as a professor educating advanced practitioners. Focus on the scientific validity of HACCP principles. Use a tone similar to an academic journal but accessible for industry leaders.'
-  },
-  {
-    id: 'auditor_margarida',
-    role: 'Dr. Margarida, Lead Auditor (BRCGS/SQF)',
-    tone: 'Professional, compliance-focused, detail-oriented, strict.',
-    style: 'Focuses on audit readiness, documentation, regulatory citations (CFR, EC 852/2004), and red flags.',
-    instruction: 'Write as if preparing a client for a surprise inspection. Focus on "passing the audit" and regulatory alignment. Use direct, authoritative language.'
-  }
+    {
+        id: 'joao_micro',
+        role: 'Dr. Joao, Scientific Lead & Founder',
+        name: 'Dr. Joao',
+        persona: 'PhD in Food Microbiology, vision focused on democratizing safety standards.'
+    },
+    {
+        id: 'auditor_margarida',
+        role: 'Dr. Margarida, Head of Compliance',
+        name: 'Dr. Margarida',
+        persona: 'Senior Compliance Officer with 20+ years in lead auditing (BRCGS/SQF).'
+    },
 ];
 
 // --- KNOWLEDGE BASE ---

@@ -6,38 +6,38 @@ import { TeamAvatar } from '../team/TeamAvatars';
 const experts = [
   {
     name: "Dr. Joao",
-    role: "PhD in Food Microbiology",
+    role: "Scientific Lead & Founder",
     bio: "Scientific Lead specializing in pathogen control and molecular safety protocols.",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Joao",
-    badge: "Scientific Lead"
+    image: "/team/joao.svg",
+    badge: "Founder"
   },
   {
     name: "Dr. Margarida",
-    role: "Lead Auditor (BRCGS/SQF)",
+    role: "Head of Compliance",
     bio: "20+ years ensuring global compliance. Margarida&apos;s templates are built to pass the strictest inspections.",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Margarida",
+    image: "/team/margarida.svg",
     badge: "Compliance"
   },
   {
     name: "Dr. Fabio",
-    role: "Industrial Operations Expert",
+    role: "Lead Auditor",
     bio: "Bridging the gap between academic theory and the high-pressure reality of the factory floor.",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Fabio",
-    badge: "Operations"
+    image: "/team/fabio.svg",
+    badge: "Auditor"
   },
   {
     name: "Dr. Claudia",
-    role: "Food Science Professor",
+    role: "Technical Lead",
     bio: "Educator and researcher focusing on emerging food safety technologies and preservation methods.",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Claudia",
-    badge: "Research"
+    image: "/team/claudia.svg",
+    badge: "Technical"
   },
   {
     name: "Dr. Isabel",
-    role: "Regulatory Specialist",
+    role: "Head of Ops",
     bio: "Expert in FDA FSMA and EU Regulation 852/2004, ensuring legal alignment across borders.",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Isabel",
-    badge: "Legal"
+    image: "/team/isabel.svg",
+    badge: "Operations"
   }
 ];
 

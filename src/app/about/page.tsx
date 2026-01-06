@@ -10,43 +10,43 @@ export const metadata = {
 const team = [
   {
     name: "Dr. Joao",
-    role: "PhD in Food Microbiology",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Joao",
+    role: "Scientific Lead & Founder",
+    image: "/team/joao.svg",
     bio: "The scientific visionary behind our AI logic.",
     details: "Expert in microbial pathogensis and predictive modeling.",
-    badge: "Scientific Lead"
+    badge: "Founder"
   },
   {
     name: "Dr. Margarida",
-    role: "Lead Auditor (BRCGS/SQF)",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Margarida",
+    role: "Head of Compliance",
+    image: "/team/margarida.svg",
     bio: "Ensures every plan meets global audit standards.",
     details: "Over 500 successful audits across 12 countries.",
     badge: "Compliance"
   },
   {
     name: "Dr. Fabio",
-    role: "Industrial Ops Expert",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Fabio",
+    role: "Lead Auditor",
+    image: "/team/fabio.svg",
     bio: "Bridging the gap between theory and factory floor.",
     details: "Specialist in large-scale food manufacturing systems.",
-    badge: "Operations"
+    badge: "Auditor"
   },
   {
     name: "Dr. Claudia",
-    role: "Food Science Professor",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Claudia",
+    role: "Technical Lead",
+    image: "/team/claudia.svg",
     bio: "Leading research in preservation technologies.",
     details: "Focuses on emerging technologies and shelf-life extension.",
-    badge: "Research"
+    badge: "Technical"
   },
   {
     name: "Dr. Isabel",
-    role: "Regulatory Specialist",
-    image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Isabel",
+    role: "Head of Ops",
+    image: "/team/isabel.svg",
     bio: "Master of FDA FSMA and EU Food Law.",
     details: "Consults for multi-national food conglomerates on legal compliance.",
-    badge: "Legal"
+    badge: "Operations"
   }
 ];
 

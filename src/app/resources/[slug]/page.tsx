@@ -51,11 +51,11 @@ function highlightListTerms(html: string) {
 }
 
 const PERSONAS: Record<string, any> = {
-  "Dr. Joao": { name: "Dr. Joao", role: "PhD in Food Microbiology", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Joao" },
-  "Dr. Margarida": { name: "Dr. Margarida", role: "Lead Auditor (BRCGS/SQF)", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Margarida" },
-  "Dr. Fabio": { name: "Dr. Fabio", role: "Industrial Operations Expert", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Fabio" },
-  "Dr. Claudia": { name: "Dr. Claudia", role: "Food Science Professor", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Claudia" },
-  "Dr. Isabel": { name: "Dr. Isabel", role: "Regulatory Compliance Specialist", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Isabel" }
+  "Dr. Joao": { name: "Dr. Joao", role: "Scientific Lead & Founder", bio: "Dr. Joao is a leading expert in microbiological food safety.", image: "/team/joao.svg" },
+  "Dr. Margarida": { name: "Dr. Margarida", role: "Head of Compliance", bio: "Dr. Margarida is a veteran compliance officer with over 20 years of experience.", image: "/team/margarida.svg" },
+  "Dr. Fabio": { name: "Dr. Fabio", role: "Lead Auditor", bio: "Dr. Fabio bridges the gap between complex theory and factory-floor implementation.", image: "/team/fabio.svg" },
+  "Dr. Claudia": { name: "Dr. Claudia", role: "Technical Lead", bio: "Dr. Claudia focuses on emerging preservation technologies.", image: "/team/claudia.svg" },
+  "Dr. Isabel": { name: "Dr. Isabel", role: "Head of Ops", bio: "Dr. Isabel is an expert in FDA FSMA and EU Food Law.", image: "/team/isabel.svg" }
 };
 
 function getExpertFromContent(content: string) {

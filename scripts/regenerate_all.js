@@ -18,14 +18,14 @@ const WORD_COUNT_TARGET = 4500;
 const PERSONAS = [
   {
     id: 'academic_joao',
-    role: 'Dr. Joao, PhD in Food Microbiology',
+    role: 'Dr. Joao, Scientific Lead & Founder',
     tone: 'Academic, rigorous, evidence-based, precise.',
     style: 'Uses technical terminology, cites principles extensively, focuses on the "why" at a molecular/biological level.',
     instruction: 'Write as a professor educating advanced practitioners. Focus on the scientific validity of HACCP principles.'
   },
   {
     id: 'auditor_margarida',
-    role: 'Dr. Margarida, Lead Auditor (BRCGS/SQF)',
+    role: 'Dr. Margarida, Head of Compliance',
     tone: 'Professional, compliance-focused, detail-oriented, strict.',
     style: 'Focuses on audit readiness, documentation, regulatory citations (CFR, EC 852/2004), and red flags.',
     instruction: 'Write as if preparing a client for a surprise inspection. Focus on "passing the audit" and regulatory alignment.'
