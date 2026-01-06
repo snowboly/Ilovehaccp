@@ -66,6 +66,21 @@ export default function Home() {
                 <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
                   {t('landing.hero.subtitle')}
                 </p>
+
+                {/* Checklist */}
+                <div className="flex flex-col gap-3 py-2">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      </div>
+                      <span className="font-bold text-slate-700 tracking-tight">
+                        {t(`landing.hero.check${i}` as any)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
                 <div className="flex flex-col sm:flex-row items-center gap-6">
                   <Link href="/builder" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-center px-10 py-5 rounded-2xl text-xl font-black transition-all shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
                     {t('landing.hero.cta')}
