@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -150,6 +150,7 @@ export default function HACCPBuilder() {
   const [isPaying, setIsPaying] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [currentIngredient, setCurrentIngredient] = useState('');
+  const topRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     businessLegalName: '',
@@ -200,6 +201,12 @@ export default function HACCPBuilder() {
   // Helper to determine temperature unit
   const tempUnit = formData.country.toLowerCase().includes('usa') || formData.country.toLowerCase().includes('united states') ? '°F' : '°C';
 
+  useEffect(() => {
+    // Scroll to top of the wizard container whenever step or question changes
+    if (topRef.current) {
+        topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [step, currentQuestionIdx]);
 
   useEffect(() => {
     setIsClient(true);
@@ -346,7 +353,7 @@ export default function HACCPBuilder() {
   const currentQ = questions[currentQuestionIdx];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-900">
+    <div ref={topRef} className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-900 scroll-mt-24">
       <AnimatePresence mode="wait">
         {step === 'intro' && (
           <motion.div key="intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="max-w-xl w-full bg-white rounded-[2.5rem] shadow-2xl p-12 text-center space-y-8 border border-slate-100">
