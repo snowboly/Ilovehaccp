@@ -875,6 +875,14 @@ function LeadCapture({ planId, businessName, children, onSuccess }: { planId: st
                 plan_id: planId
             });
             if (error) throw error;
+            
+            // Try to send email (don't block UI if it fails)
+            fetch('/api/send-plan-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.trim(), businessName, planId })
+            }).catch(console.error);
+
             setCaptured(true);
             onSuccess();
         } catch (err: any) {
