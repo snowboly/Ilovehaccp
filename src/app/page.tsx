@@ -39,11 +39,11 @@ export default function Home() {
   return (
     <div className="font-sans">
       <JSONLD data={structuredData} />
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-16">
         <SampleDownload />
 
         {/* Hero Section */}
-        <section className="relative overflow-hidden py-20 lg:py-32">
+        <section className="relative overflow-hidden py-12 lg:py-16">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
             <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-400 opacity-20 blur-[100px]"></div>
@@ -51,64 +51,64 @@ export default function Home() {
           </div>
           
           <div className="container px-4 mx-auto relative z-10">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-8">
-                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold">
-                  <Star className="w-4 h-4 fill-blue-700" />
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-xs font-bold">
+                  <Star className="w-3 h-3 fill-blue-700" />
                   {t('landing.hero.badge')}
                 </div>
-                <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1]">
+                <h1 className="text-4xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
                   {t('landing.hero.titlePart1')} <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                  <span className="text-3xl lg:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 block mt-2">
                     {t('landing.hero.titlePart2')}
                   </span>
                 </h1>
-                <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
+                <p className="text-lg text-slate-600 max-w-lg leading-relaxed">
                   {t('landing.hero.subtitle')}
                 </p>
 
                 {/* Checklist */}
-                <div className="flex flex-col gap-3 py-2">
+                <div className="flex flex-col gap-2 py-1">
                   {[1, 2, 3].map((i) => (
                     <div key={i} className="flex items-center gap-3">
                       <div className="flex-shrink-0 w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       </div>
-                      <span className="font-bold text-slate-700 tracking-tight">
+                      <span className="font-bold text-slate-700 text-sm tracking-tight">
                         {t(`landing.hero.check${i}` as any)}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-6">
-                  <Link href="/builder" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-center px-10 py-5 rounded-2xl text-xl font-black transition-all shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <Link href="/builder" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-center px-8 py-4 rounded-2xl text-lg font-black transition-all shadow-xl shadow-blue-500/30 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
                     {t('landing.hero.cta')}
-                    <ArrowRight className="w-6 h-6" />
+                    <ArrowRight className="w-5 h-5" />
                   </Link>
                   <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
                       <div className="flex -space-x-2">
                           {[1,2,3].map(i => (
-                              <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center">
-                                  <UserCheck className="w-4 h-4 text-blue-600" />
+                              <div key={i} className="w-7 h-7 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center">
+                                  <UserCheck className="w-3.5 h-3.5 text-blue-600" />
                               </div>
                           ))}
                       </div>
-                      <div className="text-sm">
+                      <div className="text-xs">
                           <p className="font-black text-slate-900 leading-none">{t('landing.hero.auditReady')}</p>
-                          <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1">{t('landing.hero.validated')}</p>
+                          <p className="text-slate-500 font-bold text-[9px] uppercase tracking-widest mt-1">{t('landing.hero.validated')}</p>
                       </div>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-8 text-sm text-slate-400 font-bold uppercase tracking-[0.2em] pt-4 grayscale opacity-60">
+                <div className="flex flex-wrap gap-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] pt-2 grayscale opacity-60">
                   <span className="flex items-center gap-2">{t('landing.hero.compliance.fda')}</span>
                   <span className="flex items-center gap-2">{t('landing.hero.compliance.eu')}</span>
                   <span className="flex items-center gap-2">{t('landing.hero.compliance.codex')}</span>
                 </div>
               </div>
               
-              <div className="relative">
+              <div className="relative lg:mt-0 mt-12">
                 <InteractiveDemo />
               </div>
             </div>
