@@ -11582,7 +11582,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-to-keep-haccp-practical-not-bureaucratic",
-    image: "https://images.unsplash.com/photo-1554224155-167822415516?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.pexels.com/photos/16143154/pexels-photo-16143154.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
     title: "How to Keep HACCP Practical, Not Bureaucratic: A Guide for Food Businesses",
     category: "Operations",
     readTime: "20 min read",

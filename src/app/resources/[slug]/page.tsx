@@ -38,7 +38,11 @@ function getHeadings(html: string) {
 function injectHeaderIds(html: string) {
   return html.replace(/<(h[23])>(.*?)<\/h[23]>/g, (match, tag, text) => {
     const id = text.replace(/<[^>]*>?/gm, '').toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-    return `<${tag} id="${id}">${text}</${tag}>`;
+    // We add a class for CSS targeting and a specific data attribute
+    return `<${tag} id="${id}" class="toc-header group relative pl-6 border-l-4 border-transparent hover:border-blue-600 transition-all">
+      <span class="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 font-sans text-sm font-black">§</span>
+      ${text}
+    </${tag}>`;
   });
 }
 
@@ -177,7 +181,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   className="prose prose-slate max-w-none font-sans text-[15px] leading-7 text-[#202122]
                     prose-headings:font-serif prose-headings:font-normal prose-headings:text-black
                     prose-h2:text-2xl prose-h2:border-b prose-h2:border-slate-300 prose-h2:pb-1 prose-h2:mt-8 prose-h2:mb-4
+                    prose-h2:bg-slate-50/50 prose-h2:pr-4
                     prose-h3:text-lg prose-h3:font-bold prose-h3:mt-6 prose-h3:mb-2
+                    prose-h3:text-slate-800
                     prose-p:my-3 prose-p:text-justify md:prose-p:text-left
                     prose-a:text-[#3366cc] prose-a:no-underline hover:prose-a:underline
                     prose-ul:list-disc prose-ul:pl-5 prose-ul:my-3
