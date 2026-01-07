@@ -44,6 +44,21 @@ export async function POST(req: Request) {
         console.error('Supabase update error:', error);
         return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
       }
+
+      // Trigger Email Notification (Non-blocking)
+      const customerEmail = session.customer_details?.email || session.customer_email;
+      if (customerEmail) {
+          fetch(`${new URL(req.url).origin}/api/send-payment-confirmation`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  email: customerEmail,
+                  businessName: session.metadata?.businessName || 'Your Business', // Ensure metadata has this or fallback
+                  planId: planId,
+                  amount: session.amount_total ? session.amount_total / 100 : 79
+              })
+          }).catch(err => console.error("Failed to trigger email:", err));
+      }
     }
   }
 

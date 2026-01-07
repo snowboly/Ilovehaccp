@@ -24,8 +24,8 @@ export const articles: Article[] = [  {
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/8382083/pexels-photo-8382083.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of bureaucracy</figcaption>
+        <img src="https://images.pexels.com/photos/5953751/pexels-photo-5953751.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -486,8 +486,8 @@ export const articles: Article[] = [  {
       <h2>The Foundation: Prerequisite Programs (GMPs)</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/2889093/pexels-photo-2889093.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of food industry</figcaption>
+        <img src="https://images.pexels.com/photos/4947388/pexels-photo-4947388.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -1345,8 +1345,8 @@ The evolving landscape of food safety necessitates ongoing research into the eff
       <h2>Introduction</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/5532664/pexels-photo-5532664.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of food processing</figcaption>
+        <img src="https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -2696,8 +2696,8 @@ In summary, the responsibility for HACCP in a food business is shared across all
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/6193932/pexels-photo-6193932.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/5953796/pexels-photo-5953796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -4234,8 +4234,8 @@ In conclusion, as the landscape of food safety continues to evolve, small busine
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/4192443/pexels-photo-4192443.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/6823605/pexels-photo-6823605.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -5922,8 +5922,8 @@ Red flags, such as inadequate documentation or insufficient training, can indica
       <h2>Introduction to Hazard Analysis</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/265024/pexels-photo-265024.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/33359325/pexels-photo-33359325.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -6698,8 +6698,8 @@ By fostering a proactive approach to hazard analysis and food safety management,
       <h2>Introduction to Critical Control Points (CCPs)</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/5477788/pexels-photo-5477788.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/1695052/pexels-photo-1695052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -7406,8 +7406,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/941861/pexels-photo-941861.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/2544829/pexels-photo-2544829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -8161,8 +8161,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Monitoring</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/683039/pexels-photo-683039.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/618773/pexels-photo-618773.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -9644,8 +9644,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/261679/pexels-photo-261679.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/35549596/pexels-photo-35549596.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -9707,8 +9707,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/7888645/pexels-photo-7888645.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/5953737/pexels-photo-5953737.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -9766,8 +9766,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/461433/pexels-photo-461433.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -9823,8 +9823,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/851555/pexels-photo-851555.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -9939,8 +9939,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP in Dairy Production</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/955390/pexels-photo-955390.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/4820845/pexels-photo-4820845.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -9984,8 +9984,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/5412104/pexels-photo-5412104.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/5863373/pexels-photo-5863373.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10035,8 +10035,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/669610/pexels-photo-669610.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10084,8 +10084,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Plans</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/887723/pexels-photo-887723.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/7552323/pexels-photo-7552323.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10180,8 +10180,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Importance</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/618158/pexels-photo-618158.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/2696064/pexels-photo-2696064.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10226,8 +10226,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Audits</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/9743090/pexels-photo-9743090.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/618775/pexels-photo-618775.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10273,8 +10273,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Records</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/1064136/pexels-photo-1064136.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/35549594/pexels-photo-35549594.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10321,8 +10321,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Non-Conformities</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/2074130/pexels-photo-2074130.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/5953794/pexels-photo-5953794.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10408,8 +10408,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Chemical Hazards in Food</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/28764305/pexels-photo-28764305.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10451,8 +10451,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Critical Control Points</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/7718889/pexels-photo-7718889.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/671956/pexels-photo-671956.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10486,8 +10486,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Cooling and Reheating in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/1058277/pexels-photo-1058277.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/5953780/pexels-photo-5953780.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10527,8 +10527,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Temperature Control in HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/2159065/pexels-photo-2159065.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/3825573/pexels-photo-3825573.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10611,8 +10611,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Physical Hazards in Food Production</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/955394/pexels-photo-955394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/2305765/pexels-photo-2305765.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10653,8 +10653,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to EU Regulation 852/2004</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/8580744/pexels-photo-8580744.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/7552321/pexels-photo-7552321.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10696,8 +10696,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and FDA FSMA</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/375468/pexels-photo-375468.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10743,8 +10743,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Codex Alimentarius</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/2079438/pexels-photo-2079438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/8477057/pexels-photo-8477057.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10835,8 +10835,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Certifications</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/164686/pexels-photo-164686.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/35532839/pexels-photo-35532839.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10886,8 +10886,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI Integration</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/6192502/pexels-photo-6192502.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/8422698/pexels-photo-8422698.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10931,8 +10931,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/1115251/pexels-photo-1115251.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/3152532/pexels-photo-3152532.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -10977,8 +10977,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/1482803/pexels-photo-1482803.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11040,8 +11040,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Importance</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/175045/pexels-photo-175045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/2889193/pexels-photo-2889193.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11084,8 +11084,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/5412103/pexels-photo-5412103.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/8450127/pexels-photo-8450127.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11123,8 +11123,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Plans</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/260922/pexels-photo-260922.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/618158/pexels-photo-618158.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11161,8 +11161,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/1024359/pexels-photo-1024359.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/6823606/pexels-photo-6823606.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11223,8 +11223,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/357514/pexels-photo-357514.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/3298637/pexels-photo-3298637.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11263,8 +11263,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/6991363/pexels-photo-6991363.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/8112382/pexels-photo-8112382.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11324,8 +11324,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Hazard Analysis</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/696218/pexels-photo-696218.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/35532838/pexels-photo-35532838.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11371,8 +11371,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/373639/pexels-photo-373639.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/7163988/pexels-photo-7163988.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11482,8 +11482,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/3756678/pexels-photo-3756678.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/11193867/pexels-photo-11193867.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11531,8 +11531,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/6991499/pexels-photo-6991499.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/2284166/pexels-photo-2284166.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11572,8 +11572,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Regulations</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/2104568/pexels-photo-2104568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
+        <img src="https://images.pexels.com/photos/5532664/pexels-photo-5532664.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11618,8 +11618,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/1438445/pexels-photo-1438445.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/3862638/pexels-photo-3862638.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11692,8 +11692,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Evolution</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/955392/pexels-photo-955392.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/6550462/pexels-photo-6550462.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -11735,8 +11735,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/32074767/pexels-photo-32074767.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/5752269/pexels-photo-5752269.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -12681,8 +12681,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>The Foundation of Positive Release</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/143642/pexels-photo-143642.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
+        <img src="https://images.pexels.com/photos/2544830/pexels-photo-2544830.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -13661,8 +13661,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <h2>Introduction to HACCP in Butcher Shops</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/955393/pexels-photo-955393.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
+        <img src="https://images.pexels.com/photos/8352014/pexels-photo-8352014.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       
@@ -14607,8 +14607,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <h2>Introduction to HACCP in Mobile Food Services</h2>
 
       <figure class="my-12">
-        <img src="https://images.pexels.com/photos/6991380/pexels-photo-6991380.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
+        <img src="https://images.pexels.com/photos/35532837/pexels-photo-35532837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        
       </figure>
 
       

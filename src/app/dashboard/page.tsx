@@ -174,8 +174,10 @@ function DashboardContent() {
             <div className="mb-8 bg-emerald-50 border border-emerald-200 text-emerald-800 px-6 py-4 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                    <span className="font-bold text-lg text-emerald-900">Payment Successful!</span>
-                    <span className="font-medium">Your plan is now unlocked for download.</span>
+                    <div>
+                        <span className="font-bold text-lg text-emerald-900 block">Payment Successful!</span>
+                        <span className="font-medium text-sm">Your plan is unlocked. Our expert has been notified and will contact you via email within 48h.</span>
+                    </div>
                 </div>
                 <button onClick={() => setShowSuccess(false)} className="text-emerald-400 hover:text-emerald-600">
                     <XCircle className="w-5 h-5" />

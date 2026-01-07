@@ -56,7 +56,8 @@ export async function POST(req: Request) {
       metadata: {
         planId,
         tier,
-        userId: user.id
+        userId: user.id,
+        businessName
       }
     });
 
