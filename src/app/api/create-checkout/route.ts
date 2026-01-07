@@ -53,6 +53,7 @@ export async function POST(req: Request) {
       mode: 'payment',
       success_url: `${new URL(req.url).origin}/dashboard?session_id={CHECKOUT_SESSION_ID}&plan_id=${planId}`,
       cancel_url: `${new URL(req.url).origin}/builder?id=${planId}`,
+      allow_promotion_codes: true,
       metadata: {
         planId,
         tier,
