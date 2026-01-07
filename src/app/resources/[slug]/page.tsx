@@ -39,10 +39,10 @@ function injectHeaderIds(html: string) {
   return html.replace(/<(h[23])>(.*?)<\/h[23]>/g, (match, tag, text) => {
     const id = text.replace(/<[^>]*>?/gm, '').toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
     
-    // Wikipedia-style inline overrides to guarantee look
+    // Match "References & Authors" style: font-serif, text-xl, font-normal
     const style = tag === 'h2' 
-      ? 'border-bottom: 1px solid #a2a9b1; padding-bottom: 3px; margin-top: 1.5em; margin-bottom: 0.5em; font-family: serif; font-weight: 400; color: #000;'
-      : 'font-weight: bold; font-family: sans-serif; margin-top: 1em; margin-bottom: 0.5em; color: #000; font-size: 1.1em;';
+      ? 'border-bottom: 1px solid #a2a9b1; padding-bottom: 3px; margin-top: 2em; margin-bottom: 1em; font-family: serif; font-weight: 400; font-size: 1.25rem; color: #000;'
+      : 'font-weight: bold; font-family: serif; margin-top: 1.5em; margin-bottom: 0.5em; color: #000; font-size: 1.1rem;';
 
     return `<${tag} id="${id}" style="${style}">${text}</${tag}>`;
   });
