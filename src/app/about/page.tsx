@@ -1,7 +1,6 @@
 import { ShieldCheck, Globe, Award, Microscope, BrainCircuit, ChefHat, FileSearch, Quote, Heart, Target, Lightbulb, Users, BarChart, Search, Wrench, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { TeamAvatar } from '@/components/team/TeamAvatars';
-import TestEmailButton from '@/components/debug/TestEmailButton';
 
 export const metadata = {
   title: 'About Us | ilovehaccp.com',
@@ -64,7 +63,6 @@ export default function AboutPage() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         </div>
         <div className="container mx-auto px-4 relative z-10 max-w-5xl">
-          <TestEmailButton />
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-8 tracking-tighter">
             About <span className="text-blue-600">Us.</span>
           </h1>
