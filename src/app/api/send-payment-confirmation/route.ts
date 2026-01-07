@@ -49,8 +49,11 @@ export async function POST(req: Request) {
 
     // 2. Prepare Attachment for Admin
     let attachments: any[] = [];
-    try {
-        console.log(`Generating attachment for Plan ID: ${planId}`);
+    if (planId === 'test-plan-id') {
+        console.log("Skipping attachment for TEST plan.");
+    } else {
+        try {
+            console.log(`Generating attachment for Plan ID: ${planId}`);
         const { data: plan, error } = await supabaseService
             .from('plans')
             .select('*')
@@ -70,11 +73,11 @@ export async function POST(req: Request) {
                 content: buffer
             });
             console.log("Attachment generated successfully.");
-        }
-    } catch (docError) {
-        console.error("CRITICAL: Failed to generate doc attachment, sending email without it.", docError);
-    }
-
+                    }
+                } catch (docError) {
+                    console.error("CRITICAL: Failed to generate doc attachment, sending email without it.", docError);
+                }
+            }
     // 3. Email to Admin
     console.log("Sending Admin Email...");
     const adminRes = await resend.emails.send({
