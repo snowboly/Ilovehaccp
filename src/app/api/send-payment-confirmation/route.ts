@@ -1,6 +1,8 @@
 
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { supabaseService } from '@/lib/supabase';
+import { generateWordDocument } from '@/lib/word-generator';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
@@ -45,10 +47,36 @@ export async function POST(req: Request) {
       `,
     });
 
-    // 2. Email to Admin
+    // 2. Prepare Attachment for Admin
+    let attachments: any[] = [];
+    try {
+        const { data: plan, error } = await supabaseService
+            .from('plans')
+            .select('*')
+            .eq('id', planId)
+            .single();
+
+        if (plan && !error) {
+            const buffer = await generateWordDocument({
+                businessName: plan.business_name,
+                full_plan: plan.full_plan
+            });
+            
+            attachments.push({
+                filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
+                content: buffer
+            });
+        } else {
+            console.error("Failed to fetch plan for attachment:", error);
+        }
+    } catch (docError) {
+        console.error("Failed to generate doc attachment:", docError);
+    }
+
+    // 3. Email to Admin
     await resend.emails.send({
       from: 'System <noreply@ilovehaccp.com>',
-      to: ['support@ilovehaccp.com'], // Change this to your real admin email if different
+      to: ['support@ilovehaccp.com'], 
       subject: `[ACTION REQUIRED] New Paid Review: ${businessName}`,
       html: `
         <h1>New Plan Review Purchased</h1>
@@ -58,8 +86,10 @@ export async function POST(req: Request) {
           <li><strong>Plan ID:</strong> ${planId}</li>
           <li><strong>Amount:</strong> €${amount}</li>
         </ul>
-        <p>Please review the plan in the admin dashboard and contact the user within 48h.</p>
+        <p>The generated HACCP plan is attached for your review.</p>
+        <p>Please edit/redline this document and reply to the user.</p>
       `,
+      attachments: attachments
     });
 
     return NextResponse.json({ success: true });
