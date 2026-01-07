@@ -38,11 +38,13 @@ function getHeadings(html: string) {
 function injectHeaderIds(html: string) {
   return html.replace(/<(h[23])>(.*?)<\/h[23]>/g, (match, tag, text) => {
     const id = text.replace(/<[^>]*>?/gm, '').toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-    // We add a class for CSS targeting and a specific data attribute
-    return `<${tag} id="${id}" class="toc-header group relative pl-6 border-l-4 border-transparent hover:border-blue-600 transition-all">
-      <span class="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 font-sans text-sm font-black">§</span>
-      ${text}
-    </${tag}>`;
+    
+    // Wikipedia-style inline overrides to guarantee look
+    const style = tag === 'h2' 
+      ? 'border-bottom: 1px solid #a2a9b1; padding-bottom: 3px; margin-top: 1.5em; margin-bottom: 0.5em; font-family: serif; font-weight: 400; color: #000;'
+      : 'font-weight: bold; font-family: sans-serif; margin-top: 1em; margin-bottom: 0.5em; color: #000; font-size: 1.1em;';
+
+    return `<${tag} id="${id}" style="${style}">${text}</${tag}>`;
   });
 }
 
@@ -144,7 +146,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           
           <main className="lg:w-3/4 min-w-0"> {/* min-w-0 fixes flex overflow */}
             <header className="mb-6 border-b border-slate-300 pb-4">
-              <h1 className="font-serif text-3xl md:text-4xl font-normal text-black leading-tight mb-2 italic border-b-0">
+              <h1 className="font-serif text-3xl md:text-4xl font-normal text-black leading-tight mb-2 italic border-b-0 wiki-title">
                 {article.title}
               </h1>
               <div className="text-sm text-slate-500 font-sans">
@@ -180,15 +182,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                  <div 
                   className="prose prose-slate max-w-none font-sans text-[15px] leading-7 text-[#202122]
                     prose-headings:font-serif prose-headings:font-normal prose-headings:text-black
-                    prose-h2:text-2xl prose-h2:border-b prose-h2:border-slate-300 prose-h2:pb-1 prose-h2:mt-8 prose-h2:mb-4
-                    prose-h2:bg-slate-50/50 prose-h2:pr-4
+                    prose-h2:text-2xl prose-h2:border-b prose-h2:border-[#a2a9b1] prose-h2:pb-1 prose-h2:mt-8 prose-h2:mb-4
                     prose-h3:text-lg prose-h3:font-bold prose-h3:mt-6 prose-h3:mb-2
-                    prose-h3:text-slate-800
-                    prose-p:my-3 prose-p:text-justify md:prose-p:text-left
+                    prose-p:my-3 prose-p:text-left
                     prose-a:text-[#3366cc] prose-a:no-underline hover:prose-a:underline
                     prose-ul:list-disc prose-ul:pl-5 prose-ul:my-3
                     prose-li:my-0.5
-                    prose-img:my-6 prose-img:border prose-img:border-slate-200 prose-img:p-1 prose-img:bg-white
+                    prose-img:my-6 prose-img:border prose-img:border-[#c8ccd1] prose-img:bg-[#f8f9fa] prose-img:p-1
                     prose-blockquote:border-l-4 prose-blockquote:border-slate-200 prose-blockquote:pl-4 prose-blockquote:text-slate-600 prose-blockquote:italic
                     prose-strong:font-bold prose-strong:text-black"
                   dangerouslySetInnerHTML={{ __html: processedContent }}
