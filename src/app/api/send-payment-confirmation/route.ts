@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     // 1. Email to User
     await resend.emails.send({
-      from: 'iLoveHACCP Support <support@ilovehaccp.com>',
+      from: 'iLoveHACCP <onboarding@resend.dev>', // Fallback for unverified domains
       to: [email],
       replyTo: 'support@ilovehaccp.com',
       subject: `Payment Confirmed: Professional Review for ${businessName}`,
@@ -50,13 +50,16 @@ export async function POST(req: Request) {
     // 2. Prepare Attachment for Admin
     let attachments: any[] = [];
     try {
+        console.log(`Generating attachment for Plan ID: ${planId}`);
         const { data: plan, error } = await supabaseService
             .from('plans')
             .select('*')
             .eq('id', planId)
             .single();
 
-        if (plan && !error) {
+        if (error) {
+             console.error("Supabase Plan Fetch Error:", error);
+        } else if (plan) {
             const buffer = await generateWordDocument({
                 businessName: plan.business_name,
                 full_plan: plan.full_plan
@@ -66,16 +69,16 @@ export async function POST(req: Request) {
                 filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
                 content: buffer
             });
-        } else {
-            console.error("Failed to fetch plan for attachment:", error);
+            console.log("Attachment generated successfully.");
         }
     } catch (docError) {
-        console.error("Failed to generate doc attachment:", docError);
+        console.error("CRITICAL: Failed to generate doc attachment, sending email without it.", docError);
     }
 
     // 3. Email to Admin
-    await resend.emails.send({
-      from: 'System <noreply@ilovehaccp.com>',
+    console.log("Sending Admin Email...");
+    const adminRes = await resend.emails.send({
+      from: 'System <onboarding@resend.dev>',
       to: ['support@ilovehaccp.com'], 
       subject: `[ACTION REQUIRED] New Paid Review: ${businessName}`,
       html: `
@@ -92,9 +95,17 @@ export async function POST(req: Request) {
       attachments: attachments
     });
 
+    if (adminRes.error) {
+        console.error("Resend Admin Email Failed:", adminRes.error);
+        // Do not throw, return partial success? 
+        // Or throw to see it in logs? Let's log it.
+    } else {
+        console.log("Admin Email Sent ID:", adminRes.data?.id);
+    }
+
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Email Error:", error);
-    return NextResponse.json({ success: false, error }, { status: 500 });
+  } catch (error: any) {
+    console.error("FATAL Email Error:", error.message || error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
