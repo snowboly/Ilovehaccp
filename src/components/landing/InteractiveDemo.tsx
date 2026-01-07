@@ -6,9 +6,30 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 const ALL_EXAMPLES = [
-  "Sushi", "Beef Jerky", "Kombucha", "Mayo", "Cooked Ham", 
-  "Ice Cream", "Cold Brew", "Kimchi", "Sourdough", "Smoked Salmon",
-  "Oysters", "Pasta Sauce", "Protein Bars", "Baby Food", "Frozen Pizza"
+  // Bakery
+  "Sourdough Bread", "Croissants", "Cupcakes", "Bagels", "Donuts", "Meat Pies", "Sausage Rolls", "Macarons", "Eclairs", "Fruit Tart",
+  // Butcher
+  "Raw Beef Steak", "Ground Pork", "Lamb Chops", "Chicken Breast", "Venison", "Cured Ham", "Salami", "Prosciutto", "Raw Sausages", "Turkey Thighs",
+  // Seafood
+  "Fresh Oysters", "Smoked Salmon", "Sushi Rolls", "Sashimi", "Clam Chowder", "Grilled Prawns", "Lobster Bisque", "Ceviche", "Fish & Chips", "Tuna Tartare",
+  // Dairy
+  "Ice Cream", "Yogurt", "Cheddar Cheese", "Brie", "Mozzarella", "Fresh Milk", "Heavy Cream", "Butter", "Gelato", "Milkshake",
+  // Prepared Foods
+  "Frozen Pizza", "Lasagna", "Beef Stew", "Chicken Curry", "Vegetable Soup", "Pasta Sauce", "Meatballs", "Burritos", "Sandwiches", "Quiche",
+  // Beverages
+  "Cold Brew Coffee", "Kombucha", "Fresh Juice", "Smoothies", "Craft Beer", "Wine", "Tea Blends", "Lemonade", "Coconut Water", "Almond Milk",
+  // Plant-Based / Vegan
+  "Tofu", "Tempeh", "Seitan", "Vegan Cheese", "Hummus", "Falafel", "Veggie Burger", "Oat Milk", "Guacamole", "Nut Butter",
+  // Confectionery
+  "Chocolate Bar", "Fudge", "Toffee", "Hard Candy", "Gummy Bears", "Marshmallows", "Caramel", "Nougat", "Licorice", "Truffles",
+  // Preserves & Ferments
+  "Kimchi", "Sauerkraut", "Pickles", "Jams", "Marmalade", "Chutney", "Relish", "Olives", "Hot Sauce", "Mustard",
+  // Snacks
+  "Beef Jerky", "Protein Bars", "Potato Chips", "Popcorn", "Pretzels", "Granola", "Trail Mix", "Dried Fruit", "Rice Cakes", "Crackers",
+  // Industrial / Ingredients
+  "Flour", "Sugar", "Spices", "Cooking Oil", "Vinegar", "Yeast", "Baking Powder", "Cocoa Powder", "Food Coloring", "Flavor Extracts",
+  // Food Truck Items
+  "Tacos", "Hot Dogs", "Crepes", "Waffles", "Nachos", "Kebabs", "Gyros", "Poutine", "Sliders", "Empanadas"
 ];
 
 export default function InteractiveDemo() {
