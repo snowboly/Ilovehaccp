@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Providers } from "@/components/providers";
 import SEO from "@/components/layout/SEO";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -64,6 +65,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${merriweather.variable} font-sans`}>
         <Providers>
+          <ScrollToTop />
           <SEO />
           <Suspense fallback={<div className="h-16 bg-white border-b border-slate-100" />}>
             <Navbar />
