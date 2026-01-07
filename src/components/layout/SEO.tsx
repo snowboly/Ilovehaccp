@@ -15,7 +15,7 @@ export default function SEO({ title, description, canonical, type = 'website' }:
   
   const siteName = "ilovehaccp.com";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
-  const fullDesc = description || "Generate professional, AI-powered HACCP plans in minutes.";
+  const fullDesc = description || "Generate professional HACCP plans in minutes using our free tool.";
   
   return (
     <>

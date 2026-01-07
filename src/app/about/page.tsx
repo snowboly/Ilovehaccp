@@ -4,7 +4,7 @@ import { TeamAvatar } from '@/components/team/TeamAvatars';
 
 export const metadata = {
   title: 'About Us | ilovehaccp.com',
-  description: 'Bridging the gap between certified food science and artificial intelligence.',
+  description: 'Bridging the gap between certified food science and advanced technology.',
 };
 
 const team = [
@@ -71,7 +71,7 @@ export default function AboutPage() {
                 At ilovehaccp.com, our mission is to democratize food safety compliance by making it clear, achievable, and automated for food businesses worldwide.
             </p>
             <p className="text-lg text-slate-500 leading-relaxed">
-                We bridge the gap between rigorous scientific standards and operational reality. By combining the speed of Artificial Intelligence with the rigour of certified Lead Auditors, we empower businesses—from local restaurants to industrial processors—with strategic solutions that safeguard public health and business continuity.
+                We bridge the gap between rigorous scientific standards and operational reality. By combining the speed of precision technology with the rigour of certified Lead Auditors, we empower businesses—from local restaurants to industrial processors—with strategic solutions that safeguard public health and business continuity.
             </p>
           </div>
         </div>
@@ -129,7 +129,7 @@ export default function AboutPage() {
             <PillarCard 
                 icon={<Target className="w-8 h-8" />}
                 title="PRECISION"
-                desc="Our AI is trained on Codex Alimentarius standards, ensuring every hazard is correctly identified at a molecular level."
+                desc="Our precision engine is trained on Codex Alimentarius standards, ensuring every hazard is correctly identified at a molecular level."
             />
             <PillarCard 
                 icon={<Lightbulb className="w-8 h-8" />}

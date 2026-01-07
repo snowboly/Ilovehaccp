@@ -29,7 +29,7 @@ export default function Home() {
     "name": "iLoveHACCP",
     "url": "https://www.ilovehaccp.com",
     "logo": "https://www.ilovehaccp.com/icon.svg",
-    "description": "AI-powered HACCP plan generator for food businesses.",
+    "description": "Professional HACCP plan generator for food businesses.",
     "sameAs": [
       "https://twitter.com/ilovehaccp", 
       "https://linkedin.com/company/ilovehaccp"

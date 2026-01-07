@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Privacy Policy | ilovehaccp.com',
-  description: 'How we handle your data, our zero-training AI policy, and your GDPR rights.',
+  description: 'How we handle your data, our zero-training technology policy, and your GDPR rights.',
 };
 
 export default function PrivacyPage() {
@@ -25,10 +25,10 @@ export default function PrivacyPage() {
             {/* Critical Privacy Promise */}
             <section className="bg-green-50 border border-green-200 rounded-2xl p-8">
               <h2 className="text-xl font-bold text-green-900 mb-4 flex items-center gap-2">
-                🔒 Our Core Privacy Promise: No AI Training
+                🔒 Our Core Privacy Promise: No Model Training
               </h2>
               <p className="text-green-800 leading-relaxed">
-                We know your recipes and processes are your trade secrets. <strong>We strictly do NOT use your specific proprietary data to train, fine-tune, or improve our public AI models.</strong> Your data is isolated and used solely to generate your requested documents.
+                We know your recipes and processes are your trade secrets. <strong>We strictly do NOT use your specific proprietary data to train, fine-tune, or improve our public proprietary models.</strong> Your data is isolated and used solely to generate your requested documents.
               </p>
             </section>
 
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
                 <p>
                   Your data is used for one primary purpose: <strong>to provide the Service.</strong> This includes:
                   <ul className="list-disc pl-5 space-y-2 mt-2">
-                    <li>Generating your HACCP plan via our AI providers (Groq/OpenAI).</li>
+                    <li>Generating your HACCP plan via our technology providers (Groq/OpenAI).</li>
                     <li>Sending you transactional emails (receipts, password resets).</li>
                     <li>Improving the UX of the platform (analytics on <em>how</em> features are used, not <em>what</em> is written).</li>
                   </ul>
@@ -65,7 +65,7 @@ export default function PrivacyPage() {
 
              <Section 
               number="3"
-              title="AI & Third-Party Processing"
+              title="Technology & Third-Party Processing"
               content={
                 <>
                   <p>
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
                   </ul>
                 </>
               }
-              summary="We send your text to the AI to get the result, but the AI company isn't allowed to keep it or learn from it."
+              summary="We send your text to our secure partners to get the result, but they aren't allowed to keep it or learn from it."
             />
 
             <Section 
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
                 <nav className="space-y-3 text-sm font-medium text-slate-500">
                   <a href="#" className="block hover:text-green-600 transition-colors">1. Data Collection</a>
                   <a href="#" className="block hover:text-green-600 transition-colors">2. Data Usage</a>
-                  <a href="#" className="block hover:text-green-600 transition-colors">3. AI Processing</a>
+                  <a href="#" className="block hover:text-green-600 transition-colors">3. Technology Partners</a>
                   <a href="#" className="block hover:text-green-600 transition-colors">4. Retention</a>
                   <a href="#" className="block hover:text-green-600 transition-colors">5. Your Rights</a>
                 </nav>

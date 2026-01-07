@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'HACCP Frequently Asked Questions | Food Safety Help',
-  description: 'Common questions about HACCP compliance, AI plan generation, and food safety regulations for restaurants and manufacturers.',
+  description: 'Common questions about HACCP compliance, automated plan generation, and food safety regulations for restaurants and manufacturers.',
   alternates: { canonical: '/faqs' }
 };
 
@@ -35,7 +35,7 @@ export default function FAQPage() {
           </div>
           <h1 className="text-4xl font-black text-slate-900 mb-4 tracking-tight">Frequently Asked Questions</h1>
           <p className="text-xl text-slate-500 max-w-2xl mx-auto font-medium">
-            Common questions about HACCP compliance, our AI builder, and food safety regulations.
+            Common questions about HACCP compliance, our builder tool, and food safety regulations.
           </p>
           
           <FAQContent faqs={faqs} />

@@ -10,7 +10,7 @@ const testimonials = [
   {
     name: "Mike Ross",
     role: "Owner, Ross Artisan Meats",
-    content: "The AI caught a biological hazard in our curing process that I hadn't documented properly. Worth every penny for the peace of mind.",
+    content: "The tool caught a biological hazard in our curing process that I hadn't documented properly. Worth every penny for the peace of mind.",
     rating: 5
   },
   {
@@ -28,7 +28,7 @@ export default function Testimonials() {
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">Trusted by Food Businesses</h2>
           <p className="text-gray-500 max-w-2xl mx-auto">
-            From local cafes to manufacturing plants, see why food professionals are switching to AI-assisted compliance.
+            From local cafes to manufacturing plants, see why food professionals are switching to automated compliance.
           </p>
         </div>
         

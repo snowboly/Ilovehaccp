@@ -56,13 +56,13 @@ export default function InteractiveDemo() {
         
         <div className="text-center space-y-3 relative z-10">
           <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-blue-500/20">
-            <Sparkles className="w-3 h-3" /> AI Live Preview
+            <Sparkles className="w-3 h-3" /> Live Preview
           </div>
           <h3 className="text-white text-3xl font-black tracking-tight">
             Try it right now
           </h3>
           <p className="text-slate-400 font-medium">
-            Enter a product to see how our AI identifies specific hazards.
+            Enter a product to see how our tool identifies specific hazards.
           </p>
         </div>
 

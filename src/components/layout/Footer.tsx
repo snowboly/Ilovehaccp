@@ -17,7 +17,7 @@ export default function Footer() {
             <span className="text-2xl font-black text-white tracking-tight">HACCP</span>
           </Link>
           <p className="text-sm leading-relaxed">
-            The world&apos;s most advanced AI-powered food safety platform. Helping businesses achieve compliance effortlessly.
+            The world&apos;s most advanced food safety platform. Helping businesses achieve compliance effortlessly.
           </p>
         </div>
         <div>

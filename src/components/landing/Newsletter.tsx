@@ -43,7 +43,7 @@ export default function Newsletter() {
             <div className="space-y-4">
               <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
                 Stay updated on <br />
-                <span className="text-blue-400">Food Safety AI.</span>
+                <span className="text-blue-400">Food Safety Insights.</span>
               </h2>
               <p className="text-slate-400 text-lg">
                 Join 2,000+ food professionals receiving our bi-weekly compliance newsletter.

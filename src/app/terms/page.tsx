@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Terms and Conditions | ilovehaccp.com',
-  description: 'Terms and conditions for using our AI-powered HACCP builder and consultancy services.',
+  description: 'Terms and conditions for using our technology-powered HACCP builder and consultancy services.',
 };
 
 export default function TermsPage() {
@@ -22,14 +22,14 @@ export default function TermsPage() {
           {/* Main Content */}
           <div className="lg:col-span-8 space-y-16">
             
-            {/* Section 0: Critical AI Disclaimer (Essential for HACCP AI) */}
+            {/* Section 0: Critical Technology Disclaimer (Essential for HACCP tools) */}
             <section className="bg-amber-50 border border-amber-200 rounded-2xl p-8">
               <h2 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
-                ⚠️ CRITICAL DISCLAIMER: AI-GENERATED CONTENT
+                ⚠️ CRITICAL DISCLAIMER: TECHNOLOGY-GENERATED CONTENT
               </h2>
               <div className="prose prose-amber prose-sm max-w-none">
                 <p>
-                  <strong>Please read carefully:</strong> ilovehaccp.com uses Artificial Intelligence to assist in drafting Hazard Analysis and Critical Control Point (HACCP) plans. 
+                  <strong>Please read carefully:</strong> ilovehaccp.com uses advanced technology to assist in drafting Hazard Analysis and Critical Control Point (HACCP) plans. 
                 </p>
                 <ul>
                   <li><strong>Not Final Documentation:</strong> The output is a draft template and does <strong>NOT</strong> constitute a finalized legal or safety document.</li>
@@ -71,7 +71,7 @@ export default function TermsPage() {
                   </p>
                   <p className="mt-4 font-bold text-slate-900">Limited License:</p>
                   <p>
-                    Unless specific content indicates otherwise, you are granted a limited, non-exclusive, non-sublicensable, and non-transferable license to use the resources solely for your personal or internal business purposes related to food safety management. You may not copy, reproduce, or commercialize the underlying software or AI models.
+                    Unless specific content indicates otherwise, you are granted a limited, non-exclusive, non-sublicensable, and non-transferable license to use the resources solely for your personal or internal business purposes related to food safety management. You may not copy, reproduce, or commercialize the underlying software or proprietary models.
                   </p>
                 </>
               }
@@ -198,7 +198,7 @@ export default function TermsPage() {
               <div className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100">
                 <h3 className="font-bold text-slate-900 mb-4">Quick Links</h3>
                 <nav className="space-y-3 text-sm font-medium text-slate-500">
-                  <a href="#" className="block hover:text-blue-600 transition-colors">AI Disclaimer</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">Technology Disclaimer</a>
                   <a href="#" className="block hover:text-blue-600 transition-colors">3. Intellectual Property</a>
                   <a href="#" className="block hover:text-blue-600 transition-colors">5. Responsible Use</a>
                   <a href="#" className="block hover:text-blue-600 transition-colors">8. Liability</a>

@@ -54,11 +54,11 @@ export default function ExpertAdvisors() {
             <ShieldCheck className="w-4 h-4" /> Trusted Authority
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
-            Built by AI. <br className="hidden md:block" />
+            Built for Precision. <br className="hidden md:block" />
             <span className="text-blue-600">Verified by Experts.</span>
           </h2>
           <p className="text-xl text-slate-500 leading-relaxed">
-            Our AI models are trained on the direct knowledge and experience of industry veterans, ensuring your plans aren&apos;t just generated—they&apos;re engineered for compliance.
+            Our models are trained on the direct knowledge and experience of industry veterans, ensuring your plans aren&apos;t just generated—they&apos;re engineered for compliance.
           </p>
         </div>
 

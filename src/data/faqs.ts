@@ -6,8 +6,8 @@ export interface FAQItem {
 export const faqs: FAQItem[] = [
   // General & Legal
   {
-    q: "Is an AI-generated HACCP plan legal?",
-    a: "Yes, provided it accurately reflects your actual operations. The law requires a plan based on HACCP principles; the tool (AI or pen/paper) doesn't matter. However, verification by a qualified person is always recommended, and you are responsible for its implementation."
+    q: "Is a generated HACCP plan legal?",
+    a: "Yes, provided it accurately reflects your actual operations. The law requires a plan based on HACCP principles; the tool doesn't matter. However, verification by a qualified person is always recommended, and you are responsible for its implementation."
   },
   {
     q: "Does this cover me for local health inspections?",
@@ -32,14 +32,14 @@ export const faqs: FAQItem[] = [
     a: "Absolutely. We use enterprise-grade encryption for all data. Your recipes and operational details are private and never shared with third parties."
   },
   {
-    q: "How does the AI know my specific hazards?",
-    a: "We use a Large Language Model (LLM) trained on thousands of food safety documents, epidemiological data, and regulatory texts. It correlates your inputs (e.g., 'sous-vide chicken') with known biological, chemical, and physical hazards."
+    q: "How does the tool know my specific hazards?",
+    a: "We use an advanced logic engine trained on thousands of food safety documents, epidemiological data, and regulatory texts. It correlates your inputs (e.g., 'sous-vide chicken') with known biological, chemical, and physical hazards."
   },
 
   // Pricing & Billing
   {
     q: "What is included in the €79 Starter Review?",
-    a: "The Starter Review package includes full access to the AI builder, unlimited edits, PDF export, and a standard review of your plan by one of our food safety experts to ensure basic compliance."
+    a: "The Starter Review package includes full access to our builder tool, unlimited edits, PDF export, and a standard review of your plan by one of our food safety experts to ensure basic compliance."
   },
   {
     q: "Do you offer refunds?",
