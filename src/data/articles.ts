@@ -12,8 +12,8 @@ export interface Article {
 export const articles: Article[] = [  {
 
     slug: "7-principles-haccp-explained",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
-    title: "Unlocking Food Safety: A Comprehensive Guide to the 7 Principles of HACCP",
+    image: "https://images.pexels.com/photos/955389/pexels-photo-955389.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Unlocking Food Safety: A Comprehensive Guide to the 7 Principles of HACCP",
     category: "Compliance",
     readTime: "45 min read",
     excerpt: "Discover the fundamentals of HACCP and its crucial role in ensuring food safety across the globe. Learn how to implement the 7 principles of HACCP in your food production process to minimize risks and guarantee consumer safety.",
@@ -24,9 +24,11 @@ export const articles: Article[] = [  {
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/8382083/pexels-photo-8382083.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of bureaucracy</figcaption>
       </figure>
+
+      
 
       
 <p>As a seasoned Food Plant Operations Director, I've seen firsthand the impact of a well-implemented HACCP plan on food safety and overall plant efficiency.</p><p> In this section, we'll delve into the fundamentals of HACCP, its importance, history, and global recognition.  Whether you're a new Quality Manager or a seasoned veteran, understanding these principles is crucial for ensuring the safety of your products and avoiding costly shutdowns.</p>
@@ -466,8 +468,8 @@ export const articles: Article[] = [  {
   },  {
 
     slug: "the-7-principles-of-haccp-explained-with-real-examples",
-    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200",
-    title: "The 7 Principles of HACCP Explained with Real Examples: A Comprehensive Guide for Food Businesses",
+    image: "https://images.pexels.com/photos/8386681/pexels-photo-8386681.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "The 7 Principles of HACCP Explained with Real Examples: A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "The Hazard Analysis and Critical Control Points (HACCP) system is a widely recognized and implemented approach to ensuring food safety. This article delves into the 7 principles of HACCP, providing real-world examples and explanations to help food business owners, chefs, and quality managers understand and effectively apply this crucial food safety framework.",
@@ -484,9 +486,11 @@ export const articles: Article[] = [  {
       <h2>The Foundation: Prerequisite Programs (GMPs)</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200" alt="The Foundation: Prerequisite Programs (GMPs) - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of The Foundation: Prerequisite Programs (GMPs)</figcaption>
+        <img src="https://images.pexels.com/photos/2889093/pexels-photo-2889093.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of food industry</figcaption>
       </figure>
+
+      
 
       
       <p>Before diving into the seven principles, it's critical to understand that HACCP does not stand alone.</p><p> It is built upon a foundation of <strong>Good Manufacturing Practices (GMPs)</strong> and <strong>Standard Operating Procedures (SOPs)</strong>.  Without these prerequisite programs—covering everything from pest control to personal hygiene—your HACCP plan will likely fail under the weight of basic operational lapses.</p>
@@ -546,8 +550,8 @@ export const articles: Article[] = [  {
   },  {
 
     slug: "haccp-vs-food-safety-plans-whats-the-difference",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP vs Food Safety Plans: Unlocking the Secrets to a Safer Food Supply Chain",
+    image: "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP vs Food Safety Plans: Unlocking the Secrets to a Safer Food Supply Chain",
     category: "Fundamentals",
     readTime: "36 min read",
     excerpt: "Discover the differences between HACCP and Food Safety Plans, and learn how to implement these critical systems to ensure the safety and quality of your food products. By understanding the principles and applications of HACCP and Food Safety Plans, you can protect your customers, reduce the risk of foodborne illnesses, and stay ahead of the competition in the food industry.",
@@ -1329,8 +1333,8 @@ The evolving landscape of food safety necessitates ongoing research into the eff
   },  {
 
     slug: "is-haccp-mandatory-requirements-by-country-and-sector",
-    image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200",
-    title: "Is HACCP Mandatory? A Global Overview of Food Safety Regulations",
+    image: "https://images.pexels.com/photos/4590404/pexels-photo-4590404.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Is HACCP Mandatory? A Global Overview of Food Safety Regulations",
     category: "Compliance",
     readTime: "30 min read",
     excerpt: "Explore the mandatory nature of Hazard Analysis Critical Control Point (HACCP) systems across various countries and sectors. This comprehensive guide provides insights into HACCP requirements and their significance for food safety worldwide.",
@@ -1341,9 +1345,11 @@ The evolving landscape of food safety necessitates ongoing research into the eff
       <h2>Introduction</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction</figcaption>
+        <img src="https://images.pexels.com/photos/5532664/pexels-photo-5532664.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of food processing</figcaption>
       </figure>
+
+      
 
       
 <p>In today's globalized food industry, ensuring food safety is paramount. One of the most effective frameworks for achieving this is the Hazard Analysis Critical Control Point (HACCP) system. Established as a proactive approach to food safety, HACCP helps identify and mitigate potential hazards throughout the food production process.</p>
@@ -1943,8 +1949,8 @@ Addressing the challenges of HACCP implementation in small businesses requires a
   },  {
 
     slug: "who-is-responsible-for-haccp-in-a-food-business",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
-    title: "Who Is Responsible for HACCP in Food Businesses? Understanding Roles and Compliance",
+    image: "https://images.pexels.com/photos/105028/pexels-photo-105028.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Who Is Responsible for HACCP in Food Businesses? Understanding Roles and Compliance",
     category: "Compliance",
     readTime: "37 min read",
     excerpt: "Discover the critical roles and responsibilities in implementing HACCP within food businesses. This article delves into the importance of shared responsibility for food safety and compliance.",
@@ -2678,8 +2684,8 @@ In summary, the responsibility for HACCP in a food business is shared across all
   },  {
 
     slug: "haccp-for-small-businesses-what-regulators-actually-expect",
-    image: "https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200",
-    title: "Essential HACCP Guidelines for Small Businesses: Navigating Food Safety Regulations",
+    image: "https://images.pexels.com/photos/6358840/pexels-photo-6358840.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Essential HACCP Guidelines for Small Businesses: Navigating Food Safety Regulations",
     category: "Compliance",
     readTime: "37 min read",
     excerpt: "Discover how HACCP can transform your small food business and ensure compliance with food safety regulations. This comprehensive guide walks you through the principles and practical steps needed to implement an effective HACCP plan.",
@@ -2690,9 +2696,11 @@ In summary, the responsibility for HACCP in a food business is shared across all
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/6193932/pexels-photo-6193932.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
 <p>In the food industry, ensuring safety is paramount. For small businesses, adhering to food safety regulations can be daunting, but implementing a Hazard Analysis Critical Control Point (HACCP) plan is a crucial step towards compliance and consumer trust.</p>
@@ -3405,8 +3413,8 @@ In conclusion, as the landscape of food safety continues to evolve, small busine
   },  {
 
     slug: "common-haccp-myths-that-cause-audit-failures",
-    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200",
-    title: "Debunking HACCP Myths: Essential Insights for Food Safety Audits",
+    image: "https://images.pexels.com/photos/348689/pexels-photo-348689.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Debunking HACCP Myths: Essential Insights for Food Safety Audits",
     category: "Compliance",
     readTime: "37 min read",
     excerpt: "Uncover the truth behind common HACCP myths that jeopardize food safety and audit success. This article equips food industry stakeholders with the knowledge to enhance their HACCP practices and ensure compliance.",
@@ -4214,8 +4222,8 @@ In conclusion, as the landscape of food safety continues to evolve, small busine
   },  {
 
     slug: "how-to-create-a-haccp-plan-step-by-step",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
-    title: "Step-by-Step Guide to Creating an Effective HACCP Plan for Food Safety",
+    image: "https://images.pexels.com/photos/6004239/pexels-photo-6004239.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Step-by-Step Guide to Creating an Effective HACCP Plan for Food Safety",
     category: "Compliance",
     readTime: "40 min read",
     excerpt: "Discover the essential steps to create a robust HACCP plan that ensures food safety in your business. This comprehensive guide covers everything from hazard analysis to verification procedures, empowering food businesses to protect public health.",
@@ -4226,9 +4234,11 @@ In conclusion, as the landscape of food safety continues to evolve, small busine
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/4192443/pexels-photo-4192443.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
 <p>In the food industry, the safety of products is paramount. The Hazard Analysis Critical Control Point (HACCP) system is a proactive approach designed to identify and mitigate potential hazards in food production. This systematic method not only protects consumers but also enhances the credibility of food businesses.</p>
@@ -5072,8 +5082,8 @@ By following the principles of HACCP and establishing a thorough and effective p
   },  {
 
     slug: "building-a-haccp-process-flow-diagram",
-    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
-    title: "Mastering HACCP: A Step-by-Step Guide to Building an Effective Process Flow Diagram",
+    image: "https://images.pexels.com/photos/5953663/pexels-photo-5953663.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Mastering HACCP: A Step-by-Step Guide to Building an Effective Process Flow Diagram",
     category: "Compliance",
     readTime: "37 min read",
     excerpt: "Unlock the secrets of Hazard Analysis Critical Control Point (HACCP) systems with our comprehensive guide. Learn how to create a robust HACCP process flow diagram that ensures food safety and compliance.",
@@ -5083,10 +5093,7 @@ By following the principles of HACCP and establishing a thorough and effective p
 
       <h2>Introduction to HACCP</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
-      </figure>
+      
 
       
 <p>The Hazard Analysis Critical Control Point (HACCP) system is a vital framework designed to ensure food safety throughout the production process. By identifying and managing potential hazards, HACCP helps organizations maintain high standards in food quality and safety.</p>
@@ -5903,8 +5910,8 @@ Red flags, such as inadequate documentation or insufficient training, can indica
   },  {
 
     slug: "how-to-perform-a-hazard-analysis-correctly",
-    image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200",
-    title: "Mastering Hazard Analysis: A Complete Guide for Food Safety Success",
+    image: "https://images.pexels.com/photos/35492405/pexels-photo-35492405.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Mastering Hazard Analysis: A Complete Guide for Food Safety Success",
     category: "Fundamentals",
     readTime: "40 min read",
     excerpt: "Unlock the secrets of effective hazard analysis in food safety with our comprehensive guide. Learn the essential steps to implement a successful HACCP plan and protect your business from foodborne risks.",
@@ -5915,9 +5922,11 @@ Red flags, such as inadequate documentation or insufficient training, can indica
       <h2>Introduction to Hazard Analysis</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Hazard Analysis - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Hazard Analysis</figcaption>
+        <img src="https://images.pexels.com/photos/265024/pexels-photo-265024.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
 <p>In the ever-evolving landscape of food safety, hazard analysis stands as a cornerstone for ensuring the health and well-being of consumers. This systematic approach is essential for identifying, evaluating, and controlling food safety hazards that can compromise public health.</p>
@@ -6677,8 +6686,8 @@ By fostering a proactive approach to hazard analysis and food safety management,
   },  {
 
     slug: "identifying-critical-control-points-in-food-safety",
-    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
-    title: "Mastering Critical Control Points (CCPs) in Food Safety Management: A Comprehensive Guide",
+    image: "https://images.pexels.com/photos/8468814/pexels-photo-8468814.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Mastering Critical Control Points (CCPs) in Food Safety Management: A Comprehensive Guide",
     category: "Fundamentals",
     readTime: "38 min read",
     excerpt: "Discover the essential role of Critical Control Points (CCPs) in ensuring food safety and preventing foodborne illnesses. This guide provides a thorough understanding of CCP identification and management within the HACCP framework.",
@@ -6689,9 +6698,11 @@ By fostering a proactive approach to hazard analysis and food safety management,
       <h2>Introduction to Critical Control Points (CCPs)</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Critical Control Points (CCPs) - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Critical Control Points (CCPs)</figcaption>
+        <img src="https://images.pexels.com/photos/5477788/pexels-photo-5477788.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
 <p>In the realm of food safety management, Critical Control Points (CCPs) play a pivotal role in safeguarding public health. These are specific stages in the food production process where controls can be applied to prevent, eliminate, or reduce food safety hazards to an acceptable level.</p>
@@ -7383,8 +7394,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "defining-critical-limits-that-pass-audits",
-    image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200",
-    title: "Mastering Critical Limits: Essential Guidelines for Food Safety Audits",
+    image: "https://images.pexels.com/photos/2255804/pexels-photo-2255804.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Mastering Critical Limits: Essential Guidelines for Food Safety Audits",
     category: "Compliance",
     readTime: "34 min read",
     excerpt: "Learn how to define critical limits that meet food safety standards and pass audits with our comprehensive guide. This article equips food businesses with the knowledge to enhance their HACCP plans and ensure compliance.",
@@ -7395,9 +7406,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200" alt="Introduction - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction</figcaption>
+        <img src="https://images.pexels.com/photos/941861/pexels-photo-941861.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
 <p>In the dynamic world of food safety, understanding and establishing critical limits is paramount for businesses striving to meet regulatory standards and ensure consumer safety. Critical limits serve as the backbone of Hazard Analysis and Critical Control Points (HACCP) plans, guiding food businesses in maintaining safe production practices.</p>
@@ -8136,8 +8149,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "monitoring-corrective-actions-and-verification-explained",
-    image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200",
-    title: "Essential Guide to Food Safety Monitoring, Corrective Actions, and Verification",
+    image: "https://images.pexels.com/photos/6004244/pexels-photo-6004244.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Essential Guide to Food Safety Monitoring, Corrective Actions, and Verification",
     category: "Operations",
     readTime: "37 min read",
     excerpt: "Explore the critical components of food safety monitoring, corrective actions, and verification in this comprehensive guide. Learn how effective practices can prevent hazards and ensure compliance in food production processes.",
@@ -8148,9 +8161,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Monitoring</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1566576912902-74161b04d543?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Monitoring - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Monitoring</figcaption>
+        <img src="https://images.pexels.com/photos/683039/pexels-photo-683039.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
 <p>Food safety monitoring is a cornerstone of effective food production, particularly within the Hazard Analysis Critical Control Point (HACCP) framework. It involves systematic observation and measurement of food safety parameters to prevent hazards that could compromise consumer health.</p>
@@ -8947,8 +8962,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-often-should-a-haccp-plan-be-reviewed",
-    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
-    title: "How Often Should You Review Your HACCP Plan? A Guide to Food Safety Compliance",
+    image: "https://images.pexels.com/photos/5953714/pexels-photo-5953714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "How Often Should You Review Your HACCP Plan? A Guide to Food Safety Compliance",
     category: "Compliance",
     readTime: "34 min read",
     excerpt: "Regular reviews of your HACCP plan are crucial for maintaining food safety and compliance with regulations. Discover how often you should assess your plan and the factors that influence these reviews.",
@@ -9619,8 +9634,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-restaurants-complete-guide",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP for Restaurants: A Complete Guide to Ensuring Food Safety",
+    image: "https://images.pexels.com/photos/35465728/pexels-photo-35465728.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP for Restaurants: A Complete Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "Implementing a Hazard Analysis and Critical Control Points (HACCP) system is crucial for restaurants to ensure food safety and prevent foodborne illnesses. This comprehensive guide provides a step-by-step approach to developing and implementing a HACCP plan, citing international standards and regulations such as those from the Codex Alimentarius and the US FDA.",
@@ -9629,9 +9644,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/261679/pexels-photo-261679.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a preventive approach to food safety that identifies, evaluates, and controls hazards in the food production process. It is based on the principles outlined by the Codex Alimentarius Commission, which is recognized internationally as the standard for food safety.</p>
@@ -9680,8 +9697,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-catering-businesses",
-    image: "https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200",
-    title: "Implementing HACCP for Catering Businesses: A Scientific Approach to Food Safety",
+    image: "https://images.pexels.com/photos/7821682/pexels-photo-7821682.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Implementing HACCP for Catering Businesses: A Scientific Approach to Food Safety",
     category: "Compliance",
     readTime: "20 min read",
     excerpt: "Hazard Analysis and Critical Control Points (HACCP) is a systematic approach to identifying and controlling hazards in the food production process, crucial for catering businesses to ensure food safety and compliance with regulatory standards. By understanding and implementing HACCP principles, catering businesses can significantly reduce the risk of foodborne illnesses and maintain a high level of customer trust and satisfaction.",
@@ -9690,9 +9707,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1555601568-c9e6f328489b?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/7888645/pexels-photo-7888645.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a preventive approach to food safety that identifies, evaluates, and controls hazards in the food production process.  Developed in the 1960s by the Pillsbury Company, the U.</p><p>S.  Army Natick Soldier Systems Center, and the National Aeronautics and Space Administration (NASA), HACCP has become a widely recognized and adopted standard for ensuring food safety globally.  The Codex Alimentarius Commission, established by the Food and Agriculture Organization (FAO) of the United Nations and the World Health Organization (WHO), has endorsed HACCP as a key component of food safety management.</p>
@@ -9737,8 +9756,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-food-manufacturers",
-    image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP for Food Manufacturers: A Comprehensive Guide to Ensuring Food Safety",
+    image: "https://images.pexels.com/photos/375889/pexels-photo-375889.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP for Food Manufacturers: A Comprehensive Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "The Hazard Analysis and Critical Control Points (HACCP) system is a widely recognized and scientifically sound method of ensuring food safety, and its implementation is crucial for food manufacturers to prevent, eliminate, or reduce hazards in the food production process. By understanding and applying HACCP principles, food businesses can protect their consumers, comply with regulatory requirements, and maintain a competitive edge in the market.",
@@ -9747,9 +9766,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
       <p>The HACCP system was first introduced in the 1960s by the Pillsbury Company, in collaboration with NASA and the US Army, with the aim of producing safe food for space missions.</p><p> Since then, it has evolved into a globally accepted approach to food safety management, endorsed by organizations such as the Codex Alimentarius Commission and the World Health Organization (WHO).  The HACCP system is based on the identification, evaluation, and control of hazards, which are defined as biological, chemical, or physical agents that can cause adverse health effects.</p>
@@ -9792,8 +9813,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-bakeries",
-    image: "https://images.unsplash.com/photo-1555601568-c9e6f328489b?auto=format&fit=crop&q=80&w=1200",
-    title: "Implementing HACCP for Bakeries: A Scientific Approach to Ensuring Food Safety",
+    image: "https://images.pexels.com/photos/6004235/pexels-photo-6004235.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Implementing HACCP for Bakeries: A Scientific Approach to Ensuring Food Safety",
     category: "Compliance",
     readTime: "20 min read",
     excerpt: "The Hazard Analysis and Critical Control Points (HACCP) system is a globally recognized approach to ensuring food safety, and its implementation is crucial for bakeries to prevent contamination and foodborne illnesses. By understanding the principles of HACCP and applying them to their operations, bakeries can guarantee the quality and safety of their products, complying with regulatory requirements and protecting their customers",
@@ -9802,9 +9823,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/851555/pexels-photo-851555.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
       <p>The HACCP system, as outlined by the Codex Alimentarius Commission, is a systematic approach to identifying and controlling hazards in the food production process. It involves a thorough analysis of all stages of production, from raw material sourcing to final product distribution, to identify potential hazards and implement controls to prevent them.</p>
@@ -9848,8 +9871,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-meat-processing",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP for Meat Processing: Ensuring Safety and Quality in the Meat Industry",
+    image: "https://images.pexels.com/photos/5953775/pexels-photo-5953775.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP for Meat Processing: Ensuring Safety and Quality in the Meat Industry",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "The Hazard Analysis and Critical Control Points (HACCP) system is a crucial tool for ensuring the safety and quality of meat products, and its implementation is mandatory in many countries. By understanding the principles of HACCP and applying them to meat processing operations, food business owners and quality managers can significantly reduce the risk of contamination and provide consumers with safe and wholesome products.",
@@ -9857,10 +9880,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to HACCP</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
-      </figure>
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a preventive approach to food safety that identifies, evaluates, and controls hazards in the food production process.</p><p> The HACCP system was first introduced in the 1960s by the Pillsbury Company, in collaboration with NASA and the US Army, to ensure the safety of food for astronauts.  Today, HACCP is widely recognized as a global standard for food safety and is mandated by many countries, including the United States, the European Union, and Australia.</p>
@@ -9909,8 +9929,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-dairy-production",
-    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP for Dairy Production: Ensuring Safety and Quality in the Dairy Industry",
+    image: "https://images.pexels.com/photos/531446/pexels-photo-531446.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP for Dairy Production: Ensuring Safety and Quality in the Dairy Industry",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "The dairy industry is a complex and highly regulated sector that requires strict adherence to food safety protocols to prevent contamination and ensure the quality of dairy products. Implementing a Hazard Analysis and Critical Control Points (HACCP) system is crucial for dairy businesses to identify and mitigate potential hazards, comply with regulatory requirements, and maintain consumer trust.",
@@ -9919,9 +9939,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP in Dairy Production</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Dairy Production - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP in Dairy Production</figcaption>
+        <img src="https://images.pexels.com/photos/955390/pexels-photo-955390.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
       <p>The dairy industry is a significant sector in the global food market, providing a wide range of products, from milk and cheese to yogurt and butter.  However, dairy products can be vulnerable to contamination by pathogens, such as <strong>Salmonella</strong>, <strong>E.</p><p> coli</strong>, and <strong>Listeria</strong>, which can pose serious health risks to consumers.  To address these concerns, the implementation of a HACCP system is essential for dairy businesses to ensure the safety and quality of their products.</p>
@@ -9952,8 +9974,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-seafood-and-fish-handling",
-    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP for Seafood and Fish Handling: Ensuring Safety from Catch to Plate",
+    image: "https://images.pexels.com/photos/7103117/pexels-photo-7103117.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP for Seafood and Fish Handling: Ensuring Safety from Catch to Plate",
     category: "Operations",
     readTime: "25 min read",
     excerpt: "Implementing a Hazard Analysis and Critical Control Points (HACCP) system is crucial for ensuring the safety of seafood and fish products, from the moment they are caught until they reach the consumer. This article provides a comprehensive overview of HACCP principles and their application in seafood and fish handling, highlighting key considerations and regulatory requirements.",
@@ -9962,9 +9984,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/5412104/pexels-photo-5412104.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
    <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.</p><p> It is widely recognized as a key component of food safety management, and its application is mandated by regulatory agencies such as the US Food and Drug Administration (FDA) and the European Food Safety Authority (EFSA).  The Codex Alimentarius Commission, a joint initiative of the Food and Agriculture Organization (FAO) and the World Health Organization (WHO), provides guidelines for the application of HACCP principles in various food industries, including seafood and fish handling.</p>
@@ -10001,8 +10025,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-ready-to-eat-foods",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP for Ready-to-Eat Foods: Ensuring Safety and Quality in the Food Industry",
+    image: "https://images.pexels.com/photos/1267338/pexels-photo-1267338.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP for Ready-to-Eat Foods: Ensuring Safety and Quality in the Food Industry",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "Implementing a Hazard Analysis and Critical Control Points (HACCP) system is crucial for food businesses that handle ready-to-eat foods, as it helps identify and control potential hazards that can cause foodborne illnesses. By understanding the principles of HACCP and its application in ready-to-eat food production, businesses can ensure the safety and quality of their products, complying with regulatory standards and protecting consumer health.",
@@ -10011,9 +10035,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
    <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.</p><p> It was first introduced in the 1960s by the Pillsbury Company, in collaboration with NASA and the US Army, to ensure the safety of food for astronauts.  Since then, HACCP has become a widely recognized and adopted standard in the food industry, with guidelines and regulations provided by organizations such as the Codex Alimentarius Commission and the US Food and Drug Administration (FDA).</p>
@@ -10048,8 +10074,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "what-auditors-look-for-in-a-haccp-plan",
-    image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200",
-    title: "What Auditors Look for in a HACCP Plan: Ensuring Food Safety and Compliance",
+    image: "https://images.pexels.com/photos/35400260/pexels-photo-35400260.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "What Auditors Look for in a HACCP Plan: Ensuring Food Safety and Compliance",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "A well-structured HACCP plan is crucial for food businesses to ensure compliance with regulatory requirements and maintain a high level of food safety. In this article, we will delve into the key components that auditors look for in a HACCP plan, providing insights into the standards and guidelines set by regulatory bodies such as the Codex Alimentarius and the FDA.",
@@ -10058,9 +10084,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Plans</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP Plans</figcaption>
+        <img src="https://images.pexels.com/photos/887723/pexels-photo-887723.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
       <p>A Hazard Analysis and Critical Control Points (HACCP) plan is a systematic approach to identifying and controlling hazards in the food production process.</p><p> It is a requirement for food businesses to have a HACCP plan in place, as outlined in the Codex Alimentarius Commission's guidelines for the application of the HACCP system (CAC/RCP 1-1969).  The plan must be based on seven principles, which include conducting a hazard analysis, identifying critical control points, establishing critical limits, and establishing procedures for monitoring and corrective action.</p>
@@ -10089,8 +10117,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "top-reasons-haccp-plans-fail-during-audits",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
-    title: "Top Reasons HACCP Plans Fail During Audits: A Scientific Analysis",
+    image: "https://images.pexels.com/photos/5953751/pexels-photo-5953751.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Top Reasons HACCP Plans Fail During Audits: A Scientific Analysis",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "HACCP plans are crucial for ensuring food safety, but many plans fail during audits due to common pitfalls. This article explores the top reasons HACCP plans fail, providing actionable insights for food business owners, chefs, and quality managers to improve their plans and ensure compliance with regulatory standards.",
@@ -10098,10 +10126,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to HACCP Plans</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP Plans</figcaption>
-      </figure>
+      
 
       
       <p>Hazard Analysis and Critical Control Points (HACCP) plans are a systematic approach to identifying and controlling hazards in the food production process.</p><p> The Codex Alimentarius Commission and the US Food and Drug Administration (FDA) recommend HACCP plans as a key component of a food safety management system.  However, despite their importance, many HACCP plans fail during audits, resulting in costly rework, reputational damage, and potential harm to consumers.</p>
@@ -10145,8 +10170,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-documentation-checklist-for-inspections",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP Documentation Checklist for Inspections: Ensuring Compliance and Food Safety",
+    image: "https://images.pexels.com/photos/35496287/pexels-photo-35496287.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP Documentation Checklist for Inspections: Ensuring Compliance and Food Safety",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Implementing a HACCP (Hazard Analysis and Critical Control Points) system is crucial for food businesses to ensure the safety of their products. A comprehensive HACCP documentation checklist is essential for inspections, helping to verify that all critical control points are properly managed and documented, in accordance with international standards such as those set by the Codex Alimentarius Commission and the FDA.",
@@ -10155,9 +10180,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Importance</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Importance - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Its Importance</figcaption>
+        <img src="https://images.pexels.com/photos/618158/pexels-photo-618158.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
    <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.  It is based on seven principles outlined by the Codex Alimentarius Commission, which are widely recognized and adopted by food safety authorities around the world, including the U.</p><p>S.  Food and Drug Administration (FDA).  These principles include conducting a hazard analysis, identifying critical control points, establishing critical limits, monitoring these control points, establishing corrective actions, verifying the HACCP plan, and keeping records.</p>
@@ -10189,8 +10216,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-to-prepare-for-a-food-safety-audit",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
-    title: "How to Prepare for a Food Safety Audit: A Comprehensive Guide",
+    image: "https://images.pexels.com/photos/15434151/pexels-photo-15434151.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "How to Prepare for a Food Safety Audit: A Comprehensive Guide",
     category: "Compliance",
     readTime: "20 min read",
     excerpt: "Preparing for a food safety audit requires a thorough understanding of regulatory requirements and a well-structured approach to ensure compliance. By following a step-by-step guide, food business owners, chefs, and quality managers can effectively prepare for an audit and maintain a high level of food safety within their operations.",
@@ -10199,9 +10226,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Audits</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Audits - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Audits</figcaption>
+        <img src="https://images.pexels.com/photos/9743090/pexels-photo-9743090.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
                <p>Food safety audits are a critical component of ensuring the safety and quality of food products.</p><p> These audits are conducted by regulatory agencies, such as the FDA, or third-party auditors to assess a food business's compliance with food safety regulations and standards.  The Codex Alimentarius Commission, established by the Food and Agriculture Organization (FAO) of the United Nations, provides a framework for food safety standards and guidelines that are widely adopted globally.</p>
@@ -10234,8 +10263,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-records-what-to-keep-and-for-how-long",
-    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP Records: What to Keep and for How Long",
+    image: "https://images.pexels.com/photos/680302/pexels-photo-680302.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP Records: What to Keep and for How Long",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Maintaining accurate and comprehensive HACCP records is crucial for ensuring food safety and compliance with regulatory standards. This article provides an in-depth guide on what records to keep and for how long, citing relevant standards from Codex Alimentarius and the FDA.",
@@ -10244,9 +10273,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Records</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Records - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP Records</figcaption>
+        <img src="https://images.pexels.com/photos/1064136/pexels-photo-1064136.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
    <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.</p><p> A critical component of HACCP is record-keeping, which provides a trail of evidence that the system is functioning as intended.  According to the Codex Alimentarius Commission, HACCP records should include information on the implementation of the HACCP plan, monitoring of critical control points, and corrective actions taken when deviations occur.</p>
@@ -10280,8 +10311,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "correcting-non-conformities-in-haccp",
-    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
-    title: "How to Correct Non-Conformities in HACCP: A Comprehensive Guide",
+    image: "https://images.pexels.com/photos/6004713/pexels-photo-6004713.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "How to Correct Non-Conformities in HACCP: A Comprehensive Guide",
     category: "Compliance",
     readTime: "20 min read",
     excerpt: "Correcting non-conformities in HACCP is crucial to ensure the safety and quality of food products. This article provides a step-by-step guide on how to identify, correct, and prevent non-conformities in HACCP, citing relevant standards from Codex and FDA.",
@@ -10290,9 +10321,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Non-Conformities</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Non-Conformities - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Non-Conformities</figcaption>
+        <img src="https://images.pexels.com/photos/2074130/pexels-photo-2074130.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
                <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food industry, as outlined by the Codex Alimentarius Commission. Non-conformities in HACCP refer to deviations from the established procedures, which can compromise the safety and quality of food products.</p>
@@ -10328,8 +10361,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "biological-hazards-in-haccp-examples-and-controls",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
-    title: "Biological Hazards in HACCP: Examples and Controls",
+    image: "https://images.pexels.com/photos/5532675/pexels-photo-5532675.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Biological Hazards in HACCP: Examples and Controls",
     category: "Microbiology",
     readTime: "15 min read",
     excerpt: "Biological hazards pose significant risks to food safety, and understanding how to identify and control them is crucial for any food business. This article delves into the world of biological hazards within the context of Hazard Analysis and Critical Control Points (HACCP), providing examples and practical controls to ensure a safer food supply chain.",
@@ -10337,10 +10370,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to Biological Hazards</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Biological Hazards - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Biological Hazards</figcaption>
-      </figure>
+      
 
       
       <p>Biological hazards are a major concern in the food industry, encompassing a wide range of microorganisms such as bacteria, viruses, and parasites.</p><p> These pathogens can cause foodborne illnesses, which can be severe and even life-threatening.  The World Health Organization (WHO) and the Food and Agriculture Organization (FAO) of the United Nations emphasize the importance of controlling biological hazards through proper food handling and preparation practices.</p>
@@ -10368,8 +10398,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "chemical-hazards-in-haccp-including-allergens",
-    image: "https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200",
-    title: "Chemical Hazards in HACCP (Including Allergens): A Comprehensive Guide for Food Businesses",
+    image: "https://images.pexels.com/photos/35462647/pexels-photo-35462647.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Chemical Hazards in HACCP (Including Allergens): A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "Chemical hazards, including allergens, pose significant risks to consumer health and safety, making their management within HACCP (Hazard Analysis and Critical Control Points) systems crucial for food businesses. This article delves into the world of chemical hazards, exploring their types, risks, and the critical steps for their identification, assessment, and control within the framework of HACCP, in accordance with international standards such as those set by the Codex Alimentarius Commission and the FDA.",
@@ -10378,9 +10408,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Chemical Hazards in Food</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Chemical Hazards in Food - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Chemical Hazards in Food</figcaption>
+        <img src="https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
       <p>Chemical hazards in food can arise from various sources, including environmental contaminants, agricultural practices, food processing, and packaging.</p><p> These hazards can have severe health implications for consumers, ranging from acute poisoning to long-term health effects.  Among these hazards, food allergens are a significant concern, as they can cause severe, life-threatening reactions in sensitive individuals.</p>
@@ -10409,8 +10441,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "is-cooking-always-a-ccp",
-    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200",
-    title: "Is Cooking Always a Critical Control Point?",
+    image: "https://images.pexels.com/photos/7841461/pexels-photo-7841461.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Is Cooking Always a Critical Control Point?",
     category: "Fundamentals",
     readTime: "15 min read",
     excerpt: "Cooking is a crucial step in food preparation, but is it always a critical control point? Understanding the role of cooking in food safety and its relationship to HACCP principles is essential for food business owners, chefs, and quality managers to ensure the production of safe and wholesome food products.",
@@ -10419,9 +10451,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Critical Control Points</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Critical Control Points - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Critical Control Points</figcaption>
+        <img src="https://images.pexels.com/photos/7718889/pexels-photo-7718889.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
       <p>A critical control point (CCP) is a step in a food process where control can be applied to prevent, eliminate, or reduce a food safety hazard to an acceptable level.</p><p> The concept of CCPs is central to the Hazard Analysis and Critical Control Points (HACCP) system, a preventive approach to food safety that is widely recognized and adopted by the food industry globally.  According to the Codex Alimentarius Commission, HACCP is a systematic approach to identifying and controlling hazards in the food production process.</p>
@@ -10442,8 +10476,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "cooling-and-reheating-haccp-high-risk-steps",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
-    title: "Cooling and Reheating: HACCP High-Risk Steps in Food Safety",
+    image: "https://images.pexels.com/photos/35535653/pexels-photo-35535653.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Cooling and Reheating: HACCP High-Risk Steps in Food Safety",
     category: "Operations",
     readTime: "15 min read",
     excerpt: "Cooling and reheating are critical steps in food preparation that can significantly impact food safety. Implementing proper cooling and reheating techniques is essential to prevent bacterial growth and ensure the quality of food products, as outlined in various food safety standards including those by the Codex Alimentarius and the FDA.",
@@ -10452,9 +10486,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Cooling and Reheating in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Cooling and Reheating in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Cooling and Reheating in Food Safety</figcaption>
+        <img src="https://images.pexels.com/photos/1058277/pexels-photo-1058277.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
       <p>Cooling and reheating are fundamental processes in the food industry that, if not managed properly, can lead to the proliferation of harmful bacteria, posing serious health risks to consumers. The Hazard Analysis and Critical Control Points (HACCP) system, widely adopted globally, identifies these steps as critical control points (CCPs) where significant hazards can be controlled, thereby preventing foodborne illnesses.</p>
@@ -10481,8 +10517,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "temperature-control-in-haccp-limits-and-monitoring",
-    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200",
-    title: "Temperature Control in HACCP: Limits and Monitoring for Food Safety",
+    image: "https://images.pexels.com/photos/6004155/pexels-photo-6004155.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Temperature Control in HACCP: Limits and Monitoring for Food Safety",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "Temperature control is a critical component of the Hazard Analysis and Critical Control Points (HACCP) system, as it directly impacts the safety and quality of food products. Effective temperature control and monitoring are essential to prevent the growth of pathogenic microorganisms, ensuring compliance with regulatory standards and protecting consumer health.",
@@ -10491,9 +10527,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Temperature Control in HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Temperature Control in HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Temperature Control in HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/2159065/pexels-photo-2159065.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
       <p>Temperature control is one of the most crucial factors in food safety, as it affects the growth and survival of microorganisms in food products.</p><p> The Hazard Analysis and Critical Control Points (HACCP) system, recognized internationally as the standard for food safety management, emphasizes the importance of temperature control in preventing foodborne illnesses.  According to the Codex Alimentarius Commission, temperature control is a critical control point (CCP) in many food processing operations.</p>
@@ -10519,8 +10557,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "allergen-management-within-haccp-plans",
-    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
-    title: "Allergen Management Within HACCP Plans: A Comprehensive Guide for Food Businesses",
+    image: "https://images.pexels.com/photos/5953835/pexels-photo-5953835.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Allergen Management Within HACCP Plans: A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "Effective allergen management is crucial for food businesses to ensure consumer safety and compliance with regulatory requirements. This article provides a detailed overview of allergen management within HACCP plans, highlighting key principles, best practices, and international standards.",
@@ -10528,10 +10566,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to Allergen Management</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Allergen Management - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Allergen Management</figcaption>
-      </figure>
+      
 
       
                <p>Allergen management is a critical component of food safety, as food allergies can cause severe reactions, including anaphylaxis, in sensitive individuals.</p><p> The Codex Alimentarius Commission defines food allergens as substances that cause adverse immune-mediated reactions (Codex, 2015).  According to the FDA, the eight most common food allergens are peanuts, tree nuts, milk, eggs, fish, shellfish, wheat, and soy (FDA, 2020).</p>
@@ -10566,8 +10601,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "physical-hazards-in-haccp-and-how-to-control-them",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
-    title: "Physical Hazards in HACCP and How to Control Them",
+    image: "https://images.pexels.com/photos/35553038/pexels-photo-35553038.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Physical Hazards in HACCP and How to Control Them",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Physical hazards in food production can pose significant risks to consumer health, making their identification and control crucial in any HACCP (Hazard Analysis and Critical Control Points) system. By understanding the sources and implementing effective control measures, food businesses can significantly reduce the risk of physical contamination, ensuring the safety and quality of their products.",
@@ -10576,9 +10611,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Physical Hazards in Food Production</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Physical Hazards in Food Production - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Physical Hazards in Food Production</figcaption>
+        <img src="https://images.pexels.com/photos/955394/pexels-photo-955394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
    <p>Physical hazards in food refer to any foreign object or material that can cause harm if ingested.</p><p> These can range from pieces of metal, glass, or plastic to stones, wood, or even parts of pests.  The presence of such contaminants not only poses a risk to consumer health but can also lead to significant economic losses for food businesses due to product recalls, legal liabilities, and damage to brand reputation.</p>
@@ -10606,8 +10643,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-requirements-under-eu-regulation-852-2004",
-    image: "https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP Requirements Under EU Regulation 852/2004: A Comprehensive Guide for Food Businesses",
+    image: "https://images.pexels.com/photos/8970290/pexels-photo-8970290.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP Requirements Under EU Regulation 852/2004: A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "EU Regulation 852/2004 sets out the general hygiene requirements for all food businesses, emphasizing the importance of Hazard Analysis and Critical Control Points (HACCP) in ensuring food safety. This article provides an in-depth exploration of HACCP requirements under this regulation, guiding food business owners, chefs, and quality managers through the process of implementing and maintaining a compliant HACCP system.",
@@ -10616,9 +10653,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to EU Regulation 852/2004</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200" alt="Introduction to EU Regulation 852/2004 - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to EU Regulation 852/2004</figcaption>
+        <img src="https://images.pexels.com/photos/8580744/pexels-photo-8580744.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
                <p>EU Regulation 852/2004 is a cornerstone of food safety legislation in the European Union, outlining the hygiene requirements that all food businesses must adhere to. A key component of this regulation is the implementation of a Hazard Analysis and Critical Control Points (HACCP) system, which is based on the principles outlined by the Codex Alimentarius Commission.</p>
@@ -10647,8 +10686,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-and-fda-fsma-what-food-businesses-must-know",
-    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP and FDA FSMA: What Food Businesses Must Know",
+    image: "https://images.pexels.com/photos/35484457/pexels-photo-35484457.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP and FDA FSMA: What Food Businesses Must Know",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "The Food Safety Modernization Act (FSMA) and Hazard Analysis and Critical Control Points (HACCP) are crucial components of food safety management in the United States, aiming to prevent foodborne illnesses by identifying and controlling hazards. Understanding and implementing these principles is essential for food businesses to ensure compliance and maintain the highest standards of food safety.",
@@ -10657,9 +10696,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and FDA FSMA</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and FDA FSMA - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and FDA FSMA</figcaption>
+        <img src="https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
       <p>The food industry is subject to stringent regulations to ensure the safety and quality of products for consumers.  Two key frameworks that guide food safety practices are the Hazard Analysis and Critical Control Points (HACCP) system and the Food Safety Modernization Act (FSMA) enforced by the U.</p><p>S.  Food and Drug Administration (FDA).  HACCP is a systematic approach to identifying and controlling hazards in the food production process, while FSMA is a comprehensive legislation that shifts the focus from responding to foodborne illnesses to preventing them.</p>
@@ -10692,8 +10733,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "codex-alimentarius-haccp-guidelines-explained",
-    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
-    title: "Codex Alimentarius HACCP Guidelines Explained: A Comprehensive Guide for Food Businesses",
+    image: "https://images.pexels.com/photos/6004166/pexels-photo-6004166.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Codex Alimentarius HACCP Guidelines Explained: A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
     excerpt: "The Codex Alimentarius HACCP guidelines provide a framework for food businesses to ensure the safety of their products. By understanding and implementing these guidelines, food manufacturers, processors, and handlers can minimize the risk of contamination and provide safe food for consumers.",
@@ -10702,9 +10743,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Codex Alimentarius</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Codex Alimentarius - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Codex Alimentarius</figcaption>
+        <img src="https://images.pexels.com/photos/2079438/pexels-photo-2079438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a preventive approach to food safety that identifies, evaluates, and controls hazards in the food production process. The Codex Alimentarius Commission, established by the Food and Agriculture Organization (FAO) of the United Nations and the World Health Organization (WHO), develops and publishes international food safety standards, including the HACCP guidelines.</p>
@@ -10747,8 +10790,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-vs-iso-22000-key-differences",
-    image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP vs ISO 22000: Key Differences in Ensuring Food Safety",
+    image: "https://images.pexels.com/photos/5953804/pexels-photo-5953804.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP vs ISO 22000: Key Differences in Ensuring Food Safety",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Food business owners and quality managers face a critical decision in choosing between HACCP and ISO 22000 for their food safety management systems. Understanding the key differences between these two internationally recognized standards is crucial for ensuring compliance, reducing risks, and maintaining consumer trust.",
@@ -10756,10 +10799,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to Food Safety Management Systems</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Management Systems - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Management Systems</figcaption>
-      </figure>
+      
 
       
       <p>Food safety is a paramount concern for businesses in the food industry, from production to consumption. Two prominent standards for managing food safety are Hazard Analysis and Critical Control Points (HACCP) and ISO 22000. While both are designed to ensure the safety of food products, they have distinct approaches and requirements.</p>
@@ -10785,8 +10825,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-vs-brcgs-vs-ifs",
-    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP vs BRCGS vs IFS: Understanding the Nuances of Food Safety Certification",
+    image: "https://images.pexels.com/photos/35479269/pexels-photo-35479269.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP vs BRCGS vs IFS: Understanding the Nuances of Food Safety Certification",
     category: "Compliance",
     readTime: "20 min read",
     excerpt: "Food safety certifications are crucial for ensuring the quality and safety of food products, with HACCP, BRCGS, and IFS being among the most recognized standards globally. This article delves into the specifics of each, highlighting their principles, applications, and the benefits they offer to food businesses, chefs, and quality managers.",
@@ -10795,9 +10835,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Certifications</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Certifications - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Certifications</figcaption>
+        <img src="https://images.pexels.com/photos/164686/pexels-photo-164686.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
       <p>Food safety is a paramount concern for consumers, regulatory bodies, and the food industry itself.  To address these concerns, various certification schemes have been developed to ensure that food products are safe for consumption.</p><p> Among these, Hazard Analysis and Critical Control Points (HACCP), British Retail Consortium Global Standards (BRCGS), and International Featured Standard (IFS) are prominent.  Each of these standards has its own set of guidelines and protocols aimed at minimizing food safety risks.</p>
@@ -10834,8 +10876,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "does-ai-generated-haccp-meet-regulatory-requirements",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
-    title: "Does AI-Generated HACCP Meet Regulatory Requirements?",
+    image: "https://images.pexels.com/photos/8524948/pexels-photo-8524948.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Does AI-Generated HACCP Meet Regulatory Requirements?",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "The integration of Artificial Intelligence (AI) in generating Hazard Analysis and Critical Control Points (HACCP) plans is a rapidly evolving field, promising to streamline food safety management. However, the critical question remains whether AI-generated HACCP plans can meet the stringent regulatory requirements that ensure consumer safety and compliance with international standards.",
@@ -10844,9 +10886,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI Integration</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1566576912902-74161b04d543?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI Integration - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and AI Integration</figcaption>
+        <img src="https://images.pexels.com/photos/6192502/pexels-photo-6192502.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic preventive approach to food safety from biological, chemical, and physical hazards in production processes that can cause the finished product to be unsafe, and designed to prevent hazards that could cause foodborne illnesses. The Codex Alimentarius Commission, established by the Food and Agriculture Organization of the United Nations (FAO) and the World Health Organization (WHO), has outlined principles for HACCP that are widely adopted globally.</p>
@@ -10877,8 +10921,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "can-ai-create-a-haccp-plan",
-    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
-    title: "Can AI Create a HACCP Plan? Exploring the Potential of Artificial Intelligence in Food Safety",
+    image: "https://images.pexels.com/photos/3650159/pexels-photo-3650159.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Can AI Create a HACCP Plan? Exploring the Potential of Artificial Intelligence in Food Safety",
     category: "Technology",
     readTime: "15 min read",
     excerpt: "The application of Artificial Intelligence (AI) in creating a Hazard Analysis and Critical Control Points (HACCP) plan is a topic of growing interest in the food industry, as it promises to streamline and enhance food safety management. This article delves into the feasibility and implications of AI-generated HACCP plans, considering regulatory standards and the complexities of food safety management.",
@@ -10887,9 +10931,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and AI in Food Safety</figcaption>
+        <img src="https://images.pexels.com/photos/1115251/pexels-photo-1115251.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
       <p>The food industry is increasingly looking towards technology, including Artificial Intelligence (AI), to improve efficiency, reduce costs, and enhance safety.</p><p> One critical area where AI is being explored is in the development of Hazard Analysis and Critical Control Points (HACCP) plans.  HACCP, as outlined by the Codex Alimentarius Commission and adopted by regulatory bodies such as the FDA, is a systematic approach to identifying and controlling hazards in the food production process.</p>
@@ -10921,8 +10967,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "the-role-of-ai-in-food-safety-management",
-    image: "https://images.unsplash.com/photo-1632734157077-94d3d81b4f42?auto=format&fit=crop&q=80&w=1200",
-    title: "The Role of AI in Food Safety Management: Enhancing Quality and Compliance",
+    image: "https://images.pexels.com/photos/6004175/pexels-photo-6004175.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "The Role of AI in Food Safety Management: Enhancing Quality and Compliance",
     category: "Technology",
     readTime: "15 min read",
     excerpt: "The integration of Artificial Intelligence (AI) in food safety management is revolutionizing the way food businesses operate, enhancing quality control, and ensuring compliance with regulatory standards. By leveraging AI technologies, food companies can predict and prevent food safety risks, reducing the likelihood of contamination and improving consumer trust.",
@@ -10931,9 +10977,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1632734157077-94d3d81b4f42?auto=format&fit=crop&q=80&w=1200" alt="Introduction to AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to AI in Food Safety</figcaption>
+        <img src="https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       <p>The food industry is one of the most critical sectors that require stringent safety measures to prevent foodborne illnesses.  The World Health Organization (WHO) estimates that approximately 600 million people worldwide fall ill after consuming contaminated food each year.</p><p> To mitigate these risks, food businesses are turning to Artificial Intelligence (AI) to enhance their food safety management systems.  AI technologies, such as machine learning and predictive analytics, can help identify potential hazards, detect anomalies, and optimize quality control processes.</p><h3>Codex Alimentarius and AI</h3>
 <p>The Codex Alimentarius Commission, a joint initiative of the WHO and the Food and Agriculture Organization (FAO) of the United Nations, provides a framework for food safety management.  The Codex Alimentarius standards emphasize the importance of preventive controls, hazard analysis, and risk-based approaches.</p><p> AI can support these principles by analyzing large datasets, recognizing patterns, and predicting potential risks.  For instance, AI-powered systems can monitor temperature control, detect deviations, and alert quality managers to take corrective actions, ensuring compliance with Codex guidelines.</p>
@@ -10946,8 +10994,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "why-ai-generated-haccp-plans-must-be-professionally-reviewed",
-    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
-    title: "Why AI-Generated HACCP Plans Must Be Professionally Reviewed",
+    image: "https://images.pexels.com/photos/6291408/pexels-photo-6291408.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Why AI-Generated HACCP Plans Must Be Professionally Reviewed",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "The increasing use of artificial intelligence (AI) in generating Hazard Analysis and Critical Control Points (HACCP) plans has raised concerns about the reliability and effectiveness of these plans in ensuring food safety. This article explores the importance of professionally reviewing AI-generated HACCP plans to guarantee compliance with regulatory standards and protect public health.",
@@ -10955,10 +11003,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to HACCP and AI-Generated Plans</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI-Generated Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and AI-Generated Plans</figcaption>
-      </figure>
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process, as outlined by the Codex Alimentarius Commission and the US Food and Drug Administration (FDA).</p><p> With the advent of artificial intelligence (AI), some food businesses have begun to use AI-generated HACCP plans, hoping to streamline the process and reduce costs.  However, the use of AI in generating these plans raises significant concerns about their accuracy, completeness, and effectiveness in ensuring food safety.</p>
@@ -10985,8 +11030,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "ai-vs-consultants-the-future-of-haccp",
-    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
-    title: "AI vs Consultants: The Future of HACCP in Ensuring Food Safety",
+    image: "https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "AI vs Consultants: The Future of HACCP in Ensuring Food Safety",
     category: "Technology",
     readTime: "15 min read",
     excerpt: "The implementation of Hazard Analysis and Critical Control Points (HACCP) is crucial for food safety, and with advancements in technology, the debate between AI and traditional consultants has sparked. This article delves into the future of HACCP, exploring how AI can complement or replace traditional consulting methods, ensuring compliance with international standards like those set by the Codex Alimentarius Commission.",
@@ -10995,9 +11040,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Importance</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Importance - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Its Importance</figcaption>
+        <img src="https://images.pexels.com/photos/175045/pexels-photo-175045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
       <p>HACCP is a systematic preventive approach to food safety from biological, chemical, and physical hazards in production processes that can cause the finished product to be unsafe, and design measurements to reduce these risks to a safe level.</p><p> In the food industry, HACCP is used to identify and control hazards, ensuring the production of safe food products.  The Codex Alimentarius Commission, established by the Food and Agriculture Organization of the United Nations (FAO) and the World Health Organization (WHO), provides a framework for HACCP implementation that is widely recognized and adopted globally.</p>
@@ -11027,8 +11074,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-ai-reduces-haccp-errors-when-used-correctly",
-    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
-    title: "How AI Reduces HACCP Errors (When Used Correctly): A Scientific Approach to Food Safety",
+    image: "https://images.pexels.com/photos/6929026/pexels-photo-6929026.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "How AI Reduces HACCP Errors (When Used Correctly): A Scientific Approach to Food Safety",
     category: "Technology",
     readTime: "15 min read",
     excerpt: "The integration of Artificial Intelligence (AI) in food safety management systems, particularly in Hazard Analysis and Critical Control Points (HACCP), is revolutionizing the way food businesses approach error reduction and compliance. By leveraging AI, food manufacturers can significantly decrease the likelihood of HACCP errors, thereby enhancing the overall safety and quality of their products.",
@@ -11037,9 +11084,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and AI in Food Safety</figcaption>
+        <img src="https://images.pexels.com/photos/5412103/pexels-photo-5412103.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
                <p>The food industry is subject to stringent regulations and standards, such as those outlined by the Codex Alimentarius and the U. S.</p><p> Food and Drug Administration (FDA), to ensure the production of safe and wholesome food products.  HACCP, a systematic approach to identifying and controlling hazards in the food production process, is a cornerstone of food safety management.  However, the implementation and maintenance of HACCP plans can be complex and prone to human error, which is where AI comes into play.</p>
@@ -11064,8 +11113,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-much-does-a-haccp-plan-cost",
-    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
-    title: "How Much Does a HACCP Plan Cost? Understanding the Investment in Food Safety",
+    image: "https://images.pexels.com/photos/7125492/pexels-photo-7125492.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "How Much Does a HACCP Plan Cost? Understanding the Investment in Food Safety",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Implementing a Hazard Analysis and Critical Control Points (HACCP) plan is crucial for food businesses to ensure safety and compliance, but the cost can vary widely depending on several factors. In this article, we delve into the components that influence the cost of a HACCP plan, providing insights for food business owners, chefs, and quality managers to make informed decisions.",
@@ -11074,9 +11123,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Plans</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1566576912902-74161b04d543?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP Plans</figcaption>
+        <img src="https://images.pexels.com/photos/260922/pexels-photo-260922.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
       <p>A HACCP plan is a systematic approach to identifying and controlling hazards in the food production process, as outlined by the Codex Alimentarius Commission and mandated by regulatory bodies such as the U. S.</p><p> Food and Drug Administration (FDA).  The plan involves seven key principles: hazard analysis, determination of critical control points, establishment of critical limits, monitoring procedures, corrective actions, verification procedures, and record-keeping.</p>
@@ -11100,8 +11151,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "diy-haccp-vs-professional-validation-whats-the-risk",
-    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200",
-    title: "DIY HACCP vs Professional Validation: What’s the Risk?",
+    image: "https://images.pexels.com/photos/6004240/pexels-photo-6004240.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "DIY HACCP vs Professional Validation: What’s the Risk?",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Implementing a DIY HACCP plan may seem like a cost-effective solution, but it can pose significant risks to food safety and business reputation. In this article, we will explore the differences between DIY HACCP and professional validation, and discuss the potential consequences of choosing the wrong approach.",
@@ -11110,9 +11161,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/1024359/pexels-photo-1024359.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a widely recognized and accepted method for ensuring food safety.</p><p> It involves identifying and controlling hazards in the food production process, from raw material sourcing to final product consumption.  The Codex Alimentarius Commission, a joint initiative of the Food and Agriculture Organization (FAO) and the World Health Organization (WHO), provides guidelines for the application of HACCP principles.</p><h3>DIY HACCP: The Risks and Limitations</h3>
 <p>While it is possible to develop a DIY HACCP plan, this approach can be fraught with risks.  Without proper training and expertise, food business owners may not be able to identify all potential hazards, or may not be aware of the latest scientific research and regulatory requirements.</p><p> For example, the FDA's Food Safety Modernization Act (FSMA) requires food manufacturers to implement preventive controls, which includes a HACCP plan.  A DIY HACCP plan may not meet these regulatory requirements, which can result in non-compliance and potential legal action.</p><h3>Professional Validation: The Benefits</h3>
@@ -11124,8 +11177,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "is-a-free-haccp-plan-enough-for-an-audit",
-    image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200",
-    title: "Is a Free HACCP Plan Enough for an Audit?",
+    image: "https://images.pexels.com/photos/5953794/pexels-photo-5953794.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Is a Free HACCP Plan Enough for an Audit?",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "While a free HACCP plan may provide a foundation for food safety management, it is often insufficient for a comprehensive audit, as it may lack the specificity and detail required by regulatory standards. In this article, we will explore the limitations of free HACCP plans and the importance of a tailored approach to food safety management.",
@@ -11133,10 +11186,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to HACCP and Food Safety Audits</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Food Safety Audits - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Food Safety Audits</figcaption>
-      </figure>
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a widely recognized approach to food safety management, emphasized by both the Codex Alimentarius Commission and the US Food and Drug Administration (FDA).</p><p> A HACCP plan is designed to identify, evaluate, and control hazards in the food production process, ensuring the safety of consumers.  However, the effectiveness of a HACCP plan in an audit setting depends on its thoroughness and applicability to the specific food business.</p>
@@ -11163,8 +11213,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "when-to-hire-a-haccp-consultant",
-    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
-    title: "When Should You Hire a HACCP Consultant?",
+    image: "https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "When Should You Hire a HACCP Consultant?",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Hiring a HACCP consultant can be a crucial step in ensuring the safety and quality of your food products, but it",
@@ -11173,9 +11223,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1555601568-c9e6f328489b?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/357514/pexels-photo-357514.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.</p><p> As outlined in the Codex Alimentarius Commission's guidelines, HACCP is a preventive approach to food safety that aims to prevent, eliminate, or reduce hazards to an acceptable level.  The FDA also requires food establishments to implement a HACCP plan as part of their food safety regulations.</p>
@@ -11201,8 +11253,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-plan-example-restaurant",
-    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP Plan Example for Restaurants: Ensuring Food Safety and Compliance",
+    image: "https://images.pexels.com/photos/7735699/pexels-photo-7735699.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP Plan Example for Restaurants: Ensuring Food Safety and Compliance",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Implementing a HACCP plan is crucial for restaurants to ensure food safety and compliance with regulatory standards. This article provides a comprehensive HACCP plan example for restaurants, outlining the key principles and steps to follow, as recommended by the Codex Alimentarius and the FDA.",
@@ -11211,9 +11263,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/6991363/pexels-photo-6991363.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process. It is widely recognized as the most effective way to ensure food safety and prevent foodborne illnesses. The HACCP system is based on seven key principles, as outlined by the Codex Alimentarius Commission.</p>
@@ -11260,8 +11314,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-hazard-analysis-table-template",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP Hazard Analysis Table Template: A Comprehensive Guide to Ensuring Food Safety",
+    image: "https://images.pexels.com/photos/564883/pexels-photo-564883.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP Hazard Analysis Table Template: A Comprehensive Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "20 min read",
     excerpt: "The HACCP Hazard Analysis Table Template is a crucial tool for food businesses to identify and mitigate potential hazards in their operations, ensuring compliance with regulatory standards and safeguarding consumer health. By understanding and effectively utilizing this template, food business owners, chefs, and quality managers can develop a robust food safety management system that meets the requirements of Codex Alimentarius and FDA guidelines.",
@@ -11270,9 +11324,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Hazard Analysis</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Hazard Analysis - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Hazard Analysis</figcaption>
+        <img src="https://images.pexels.com/photos/696218/pexels-photo-696218.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
                <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.</p><p> It is widely recognized as the most effective way to ensure food safety and is mandated by regulatory bodies worldwide, including the US FDA and the European Food Safety Authority.  A critical component of the HACCP system is the hazard analysis, which involves identifying potential hazards, assessing their risks, and determining the necessary controls to prevent or minimize these hazards.</p>
@@ -11305,8 +11361,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-monitoring-record-templates",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP Monitoring Record Templates: A Comprehensive Guide to Ensuring Food Safety",
+    image: "https://images.pexels.com/photos/112781/pexels-photo-112781.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP Monitoring Record Templates: A Comprehensive Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "HACCP monitoring record templates are essential tools for food businesses to ensure compliance with food safety regulations and maintain a robust food safety management system. By understanding the principles of HACCP and implementing effective monitoring record templates, food businesses can reduce the risk of foodborne illnesses and maintain customer trust.",
@@ -11315,9 +11371,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/373639/pexels-photo-373639.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process. Developed by the Codex Alimentarius Commission, HACCP is widely recognized as the international standard for food safety management. The FDA also requires food businesses to implement HACCP plans as part of their food safety regulations.</p>
@@ -11370,8 +11428,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-checklist-for-new-food-businesses",
-    image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP Checklist for New Food Businesses: Ensuring Safety and Compliance",
+    image: "https://images.pexels.com/photos/5953773/pexels-photo-5953773.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP Checklist for New Food Businesses: Ensuring Safety and Compliance",
     category: "Compliance",
     readTime: "20 min read",
     excerpt: "Implementing a Hazard Analysis and Critical Control Points (HACCP) system is crucial for new food businesses to ensure the safety and quality of their products. This article provides a comprehensive HACCP checklist to help food business owners, chefs, and quality managers establish a robust food safety management system that meets international standards and regulatory requirements.",
@@ -11379,10 +11437,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to HACCP</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1566576912902-74161b04d543?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
-      </figure>
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.</p><p> It is widely recognized as the most effective way to ensure food safety and prevent foodborne illnesses.  The HACCP system is based on seven principles, which are outlined in the Codex Alimentarius Commission's guidelines for the application of the HACCP system (Codex, 2003).</p>
@@ -11417,8 +11472,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-review-checklist",
-    image: "https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200",
-    title: "HACCP Review Checklist: A Comprehensive Guide to Ensuring Food Safety",
+    image: "https://images.pexels.com/photos/6724381/pexels-photo-6724381.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "HACCP Review Checklist: A Comprehensive Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "The HACCP review checklist is a crucial tool for food businesses to ensure compliance with food safety regulations and prevent contamination. By following this checklist, food business owners, chefs, and quality managers can identify potential hazards and implement effective controls to guarantee the safety of their products.",
@@ -11427,9 +11482,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1632734157077-94d3d81b4f42?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/3756678/pexels-photo-3756678.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.</p><p> It is widely recognized as the most effective way to ensure food safety and is mandated by regulatory agencies such as the FDA and the Codex Alimentarius Commission.  A HACCP review checklist is an essential tool for food businesses to review and update their HACCP plans regularly.</p>
@@ -11464,8 +11521,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "why-most-haccp-plans-are-overcomplicated",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
-    title: "Why Most HACCP Plans Are Overcomplicated: A Scientific Review",
+    image: "https://images.pexels.com/photos/8205064/pexels-photo-8205064.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Why Most HACCP Plans Are Overcomplicated: A Scientific Review",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Most HACCP plans are overly complex, leading to decreased effectiveness and increased costs for food businesses. By understanding the principles of HACCP and simplifying plans, businesses can improve food safety while reducing unnecessary complexity.",
@@ -11474,9 +11531,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/6991499/pexels-photo-6991499.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a widely recognized and scientifically validated approach to ensuring food safety. First introduced in the 1960s, HACCP has become a cornerstone of food safety management globally, with standards and guidelines provided by organizations such as the Codex Alimentarius Commission and the U.S. Food and Drug Administration (FDA).</p>
@@ -11503,8 +11562,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "what-regulators-really-expect-from-small-food-businesses",
-    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
-    title: "What Regulators Really Expect From Small Food Businesses",
+    image: "https://images.pexels.com/photos/8477052/pexels-photo-8477052.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "What Regulators Really Expect From Small Food Businesses",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Small food businesses often struggle to understand the complex regulatory landscape, but by focusing on key areas such as hazard analysis, sanitation, and record-keeping, they can ensure compliance and build trust with regulators. In this article, we will delve into the specifics of what regulators expect from small food businesses, citing relevant standards from the Codex Alimentarius and the FDA.",
@@ -11513,9 +11572,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Regulations</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Regulations - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Regulations</figcaption>
+        <img src="https://images.pexels.com/photos/2104568/pexels-photo-2104568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of restaurants</figcaption>
       </figure>
+
+      
 
       
       <p>Food safety regulations are in place to protect public health by ensuring that all food products are safe for consumption.</p><p> Small food businesses, which include restaurants, cafes, and food manufacturers, must comply with these regulations to avoid legal and financial consequences.  The Codex Alimentarius, a collection of internationally recognized standards, and the FDA's Food Safety Modernization Act (FSMA) provide guidelines for food businesses to follow.</p>
@@ -11547,8 +11608,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "the-biggest-haccp-mistakes-we-see-in-professional-reviews",
-    image: "https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200",
-    title: "The Biggest HACCP Mistakes We See in Professional Reviews",
+    image: "https://images.pexels.com/photos/6004243/pexels-photo-6004243.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "The Biggest HACCP Mistakes We See in Professional Reviews",
     category: "Compliance",
     readTime: "15 min read",
     excerpt: "Hazard Analysis and Critical Control Points (HACCP) is a systematic approach to identifying and controlling hazards in the food industry, but even with its widespread adoption, common mistakes persist. This article highlights the most significant HACCP mistakes observed in professional reviews, providing insights for food business owners, chefs, and quality managers to improve their HACCP systems and ensure compliance with regulatory standards like those outlined by the Codex Alimentarius and the FDA.",
@@ -11557,9 +11618,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/1438445/pexels-photo-1438445.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a preventive approach to food safety that identifies, evaluates, and controls hazards in the food production process.</p><p> It is widely recognized and adopted by the food industry worldwide, including by regulatory bodies such as the FDA in the United States and the European Food Safety Authority (EFSA) in Europe.  The Codex Alimentarius Commission, established by the Food and Agriculture Organization (FAO) of the United Nations and the World Health Organization (WHO), provides a framework for HACCP implementation that is internationally recognized.</p>
@@ -11582,8 +11645,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-to-keep-haccp-practical-not-bureaucratic",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
-    title: "How to Keep HACCP Practical, Not Bureaucratic: A Guide for Food Businesses",
+    image: "https://images.pexels.com/photos/5953682/pexels-photo-5953682.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "How to Keep HACCP Practical, Not Bureaucratic: A Guide for Food Businesses",
     category: "Operations",
     readTime: "20 min read",
     excerpt: "Implementing a Hazard Analysis and Critical Control Points (HACCP) system is crucial for ensuring food safety, but it can sometimes become overly bureaucratic. By focusing on practical application and continuous improvement, food businesses can maintain an effective HACCP system that enhances food safety without hindering operations.",
@@ -11591,10 +11654,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
         content: `
       <h2>Introduction to HACCP</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Professional planning - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">A practical approach to food safety starts with effective planning.</figcaption>
-      </figure>
+      
 
       
       <p>The Hazard Analysis and Critical Control Points (HACCP) system is a systematic approach to identifying and controlling hazards in the food production process.</p><p> It is based on the principles outlined by the Codex Alimentarius Commission and is widely recognized as the international standard for food safety management.  The FDA also mandates HACCP for certain segments of the food industry, such as juice and seafood processing.</p>
@@ -11622,8 +11682,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "the-future-of-haccp-and-digital-food-safety-systems",
-    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
-    title: "The Future of HACCP and Digital Food Safety Systems: Enhancing Compliance and Operations",
+    image: "https://images.pexels.com/photos/6694212/pexels-photo-6694212.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "The Future of HACCP and Digital Food Safety Systems: Enhancing Compliance and Operations",
     category: "Technology",
     readTime: "20 min read",
     excerpt: "The future of food safety lies in the integration of traditional HACCP principles with cutting-edge digital technologies, enhancing compliance, efficiency, and consumer trust. This article explores the evolution of HACCP, the benefits of digital food safety systems, and the role of emerging technologies in shaping the future of food safety management.",
@@ -11632,9 +11692,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Evolution</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Evolution - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Its Evolution</figcaption>
+        <img src="https://images.pexels.com/photos/955392/pexels-photo-955392.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
       
                <p>The Hazard Analysis and Critical Control Points (HACCP) system, first introduced in the 1960s, has been a cornerstone of food safety management worldwide.</p><p> Based on the principles outlined by the Codex Alimentarius Commission, HACCP is a systematic approach to identifying and controlling hazards in the food production process.  Over the years, HACCP has undergone several revisions to keep pace with changing food safety landscapes and regulatory requirements, including those set by the FDA in the United States.</p>
@@ -11661,8 +11723,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "what-is-haccp-a-practical-guide-for-food-businesses",
-    image: "https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200",
-    title: "Unlocking Food Safety: A Comprehensive Guide to HACCP Implementation",
+    image: "https://images.pexels.com/photos/8369216/pexels-photo-8369216.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Unlocking Food Safety: A Comprehensive Guide to HACCP Implementation",
     category: "Compliance",
     readTime: "45 min read",
     excerpt: "Discover the fundamentals of Hazard Analysis and Critical Control Points (HACCP) and learn how to effectively implement this crucial food safety management system in your business. This guide provides a deep dive into HACCP principles, practices, and compliance, ensuring your products are safe for consumption and your business is protected from regulatory risks.",
@@ -11673,9 +11735,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
+        <img src="https://images.pexels.com/photos/32074767/pexels-photo-32074767.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
       
 <p>HACCP, or Hazard Analysis and Critical Control Points, is a systematic approach to identifying and controlling hazards in the food production process.</p><p> As a food business, it is crucial to understand the definition, history, importance, and principles of HACCP to ensure compliance with regulatory requirements and to pass audits.  In this section, we will delve into the world of HACCP, exploring its definition and history, importance in food safety, overview of principles and guidelines, and relevance to FDA and EU regulations.</p>
@@ -12129,8 +12193,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "fda-vs-eu-regulations",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
-    title: "Navigating the Complex Landscape of FDA and EU Food Safety Regulations: A Comprehensive Guide",
+    image: "https://images.pexels.com/photos/5532711/pexels-photo-5532711.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Navigating the Complex Landscape of FDA and EU Food Safety Regulations: A Comprehensive Guide",
     category: "Compliance",
     readTime: "44 min read",
     excerpt: "The FDA and EU have distinct approaches to food safety regulations, posing challenges for global food manufacturers. This article provides an in-depth comparison of FDA and EU regulations, highlighting key differences and offering practical guidance for compliance and food safety management.",
@@ -12604,8 +12668,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "positive-release-program-importance",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
-    title: "Unlocking Food Safety: The Crucial Role of Positive Release Programs in Food Manufacturing",
+    image: "https://images.pexels.com/photos/6004711/pexels-photo-6004711.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Unlocking Food Safety: The Crucial Role of Positive Release Programs in Food Manufacturing",
     category: "Compliance",
     readTime: "45 min read",
     excerpt: "A deep dive into the regulatory and scientific necessity of positive release programs for audit-ready food facilities.",
@@ -12617,9 +12681,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>The Foundation of Positive Release</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="The Foundation of Positive Release - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of The Foundation of Positive Release</figcaption>
+        <img src="https://images.pexels.com/photos/143642/pexels-photo-143642.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of coffee shop</figcaption>
       </figure>
+
+      
 
       <p>A positive release program is a systematic approach to verifying the safety and quality of food products before they are released to the market. The primary purpose is to prevent the distribution of contaminated or non-compliant products. <strong>Regulatory codes</strong>, such as those outlined in the BRCGS and SQF standards, emphasize this in maintaining a robust food safety management system.</p>
 
@@ -12648,8 +12714,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-coffee-shops-and-cafes",
-    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
-    title: "Mastering HACCP for Coffee Shops: A Comprehensive Guide to Food Safety",
+    image: "https://images.pexels.com/photos/5953727/pexels-photo-5953727.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Mastering HACCP for Coffee Shops: A Comprehensive Guide to Food Safety",
     category: "Compliance",
     readTime: "49 min read",
     excerpt: "Ensure the safety and quality of your coffee shop",
@@ -12658,10 +12724,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <!-- Written by Dr. Joao -->
 <h2>Introduction to HACCP in Coffee Shops & Cafes</h2>
 
-      <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Coffee Shops & Cafes - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP in Coffee Shops & Cafes</figcaption>
-      </figure>
+      
 
 <p>In the bustling world of coffee shops and cafes, food safety is not just a regulatory requirement—it’s a cornerstone of customer trust and business success. With the increasing demand for high-quality beverages and snacks, ensuring that every cup of coffee served is safe and free from contaminants is paramount.</p>
 <p>Enter HACCP (Hazard Analysis Critical Control Point), a systematic approach to food safety that has transformed how food service establishments operate. By identifying potential hazards and implementing critical control points, coffee shops can significantly reduce the risk of foodborne illnesses and maintain high standards of hygiene.</p>
@@ -13587,8 +13650,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-butcher-shops",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
-    title: "Mastering HACCP for Butcher Shops: A Comprehensive Guide to Raw Meat Safety",
+    image: "https://images.pexels.com/photos/5480151/pexels-photo-5480151.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Mastering HACCP for Butcher Shops: A Comprehensive Guide to Raw Meat Safety",
     category: "Compliance",
     readTime: "46 min read",
     excerpt: "Discover the essential principles of HACCP tailored for butcher shops to ensure meat safety and compliance. This guide provides practical steps for managing raw meat hazards effectively.",
@@ -13598,9 +13661,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <h2>Introduction to HACCP in Butcher Shops</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Butcher Shops - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP in Butcher Shops</figcaption>
+        <img src="https://images.pexels.com/photos/955393/pexels-photo-955393.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of paperwork</figcaption>
       </figure>
+
+      
 
 <p>In the world of meat processing and retail, ensuring safety and quality is paramount.</p><p> Butcher shops, as the frontline of meat supply, carry the crucial responsibility of managing raw meat hazards that can impact consumer health.  The implementation of HACCP (Hazard Analysis Critical Control Point) is not just a regulatory requirement; it is a vital strategy that helps in identifying, evaluating, and controlling food safety risks.</p>
 
@@ -14531,8 +14596,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-food-trucks",
-    image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200",
-    title: "Ensuring Food Safety on Wheels: The Essential HACCP Guide for Food Trucks and Mobile Catering",
+    image: "https://images.pexels.com/photos/7103091/pexels-photo-7103091.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        title: "Ensuring Food Safety on Wheels: The Essential HACCP Guide for Food Trucks and Mobile Catering",
     category: "Compliance",
     readTime: "43 min read",
     excerpt: "Discover the critical importance of HACCP in ensuring food safety for food trucks and mobile catering services. This comprehensive guide covers unique challenges, best practices, and regulatory frameworks to help operators maintain high safety standards.",
@@ -14542,9 +14607,11 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <h2>Introduction to HACCP in Mobile Food Services</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Mobile Food Services - Food Safety" class="w-full rounded-2xl shadow-lg" />
-        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP in Mobile Food Services</figcaption>
+        <img src="https://images.pexels.com/photos/6991380/pexels-photo-6991380.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Food safety illustration" class="w-full rounded-2xl shadow-lg" />
+        <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of note pads</figcaption>
       </figure>
+
+      
 
 <p>In the vibrant world of food trucks and mobile catering, delicious meals are served on the go, but behind every tasty bite lies the critical need for food safety. As the popularity of mobile food services continues to rise, so does the responsibility of operators to ensure the health and safety of their customers. This is where HACCP (Hazard Analysis Critical Control Point) comes into play.</p>
 <p>HACCP is a systematic approach to food safety that identifies, evaluates, and controls hazards throughout the food production process. For mobile food vendors, implementing HACCP principles is not just a regulatory requirement; it’s a vital component of their operational success.</p>
