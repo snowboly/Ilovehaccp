@@ -7,16 +7,23 @@ export default function ScrollToTop() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // We use a small timeout to ensure the DOM has rendered
-    // and to override any browser-level scroll restoration
-    const timer = setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'instant' as any // Use 'instant' for immediate jump
-      });
-    }, 0);
+    // Disable browser's automatic scroll restoration
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
 
+    const resetScroll = () => {
+      window.scrollTo(0, 0);
+      // Second pass for mobile/slower renders
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+      });
+    };
+
+    resetScroll();
+    
+    // Fallback for dynamic content loading
+    const timer = setTimeout(resetScroll, 100);
     return () => clearTimeout(timer);
   }, [pathname]);
 
