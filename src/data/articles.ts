@@ -12,7 +12,7 @@ export interface Article {
 export const articles: Article[] = [  {
 
     slug: "7-principles-haccp-explained",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
     title: "Unlocking Food Safety: A Comprehensive Guide to the 7 Principles of HACCP",
     category: "Compliance",
     readTime: "45 min read",
@@ -24,7 +24,7 @@ export const articles: Article[] = [  {
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -466,7 +466,7 @@ export const articles: Article[] = [  {
   },  {
 
     slug: "the-7-principles-of-haccp-explained-with-real-examples",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200",
     title: "The 7 Principles of HACCP Explained with Real Examples: A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
@@ -484,7 +484,7 @@ export const articles: Article[] = [  {
       <h2>The Foundation: Prerequisite Programs (GMPs)</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="The Foundation: Prerequisite Programs (GMPs) - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200" alt="The Foundation: Prerequisite Programs (GMPs) - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of The Foundation: Prerequisite Programs (GMPs)</figcaption>
       </figure>
 
@@ -546,7 +546,7 @@ export const articles: Article[] = [  {
   },  {
 
     slug: "haccp-vs-food-safety-plans-whats-the-difference",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP vs Food Safety Plans: Unlocking the Secrets to a Safer Food Supply Chain",
     category: "Fundamentals",
     readTime: "36 min read",
@@ -1329,7 +1329,7 @@ The evolving landscape of food safety necessitates ongoing research into the eff
   },  {
 
     slug: "is-haccp-mandatory-requirements-by-country-and-sector",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200",
     title: "Is HACCP Mandatory? A Global Overview of Food Safety Regulations",
     category: "Compliance",
     readTime: "30 min read",
@@ -1341,7 +1341,7 @@ The evolving landscape of food safety necessitates ongoing research into the eff
       <h2>Introduction</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction</figcaption>
       </figure>
 
@@ -2678,7 +2678,7 @@ In summary, the responsibility for HACCP in a food business is shared across all
   },  {
 
     slug: "haccp-for-small-businesses-what-regulators-actually-expect",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200",
     title: "Essential HACCP Guidelines for Small Businesses: Navigating Food Safety Regulations",
     category: "Compliance",
     readTime: "37 min read",
@@ -2690,7 +2690,7 @@ In summary, the responsibility for HACCP in a food business is shared across all
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -3405,7 +3405,7 @@ In conclusion, as the landscape of food safety continues to evolve, small busine
   },  {
 
     slug: "common-haccp-myths-that-cause-audit-failures",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200",
     title: "Debunking HACCP Myths: Essential Insights for Food Safety Audits",
     category: "Compliance",
     readTime: "37 min read",
@@ -4226,7 +4226,7 @@ In conclusion, as the landscape of food safety continues to evolve, small busine
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -5072,7 +5072,7 @@ By following the principles of HACCP and establishing a thorough and effective p
   },  {
 
     slug: "building-a-haccp-process-flow-diagram",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
     title: "Mastering HACCP: A Step-by-Step Guide to Building an Effective Process Flow Diagram",
     category: "Compliance",
     readTime: "37 min read",
@@ -5084,7 +5084,7 @@ By following the principles of HACCP and establishing a thorough and effective p
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -5903,7 +5903,7 @@ Red flags, such as inadequate documentation or insufficient training, can indica
   },  {
 
     slug: "how-to-perform-a-hazard-analysis-correctly",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200",
     title: "Mastering Hazard Analysis: A Complete Guide for Food Safety Success",
     category: "Fundamentals",
     readTime: "40 min read",
@@ -5915,7 +5915,7 @@ Red flags, such as inadequate documentation or insufficient training, can indica
       <h2>Introduction to Hazard Analysis</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Hazard Analysis - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Hazard Analysis - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Hazard Analysis</figcaption>
       </figure>
 
@@ -6677,7 +6677,7 @@ By fostering a proactive approach to hazard analysis and food safety management,
   },  {
 
     slug: "identifying-critical-control-points-in-food-safety",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
     title: "Mastering Critical Control Points (CCPs) in Food Safety Management: A Comprehensive Guide",
     category: "Fundamentals",
     readTime: "38 min read",
@@ -6689,7 +6689,7 @@ By fostering a proactive approach to hazard analysis and food safety management,
       <h2>Introduction to Critical Control Points (CCPs)</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Critical Control Points (CCPs) - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Critical Control Points (CCPs) - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Critical Control Points (CCPs)</figcaption>
       </figure>
 
@@ -7383,7 +7383,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "defining-critical-limits-that-pass-audits",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200",
     title: "Mastering Critical Limits: Essential Guidelines for Food Safety Audits",
     category: "Compliance",
     readTime: "34 min read",
@@ -7395,7 +7395,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200" alt="Introduction - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction</figcaption>
       </figure>
 
@@ -8136,7 +8136,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "monitoring-corrective-actions-and-verification-explained",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200",
     title: "Essential Guide to Food Safety Monitoring, Corrective Actions, and Verification",
     category: "Operations",
     readTime: "37 min read",
@@ -8148,7 +8148,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Monitoring</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Monitoring - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1566576912902-74161b04d543?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Monitoring - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Monitoring</figcaption>
       </figure>
 
@@ -8947,7 +8947,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-often-should-a-haccp-plan-be-reviewed",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
     title: "How Often Should You Review Your HACCP Plan? A Guide to Food Safety Compliance",
     category: "Compliance",
     readTime: "34 min read",
@@ -9629,7 +9629,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -9680,7 +9680,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-catering-businesses",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200",
     title: "Implementing HACCP for Catering Businesses: A Scientific Approach to Food Safety",
     category: "Compliance",
     readTime: "20 min read",
@@ -9690,7 +9690,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1555601568-c9e6f328489b?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -9737,7 +9737,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-food-manufacturers",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP for Food Manufacturers: A Comprehensive Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "25 min read",
@@ -9747,7 +9747,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -9792,7 +9792,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-bakeries",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1555601568-c9e6f328489b?auto=format&fit=crop&q=80&w=1200",
     title: "Implementing HACCP for Bakeries: A Scientific Approach to Ensuring Food Safety",
     category: "Compliance",
     readTime: "20 min read",
@@ -9802,7 +9802,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -9848,7 +9848,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-meat-processing",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP for Meat Processing: Ensuring Safety and Quality in the Meat Industry",
     category: "Compliance",
     readTime: "25 min read",
@@ -9858,7 +9858,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -9909,7 +9909,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-dairy-production",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP for Dairy Production: Ensuring Safety and Quality in the Dairy Industry",
     category: "Compliance",
     readTime: "15 min read",
@@ -9952,7 +9952,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-seafood-and-fish-handling",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP for Seafood and Fish Handling: Ensuring Safety from Catch to Plate",
     category: "Operations",
     readTime: "25 min read",
@@ -9962,7 +9962,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -10001,7 +10001,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-ready-to-eat-foods",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP for Ready-to-Eat Foods: Ensuring Safety and Quality in the Food Industry",
     category: "Compliance",
     readTime: "25 min read",
@@ -10011,7 +10011,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -10048,7 +10048,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "what-auditors-look-for-in-a-haccp-plan",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200",
     title: "What Auditors Look for in a HACCP Plan: Ensuring Food Safety and Compliance",
     category: "Compliance",
     readTime: "15 min read",
@@ -10058,7 +10058,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Plans</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP Plans</figcaption>
       </figure>
 
@@ -10099,7 +10099,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Plans</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP Plans</figcaption>
       </figure>
 
@@ -10155,7 +10155,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Importance</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Importance - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Importance - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Its Importance</figcaption>
       </figure>
 
@@ -10189,7 +10189,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-to-prepare-for-a-food-safety-audit",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
     title: "How to Prepare for a Food Safety Audit: A Comprehensive Guide",
     category: "Compliance",
     readTime: "20 min read",
@@ -10199,7 +10199,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Audits</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Audits - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Audits - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Audits</figcaption>
       </figure>
 
@@ -10234,7 +10234,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-records-what-to-keep-and-for-how-long",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP Records: What to Keep and for How Long",
     category: "Compliance",
     readTime: "15 min read",
@@ -10244,7 +10244,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Records</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Records - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Records - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP Records</figcaption>
       </figure>
 
@@ -10280,7 +10280,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "correcting-non-conformities-in-haccp",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
     title: "How to Correct Non-Conformities in HACCP: A Comprehensive Guide",
     category: "Compliance",
     readTime: "20 min read",
@@ -10290,7 +10290,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Non-Conformities</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Non-Conformities - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Non-Conformities - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Non-Conformities</figcaption>
       </figure>
 
@@ -10328,7 +10328,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "biological-hazards-in-haccp-examples-and-controls",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
     title: "Biological Hazards in HACCP: Examples and Controls",
     category: "Microbiology",
     readTime: "15 min read",
@@ -10338,7 +10338,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Biological Hazards</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Biological Hazards - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Biological Hazards - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Biological Hazards</figcaption>
       </figure>
 
@@ -10368,7 +10368,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "chemical-hazards-in-haccp-including-allergens",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200",
     title: "Chemical Hazards in HACCP (Including Allergens): A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
@@ -10378,7 +10378,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Chemical Hazards in Food</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Chemical Hazards in Food - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Chemical Hazards in Food - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Chemical Hazards in Food</figcaption>
       </figure>
 
@@ -10409,7 +10409,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "is-cooking-always-a-ccp",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200",
     title: "Is Cooking Always a Critical Control Point?",
     category: "Fundamentals",
     readTime: "15 min read",
@@ -10419,7 +10419,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Critical Control Points</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Critical Control Points - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Critical Control Points - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Critical Control Points</figcaption>
       </figure>
 
@@ -10452,7 +10452,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Cooling and Reheating in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Cooling and Reheating in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Cooling and Reheating in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Cooling and Reheating in Food Safety</figcaption>
       </figure>
 
@@ -10481,7 +10481,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "temperature-control-in-haccp-limits-and-monitoring",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200",
     title: "Temperature Control in HACCP: Limits and Monitoring for Food Safety",
     category: "Compliance",
     readTime: "25 min read",
@@ -10491,7 +10491,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Temperature Control in HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Temperature Control in HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Temperature Control in HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Temperature Control in HACCP</figcaption>
       </figure>
 
@@ -10519,7 +10519,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "allergen-management-within-haccp-plans",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
     title: "Allergen Management Within HACCP Plans: A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
@@ -10529,7 +10529,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Allergen Management</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Allergen Management - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Allergen Management - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Allergen Management</figcaption>
       </figure>
 
@@ -10566,7 +10566,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "physical-hazards-in-haccp-and-how-to-control-them",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
     title: "Physical Hazards in HACCP and How to Control Them",
     category: "Compliance",
     readTime: "15 min read",
@@ -10576,7 +10576,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Physical Hazards in Food Production</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Physical Hazards in Food Production - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Physical Hazards in Food Production - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Physical Hazards in Food Production</figcaption>
       </figure>
 
@@ -10606,7 +10606,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-requirements-under-eu-regulation-852-2004",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP Requirements Under EU Regulation 852/2004: A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
@@ -10616,7 +10616,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to EU Regulation 852/2004</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to EU Regulation 852/2004 - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200" alt="Introduction to EU Regulation 852/2004 - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to EU Regulation 852/2004</figcaption>
       </figure>
 
@@ -10647,7 +10647,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-and-fda-fsma-what-food-businesses-must-know",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP and FDA FSMA: What Food Businesses Must Know",
     category: "Compliance",
     readTime: "25 min read",
@@ -10657,7 +10657,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and FDA FSMA</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and FDA FSMA - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and FDA FSMA - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and FDA FSMA</figcaption>
       </figure>
 
@@ -10692,7 +10692,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "codex-alimentarius-haccp-guidelines-explained",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
     title: "Codex Alimentarius HACCP Guidelines Explained: A Comprehensive Guide for Food Businesses",
     category: "Compliance",
     readTime: "25 min read",
@@ -10702,7 +10702,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Codex Alimentarius</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Codex Alimentarius - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Codex Alimentarius - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Codex Alimentarius</figcaption>
       </figure>
 
@@ -10747,7 +10747,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-vs-iso-22000-key-differences",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP vs ISO 22000: Key Differences in Ensuring Food Safety",
     category: "Compliance",
     readTime: "15 min read",
@@ -10757,7 +10757,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Management Systems</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Management Systems - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Management Systems - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Management Systems</figcaption>
       </figure>
 
@@ -10785,7 +10785,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-vs-brcgs-vs-ifs",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP vs BRCGS vs IFS: Understanding the Nuances of Food Safety Certification",
     category: "Compliance",
     readTime: "20 min read",
@@ -10795,7 +10795,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to Food Safety Certifications</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Certifications - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to Food Safety Certifications - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to Food Safety Certifications</figcaption>
       </figure>
 
@@ -10844,7 +10844,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI Integration</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI Integration - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1566576912902-74161b04d543?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI Integration - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and AI Integration</figcaption>
       </figure>
 
@@ -10877,7 +10877,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "can-ai-create-a-haccp-plan",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
     title: "Can AI Create a HACCP Plan? Exploring the Potential of Artificial Intelligence in Food Safety",
     category: "Technology",
     readTime: "15 min read",
@@ -10887,7 +10887,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and AI in Food Safety</figcaption>
       </figure>
 
@@ -10921,7 +10921,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "the-role-of-ai-in-food-safety-management",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1632734157077-94d3d81b4f42?auto=format&fit=crop&q=80&w=1200",
     title: "The Role of AI in Food Safety Management: Enhancing Quality and Compliance",
     category: "Technology",
     readTime: "15 min read",
@@ -10931,7 +10931,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1632734157077-94d3d81b4f42?auto=format&fit=crop&q=80&w=1200" alt="Introduction to AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to AI in Food Safety</figcaption>
       </figure>
 
@@ -10946,7 +10946,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "why-ai-generated-haccp-plans-must-be-professionally-reviewed",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
     title: "Why AI-Generated HACCP Plans Must Be Professionally Reviewed",
     category: "Compliance",
     readTime: "15 min read",
@@ -10956,7 +10956,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI-Generated Plans</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI-Generated Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI-Generated Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and AI-Generated Plans</figcaption>
       </figure>
 
@@ -10985,7 +10985,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "ai-vs-consultants-the-future-of-haccp",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
     title: "AI vs Consultants: The Future of HACCP in Ensuring Food Safety",
     category: "Technology",
     readTime: "15 min read",
@@ -10995,7 +10995,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Importance</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Importance - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Importance - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Its Importance</figcaption>
       </figure>
 
@@ -11027,7 +11027,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-ai-reduces-haccp-errors-when-used-correctly",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
     title: "How AI Reduces HACCP Errors (When Used Correctly): A Scientific Approach to Food Safety",
     category: "Technology",
     readTime: "15 min read",
@@ -11037,7 +11037,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and AI in Food Safety</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and AI in Food Safety - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and AI in Food Safety</figcaption>
       </figure>
 
@@ -11064,7 +11064,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-much-does-a-haccp-plan-cost",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=1200",
     title: "How Much Does a HACCP Plan Cost? Understanding the Investment in Food Safety",
     category: "Compliance",
     readTime: "15 min read",
@@ -11074,7 +11074,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP Plans</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1566576912902-74161b04d543?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP Plans - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP Plans</figcaption>
       </figure>
 
@@ -11100,7 +11100,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "diy-haccp-vs-professional-validation-whats-the-risk",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200",
     title: "DIY HACCP vs Professional Validation: What’s the Risk?",
     category: "Compliance",
     readTime: "15 min read",
@@ -11110,7 +11110,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -11124,7 +11124,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "is-a-free-haccp-plan-enough-for-an-audit",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200",
     title: "Is a Free HACCP Plan Enough for an Audit?",
     category: "Compliance",
     readTime: "15 min read",
@@ -11134,7 +11134,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Food Safety Audits</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Food Safety Audits - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Food Safety Audits - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Food Safety Audits</figcaption>
       </figure>
 
@@ -11163,7 +11163,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "when-to-hire-a-haccp-consultant",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200",
     title: "When Should You Hire a HACCP Consultant?",
     category: "Compliance",
     readTime: "15 min read",
@@ -11173,7 +11173,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1555601568-c9e6f328489b?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -11201,7 +11201,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-plan-example-restaurant",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP Plan Example for Restaurants: Ensuring Food Safety and Compliance",
     category: "Compliance",
     readTime: "15 min read",
@@ -11211,7 +11211,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -11260,7 +11260,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-hazard-analysis-table-template",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP Hazard Analysis Table Template: A Comprehensive Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "20 min read",
@@ -11270,7 +11270,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Hazard Analysis</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Hazard Analysis - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Hazard Analysis - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Hazard Analysis</figcaption>
       </figure>
 
@@ -11305,7 +11305,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-monitoring-record-templates",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP Monitoring Record Templates: A Comprehensive Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "15 min read",
@@ -11370,7 +11370,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-checklist-for-new-food-businesses",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP Checklist for New Food Businesses: Ensuring Safety and Compliance",
     category: "Compliance",
     readTime: "20 min read",
@@ -11380,7 +11380,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1566576912902-74161b04d543?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -11417,7 +11417,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-review-checklist",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200",
     title: "HACCP Review Checklist: A Comprehensive Guide to Ensuring Food Safety",
     category: "Compliance",
     readTime: "15 min read",
@@ -11427,7 +11427,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1632734157077-94d3d81b4f42?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -11464,7 +11464,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "why-most-haccp-plans-are-overcomplicated",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
     title: "Why Most HACCP Plans Are Overcomplicated: A Scientific Review",
     category: "Compliance",
     readTime: "15 min read",
@@ -11503,7 +11503,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "what-regulators-really-expect-from-small-food-businesses",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
     title: "What Regulators Really Expect From Small Food Businesses",
     category: "Compliance",
     readTime: "15 min read",
@@ -11547,7 +11547,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "the-biggest-haccp-mistakes-we-see-in-professional-reviews",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200",
     title: "The Biggest HACCP Mistakes We See in Professional Reviews",
     category: "Compliance",
     readTime: "15 min read",
@@ -11557,7 +11557,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -11582,7 +11582,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "how-to-keep-haccp-practical-not-bureaucratic",
-    image: "https://images.pexels.com/photos/16143154/pexels-photo-16143154.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
     title: "How to Keep HACCP Practical, Not Bureaucratic: A Guide for Food Businesses",
     category: "Operations",
     readTime: "20 min read",
@@ -11592,7 +11592,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200" alt="Professional planning - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Professional planning - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">A practical approach to food safety starts with effective planning.</figcaption>
       </figure>
 
@@ -11622,7 +11622,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "the-future-of-haccp-and-digital-food-safety-systems",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
     title: "The Future of HACCP and Digital Food Safety Systems: Enhancing Compliance and Operations",
     category: "Technology",
     readTime: "20 min read",
@@ -11632,7 +11632,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP and Its Evolution</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Evolution - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP and Its Evolution - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP and Its Evolution</figcaption>
       </figure>
 
@@ -11661,7 +11661,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "what-is-haccp-a-practical-guide-for-food-businesses",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1590779033100-9f601051371c?auto=format&fit=crop&q=80&w=1200",
     title: "Unlocking Food Safety: A Comprehensive Guide to HACCP Implementation",
     category: "Compliance",
     readTime: "45 min read",
@@ -11673,7 +11673,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h2>Introduction to HACCP</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1606859191214-25806e8e2423?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP</figcaption>
       </figure>
 
@@ -12129,7 +12129,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "fda-vs-eu-regulations",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
     title: "Navigating the Complex Landscape of FDA and EU Food Safety Regulations: A Comprehensive Guide",
     category: "Compliance",
     readTime: "44 min read",
@@ -12604,7 +12604,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "positive-release-program-importance",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200",
     title: "Unlocking Food Safety: The Crucial Role of Positive Release Programs in Food Manufacturing",
     category: "Compliance",
     readTime: "45 min read",
@@ -12648,7 +12648,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-coffee-shops-and-cafes",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=1200",
     title: "Mastering HACCP for Coffee Shops: A Comprehensive Guide to Food Safety",
     category: "Compliance",
     readTime: "49 min read",
@@ -12659,7 +12659,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <h2>Introduction to HACCP in Coffee Shops & Cafes</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Coffee Shops & Cafes - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Coffee Shops & Cafes - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP in Coffee Shops & Cafes</figcaption>
       </figure>
 
@@ -13587,7 +13587,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-butcher-shops",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
     title: "Mastering HACCP for Butcher Shops: A Comprehensive Guide to Raw Meat Safety",
     category: "Compliance",
     readTime: "46 min read",
@@ -13598,7 +13598,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <h2>Introduction to HACCP in Butcher Shops</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Butcher Shops - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Butcher Shops - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP in Butcher Shops</figcaption>
       </figure>
 
@@ -14531,7 +14531,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
   },  {
 
     slug: "haccp-for-food-trucks",
-    image: "https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1200",
     title: "Ensuring Food Safety on Wheels: The Essential HACCP Guide for Food Trucks and Mobile Catering",
     category: "Compliance",
     readTime: "43 min read",
@@ -14542,7 +14542,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <h2>Introduction to HACCP in Mobile Food Services</h2>
 
       <figure class="my-12">
-        <img src="https://images.unsplash.com/photo-1584036561566-b937500d753e?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Mobile Food Services - Food Safety" class="w-full rounded-2xl shadow-lg" />
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200" alt="Introduction to HACCP in Mobile Food Services - Food Safety" class="w-full rounded-2xl shadow-lg" />
         <figcaption class="mt-4 text-center text-slate-500 italic text-sm">Visual representation of Introduction to HACCP in Mobile Food Services</figcaption>
       </figure>
 
