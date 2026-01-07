@@ -15,7 +15,6 @@ import {
 import InteractiveDemo from '@/components/landing/InteractiveDemo';
 import HowItWorks from '@/components/landing/HowItWorks';
 import BlogPreview from '@/components/landing/BlogPreview';
-import Newsletter from '@/components/landing/Newsletter';
 import SampleDownload from '@/components/landing/SampleDownload';
 import FounderNote from '@/components/landing/FounderNote';
 import JSONLD from '@/components/layout/JSONLD';
@@ -405,7 +404,6 @@ export default function Home() {
 
         <HowItWorks />
         <BlogPreview />
-        <Newsletter />
 
         {/* Final CTA */}
         <section className="py-24 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center">
