@@ -39,8 +39,7 @@ export const translations = {
         not_for_title: "Not Ideal If:",
         not_for_items: [
           "You require enterprise ISO 22000 certification",
-          "You have a full-time consultant-managed system",
-          "Industrial-scale chemical manufacturing"
+          "You have a full-time consultant-managed system"
         ]
       },
       founder: {
@@ -243,8 +242,7 @@ export const translations = {
         not_for_title: "No es Ideal Si:",
         not_for_items: [
           "Requiere certificación enterprise ISO 22000",
-          "Tiene un sistema gestionado por un consultor a tiempo completo",
-          "Fabricación de productos químicos a escala industrial"
+          "Tiene un sistema gestionado por un consultor a tiempo completo"
         ]
       },
       founder: {
@@ -447,8 +445,7 @@ export const translations = {
         not_for_title: "Pas Idéal Si :",
         not_for_items: [
           "Vous avez besoin d'une certification ISO 22000 d'entreprise",
-          "Vous avez un système géré par un consultant à plein temps",
-          "Fabrication chimique à l'échelle industrielle"
+          "Vous avez un système géré par un consultant à plein temps"
         ]
       },
       founder: {
@@ -651,8 +648,7 @@ export const translations = {
         not_for_title: "Não é Ideal Se:",
         not_for_items: [
           "Necessita de certificação ISO 22000 empresarial",
-          "Tem um sistema gerido por um consultor a tempo inteiro",
-          "Fabrico químico à escala industrial"
+          "Tem um sistema gerido por um consultor a tempo inteiro"
         ]
       },
       founder: {
