@@ -38,7 +38,7 @@ export const translations = {
         ],
         not_for_title: "Not Ideal If:",
         not_for_items: [
-          "You require enterprise ISO 22000 certification",
+          "You require enterprise-grade certification",
           "You have a full-time consultant-managed system"
         ]
       },
@@ -241,7 +241,7 @@ export const translations = {
         ],
         not_for_title: "No es Ideal Si:",
         not_for_items: [
-          "Requiere certificación enterprise ISO 22000",
+          "Requiere certificación de nivel empresarial",
           "Tiene un sistema gestionado por un consultor a tiempo completo"
         ]
       },
@@ -444,7 +444,7 @@ export const translations = {
         ],
         not_for_title: "Pas Idéal Si :",
         not_for_items: [
-          "Vous avez besoin d'une certification ISO 22000 d'entreprise",
+          "Vous avez besoin d'une certification de niveau entreprise",
           "Vous avez un système géré par un consultant à plein temps"
         ]
       },
@@ -647,7 +647,7 @@ export const translations = {
         ],
         not_for_title: "Não é Ideal Se:",
         not_for_items: [
-          "Necessita de certificação ISO 22000 empresarial",
+          "Necessita de certificação de nível empresarial",
           "Tem um sistema gerido por um consultor a tempo inteiro"
         ]
       },
