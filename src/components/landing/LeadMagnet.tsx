@@ -23,8 +23,15 @@ export default function LeadMagnet() {
 
       if (error) throw error;
 
-      // 2. Deliver Asset (In a real app, this would trigger an email automation or direct download)
-      // For now, we simulate success and could redirect to a PDF URL if we had one hosted.
+      // 2. Deliver Asset
+      const emailRes = await fetch('/api/send-lead-magnet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      if (!emailRes.ok) console.error("Failed to send email");
+
       setSuccess(true);
       setEmail('');
       
