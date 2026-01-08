@@ -17,6 +17,7 @@ import HowItWorks from '@/components/landing/HowItWorks';
 import BlogPreview from '@/components/landing/BlogPreview';
 import SampleDownload from '@/components/landing/SampleDownload';
 import FounderNote from '@/components/landing/FounderNote';
+import TrustSection from '@/components/landing/TrustSection';
 import JSONLD from '@/components/layout/JSONLD';
 import { useLanguage } from '@/lib/i18n';
 
@@ -114,6 +115,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <TrustSection />
 
         {/* Features Section */}
         <section id="features" className="py-24 bg-white text-slate-900">
