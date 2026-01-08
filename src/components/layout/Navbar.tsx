@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Menu, X, Heart, ChevronDown, FileText, HelpCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import LanguageSelector from './LanguageSelector';
+import UserMenu from './UserMenu';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,18 +77,7 @@ export default function Navbar() {
               {t('nav.contact')}
             </Link>
 
-            <Link 
-              href="/login"
-              className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors"
-            >
-              {t('nav.login')}
-            </Link>
-            <Link
-              href="/signup"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 hover:-translate-y-0.5"
-            >
-              {t('nav.getStarted')}
-            </Link>
+            <UserMenu />
             <LanguageSelector />
           </div>
 
@@ -137,20 +127,9 @@ export default function Navbar() {
             </Link>
             
             <hr className="border-slate-100" />
-            <Link
-              href="/login"
-              onClick={() => setIsOpen(false)}
-              className="text-base font-bold text-slate-600 py-2"
-            >
-              {t('nav.login')}
-            </Link>
-            <Link
-              href="/signup"
-              onClick={() => setIsOpen(false)}
-              className="bg-blue-600 text-white px-5 py-3 rounded-xl font-bold text-center shadow-lg shadow-blue-500/20"
-            >
-              {t('nav.getStarted')}
-            </Link>
+            <div onClick={() => setIsOpen(false)}>
+                <UserMenu mobile />
+            </div>
           </div>
         </div>
       )}
