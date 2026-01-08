@@ -455,17 +455,37 @@ export default function HACCPBuilder() {
         return;
     }
 
-    const res = await fetch('/api/create-checkout', { 
-        method: 'POST', 
-        headers: {
-            'Content-Type':'application/json',
-            'Authorization': `Bearer ${authSession.access_token}`
-        }, 
-        body: JSON.stringify({ tier, planId, businessName: formData.businessLegalName }) 
-    });
-    const session = await res.json();
-    if (session.url) window.open(session.url, '_blank');
-    setIsPaying(false);
+    // Open tab immediately to avoid popup blockers and show feedback
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+        newWindow.document.write('<div style="font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;">Loading secure checkout...</div>');
+    }
+
+    try {
+        const res = await fetch('/api/create-checkout', { 
+            method: 'POST', 
+            headers: {
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${authSession.access_token}`
+            }, 
+            body: JSON.stringify({ tier, planId, businessName: formData.businessLegalName }) 
+        });
+        
+        const session = await res.json();
+        
+        if (session.url && newWindow) {
+            newWindow.location.href = session.url;
+        } else {
+            newWindow?.close();
+            if (session.error) alert(session.error);
+        }
+    } catch (err) {
+        newWindow?.close();
+        console.error(err);
+        alert("Checkout failed to initialize.");
+    } finally {
+        setIsPaying(false);
+    }
   };
 
   const currentQ = questions[currentQuestionIdx];
