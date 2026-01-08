@@ -18,6 +18,7 @@ import BlogPreview from '@/components/landing/BlogPreview';
 import SampleDownload from '@/components/landing/SampleDownload';
 import FounderNote from '@/components/landing/FounderNote';
 import TrustSection from '@/components/landing/TrustSection';
+import LeadMagnet from '@/components/landing/LeadMagnet';
 import JSONLD from '@/components/layout/JSONLD';
 import { useLanguage } from '@/lib/i18n';
 
@@ -406,6 +407,7 @@ export default function Home() {
         </section>
 
         <HowItWorks />
+        <LeadMagnet />
         <BlogPreview />
 
         {/* Final CTA */}
