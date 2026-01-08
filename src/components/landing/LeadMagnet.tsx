@@ -17,8 +17,8 @@ export default function LeadMagnet() {
       // 1. Capture Lead
       const { error } = await supabase.from('leads').insert({
         email: email,
-        business_name: 'Lead Magnet Download',
-        plan_id: 'checklist-2026' // Special ID for this resource
+        business_name: 'Lead Magnet: 2026 Checklist', // Tag the source here
+        plan_id: null // Explicitly null as this isn't linked to a generated plan UUID
       });
 
       if (error) throw error;
