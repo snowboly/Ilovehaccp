@@ -104,7 +104,7 @@ export default function PrivacyPage() {
                     <li><strong>Erase</strong> ("Right to be Forgotten") all your data.</li>
                     <li><strong>Export</strong> your data in a portable format.</li>
                   </ul>
-                  To exercise these rights, simply email privacy@ilovehaccp.com.
+                  To exercise these rights, simply email support@ilovehaccp.com.
                 </p>
               }
               summary="You own your data. You can see it, fix it, or delete it whenever you want."
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
               title="Contact"
               content={
                 <p>
-                  Data Protection Officer (DPO): <a href="mailto:privacy@ilovehaccp.com" className="text-blue-600 hover:underline">privacy@ilovehaccp.com</a>
+                  Data Protection Officer (DPO): <a href="mailto:support@ilovehaccp.com" className="text-blue-600 hover:underline">support@ilovehaccp.com</a>
                 </p>
               }
             />

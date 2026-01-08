@@ -78,7 +78,7 @@ export default function RefundPolicyPage() {
               title="Disputes & Chargebacks"
               content={
                 <p>
-                  We encourage you to contact us at <a href="mailto:billing@ilovehaccp.com">billing@ilovehaccp.com</a> before initiating a dispute with your bank. We are reasonable people. However, if you file a fraudulent chargeback (claiming "unauthorized" for a valid purchase), we reserve the right to ban your account and dispute the claim with evidence of your IP and download logs.
+                  We encourage you to contact us at <a href="mailto:support@ilovehaccp.com">support@ilovehaccp.com</a> before initiating a dispute with your bank. We are reasonable people. However, if you file a fraudulent chargeback (claiming "unauthorized" for a valid purchase), we reserve the right to ban your account and dispute the claim with evidence of your IP and download logs.
                 </p>
               }
               summary="Talk to us first. We want to help."
@@ -94,7 +94,7 @@ export default function RefundPolicyPage() {
                 <p className="text-slate-500 text-sm mb-4">
                     Have a billing issue? We usually reply within 12 hours.
                 </p>
-                <a href="mailto:billing@ilovehaccp.com" className="block w-full text-center bg-pink-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-pink-700 transition-colors shadow-lg shadow-pink-500/20">
+                <a href="mailto:support@ilovehaccp.com" className="block w-full text-center bg-pink-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-pink-700 transition-colors shadow-lg shadow-pink-500/20">
                   Email Billing
                 </a>
               </div>
