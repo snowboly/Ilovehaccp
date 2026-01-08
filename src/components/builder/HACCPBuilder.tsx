@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronRight, 
@@ -140,6 +141,7 @@ const AI_LOG_MESSAGES = [
 export default function HACCPBuilder() {
   const { t, language } = useLanguage();
   const dict = getDictionary(language).pdf;
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>('intro');
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [generatedAnalysis, setGeneratedAnalysis] = useState<HazardAnalysisItem[]>([]);
@@ -219,10 +221,39 @@ export default function HACCPBuilder() {
     };
     checkUser();
 
+    // Check URL for existing plan
+    const loadId = searchParams.get('id');
+    if (loadId) {
+        setStep('generating');
+        setLoadingMessage('Retrieving secured plan...');
+        fetch(`/api/plans/${loadId}`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) throw new Error(data.error);
+                if(data.plan) {
+                    setFullPlan(data.plan.full_plan);
+                    setGeneratedAnalysis(data.plan.hazard_analysis || []);
+                    setFormData(prev => ({
+                        ...prev,
+                        businessLegalName: data.plan.business_name || '',
+                        businessType: data.plan.business_type || 'Restaurant'
+                    }));
+                    setPlanId(data.plan.id);
+                    setStep('result');
+                }
+            })
+            .catch(err => {
+                console.error("Failed to load plan:", err);
+                setStep('intro'); // Fallback to start
+                alert("Could not load the requested plan. It may have been deleted.");
+            });
+        return; // Skip checking local storage if loading from URL
+    }
+
     // Check for saved progress
     const saved = localStorage.getItem('haccp_builder_progress');
     if (saved) setHasSavedProgress(true);
-  }, []);
+  }, [searchParams]);
 
   // Auto-save progress
   useEffect(() => {

@@ -1,22 +1,34 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
-import { Loader2, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Loader2, ShieldCheck, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 interface AuthFormProps {
   type: 'login' | 'signup';
 }
 
-export default function AuthForm({ type }: AuthFormProps) {
+export default function AuthForm({ type: initialType }: AuthFormProps) {
+  const [view, setView] = useState<'login' | 'signup' | 'forgot_password'>(initialType);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
+
+  // Auto-redirect if email confirmation link logs the user in automatically
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        router.push('/dashboard');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [router]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,20 +36,31 @@ export default function AuthForm({ type }: AuthFormProps) {
     setError(null);
 
     try {
-      if (type === 'signup') {
+      if (view === 'signup') {
+        const origin = window.location.origin;
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: `${origin}/login`,
+          },
         });
         if (error) throw error;
-        setSuccess(true);
-      } else {
+        setSuccessMessage(`We've sent a confirmation link to ${email}. Please check your inbox.`);
+      } else if (view === 'login') {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
         router.push('/dashboard');
+      } else if (view === 'forgot_password') {
+        const origin = window.location.origin;
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${origin}/update-password`,
+        });
+        if (error) throw error;
+        setSuccessMessage(`We've sent a password reset link to ${email}.`);
       }
     } catch (err: any) {
       setError(err.message);
@@ -46,7 +69,7 @@ export default function AuthForm({ type }: AuthFormProps) {
     }
   };
 
-  if (success) {
+  if (successMessage) {
     return (
       <div className="w-full max-w-md mx-auto p-8 bg-white rounded-xl shadow-sm border text-center">
         <div className="flex justify-center mb-6">
@@ -56,12 +79,11 @@ export default function AuthForm({ type }: AuthFormProps) {
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Check your inbox</h2>
         <p className="text-gray-600 mb-8 leading-relaxed">
-          We&apos;ve sent a confirmation link to <span className="font-bold text-gray-900">{email}</span>. 
-          Please click the link to activate your account.
+          {successMessage}
         </p>
-        <Link href="/login" className="text-blue-600 font-bold hover:underline">
+        <button onClick={() => { setView('login'); setSuccessMessage(null); }} className="text-blue-600 font-bold hover:underline">
           Return to Login
-        </Link>
+        </button>
       </div>
     );
   }
@@ -73,12 +95,14 @@ export default function AuthForm({ type }: AuthFormProps) {
           <ShieldCheck className="h-10 w-10 text-blue-600" />
         </Link>
         <h1 className="text-2xl font-bold text-gray-900">
-          {type === 'login' ? 'Welcome back' : 'Create your account'}
+          {view === 'login' ? 'Welcome back' : view === 'signup' ? 'Create your account' : 'Reset Password'}
         </h1>
         <p className="text-gray-500 text-sm mt-2">
-          {type === 'login' 
+          {view === 'login' 
             ? 'Enter your credentials to access your plans' 
-            : 'Start building your food safety compliance today'}
+            : view === 'signup' 
+            ? 'Start building your food safety compliance today'
+            : 'Enter your email to receive a reset link'}
         </p>
       </div>
 
@@ -102,43 +126,56 @@ export default function AuthForm({ type }: AuthFormProps) {
           />
         </div>
         
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            required
-            minLength={6}
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+        {view !== 'forgot_password' && (
+            <div className="space-y-2">
+            <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-gray-700">Password</label>
+                {view === 'login' && (
+                    <button type="button" onClick={() => setView('forgot_password')} className="text-xs text-blue-600 hover:underline font-bold">
+                        Forgot password?
+                    </button>
+                )}
+            </div>
+            <input
+                type="password"
+                required
+                minLength={6}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+            </div>
+        )}
 
         <button
           type="submit"
           disabled={loading}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors flex items-center justify-center"
         >
-          {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (type === 'login' ? 'Sign In' : 'Sign Up')}
+          {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (view === 'login' ? 'Sign In' : view === 'signup' ? 'Sign Up' : 'Send Reset Link')}
         </button>
       </form>
 
       <div className="mt-6 text-center text-sm text-gray-500">
-        {type === 'login' ? (
+        {view === 'login' ? (
           <>
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-blue-600 hover:underline font-medium">
+            <button onClick={() => setView('signup')} className="text-blue-600 hover:underline font-medium">
               Sign up for free
-            </Link>
+            </button>
           </>
-        ) : (
+        ) : view === 'signup' ? (
           <>
             Already have an account?{' '}
-            <Link href="/login" className="text-blue-600 hover:underline font-medium">
+            <button onClick={() => setView('login')} className="text-blue-600 hover:underline font-medium">
               Log in
-            </Link>
+            </button>
           </>
+        ) : (
+            <button onClick={() => setView('login')} className="text-blue-600 hover:underline font-medium flex items-center justify-center gap-2 mx-auto">
+              <ArrowLeft className="w-3 h-3" /> Back to Login
+            </button>
         )}
       </div>
     </div>

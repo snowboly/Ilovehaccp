@@ -44,6 +44,19 @@
 - **Editorial Redesign:** Transformed Article Detail pages into a clean, "Wikipedia-style" layout.
 - **Wizard Enhancements:** Added "Infrastructure Maintenance" and "Preventative Maintenance" steps.
 
+### v3.4 Authentication & Retention Polish (Jan 7, 2026)
+- **Email & Link Integrity:**
+    - **Plan Persistence:** Implemented `/api/plans/[id]` server-side fetch to allow anonymous users to view their generated plans via email links, bypassing RLS safely.
+    - **URL Loading:** Updated `HACCPBuilder.tsx` to automatically detect `?id=` in the URL and load the results dashboard directly.
+    - **Professional Templates:** Created and implemented high-converting HTML templates for Signup, Password Reset, and Plan Delivery emails. Backups stored in `src/db/email_templates/`.
+- **Identity & Security:**
+    - **Forgot Password Flow:** Added a complete "Forgot Password" UI in `AuthForm.tsx` and a dedicated `src/app/update-password/page.tsx` reset handler.
+    - **Auto-Login:** Implemented `onAuthStateChange` listener in the login form to automatically redirect users to the dashboard as soon as they click their email confirmation link.
+- **Cleanup & DevOps:**
+    - Removed all debug buttons and temporary testing files.
+    - Verified full production email pipeline via `noreply@ilovehaccp.com`.
+    - Synchronized all latest developments to GitHub.
+
 ## Current Pricing Model
 - **Free Tier:** AI-Generated HACCP Plan + Instant PDF Export + PRPs.
 - **Starter Review (€79 + VAT):** AI Plan + Expert 1-on-1 Human Review + Compliance Stamp + **Editable Word Doc**.

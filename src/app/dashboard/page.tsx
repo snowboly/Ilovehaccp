@@ -22,7 +22,8 @@ import {
   LayoutGrid,
   List as ListIcon,
   Settings,
-  ArrowRight
+  ArrowRight,
+  Link2
 } from 'lucide-react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
@@ -50,6 +51,8 @@ function DashboardContent() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [importId, setImportId] = useState('');
+  const [importing, setImporting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -133,6 +136,43 @@ function DashboardContent() {
           console.error(e);
           alert('Failed to download Word document.');
       }
+  };
+
+  const handleImport = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!importId) return;
+    
+    // Extract ID if full URL is pasted
+    let cleanId = importId.trim();
+    if (cleanId.includes('id=')) {
+        cleanId = cleanId.split('id=')[1].split('&')[0];
+    }
+    
+    setImporting(true);
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+
+        const res = await fetch('/api/claim-plan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({ planId: cleanId })
+        });
+        
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to import');
+        
+        alert('Plan imported successfully!');
+        setImportId('');
+        fetchPlans();
+    } catch (err: any) {
+        alert(err.message);
+    } finally {
+        setImporting(false);
+    }
   };
 
   if (loading) {
@@ -320,6 +360,34 @@ function DashboardContent() {
             ))}
           </div>
         )}
+        <div className="mt-12 border-t pt-8">
+            <div className="max-w-xl">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Missing a plan?</h3>
+                <p className="text-gray-500 text-sm mb-4">
+                    If you generated a plan before signing up, enter the Plan ID (or the full link from your email) below to add it to your dashboard.
+                </p>
+                <form onSubmit={handleImport} className="flex gap-3">
+                    <div className="relative flex-1">
+                        <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input 
+                            type="text" 
+                            placeholder="Paste Plan ID or Link..." 
+                            value={importId}
+                            onChange={(e) => setImportId(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            disabled={importing}
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        disabled={importing || !importId}
+                        className="bg-gray-900 text-white px-6 py-2 rounded-lg font-medium hover:bg-black transition-colors disabled:opacity-50"
+                    >
+                        {importing ? 'Importing...' : 'Import Plan'}
+                    </button>
+                </form>
+            </div>
+        </div>
       </main>
     </div>
   );

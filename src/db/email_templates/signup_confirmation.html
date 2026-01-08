@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm your iLoveHACCP account</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, Helvetica, sans-serif !important;}
+    </style>
+    <![endif]-->
+    <style>
+        /* Base Resets */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f1f5f9; /* Slate 100 */
+            margin: 0; 
+            padding: 0; 
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        /* Container */
+        .wrapper {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #f1f5f9;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0; /* Slate 200 */
+        }
+
+        /* Header */
+        .header {
+            padding: 40px 0 24px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f8fafc;
+        }
+        .logo-text {
+            font-size: 26px;
+            font-weight: 900;
+            color: #0f172a; /* Slate 900 */
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .heart {
+            color: #ef4444; /* Red 500 */
+        }
+
+        /* Content */
+        .content {
+            padding: 32px 40px 48px 40px;
+            text-align: left;
+        }
+        .h1 {
+            color: #1e293b; /* Slate 800 */
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 0 16px 0;
+            line-height: 1.3;
+        }
+        .text {
+            color: #475569; /* Slate 600 */
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+        }
+        .highlight {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* Button */
+        .button-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2563eb; /* Blue 600 */
+            color: #ffffff !important;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+        .button:hover {
+            background-color: #1d4ed8; /* Blue 700 */
+        }
+
+        /* Feature List (Optional) */
+        .features {
+            background-color: #f8fafc; /* Slate 50 */
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .feature-item {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .checkmark {
+            color: #2563eb;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #f8fafc;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-text {
+            color: #94a3b8; /* Slate 400 */
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .footer-link {
+            color: #64748b;
+            text-decoration: underline;
+        }
+        
+        /* Mobile */
+        @media only screen and (max-width: 600px) {
+            .container { width: 100% !important; border-radius: 0 !important; border: none; }
+            .content { padding: 24px !important; }
+            .wrapper { padding: 0 !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo-text">
+                    i<span class="heart">❤️</span>HACCP
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <h1 class="h1">Verify your email address</h1>
+                
+                <p class="text">
+                    Hi there,
+                </p>
+                <p class="text">
+                    Welcome to <strong>iLoveHACCP.com</strong>. We're excited to help you generate your audit-ready food safety plan.
+                </p>
+                
+                <div class="features">
+                    <span class="feature-item"><span class="checkmark">✓</span> Free HACCP Plan Generator</span>
+                    <span class="feature-item"><span class="checkmark">✓</span> Instant PDF Export</span>
+                    <span class="feature-item" style="margin-bottom: 0;"><span class="checkmark">✓</span> Secure Cloud Storage</span>
+                </div>
+
+                <p class="text">
+                    Please confirm your email address to activate your account and access your dashboard.
+                </p>
+
+                <!-- Button -->
+                <div class="button-container">
+                    <a href="{{ .ConfirmationURL }}" class="button" target="_blank">Confirm My Account</a>
+                </div>
+
+                <p class="text" style="font-size: 14px; color: #94a3b8; margin-top: 32px; text-align: center;">
+                    If you didn't create an account, you can safely ignore this email.
+                </p>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p class="footer-text">
+                    © 2026 iLoveHACCP.com<br>
+                    Making food safety compliance simple.<br><br>
+                    <a href="https://ilovehaccp.com/terms" class="footer-link">Terms</a> • 
+                    <a href="https://ilovehaccp.com/privacy" class="footer-link">Privacy</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
