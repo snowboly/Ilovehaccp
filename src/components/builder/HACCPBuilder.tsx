@@ -68,7 +68,8 @@ import {
   Mail,
   Send,
   Image as ImageIcon,
-  LayoutTemplate
+  LayoutTemplate,
+  Edit
 } from 'lucide-react';
 
 import { supabase } from '@/lib/supabase';
@@ -233,11 +234,19 @@ export default function HACCPBuilder() {
                 if(data.plan) {
                     setFullPlan(data.plan.full_plan);
                     setGeneratedAnalysis(data.plan.hazard_analysis || []);
-                    setFormData(prev => ({
-                        ...prev,
-                        businessLegalName: data.plan.business_name || '',
-                        businessType: data.plan.business_type || 'Restaurant'
-                    }));
+                    
+                    // Restore original inputs if available
+                    if (data.plan.full_plan?._original_inputs) {
+                        setFormData(data.plan.full_plan._original_inputs);
+                    } else {
+                        // Fallback for old plans
+                        setFormData(prev => ({
+                            ...prev,
+                            businessLegalName: data.plan.business_name || '',
+                            businessType: data.plan.business_type || 'Restaurant'
+                        }));
+                    }
+                    
                     setPlanId(data.plan.id);
                     setStep('result');
                 }
@@ -397,14 +406,36 @@ export default function HACCPBuilder() {
       if (!data.analysis) throw new Error("Invalid response");
       setGeneratedAnalysis(data.analysis);
       setFullPlan(data.full_plan);
-      const { data: saved } = await supabase.from('plans').insert({ 
-          business_name: formData.businessLegalName, 
-          business_type: formData.businessType,
-          hazard_analysis: data.analysis, 
-          full_plan: data.full_plan, 
-          user_id: userId 
-      }).select().single();
-      if (saved) setPlanId(saved.id);
+      
+      let savedId = planId;
+      
+      if (planId) {
+          // Update existing plan
+          const { error } = await supabase.from('plans').update({ 
+              business_name: formData.businessLegalName, 
+              business_type: formData.businessType,
+              hazard_analysis: data.analysis, 
+              full_plan: data.full_plan,
+              // user_id is NOT updated to prevent ownership theft or loss
+          }).eq('id', planId);
+          
+          if (error) throw error;
+      } else {
+          // Insert new plan
+          const { data: saved, error } = await supabase.from('plans').insert({ 
+              business_name: formData.businessLegalName, 
+              business_type: formData.businessType,
+              hazard_analysis: data.analysis, 
+              full_plan: data.full_plan, 
+              user_id: userId 
+          }).select().single();
+          
+          if (error) throw error;
+          if (saved) {
+              savedId = saved.id;
+              setPlanId(saved.id);
+          }
+      }
       
       // Clear progress after success
       localStorage.removeItem('haccp_builder_progress');
@@ -661,7 +692,18 @@ export default function HACCPBuilder() {
                         <span className="bg-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20">Audit Ready System</span>
                         <span className="text-slate-500 font-bold font-mono">{new Date().toLocaleDateString()}</span>
                     </div>
-                    <h1 className="text-5xl font-black tracking-tight">{formData.businessLegalName}</h1>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <h1 className="text-5xl font-black tracking-tight">{formData.businessLegalName}</h1>
+                        <button 
+                            onClick={() => {
+                                setStep('questions');
+                                setCurrentQuestionIdx(0);
+                            }}
+                            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg flex items-center gap-2 self-start md:self-auto"
+                        >
+                            <Edit className="w-5 h-5" /> Edit Inputs
+                        </button>
+                    </div>
                     <p className="text-slate-400 text-xl font-medium max-w-md leading-relaxed">HACCP Plan generated successfully based on {formData.businessType} sector standards.</p>
                   </div>
                   <div className="flex gap-6">

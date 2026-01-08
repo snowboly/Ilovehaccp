@@ -126,6 +126,10 @@ export async function POST(req: Request) {
     if (!content) throw new Error('No content');
 
     const parsedContent = JSON.parse(content);
+    
+    // Inject original inputs for future editing
+    parsedContent._original_inputs = body;
+
     return NextResponse.json({
         analysis: parsedContent.hazard_analysis,
         full_plan: parsedContent
