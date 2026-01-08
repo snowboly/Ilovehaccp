@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     // 1. Email to User
     await resend.emails.send({
-      from: 'iLoveHACCP <onboarding@resend.dev>', // Fallback for unverified domains
+      from: 'iLoveHACCP <noreply@ilovehaccp.com>',
       to: [email],
       replyTo: 'support@ilovehaccp.com',
       subject: `Payment Confirmed: Professional Review for ${businessName}`,
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
     // 3. Email to Admin
     console.log("Sending Admin Email...");
     const adminRes = await resend.emails.send({
-      from: 'System <onboarding@resend.dev>',
+      from: 'iLoveHACCP Alerts <noreply@ilovehaccp.com>',
       to: ['support@ilovehaccp.com'], 
       subject: `[ACTION REQUIRED] New Paid Review: ${businessName}`,
       html: `

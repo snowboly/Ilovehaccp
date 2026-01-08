@@ -129,14 +129,14 @@ const PREDEFINED_EQUIPMENT: any = {
 };
 
 const AI_LOG_MESSAGES = [
-  "Initializing Hazard Analysis System...",
-  "Cross-referencing Global Food Safety Databases...",
-  "Analyzing Biological Pathogens (Salmonella, Listeria)...",
-  "Evaluating Chemical & Allergen Risks...",
-  "Determining Critical Control Points (CCPs)...",
-  "Calculating Scientific Critical Limits...",
-  "Drafting Standard Operating Procedures...",
-  "Compiling Professional PDF Document..."
+  "Firing up the Hazard Analysis Engine...",
+  "Consulting the ghost of Louis Pasteur...",
+  "Scanning global databases for sneaky bacteria...",
+  "Calculating critical limits (and double-checking the math)...",
+  "Ensuring your plan is tougher than a health inspector...",
+  "Organizing your fridge logic...",
+  "Drafting the ultimate defense against foodborne chaos...",
+  "Polishing the PDF to perfection..."
 ];
 
 export default function HACCPBuilder() {
@@ -203,6 +203,18 @@ export default function HACCPBuilder() {
     logo: null as string | null,
     template: 'Minimal',
   });
+
+  useEffect(() => {
+    if (step === 'generating') {
+        let i = 0;
+        setLoadingMessage(AI_LOG_MESSAGES[0]);
+        const interval = setInterval(() => {
+            i = (i + 1) % AI_LOG_MESSAGES.length;
+            setLoadingMessage(AI_LOG_MESSAGES[i]);
+        }, 2500);
+        return () => clearInterval(interval);
+    }
+  }, [step]);
 
   // Helper to determine temperature unit
   const tempUnit = formData.country.toLowerCase().includes('usa') || formData.country.toLowerCase().includes('united states') ? '°F' : '°C';
