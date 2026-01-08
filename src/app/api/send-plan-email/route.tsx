@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { renderToBuffer } from '@react-pdf/renderer';
+import HACCPDocument from '@/components/pdf/HACCPDocument';
+import { supabaseService } from '@/lib/supabase';
+import { getDictionary } from '@/lib/i18n';
 
 // Initialize with a dummy key if not present to prevent build crashes
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
@@ -13,10 +17,53 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Email service not configured" }, { status: 500 });
     }
 
+    // 1. Fetch the full plan data
+    const { data: plan, error: dbError } = await supabaseService
+        .from('plans')
+        .select('*')
+        .eq('id', planId)
+        .single();
+
+    if (dbError || !plan) {
+        throw new Error("Plan not found");
+    }
+
+    // 2. Prepare data for PDF
+    const dict = getDictionary('en').pdf; // Default to English
+    const fullPlan = plan.full_plan || {};
+    const originalInputs = fullPlan._original_inputs || {};
+    
+    const pdfData = {
+        businessName: plan.business_name || businessName,
+        productName: plan.product_name || "HACCP Plan",
+        productDescription: plan.product_description || `HACCP Plan for ${plan.business_type}`,
+        intendedUse: plan.intended_use || "General Consumption",
+        storageType: plan.storage_type || "Standard",
+        analysis: plan.hazard_analysis || [],
+        fullPlan: fullPlan
+    };
+
+    // 3. Generate PDF Buffer
+    const pdfBuffer = await renderToBuffer(
+        <HACCPDocument 
+            data={pdfData}
+            dict={dict}
+            logo={originalInputs.logo || null}
+            template={originalInputs.template || 'Minimal'}
+        />
+    );
+
+    // 4. Send Email with Attachment
     const { data, error } = await resend.emails.send({
       from: 'iLoveHACCP <noreply@ilovehaccp.com>',
       to: [email],
       subject: `Your HACCP Plan for ${businessName}`,
+      attachments: [
+        {
+            filename: `${businessName.replace(/\s+/g, '_')}_HACCP_Plan.pdf`,
+            content: pdfBuffer
+        }
+      ],
       html: `
 <!DOCTYPE html>
 <html>
@@ -47,14 +94,14 @@ export async function POST(req: Request) {
             <div class="content">
                 <h1 class="h1">Your Plan is Ready!</h1>
                 <p class="text">Great news! We've successfully generated the HACCP plan for <strong>${businessName}</strong>.</p>
-                <p class="text">Your custom plan includes:</p>
+                <p class="text">Your custom plan is attached to this email as a PDF.</p>
                 <ul style="color: #475569; margin-bottom: 24px;">
                     <li>Hazard Analysis & Critical Control Points</li>
                     <li>Monitoring Procedures</li>
                     <li>Corrective Actions</li>
                 </ul>
                 <div style="text-align: center; margin: 32px 0;">
-                    <a href="https://www.ilovehaccp.com/builder?id=${planId}" class="button" target="_blank">View & Download Plan</a>
+                    <a href="https://www.ilovehaccp.com/builder?id=${planId}" class="button" target="_blank">View & Edit Plan Online</a>
                 </div>
                 <p class="text" style="font-size: 14px; color: #94a3b8; text-align: center;">
                     Tip: Bookmark this link to access your plan anytime.
