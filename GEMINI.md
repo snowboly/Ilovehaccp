@@ -57,13 +57,27 @@
     - Verified full production email pipeline via `noreply@ilovehaccp.com`.
     - Synchronized all latest developments to GitHub.
 
+### v3.5 Marketing & Reliability Update (Jan 8, 2026)
+- **Marketing Launch:**
+    - **Trust Section:** Added homepage section with stats (1,240+ plans) and sector coverage to build authority.
+    - **Lead Magnet:** Implemented "2026 Food Safety Inspection Checklist" download section. Captures emails to `leads` table and auto-sends PDF via Resend.
+    - **User Menu:** Added authenticated User Menu with avatar/dropdown to Navbar.
+- **Critical Fixes:**
+    - **Stripe Checkout:** Fixed "loading forever" issue by opening new tab immediately. Fixed API version mismatch (`2024-06-20`). Enabled coupons (requires "Customer-Facing" codes in Dashboard).
+    - **Plan Editing:** Enabled editing of existing plans! Builder now loads previous inputs (`_original_inputs`) and performs `UPDATE` instead of `INSERT`.
+    - **PDF Attachments:** Implemented server-side PDF generation (`@react-pdf/renderer`) in API routes. Plans and Checklists are now attached directly to emails.
+    - **DOCX Parity:** Updated Word generator to include all sections found in the PDF (Benchmarking, Toolkit, Process Flow).
+    - **Contact Consolidation:** Routed all billing/privacy/contact inquiries to `support@ilovehaccp.com`.
+
 ## Current Pricing Model
 - **Free Tier:** AI-Generated HACCP Plan + Instant PDF Export + PRPs.
 - **Starter Review (€79 + VAT):** AI Plan + Expert 1-on-1 Human Review + Compliance Stamp + **Editable Word Doc**.
 - **Expert Review (From €99 + VAT):** Professional audit of existing plans with detailed action report.
 - **Expert Pro (Custom):** Multi-site operations, industrial audits, and bespoke consultancy.
 
-## Next Steps
+## Next Steps / Known Issues
+- **CRITICAL (Tomorrow):** Debug email delivery failures. User reports "email still not reaching the inbox" despite Resend API reporting success. 
+    - **Potential Causes:** Spam filters (DKIM/SPF), "via resend.com" header, or rate limiting. 
+    - **Action:** Check Resend logs, verify domain DNS records, and test with different providers (Gmail vs Outlook).
 - Monitor traffic and conversion rates with the new funnel.
-- Consider adding a "Preview Plan" modal before email capture to further increase trust.
-- Verify Resend domain to remove "via resend.com" from emails.
+

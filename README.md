@@ -19,7 +19,10 @@ A high-authority SaaS platform that automates Hazard Analysis and Critical Contr
 4.  **Monetization & Lead Capture:**
     *   **Stripe Integration:** Review-based pricing model (€79 Starter Review / Custom Enterprise).
     *   **Email Lead Capture:** "Email me my plan" functionality on the result page for conversion optimization.
+    *   **Lead Magnet:** "2026 Inspection Checklist" download for top-of-funnel lead capture.
+    *   **Marketing Engine:** Trust indicators, social proof stats, and industry sector coverage.
 5.  **Security & Infrastructure:**
+    *   **Email System:** Resend integration with server-side PDF attachments.
     *   **Database-Backed Rate Limiting:** Prevents AI quota exhaustion (3 gens/hour/IP).
     *   **Secure RLS:** Hardened Supabase policies ensuring data isolation.
     *   **Hardened Legal Framework:** AI-specific disclaimers, zero-training privacy policy, and digital refund terms.
@@ -27,9 +30,10 @@ A high-authority SaaS platform that automates Hazard Analysis and Critical Contr
 ## 🛠 Tech Stack
 - **Frontend:** Next.js 15 (App Router), TypeScript, Tailwind CSS, Framer Motion.
 - **Backend:** Next.js API Routes + Supabase Service Role.
+- **Email:** Resend (Transactional & Marketing).
 - **AI:** Groq SDK (Llama 3.3 70B).
 - **Database:** Supabase (PostgreSQL) with RLS.
-- **PDF:** @react-pdf/renderer.
+- **PDF:** @react-pdf/renderer (Server-side & Client-side).
 - **Payments:** Stripe Checkout + Webhooks.
 
 ## 🏗️ Development & Content
