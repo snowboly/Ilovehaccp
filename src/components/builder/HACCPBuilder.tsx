@@ -464,7 +464,7 @@ export default function HACCPBuilder() {
         body: JSON.stringify({ tier, planId, businessName: formData.businessLegalName }) 
     });
     const session = await res.json();
-    if (session.url) window.location.href = session.url;
+    if (session.url) window.open(session.url, '_blank');
     setIsPaying(false);
   };
 
