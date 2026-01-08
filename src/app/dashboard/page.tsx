@@ -252,6 +252,7 @@ function DashboardContent() {
           </div>
           <Link
             href="/builder"
+            target="_blank"
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
             <Plus className="h-5 w-5" />
@@ -311,6 +312,7 @@ function DashboardContent() {
                 <div className="border-t bg-gray-50 p-4 grid grid-cols-3 gap-2">
                   <Link 
                       href={`/builder?id=${plan.id}`}
+                      target="_blank"
                       className="flex items-center justify-center gap-1 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors"
                   >
                       <Edit className="h-3 w-3" /> Edit
