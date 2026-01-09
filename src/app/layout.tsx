@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: "iLoveHACCP | Free HACCP Plan Generator & Food Safety Tools",
     template: "%s | iLoveHACCP"
   },
-  description: "Create a professional HACCP plan in minutes with our free builder. Trusted by industry and food businesses worldwide. 100% compliant & precision-engineered.",
+  description: "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP.",
   keywords: ["HACCP", "Food Safety", "HACCP Plan Generator", "Food Hygiene", "Restaurant Compliance"],
   authors: [{ name: "iLoveHACCP Team" }],
   openGraph: {
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     url: 'https://www.ilovehaccp.com',
     siteName: 'iLoveHACCP',
     title: 'iLoveHACCP | Precision-Engineered Food Safety Plans',
-    description: "Generate audit-ready HACCP plans in minutes using our free tool",
+    description: "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP.",
     images: [
       {
         url: '/og-image.jpg', // Ensure this exists in public/
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'iLoveHACCP | Food Safety Plans',
-    description: "Generate audit-ready HACCP plans in minutes using our free tool",
+    description: "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP.",
     images: ['/og-image.jpg'],
   },
   icons: {
