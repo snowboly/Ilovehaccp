@@ -4,8 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Providers } from "@/components/providers";
-import SEO from "@/components/layout/SEO";
 import ScrollToTop from "@/components/layout/ScrollToTop";
+import CookieConsent from "@/components/layout/CookieConsent";
 import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -59,6 +59,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${merriweather.variable} font-sans`}>
         <Providers>
           <ScrollToTop />
+          <CookieConsent />
           <Suspense fallback={<div className="h-16 bg-white border-b border-slate-100" />}>
             <Navbar />
           </Suspense>
