@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { translations, Language } from './locales';
+import { translations, Language, getDictionary } from './locales';
 
 interface LanguageContextType {
   language: Language;
@@ -45,10 +45,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       {children}
     </LanguageContext.Provider>
   );
-}
-
-export function getDictionary(lang: Language) {
-  return translations[lang];
 }
 
 export function useLanguage() {

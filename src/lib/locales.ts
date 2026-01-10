@@ -814,3 +814,7 @@ export const translations = {
     }
   }
 };
+
+export function getDictionary(lang: Language) {
+  return translations[lang] || translations.en;
+}

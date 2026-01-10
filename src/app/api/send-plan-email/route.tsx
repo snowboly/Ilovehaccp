@@ -3,7 +3,7 @@ import { Resend } from 'resend';
 import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { supabaseService } from '@/lib/supabase';
-import { getDictionary } from '@/lib/i18n';
+import { getDictionary } from '@/lib/locales';
 
 // Initialize with a dummy key if not present to prevent build crashes
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
@@ -118,11 +118,13 @@ export async function POST(req: Request) {
     });
 
     if (error) {
-      return NextResponse.json({ success: false, error }, { status: 400 });
+      console.error("Resend Error:", error);
+      return NextResponse.json({ success: false, error: error.message || error }, { status: 400 });
     }
 
     return NextResponse.json({ success: true, data });
-  } catch (error) {
-    return NextResponse.json({ success: false, error }, { status: 500 });
+  } catch (error: any) {
+    console.error('Email API Error:', error);
+    return NextResponse.json({ success: false, error: error.message || "Unknown error" }, { status: 500 });
   }
 }
