@@ -85,9 +85,12 @@
 - **Expert Review (From €99 + VAT):** Professional audit of existing plans with detailed action report.
 - **Expert Pro (Custom):** Multi-site operations, industrial audits, and bespoke consultancy.
 
-## Next Steps (Plan for Tomorrow)
-1.  **Email Verification:** rigorous testing of the email delivery system (Resend). Verify that emails (Signup, Plan Ready, Leads) are not landing in Spam. Check SPF/DKIM records if necessary.
-2.  **SSO Payment Flow:** Test the Stripe checkout process specifically for users logged in via Google SSO to ensure account linking works correctly.
-3.  **Content Repair:** Regenerate the corrupted article `'digital-vs-paper-records'`.
-4.  **Analytics Check:** Confirm that the new metadata and SEO changes are being picked up (using Google Search Console if available) and that Vercel Analytics is tracking correctly.
+## Future Roadmap (v2.0)
+- **Automated Product Labels:** Implement a module to generate compliant food product labels based on the ingredients and allergens captured in the HACCP builder. This will include nutritional facts (optional), allergen bolding, and shelf-life guidance.
+
+## Next Steps
+1.  **Marketing Launch:** Execute social media and community outreach plan (Reddit, LinkedIn, Twitter).
+2.  **Conversion Monitoring:** Monitor Supabase `leads` and Stripe dashboards to track user behavior and identify drop-off points.
+3.  **v2.0 Scoping:** Begin technical research for the "Automated Product Labels" module, specifically ingredient database integration.
+4.  **Customer Feedback:** Reach out to the first 5 "Starter Review" customers for feedback on the PDF/Word document quality.
 
