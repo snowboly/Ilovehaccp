@@ -69,15 +69,25 @@
     - **DOCX Parity:** Updated Word generator to include all sections found in the PDF (Benchmarking, Toolkit, Process Flow).
     - **Contact Consolidation:** Routed all billing/privacy/contact inquiries to `support@ilovehaccp.com`.
 
+### v3.6 Branding & Authentication (Jan 9, 2026)
+- **Branding Refresh:**
+    - **New Icon:** Designed and implemented a custom "Shield & Heart" SVG logo to symbolize safety/compliance + the brand name.
+    - **Metadata:** Updated site description in `layout.tsx` to "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP."
+    - **Cleanup:** Removed legacy `favicon.ico` files to force browser adoption of the new SVG icon.
+- **Authentication:**
+    - **SSO:** Implemented Google OAuth via Supabase in `AuthForm.tsx`.
+    - **Configuration:** User updated Google Cloud Console (App Name: "iLoveHACCP", Logo Uploaded, Authorized Domains added).
+    - **UI:** Added a branded "Continue with Google" button.
+
 ## Current Pricing Model
 - **Free Tier:** AI-Generated HACCP Plan + Instant PDF Export + PRPs.
 - **Starter Review (€79 + VAT):** AI Plan + Expert 1-on-1 Human Review + Compliance Stamp + **Editable Word Doc**.
 - **Expert Review (From €99 + VAT):** Professional audit of existing plans with detailed action report.
 - **Expert Pro (Custom):** Multi-site operations, industrial audits, and bespoke consultancy.
 
-## Next Steps / Known Issues
-- **CRITICAL (Tomorrow):** Debug email delivery failures. User reports "email still not reaching the inbox" despite Resend API reporting success. 
-    - **Potential Causes:** Spam filters (DKIM/SPF), "via resend.com" header, or rate limiting. 
-    - **Action:** Check Resend logs, verify domain DNS records, and test with different providers (Gmail vs Outlook).
-- Monitor traffic and conversion rates with the new funnel.
+## Next Steps (Plan for Tomorrow)
+1.  **Email Verification:** rigorous testing of the email delivery system (Resend). Verify that emails (Signup, Plan Ready, Leads) are not landing in Spam. Check SPF/DKIM records if necessary.
+2.  **SSO Payment Flow:** Test the Stripe checkout process specifically for users logged in via Google SSO to ensure account linking works correctly.
+3.  **Content Repair:** Regenerate the corrupted article `'digital-vs-paper-records'`.
+4.  **Analytics Check:** Confirm that the new metadata and SEO changes are being picked up (using Google Search Console if available) and that Vercel Analytics is tracking correctly.
 

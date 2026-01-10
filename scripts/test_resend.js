@@ -10,10 +10,10 @@ async function testEmail() {
 
     try {
         const data = await resend.emails.send({
-            from: 'onboarding@resend.dev', // Use default test domain first
-            to: 'delivered@resend.dev', // Resend "Sink" address
-            subject: 'Test Email',
-            html: '<p>It works!</p>'
+            from: 'noreply@ilovehaccp.com', 
+            to: 'delivered@resend.dev', 
+            subject: 'Test Email from iLoveHACCP',
+            html: '<p>It works! Domain verification passed.</p>'
         });
         console.log("✅ Success:", data);
     } catch (e) {

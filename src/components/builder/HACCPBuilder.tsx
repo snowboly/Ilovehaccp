@@ -409,13 +409,14 @@ export default function HACCPBuilder() {
   const handleGenerate = async () => {
     setStep('generating');
     try {
-      const response = await fetch('/api/generate-plan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, language, processSteps: formData.processSteps.map((n, i) => ({ id: String(i+1), name: n })) })
-      });
+      if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error || `Server error: ${response.status}`);
+      }
+      
       const data = await response.json();
-      if (!data.analysis) throw new Error("Invalid response");
+      if (!data.analysis) throw new Error("Invalid response from AI engine");
+
       setGeneratedAnalysis(data.analysis);
       setFullPlan(data.full_plan);
       
@@ -454,7 +455,11 @@ export default function HACCPBuilder() {
       setHasSavedProgress(false);
 
       setStep('result');
-    } catch (e) { console.error(e); alert("Generation failed. Please check your inputs."); setStep('questions'); }
+    } catch (e: any) { 
+        console.error(e); 
+        alert(e.message || "Generation failed. Please check your inputs."); 
+        setStep('questions'); 
+    }
   };
 
   const handleCheckout = async (tier: string) => {
