@@ -479,6 +479,22 @@ export default function HACCPBuilder() {
     }
 
     try {
+        // Ensure plan is claimed by this user before checkout
+        if (planId && authSession.user?.id) {
+             await fetch('/api/save-plan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    planId: planId,
+                    userId: authSession.user.id, // Explicitly link
+                    businessName: formData.businessLegalName,
+                    businessType: formData.businessType,
+                    analysis: generatedAnalysis,
+                    fullPlan: fullPlan
+                })
+            });
+        }
+
         const res = await fetch('/api/create-checkout', { 
             method: 'POST', 
             headers: {
