@@ -314,7 +314,7 @@ export default function HACCPBuilder() {
     // 2. Inventory
     { id: 'mainIngredients', section: 'Inventory', question: "List your main ingredients", type: 'list', icon: <List />, required: true },
     { id: 'foodCategories', section: 'Scope', question: "Food categories handled", type: 'checkbox', options: ['Raw Red Meat', 'Raw Poultry', 'Raw Fish & Seafood', 'Raw Shellfish', 'Dairy Products', 'Shell Eggs', 'Fresh Produce', 'Ready-to-Eat (RTE)', 'Baked Goods', 'Grains & Cereals', 'Frozen Goods', 'Canned / Dry Goods', 'Beverages'], icon: <UtensilsCrossed />, required: true },
-    { id: 'allergens', section: 'Allergens', question: "Do you handle any of these allergens?", type: 'checkbox', options: ['Gluten', 'Crustaceans', 'Eggs', 'Fish', 'Peanuts', 'Soy', 'Milk', 'Nuts', 'Celery', 'Mustard', 'Sesame'], icon: <AlertOctagon />, required: true },
+    { id: 'allergens', section: 'Allergens', question: "Do you handle any of these allergens?", type: 'checkbox', options: ['None / No Allergens', 'Gluten', 'Crustaceans', 'Eggs', 'Fish', 'Peanuts', 'Soy', 'Milk', 'Nuts', 'Celery', 'Mustard', 'Sesame'], icon: <AlertOctagon />, required: true },
     
     // 3. Risk Level
     { id: 'isVulnerable', section: 'Risk', question: "Is your food intended for vulnerable groups?", description: "e.g., Children, elderly, hospitals.", type: 'radio', options: ['Yes', 'No'], icon: <Baby /> },
@@ -592,8 +592,19 @@ export default function HACCPBuilder() {
                         const isSelected = (formData as any)[currentQ.id].includes(opt);
                         return (
                             <button key={opt} onClick={() => {
-                                const cur = (formData as any)[currentQ.id];
-                                updateFormData(currentQ.id, isSelected ? cur.filter((x:string)=>x!==opt) : [...cur, opt]);
+                                let cur = (formData as any)[currentQ.id];
+                                if (opt === 'None / No Allergens') {
+                                    // If selecting 'None', clear everything else or deselect it
+                                    cur = isSelected ? [] : ['None / No Allergens'];
+                                } else {
+                                    // If selecting something else, remove 'None'
+                                    if (!isSelected) {
+                                        cur = [...cur.filter((x: string) => x !== 'None / No Allergens'), opt];
+                                    } else {
+                                        cur = cur.filter((x: string) => x !== opt);
+                                    }
+                                }
+                                updateFormData(currentQ.id, cur);
                             }} className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold text-lg flex justify-between items-center ${ isSelected ? 'border-blue-600 bg-blue-50/50 text-blue-700 shadow-md' : errors[currentQ.id] ? 'border-red-300 bg-red-50/50 text-red-800' : 'border-slate-100 hover:border-slate-200 text-slate-600' }`}>
                                 {opt}
                                 { isSelected && <CheckCircle2 className="w-6 h-6 text-blue-600" /> }
