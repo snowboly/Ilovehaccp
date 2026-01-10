@@ -426,33 +426,27 @@ export default function HACCPBuilder() {
       setGeneratedAnalysis(data.analysis);
       setFullPlan(data.full_plan);
       
-      let savedId = planId;
-      
-      if (planId) {
-          // Update existing plan
-          const { error } = await supabase.from('plans').update({ 
-              business_name: formData.businessLegalName, 
-              business_type: formData.businessType,
-              hazard_analysis: data.analysis, 
-              full_plan: data.full_plan,
-              // user_id is NOT updated to prevent ownership theft or loss
-          }).eq('id', planId);
-          
-          if (error) throw error;
+      // Save Plan via Server-Side API (Bypasses RLS)
+      const saveRes = await fetch('/api/save-plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              planId: planId,
+              userId: userId,
+              businessName: formData.businessLegalName,
+              businessType: formData.businessType,
+              analysis: data.analysis,
+              fullPlan: data.full_plan
+          })
+      });
+
+      if (!saveRes.ok) {
+          console.error("Background save failed");
+          // We don't block the UI here, but we warn
       } else {
-          // Insert new plan
-          const { data: saved, error } = await supabase.from('plans').insert({ 
-              business_name: formData.businessLegalName, 
-              business_type: formData.businessType,
-              hazard_analysis: data.analysis, 
-              full_plan: data.full_plan, 
-              user_id: userId 
-          }).select().single();
-          
-          if (error) throw error;
-          if (saved) {
-              savedId = saved.id;
-              setPlanId(saved.id);
+          const saveData = await saveRes.json();
+          if (saveData.plan) {
+            setPlanId(saveData.plan.id);
           }
       }
       
