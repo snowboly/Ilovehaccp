@@ -58,7 +58,7 @@ export default function ExpertAdvisors() {
             <span className="text-blue-600">Verified by Experts.</span>
           </h2>
           <p className="text-xl text-slate-500 leading-relaxed">
-            Our models are trained on the direct knowledge and experience of industry veterans, ensuring your plans aren&apos;t just generated—they&apos;re engineered for compliance.
+            Our system is built on the direct knowledge and experience of industry veterans, ensuring your plans aren&apos;t just generated—they&apos;re engineered for compliance.
           </p>
         </div>
 

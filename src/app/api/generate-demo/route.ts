@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Product name is required' }, { status: 400 });
     }
 
-    const systemPrompt = `You are an expert Food Safety AI. 
+    const systemPrompt = `You are an expert Food Safety Specialist. 
     Analyze the given food product and identify ONE primary biological or chemical hazard and ONE scientific control measure (Critical Limit).
     
     Output Format: Strict JSON

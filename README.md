@@ -1,4 +1,4 @@
-# ilovehaccp.com - Professional AI HACCP Solutions
+# ilovehaccp.com - Professional Digital HACCP Solutions
 
 A high-authority SaaS platform that automates Hazard Analysis and Critical Control Point (HACCP) planning for food businesses worldwide.
 

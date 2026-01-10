@@ -4,13 +4,13 @@ import JSONLD from '@/components/layout/JSONLD';
 
 export const metadata: Metadata = {
   title: "iLoveHACCP | Free HACCP Plan Generator & Food Safety Tools",
-  description: "Create a professional HACCP plan in minutes. Our AI-powered tool helps food businesses manage compliance, conduct hazard analysis, and prepare for audits for free.",
+  description: "Create a professional HACCP plan in minutes. Our advanced system helps food businesses manage compliance, conduct hazard analysis, and prepare for audits for free.",
   alternates: {
     canonical: 'https://www.ilovehaccp.com',
   },
   openGraph: {
     title: 'iLoveHACCP | Free HACCP Plan Generator',
-    description: 'Create a professional HACCP plan in minutes. AI-powered food safety for restaurants, manufacturers, and catering.',
+    description: 'Create a professional HACCP plan in minutes. Expert-validated food safety for restaurants, manufacturers, and catering.',
     url: 'https://www.ilovehaccp.com',
     images: [
       {

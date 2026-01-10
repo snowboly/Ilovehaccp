@@ -129,13 +129,12 @@ const PREDEFINED_EQUIPMENT: any = {
   'default': ['Oven', 'Fridge', 'Freezer', 'Prep Tables', 'Sink']
 };
 
-const AI_LOG_MESSAGES = [
-  "Firing up the Hazard Analysis Engine...",
-  "Consulting the ghost of Louis Pasteur...",
-  "Scanning global databases for sneaky bacteria...",
-  "Calculating critical limits (and double-checking the math)...",
-  "Ensuring your plan is tougher than a health inspector...",
-  "Organizing your fridge logic...",
+const GENERATION_LOG_MESSAGES = [
+  "Consulting the compliance database...",
+  "Analyzing operational hazards...",
+  "Calculating critical limits...",
+  "Ensuring your plan is audit-ready...",
+  "Organizing process flow logic...",
   "Drafting the ultimate defense against foodborne chaos...",
   "Polishing the PDF to perfection..."
 ];
@@ -208,10 +207,10 @@ export default function HACCPBuilder() {
   useEffect(() => {
     if (step === 'generating') {
         let i = 0;
-        setLoadingMessage(AI_LOG_MESSAGES[0]);
+        setLoadingMessage(GENERATION_LOG_MESSAGES[0]);
         const interval = setInterval(() => {
-            i = (i + 1) % AI_LOG_MESSAGES.length;
-            setLoadingMessage(AI_LOG_MESSAGES[i]);
+            i = (i + 1) % GENERATION_LOG_MESSAGES.length;
+            setLoadingMessage(GENERATION_LOG_MESSAGES[i]);
         }, 2500);
         return () => clearInterval(interval);
     }
@@ -422,7 +421,7 @@ export default function HACCPBuilder() {
       }
       
       const data = await response.json();
-      if (!data.analysis) throw new Error("Invalid response from AI engine");
+      if (!data.analysis) throw new Error("Invalid response from system");
 
       setGeneratedAnalysis(data.analysis);
       setFullPlan(data.full_plan);
@@ -717,7 +716,7 @@ export default function HACCPBuilder() {
                 </div>
             </div>
             <div className="space-y-4">
-                <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-slate-900">Intelligence Engine Active</h2>
+                <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-slate-900">Compliance Engine Active</h2>
                 <div className="bg-slate-900 text-emerald-400 font-mono p-8 rounded-[2rem] text-left border border-slate-800 shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500"></div>
                     <div className="flex items-center gap-3 animate-pulse">
