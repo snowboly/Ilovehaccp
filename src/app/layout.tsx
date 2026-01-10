@@ -47,13 +47,6 @@ export const metadata: Metadata = {
     description: "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP.",
     images: ['/og-image.jpg'],
   },
-  icons: {
-    icon: '/icon.svg',
-    apple: '/icon.svg',
-  },
-  alternates: {
-    canonical: '/',
-  }
 };
 
 export default function RootLayout({
@@ -66,7 +59,6 @@ export default function RootLayout({
       <body className={`${inter.variable} ${merriweather.variable} font-sans`}>
         <Providers>
           <ScrollToTop />
-          <SEO />
           <Suspense fallback={<div className="h-16 bg-white border-b border-slate-100" />}>
             <Navbar />
           </Suspense>

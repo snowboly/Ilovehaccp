@@ -6,11 +6,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Food Safety Knowledge Base | HACCP Guides & Regulations',
   description: 'Everything you need to understand HACCP, compliance, and audit readiness. Expert-curated articles on food microbiology and safety protocols.',
-  alternates: { canonical: '/resources' },
-  icons: {
-    icon: '/icon.svg',
-    apple: '/icon.svg',
-  }
+  alternates: { canonical: 'https://www.ilovehaccp.com/resources' }
 };
 
 export default function ResourcesPage() {

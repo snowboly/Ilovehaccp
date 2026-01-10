@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { 
     title: `${article.title}`, 
     description: article.excerpt,
-    alternates: { canonical: `/resources/${slug}` }
+    alternates: { canonical: `https://www.ilovehaccp.com/resources/${slug}` }
   };
 }
 

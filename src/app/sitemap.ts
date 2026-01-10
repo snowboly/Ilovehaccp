@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { articles } from '@/data/articles';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://ilovehaccp.com';
+  const baseUrl = 'https://www.ilovehaccp.com';
 
   const articleEntries: MetadataRoute.Sitemap = articles.map((article) => ({
     url: `${baseUrl}/resources/${article.slug}`,
