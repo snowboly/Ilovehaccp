@@ -29,7 +29,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { getDictionary } from '@/lib/i18n';
+import { getDictionary } from '@/lib/locales';
 
 interface Plan {
   id: string;

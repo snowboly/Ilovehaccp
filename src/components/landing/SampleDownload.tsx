@@ -4,7 +4,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '../pdf/HACCPDocument';
 import { Loader2, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getDictionary } from '@/lib/i18n';
+import { getDictionary } from '@/lib/locales';
 
 const sampleData = {
   businessName: "The Artisanal Bakery",

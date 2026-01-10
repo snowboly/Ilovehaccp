@@ -75,7 +75,8 @@ import {
 import { supabase } from '@/lib/supabase';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '../pdf/HACCPDocument';
-import { useLanguage, getDictionary } from '@/lib/i18n';
+import { useLanguage } from '@/lib/i18n';
+import { getDictionary } from '@/lib/locales';
 
 type Step = 'intro' | 'questions' | 'generating' | 'result';
 
