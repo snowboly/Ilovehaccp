@@ -60,11 +60,11 @@ export async function POST(req: Request) {
       suppliersApproved, verificationChecks, tempControlledDelivery,
       storageTemps, fifoApplied, rawRteSegregated,
       separateHandling, separateUtensils, handwashingEnforced,
-      cookingMethods, minCookingTemp,
+      minCookingTemp,
       coolingTempTarget, coolingTimeLimit, isReheatingPerformed,
       hotHoldingTemp, coldHoldingTemp, transportTempMethod,
       keyEquipment, equipmentCalibration, trainingReceived,
-      cleaningFrequency, recordType, infrastructureMaintenance, preventativeMaintenance
+      cleaningFrequency, recordType, traceabilitySystem, infrastructureMaintenance, preventativeMaintenance
     } = body;
 
     const tempUnit = (country || '').toLowerCase().includes('usa') || (country || '').toLowerCase().includes('united states') ? '°F' : '°C';
@@ -120,6 +120,7 @@ export async function POST(req: Request) {
       Ingredients: ${mainIngredients?.join(', ')} | Allergens: ${allergens?.join(', ')}
       Steps: ${processSteps?.map((s: any) => s.name).join(', ')}
       Controls: Calibration=${equipmentCalibration}, Training=${trainingReceived}, Suppliers=${suppliersApproved}, Infrastructure=${infrastructureMaintenance}, Maintenance=${preventativeMaintenance}
+      Records: Type=${recordType}, Traceability=${traceabilitySystem}
     `;
 
     const completion = await groq.chat.completions.create({

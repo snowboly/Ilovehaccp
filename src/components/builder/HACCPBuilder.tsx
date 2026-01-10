@@ -199,6 +199,7 @@ export default function HACCPBuilder() {
     infrastructureMaintenance: 'Yes',
     preventativeMaintenance: 'Yes',
     equipmentCalibration: 'Yes, scheduled', // New field
+    traceabilitySystem: 'Yes, digital', // New field
     ccpsMonitored: 'No',
     logo: null as string | null,
     template: 'Minimal',
@@ -322,7 +323,6 @@ export default function HACCPBuilder() {
     // 4. Workflow
     { id: 'processSteps', section: 'Workflow', question: "Applicable process steps", type: 'checkbox', options: ['Receiving', 'Storage', 'Thawing', 'Prep', 'Cooking', 'Cooling', 'Reheating', 'Holding', 'Packaging'], icon: <Workflow />, required: true },
     { id: 'keyEquipment', section: 'Equipment', question: "Key equipment used", type: 'list', icon: <Wrench />, required: true },
-    { id: 'suppliersApproved', section: 'Suppliers', question: "Are all suppliers approved & audited?", type: 'radio', options: ['Yes', 'No'], icon: <UserCheck /> },
     
     // 5. Processing
     { id: 'doYouCook', section: 'Processing', question: "Do you cook food on-site?", type: 'radio', options: ['Yes', 'No'], icon: <Flame />, required: true },
@@ -335,17 +335,20 @@ export default function HACCPBuilder() {
     { id: 'trainingReceived', section: 'Personnel', question: "Have all staff received food hygiene training?", type: 'radio', options: ['Yes', 'No'], icon: <GraduationCap /> },
     { id: 'pestControlContract', section: 'Safety', question: "Is a pest control contract in place?", type: 'radio', options: ['Yes', 'No'], icon: <Bug /> },
     
-    // New PRPs
+    // 7. Maintenance & Infrastructure
     { id: 'infrastructureMaintenance', section: 'Infrastructure', question: "Are premises maintained to prevent contamination (lighting, drainage, ventilation)?", type: 'radio', options: ['Yes', 'No'], icon: <Warehouse /> },
     { id: 'preventativeMaintenance', section: 'Maintenance', question: "Is there a preventative maintenance schedule for key equipment?", type: 'radio', options: ['Yes', 'No'], icon: <Wrench /> },
+    { id: 'equipmentCalibration', section: 'Calibration', question: "Are critical thermometers and equipment calibrated regularly?", type: 'radio', options: ['Yes, scheduled', 'Occasionally', 'No'], icon: <Wrench />, required: true },
     
-    // New Section or Step
-    { id: 'equipmentCalibration', section: 'Maintenance', question: "Are critical thermometers and equipment calibrated regularly?", type: 'radio', options: ['Yes, scheduled', 'Occasionally', 'No'], icon: <Wrench />, required: true },
+    // 8. Traceability & Records
+    { id: 'suppliersApproved', section: 'Suppliers', question: "Are all suppliers approved & audited?", type: 'radio', options: ['Yes', 'No'], icon: <UserCheck /> },
+    { id: 'traceabilitySystem', section: 'Traceability', question: "Do you have a batch/lot traceability system?", type: 'radio', options: ['Yes, digital', 'Yes, paper-based', 'Partial', 'No'], icon: <Layers />, required: true },
+    { id: 'recordType', section: 'Records', question: "Primary method for compliance records?", type: 'radio', options: ['Digital (App/Cloud)', 'Paper-based', 'Mixed'], icon: <FileDigit />, required: true },
     
-    // 7. Monitoring
+    // 9. Monitoring
     { id: 'ccpsMonitored', section: 'Compliance', question: "Will you monitor Critical Control Points?", type: 'radio', options: ['Yes', 'No'], icon: <ClipboardCheck />, required: true },
 
-    // 8. Customization
+    // 10. Customization
     { id: 'logo', section: 'Branding', question: "Upload your business logo", type: 'file', icon: <ImageIcon />, description: "It will appear on the cover of your PDF (Optional)." },
     { id: 'template', section: 'Style', question: "Choose a document style", type: 'template_select', icon: <LayoutTemplate />, options: ['Minimal', 'Corporate', 'Modern'], required: true },
   ];
