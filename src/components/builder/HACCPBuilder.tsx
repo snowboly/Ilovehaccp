@@ -409,6 +409,12 @@ export default function HACCPBuilder() {
   const handleGenerate = async () => {
     setStep('generating');
     try {
+      const response = await fetch('/api/generate-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, language, processSteps: formData.processSteps.map((n, i) => ({ id: String(i+1), name: n })) })
+      });
+
       if (!response.ok) {
           const errData = await response.json().catch(() => ({}));
           throw new Error(errData.error || `Server error: ${response.status}`);
