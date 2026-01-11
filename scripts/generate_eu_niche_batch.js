@@ -1,4 +1,3 @@
-
 const Groq = require('groq-sdk');
 const OpenAI = require('openai');
 const fs = require('fs');
@@ -8,7 +7,6 @@ const { createClient: createPexels } = require('pexels');
 require('dotenv').config({ path: '.env.local' });
 
 // --- CONFIG ---
-const BATCH_SIZE = 5;
 const NICHES = [
     "Food Trucks",
     "Dark Kitchens and Ghost Kitchens",
@@ -19,7 +17,17 @@ const NICHES = [
     "Pizza Takeaways",
     "School Canteens",
     "Butcher Shops",
-    "Fishmongers"
+    "Fishmongers",
+    "Craft Breweries",
+    "Hospital Catering",
+    "Care Home Kitchens",
+    "Coffee Roasteries",
+    "Sandwich Shops",
+    "Juice and Smoothie Bars",
+    "Mobile Coffee Carts",
+    "Hotel Breakfast Buffets",
+    "Corporate Offices Catering",
+    "Pop-up Restaurants"
 ];
 
 // --- SETUP ---
@@ -27,8 +35,6 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const pexels = createPexels(process.env.PEXELS_API_KEY);
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-
-const ARTICLES_PATH = path.join(__dirname, '../src/data/articles.ts');
 
 const PERSONAS = [
     { role: 'Dr. Joao, Scientific Lead & Founder', name: 'Dr. Joao' },
@@ -77,34 +83,15 @@ async function generateArticle(niche) {
     console.log(`\n🚀 Generating: ${title} (${persona.name})...
 `);
 
-    // 1. OUTLINE
-    const outlinePrompt = `
-        You are ${persona.role}.
-        Create a detailed article outline for "${title}".
-        Target Audience: Small business owners in the EU.
-        Focus: EC Regulation 852/2004, Traceability, Hygiene.
-        
-        Sections required:
-        1. Introduction (Specific to ${niche})
-        2. Specific Hazards in ${niche} (Bio/Chem/Phys)
-        3. Critical Control Points (CCPs) for ${niche}
-        4. Monitoring & Critical Limits (EU Standards)
-        5. Traceability & Record Keeping
-        6. Conclusion
-        
-        Output: JSON List of section titles.
-    `;
-    const outlineJson = await safeAiCall([{ role: 'user', content: outlinePrompt }], 0.3);
-    
-    // 2. CONTENT GENERATION
+    // 1. CONTENT GENERATION
     let fullContent = "";
     
     // Intro
-    const introPrompt = `Write a compelling Introduction for "${title}". Mention strict EU regulations but emphasize practical compliance. Use <h3> headers.`;
+    const introPrompt = `Write a compelling Introduction for "${title}". Mention strict EU Regulation 852/2004 but emphasize practical compliance. Use <h3> headers.`;
     fullContent += await safeAiCall([{ role: 'user', content: introPrompt }]);
 
     // Hazards
-    const hazardsPrompt = `Write the "Specific Hazards" section for ${niche}. Focus on biological (Salmonella, Listeria), chemical (Cleaning agents), and physical risks. Cite EC 852/2004. Use <h3> headers.`;
+    const hazardsPrompt = `Write the "Specific Hazards" section for ${niche}. Focus on biological (Salmonella, Listeria), chemical (Cleaning agents), and physical risks relevant to this niche. Cite EC 852/2004. Use <h3> headers.`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: hazardsPrompt }]);
 
     // CCPs
@@ -116,15 +103,12 @@ async function generateArticle(niche) {
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: monPrompt }]);
 
     // Conclusion
-    const concPrompt = `Write a Conclusion for ${niche}. Call to action: "Use our free HACCP builder to generate your plan today."`;
+    const concPrompt = `Write a Conclusion for ${niche}. Call to action: "Use our free HACCP builder at ilovehaccp.com to generate your plan today."`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: concPrompt }]);
 
-    // 3. IMAGE
+    // 2. IMAGE
     const image = await searchPexels(`${niche} food preparation`);
 
-    // 4. SAVE TO DB (Directly, skipping file for cleanliness if preferred, but user asked for file)
-    // We will do both: DB and File to be safe.
-    
     const articleData = {
         slug,
         title,
@@ -155,8 +139,8 @@ async function generateArticle(niche) {
 }
 
 async function main() {
-    // Process first 5
-    for (let i = 0; i < 5; i++) {
+    // Process batch 2 (indices 5 to 9)
+    for (let i = 5; i < 10; i++) {
         await generateArticle(NICHES[i]);
         await sleep(2000); // Respect rate limits
     }
