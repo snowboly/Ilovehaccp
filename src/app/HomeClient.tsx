@@ -164,11 +164,11 @@ export default function Home() {
                     "title": "Codex Alimentarius",
                     "desc": "Logic mapped to the CXC 1-1969 General Principles of Food Hygiene."
                   }, {
-                    "title": "FDA FSMA",
-                    "desc": "Hazard analysis aligned with 21 CFR 117 preventive control requirements."
+                    "title": "UK FSA Standards",
+                    "desc": "Aligned with 'Safer Food, Better Business' and UK food hygiene laws."
                   }, {
-                    "title": "EU 852/2004",
-                    "desc": "Framework compliance for European food business operators."
+                    "title": "EC Regulation 852/2004",
+                    "desc": "Full compliance with EU hygiene of foodstuffs regulations."
                   }].map((item, i) => (
                     <div key={i} className="flex gap-4 p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
                       <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 flex-shrink-0">
