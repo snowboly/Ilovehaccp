@@ -305,11 +305,11 @@ const HACCPDocument = ({ data, dict, logo, template = 'Minimal' }: Props) => {
               <Text style={styles.coverLabel}>{dict.date_issue}:</Text>
               <Text style={styles.coverValue}>{today}</Text>
             </View>
-            <View style={styles.coverMetaRow}>
-              <Text style={styles.coverLabel}>{dict.standard}:</Text>
-              <Text style={styles.coverValue}>Codex Alimentarius / FDA 21 CFR</Text>
-            </View>
+          <View style={styles.coverMetaRow}>
+            <Text style={styles.coverLabel}>{dict.standard}</Text>
+            <Text style={styles.coverValue}>EC Regulation 852/2004 / Codex</Text>
           </View>
+        </View>
         </View>
         
         <View style={{ position: 'absolute', bottom: 40 }}>

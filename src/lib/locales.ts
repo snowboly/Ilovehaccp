@@ -24,7 +24,7 @@ export const translations = {
         cta: "Build Your Plan Free",
         auditReady: "Audit Ready",
         validated: "Validated Logic",
-        compliance: { fda: "FDA Compliant", eu: "EU 852/2004", codex: "Codex CXC 1-1969" }
+        compliance: { fda: "EC 852/2004", eu: "UK FSA Standards", codex: "Codex CXC 1-1969" }
       },
       audience: {
         title: "Is iLoveHACCP Right for You?",

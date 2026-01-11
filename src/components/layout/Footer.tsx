@@ -49,11 +49,12 @@ export default function Footer() {
           </ul>
         </div>
       </div>
+      {/* Copyright */}
       <div className="container px-4 mx-auto text-center text-xs border-t border-slate-900 pt-8 space-y-2">
-        <p className="text-slate-500 max-w-2xl mx-auto">
-            Disclaimer: iLoveHACCP provides software tools for documentation. While our templates are based on Codex Alimentarius and FDA principles, we are not a law firm or official regulatory body. Always verify your final plan with your local health authority or an Environmental Health Officer.
+        <p className="text-slate-500">&copy; {new Date().getFullYear()} iLoveHACCP.com. All rights reserved.</p>
+        <p className="text-slate-600 max-w-2xl mx-auto leading-relaxed opacity-60">
+          Disclaimer: iLoveHACCP provides software tools for documentation. While our templates are based on EC Regulation 852/2004 principles, we are not a law firm or official regulatory body. Always verify your final plan with your local health authority or an Environmental Health Officer.
         </p>
-        <p>© 2025 ilovehaccp.com. All rights reserved.</p>
       </div>
     </footer>
   );

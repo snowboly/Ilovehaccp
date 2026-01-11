@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'iLoveHACCP | Free HACCP Plan Generator',
-    description: 'Create a professional HACCP plan in minutes. Expert-validated food safety for restaurants, manufacturers, and catering.',
+    description: 'Create a professional HACCP plan in minutes. EC 852/2004 compliant food safety for restaurants, manufacturers, and catering.',
     url: 'https://www.ilovehaccp.com',
     images: [
       {

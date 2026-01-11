@@ -41,8 +41,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://www.ilovehaccp.com',
     siteName: 'iLoveHACCP',
-    title: 'iLoveHACCP | Precision-Engineered Food Safety Plans',
-    description: "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP.",
+    title: 'iLoveHACCP | EU & UK Compliant Food Safety Plans',
+    description: "Free online HACCP tool for food businesses. Build EC 852/2004 compliant plans, manage compliance, and prepare for audits with iLoveHACCP.",
     images: [
       {
         url: '/og-image.jpg', // Ensure this exists in public/

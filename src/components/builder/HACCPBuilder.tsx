@@ -217,8 +217,8 @@ export default function HACCPBuilder() {
     }
   }, [step]);
 
-  // Helper to determine temperature unit
-  const tempUnit = formData.country.toLowerCase().includes('usa') || formData.country.toLowerCase().includes('united states') ? '°F' : '°C';
+  // Helper to determine temperature unit (Default to Celsius for EU focus)
+  const tempUnit = '°C';
 
   useEffect(() => {
     // Scroll to top of the wizard container whenever step or question changes
@@ -326,7 +326,7 @@ export default function HACCPBuilder() {
     
     // 5. Processing
     { id: 'doYouCook', section: 'Processing', question: "Do you cook food on-site?", type: 'radio', options: ['Yes', 'No'], icon: <Flame />, required: true },
-    { id: 'minCookingTemp', section: 'Processing', question: `Target internal cooking temperature (${tempUnit})?`, type: 'text', icon: <Thermometer />, placeholder: `e.g., ${tempUnit === '°C' ? '75°C' : '165°F'} for 30s` },
+    { id: 'minCookingTemp', section: 'Processing', question: `Target internal cooking temperature (${tempUnit})?`, type: 'text', icon: <Thermometer />, placeholder: `e.g., 75°C for 30s` },
     { id: 'isFoodCooled', section: 'Processing', question: "Do you cool food after cooking?", type: 'radio', options: ['Yes', 'No'], icon: <Wind /> },
     { id: 'isReheatingPerformed', section: 'Processing', question: "Is reheating performed?", type: 'radio', options: ['Yes', 'No'], icon: <RotateCcw /> },
     

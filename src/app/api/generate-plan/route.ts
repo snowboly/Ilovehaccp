@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       cleaningFrequency, recordType, traceabilitySystem, infrastructureMaintenance, preventativeMaintenance
     } = body;
 
-    const tempUnit = (country || '').toLowerCase().includes('usa') || (country || '').toLowerCase().includes('united states') ? '°F' : '°C';
+    const tempUnit = '°C'; // Enforce Celsius for EU focus
 
     const systemPrompt = `You are an expert Food Safety Consultant and HACCP Lead Auditor. 
     Your task is to generate a professional, high-authority HACCP Plan.
@@ -75,6 +75,7 @@ export async function POST(req: Request) {
     IMPORTANT: 
     1. Language: ${language}.
     2. TEMPERATURE UNITS: Use ${tempUnit}.
+    3. STANDARDS: Focus on EC Regulation 852/2004 and UK FSA standards.
     
     Output Format (JSON):
     {
