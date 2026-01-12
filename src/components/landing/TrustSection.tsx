@@ -5,10 +5,10 @@ import { motion } from 'framer-motion';
 
 export default function TrustSection() {
   const stats = [
-    { label: "Plans Generated", value: "1,240+", icon: <FileCheck className="w-5 h-5 text-blue-600" /> },
-    { label: "Audit Success Rate", value: "99.8%", icon: <ShieldCheck className="w-5 h-5 text-emerald-600" /> },
-    { label: "Countries Supported", value: "45+", icon: <Globe className="w-5 h-5 text-indigo-600" /> },
-    { label: "Time Saved/Plan", value: "12h+", icon: <Zap className="w-5 h-5 text-amber-600" /> },
+    { label: "Countries Supported", value: "EU / UK", icon: <Globe className="w-5 h-5 text-indigo-600" /> },
+    { label: "Average Time Saved", value: "40+ Hours", icon: <Zap className="w-5 h-5 text-amber-600" /> },
+    { label: "Average Cost Saved", value: "€2,000+", icon: <ShieldCheck className="w-5 h-5 text-emerald-600" /> },
+    { label: "Average Turnover", value: "< 15 Mins", icon: <FileCheck className="w-5 h-5 text-blue-600" /> },
   ];
 
   const sectors = [
@@ -37,7 +37,7 @@ export default function TrustSection() {
         {/* Sector Labels - Subtle */}
         <div className="flex flex-col items-center">
           <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mb-6">
-            Supporting Global Food Safety Excellence
+            Supporting EU & UK Food Safety Excellence
           </p>
           <div className="flex flex-wrap justify-center gap-4 md:gap-8 opacity-50 grayscale">
             {sectors.map((sector, i) => (
