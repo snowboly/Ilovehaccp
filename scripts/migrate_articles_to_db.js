@@ -24,17 +24,17 @@ async function migrate() {
   const content = fs.readFileSync(tsPath, 'utf-8');
 
   // Split by article objects
-  const blocks = content.split('  {').filter(b => b.includes('slug:'));
+  const blocks = content.split('  {').filter(b => /["']?slug["']?\s*:/.test(b));
   console.log(`Found ${blocks.length} blocks.`);
 
   for (let block of blocks) {
-    const slug = (block.match(/slug:\s*['"](.*?)['"]/) || [])[1];
-    const title = (block.match(/title:\s*["'](.*?)["']/) || [])[1];
-    const category = (block.match(/category:\s*['"](.*?)['"]/) || [])[1];
-    const readTime = (block.match(/readTime:\s*['"](.*?)['"]/) || [])[1];
-    const excerpt = (block.match(/excerpt:\s*["']([\s\S]*?)["']/) || [])[1];
-    const image = (block.match(/image:\s*['"](.*?)['"]/) || [])[1];
-    const publishedAt = (block.match(/publishedAt:\s*['"](.*?)['"]/) || [])[1];
+    const slug = (block.match(/["']?slug["']?\s*:\s*['"](.*?)['"]/) || [])[1];
+    const title = (block.match(/["']?title["']?\s*:\s*["'](.*?)["']/) || [])[1];
+    const category = (block.match(/["']?category["']?\s*:\s*['"](.*?)['"]/) || [])[1];
+    const readTime = (block.match(/["']?readTime["']?\s*:\s*['"](.*?)['"]/) || [])[1];
+    const excerpt = (block.match(/["']?excerpt["']?\s*:\s*["']([\s\S]*?)["']/) || [])[1];
+    const image = (block.match(/["']?image["']?\s*:\s*['"](.*?)['"]/) || [])[1];
+    const publishedAt = (block.match(/["']?publishedAt["']?\s*:\s*['"](.*?)['"]/) || [])[1];
     
     // Extract content (everything between content: ` and the last `)
     const contentStartMarker = 'content: `';

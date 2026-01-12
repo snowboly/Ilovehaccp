@@ -79,6 +79,13 @@
     - **Configuration:** User updated Google Cloud Console (App Name: "iLoveHACCP", Logo Uploaded, Authorized Domains added).
     - **UI:** Added a branded "Continue with Google" button.
 
+### v3.7 Content Restoration & Expansion (Jan 12, 2026)
+- **Article Restoration:**
+    - **Digital vs. Paper Records:** Successfully regenerated and restored this missing 4500-word expert article (`digital-vs-paper-records`).
+    - **Sync & Fixes:** Updated `generate_expert_article.js` with slugify helpers and `migrate_articles_to_db.js` to handle quoted keys. Synced article to Supabase and replaced placeholders with Pexels images.
+- **Niche Guides:**
+    - **Batch 3 Prepared:** Updated `generate_eu_niche_batch.js` to process the next 5 EU niche guides (Craft Breweries, Hospital Catering, Care Home Kitchens, Coffee Roasteries, Sandwich Shops).
+
 ## Current Pricing Model
 - **Free Tier:** AI-Generated HACCP Plan + Instant PDF Export + PRPs.
 - **Starter Review (€79 + VAT):** AI Plan + Expert 1-on-1 Human Review + Compliance Stamp + **Editable Word Doc**.
@@ -89,8 +96,6 @@
 - **Automated Product Labels:** Implement a module to generate compliant food product labels based on the ingredients and allergens captured in the HACCP builder. This will include nutritional facts (optional), allergen bolding, and shelf-life guidance.
 
 ## Next Steps
-1.  **Marketing Launch:** Execute social media and community outreach plan (Reddit, LinkedIn, Twitter).
-2.  **Conversion Monitoring:** Monitor Supabase `leads` and Stripe dashboards to track user behavior and identify drop-off points.
-3.  **v2.0 Scoping:** Begin technical research for the "Automated Product Labels" module, specifically ingredient database integration.
-4.  **Customer Feedback:** Reach out to the first 5 "Starter Review" customers for feedback on the PDF/Word document quality.
-
+1.  **Content Expansion:** Run `node scripts/generate_eu_niche_batch.js` to generate and sync the next batch of EU niche guides.
+2.  **Marketing Launch:** Execute social media and community outreach plan.
+3.  **v2.0 Scoping:** Begin technical research for the "Automated Product Labels" module.

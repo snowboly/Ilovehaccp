@@ -61,6 +61,10 @@ const PERSONAS = [
 
 // --- HELPER FUNCTIONS ---
 
+function slugify(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 async function generateOutline(title, persona) {
   console.log(`Generating comprehensive outline for "${title}" with persona: ${persona.role}...`);
   const prompt = `
@@ -100,7 +104,7 @@ async function generateSection(title, section, index, total, persona, previousCo
     - Style: High-end editorial (e.g., Food Safety Magazine, Harvard Business Review). 
     - Use sophisticated transitions.
     - **Formatting (MANDATORY):**
-      - Use <p> tags with short paragraphs.
+      - Use <p> tags with **VERY SHORT paragraphs** (max 3-4 sentences). Add whitespace between ideas.
       - Use <h3> and <h4> to nest information.
       - Use <ul> or <ol> for checklists and complex lists.
       - Use <strong> for emphasis on regulatory codes and critical terms.
@@ -125,7 +129,7 @@ async function generateIntroAndMeta(title, persona, outline) {
       2. Write a 2-sentence Excerpt/Meta Description.
       3. Write the Introduction section (approx 400 words).
          - Hook the reader immediately.
-         - Use short paragraphs.
+         - Use **short paragraphs** (max 3 sentences).
          - Use bullet points if listing what will be covered.
       
       Output Format: JSON ONLY.
@@ -205,8 +209,8 @@ async function main() {
     let fileContent = fs.readFileSync(ARTICLES_PATH, 'utf-8');
     
     // Find if article exists
-    // We look for: slug: "slug" or slug: 'slug'
-    const slugRegex = new RegExp(`slug:\s*["']${slug}["']`);
+    // We look for: slug: "slug" or "slug": "slug"
+    const slugRegex = new RegExp(`["']?slug["']?\s*:\s*["']${slug}["']`);
     const match = fileContent.match(slugRegex);
 
     if (match) {

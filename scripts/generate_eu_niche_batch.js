@@ -87,23 +87,28 @@ async function generateArticle(niche) {
     let fullContent = "";
     
     // Intro
-    const introPrompt = `Write a compelling Introduction for "${title}". Mention strict EU Regulation 852/2004 but emphasize practical compliance. Use <h3> headers.`;
+    const introPrompt = `Write a compelling Introduction for "${title}". Mention strict EU Regulation 852/2004 but emphasize practical compliance. Use <h3> headers.
+    IMPORTANT: Format the output as HTML. Use <p> tags for paragraphs. Keep paragraphs short (max 3-4 sentences).`;
     fullContent += await safeAiCall([{ role: 'user', content: introPrompt }]);
 
     // Hazards
-    const hazardsPrompt = `Write the "Specific Hazards" section for ${niche}. Focus on biological (Salmonella, Listeria), chemical (Cleaning agents), and physical risks relevant to this niche. Cite EC 852/2004. Use <h3> headers.`;
+    const hazardsPrompt = `Write the "Specific Hazards" section for ${niche}. Focus on biological (Salmonella, Listeria), chemical (Cleaning agents), and physical risks relevant to this niche. Cite EC 852/2004. Use <h3> headers.
+    IMPORTANT: Format as HTML. Use <p> tags. Keep paragraphs short and readable.`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: hazardsPrompt }]);
 
     // CCPs
-    const ccpPrompt = `Write the "Critical Control Points" section for ${niche}. detailed practical examples of CCPs (e.g. Cooking temp >75C, Cooling). Use <h3> headers and a list.`;
+    const ccpPrompt = `Write the "Critical Control Points" section for ${niche}. detailed practical examples of CCPs (e.g. Cooking temp >75C, Cooling). Use <h3> headers and a list.
+    IMPORTANT: Format as HTML. Use <p> tags. Use <ul>/<li> for lists. Keep paragraphs short.`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: ccpPrompt }]);
 
     // Monitoring
-    const monPrompt = `Write the "Monitoring & Record Keeping" section for ${niche}. Explain how to keep digital or paper logs to satisfy a health inspector. Mention traceability. Use <h3> headers.`;
+    const monPrompt = `Write the "Monitoring & Record Keeping" section for ${niche}. Explain how to keep digital or paper logs to satisfy a health inspector. Mention traceability. Use <h3> headers.
+    IMPORTANT: Format as HTML. Use <p> tags. Keep paragraphs short.`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: monPrompt }]);
 
     // Conclusion
-    const concPrompt = `Write a Conclusion for ${niche}. Call to action: "Use our free HACCP builder at ilovehaccp.com to generate your plan today."`;
+    const concPrompt = `Write a Conclusion for ${niche}. Call to action: "Use our free HACCP builder at ilovehaccp.com to generate your plan today."
+    IMPORTANT: Format as HTML. Use <p> tags.`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: concPrompt }]);
 
     // 2. IMAGE
@@ -139,8 +144,8 @@ async function generateArticle(niche) {
 }
 
 async function main() {
-    // Process batch 2 (indices 5 to 9)
-    for (let i = 5; i < 10; i++) {
+    // Process batch 3 (indices 10 to 14)
+    for (let i = 10; i < 15; i++) {
         await generateArticle(NICHES[i]);
         await sleep(2000); // Respect rate limits
     }
