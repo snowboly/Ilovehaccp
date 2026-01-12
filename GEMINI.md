@@ -2,6 +2,61 @@
 
 ## Implementation Status
 
+### v3.8 Formatting & Database Integrity (Jan 12, 2026)
+- **Formatting Overhaul:**
+    - **Header Standardization:** Converted all `### Header` and `<p>### Header</p>` patterns to standard `<h3>Header</h3>` HTML tags across all articles.
+    - **Bold Tag Rendering:** Converted all markdown bold syntax (`**text**`) to proper HTML `<strong>text</strong>` tags.
+    - **Code Readability:** Improved source formatting by adding newlines after closing header tags.
+- **Database Synchronization:**
+    - **Ghost Articles:** Identified and fixed articles (e.g., "HACCP for Craft Breweries") that existed in the database but were missing from the local `src/data/articles.ts` file.
+    - **Direct DB Fixes:** Created `scripts/fix_db_formatting.js` to apply formatting fixes directly to 8 database-resident articles that were missed by local scripts.
+    - **Robust Migration:** Updated `scripts/migrate_articles_to_db.js` with improved regex parsing to handle quoted/unquoted keys and ensure reliable synchronization of all 78 articles.
+- **Bug Fixes:**
+    - **Syntax Repair:** Fixed a critical syntax error in `src/data/articles.ts` where the reformatting script inadvertently stripped closing backticks from article content strings.
+    - **Diagnostics:** Added `scripts/check_breweries.js` and `scripts/check_db_content.js` to verify specific content integrity in the database.
+
+### v3.7 Content Restoration & Expansion (Jan 12, 2026)
+- **Article Restoration:**
+    - **Digital vs. Paper Records:** Successfully regenerated and restored this missing 4500-word expert article (`digital-vs-paper-records`).
+    - **Sync & Fixes:** Updated `generate_expert_article.js` with slugify helpers and `migrate_articles_to_db.js` to handle quoted keys. Synced article to Supabase and replaced placeholders with Pexels images.
+- **Niche Guides:**
+    - **Batch 3 Prepared:** Updated `generate_eu_niche_batch.js` to process the next 5 EU niche guides (Craft Breweries, Hospital Catering, Care Home Kitchens, Coffee Roasteries, Sandwich Shops).
+
+### v3.6 Branding & Authentication (Jan 9, 2026)
+- **Branding Refresh:**
+    - **New Icon:** Designed and implemented a custom "Shield & Heart" SVG logo to symbolize safety/compliance + the brand name.
+    - **Metadata:** Updated site description in `layout.tsx` to "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP."
+    - **Cleanup:** Removed legacy `favicon.ico` files to force browser adoption of the new SVG icon.
+- **Authentication:**
+    - **SSO:** Implemented Google OAuth via Supabase in `AuthForm.tsx`.
+    - **Configuration:** User updated Google Cloud Console (App Name: "iLoveHACCP", Logo Uploaded, Authorized Domains added).
+    - **UI:** Added a branded "Continue with Google" button.
+
+### v3.5 Marketing & Reliability Update (Jan 8, 2026)
+- **Marketing Launch:**
+    - **Trust Section:** Added homepage section with stats (1,240+ plans) and sector coverage to build authority.
+    - **Lead Magnet:** Implemented "2026 Food Safety Inspection Checklist" download section. Captures emails to `leads` table and auto-sends PDF via Resend.
+    - **User Menu:** Added authenticated User Menu with avatar/dropdown to Navbar.
+- **Critical Fixes:**
+    - **Stripe Checkout:** Fixed "loading forever" issue by opening new tab immediately. Fixed API version mismatch (`2024-06-20`). Enabled coupons (requires "Customer-Facing" codes in Dashboard).
+    - **Plan Editing:** Enabled editing of existing plans! Builder now loads previous inputs (`_original_inputs`) and performs `UPDATE` instead of `INSERT`.
+    - **PDF Attachments:** Implemented server-side PDF generation (`@react-pdf/renderer`) in API routes. Plans and Checklists are now attached directly to emails.
+    - **DOCX Parity:** Updated Word generator to include all sections found in the PDF (Benchmarking, Toolkit, Process Flow).
+    - **Contact Consolidation:** Routed all billing/privacy/contact inquiries to `support@ilovehaccp.com`.
+
+### v3.4 Authentication & Retention Polish (Jan 7, 2026)
+- **Email & Link Integrity:**
+    - **Plan Persistence:** Implemented `/api/plans/[id]` server-side fetch to allow anonymous users to view their generated plans via email links, bypassing RLS safely.
+    - **URL Loading:** Updated `HACCPBuilder.tsx` to automatically detect `?id=` in the URL and load the results dashboard directly.
+    - **Professional Templates:** Created and implemented high-converting HTML templates for Signup, Password Reset, and Plan Delivery emails. Backups stored in `src/db/email_templates/`.
+- **Identity & Security:**
+    - **Forgot Password Flow:** Added a complete "Forgot Password" UI in `AuthForm.tsx` and a dedicated `src/app/update-password/page.tsx` reset handler.
+    - **Auto-Login:** Implemented `onAuthStateChange` listener in the login form to automatically redirect users to the dashboard as soon as they click their email confirmation link.
+- **Cleanup & DevOps:**
+    - Removed all debug buttons and temporary testing files.
+    - Verified full production email pipeline via `noreply@ilovehaccp.com`.
+    - Synchronized all latest developments to GitHub.
+
 ### v3.3 Conversion & Reliability Overhaul (Jan 6, 2026)
 - **Wizard UX/UI Enhancements:**
     - **Smart Navigation:** Implemented a history stack for the "Back" button to correctly handle skipped logic steps.
@@ -43,48 +98,6 @@
     - Implemented **Smart Image Deduplication**.
 - **Editorial Redesign:** Transformed Article Detail pages into a clean, "Wikipedia-style" layout.
 - **Wizard Enhancements:** Added "Infrastructure Maintenance" and "Preventative Maintenance" steps.
-
-### v3.4 Authentication & Retention Polish (Jan 7, 2026)
-- **Email & Link Integrity:**
-    - **Plan Persistence:** Implemented `/api/plans/[id]` server-side fetch to allow anonymous users to view their generated plans via email links, bypassing RLS safely.
-    - **URL Loading:** Updated `HACCPBuilder.tsx` to automatically detect `?id=` in the URL and load the results dashboard directly.
-    - **Professional Templates:** Created and implemented high-converting HTML templates for Signup, Password Reset, and Plan Delivery emails. Backups stored in `src/db/email_templates/`.
-- **Identity & Security:**
-    - **Forgot Password Flow:** Added a complete "Forgot Password" UI in `AuthForm.tsx` and a dedicated `src/app/update-password/page.tsx` reset handler.
-    - **Auto-Login:** Implemented `onAuthStateChange` listener in the login form to automatically redirect users to the dashboard as soon as they click their email confirmation link.
-- **Cleanup & DevOps:**
-    - Removed all debug buttons and temporary testing files.
-    - Verified full production email pipeline via `noreply@ilovehaccp.com`.
-    - Synchronized all latest developments to GitHub.
-
-### v3.5 Marketing & Reliability Update (Jan 8, 2026)
-- **Marketing Launch:**
-    - **Trust Section:** Added homepage section with stats (1,240+ plans) and sector coverage to build authority.
-    - **Lead Magnet:** Implemented "2026 Food Safety Inspection Checklist" download section. Captures emails to `leads` table and auto-sends PDF via Resend.
-    - **User Menu:** Added authenticated User Menu with avatar/dropdown to Navbar.
-- **Critical Fixes:**
-    - **Stripe Checkout:** Fixed "loading forever" issue by opening new tab immediately. Fixed API version mismatch (`2024-06-20`). Enabled coupons (requires "Customer-Facing" codes in Dashboard).
-    - **Plan Editing:** Enabled editing of existing plans! Builder now loads previous inputs (`_original_inputs`) and performs `UPDATE` instead of `INSERT`.
-    - **PDF Attachments:** Implemented server-side PDF generation (`@react-pdf/renderer`) in API routes. Plans and Checklists are now attached directly to emails.
-    - **DOCX Parity:** Updated Word generator to include all sections found in the PDF (Benchmarking, Toolkit, Process Flow).
-    - **Contact Consolidation:** Routed all billing/privacy/contact inquiries to `support@ilovehaccp.com`.
-
-### v3.6 Branding & Authentication (Jan 9, 2026)
-- **Branding Refresh:**
-    - **New Icon:** Designed and implemented a custom "Shield & Heart" SVG logo to symbolize safety/compliance + the brand name.
-    - **Metadata:** Updated site description in `layout.tsx` to "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP."
-    - **Cleanup:** Removed legacy `favicon.ico` files to force browser adoption of the new SVG icon.
-- **Authentication:**
-    - **SSO:** Implemented Google OAuth via Supabase in `AuthForm.tsx`.
-    - **Configuration:** User updated Google Cloud Console (App Name: "iLoveHACCP", Logo Uploaded, Authorized Domains added).
-    - **UI:** Added a branded "Continue with Google" button.
-
-### v3.7 Content Restoration & Expansion (Jan 12, 2026)
-- **Article Restoration:**
-    - **Digital vs. Paper Records:** Successfully regenerated and restored this missing 4500-word expert article (`digital-vs-paper-records`).
-    - **Sync & Fixes:** Updated `generate_expert_article.js` with slugify helpers and `migrate_articles_to_db.js` to handle quoted keys. Synced article to Supabase and replaced placeholders with Pexels images.
-- **Niche Guides:**
-    - **Batch 3 Prepared:** Updated `generate_eu_niche_batch.js` to process the next 5 EU niche guides (Craft Breweries, Hospital Catering, Care Home Kitchens, Coffee Roasteries, Sandwich Shops).
 
 ## Current Pricing Model
 - **Free Tier:** AI-Generated HACCP Plan + Instant PDF Export + PRPs.
