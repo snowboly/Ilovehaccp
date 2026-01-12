@@ -9,8 +9,16 @@ try {
     // 1. Fix Headers: Replace <p>### Header</p> and <p>## Header</p> with <h3>Header</h3>
     // Using multiline flag and global flag
     // Pattern: <p>(#+)\s*(.*?)</p>
-    const headerRegex = /<p>#{2,3}\s*(.*?)<\/p>/g;
+    const headerRegex = /<p># {2,3}\s*(.*?)<\/p>/g;
     content = content.replace(headerRegex, '<h3>$1</h3>');
+
+    // NEW: Handle cases where ### Header is NOT inside a <p> tag
+    // Pattern: ^###\s*(.*?) (at start of line or following newline)
+    // We need to be careful not to match inside code blocks if there were any, but in this file it's unlikely.
+    // We look for ### or ## followed by text, up to a newline or < sign
+    const looseHeaderRegex = /(^|\n)#{2,3}\s*([^\n<]+)/g;
+    content = content.replace(looseHeaderRegex, '$1<h3>$2</h3>');
+
 
     // 2. Add space after ### if it's not inside a tag (unlikely but let's be safe)
     // Actually, the user specifically mentioned "after ###". 
