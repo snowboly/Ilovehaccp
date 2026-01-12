@@ -372,6 +372,28 @@ export default function HACCPBuilder() {
     }
   };
 
+  const getTranslatedItem = (category: 'ingredients' | 'equipment', item: string) => {
+    const path = `builder_inputs.${category}.${item}`;
+    const translated = t(path);
+    return translated === path ? item : translated;
+  };
+
+  const getTranslatedOption = (opt: string) => {
+    let path = `builder_inputs.options.${opt}`;
+    let translated = t(path);
+    if (translated !== path) return translated;
+
+    path = `builder_inputs.process_steps.${opt}`;
+    translated = t(path);
+    if (translated !== path) return translated;
+
+    path = `builder_inputs.ingredients.${opt}`;
+    translated = t(path);
+    if (translated !== path) return translated;
+
+    return opt;
+  };
+
   const handleNext = () => {
     const q = questions[currentQuestionIdx];
     const val = (formData as any)[q.id];
@@ -583,12 +605,16 @@ export default function HACCPBuilder() {
                 <div className="space-y-4 mb-8">
                   <span className="text-xs font-black text-slate-400 uppercase tracking-widest block">Quick Add Suggestions:</span>
                   <div className="flex flex-wrap gap-2">
-                    {((currentQ.id === 'keyEquipment' ? PREDEFINED_EQUIPMENT : PREDEFINED_INGREDIENTS)[formData.businessType] || (currentQ.id === 'keyEquipment' ? PREDEFINED_EQUIPMENT : PREDEFINED_INGREDIENTS)['default']).map((item: string) => (
-                        <button key={item} onClick={() => {
-                            const cur = (formData as any)[currentQ.id] || [];
-                            if(!cur.includes(item)) updateFormData(currentQ.id, [...cur, item]);
-                        }} className="bg-slate-50 border border-slate-100 px-4 py-2 rounded-full text-sm font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all">+ {item}</button>
-                    ))}
+                    {((currentQ.id === 'keyEquipment' ? PREDEFINED_EQUIPMENT : PREDEFINED_INGREDIENTS)[formData.businessType] || (currentQ.id === 'keyEquipment' ? PREDEFINED_EQUIPMENT : PREDEFINED_INGREDIENTS)['default']).map((item: string) => {
+                        const category = currentQ.id === 'keyEquipment' ? 'equipment' : 'ingredients';
+                        const translatedItem = getTranslatedItem(category, item);
+                        return (
+                            <button key={item} onClick={() => {
+                                const cur = (formData as any)[currentQ.id] || [];
+                                if(!cur.includes(translatedItem)) updateFormData(currentQ.id, [...cur, translatedItem]);
+                            }} className="bg-slate-50 border border-slate-100 px-4 py-2 rounded-full text-sm font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all">+ {translatedItem}</button>
+                        );
+                    })}
                   </div>
                 </div>
               )}
@@ -596,35 +622,58 @@ export default function HACCPBuilder() {
               <div className="min-h-[200px]">
                 {currentQ.type === 'radio' ? (
                     <div className="grid gap-3">
-                    {currentQ.options?.map(opt => (
-                        <button key={opt} onClick={() => updateFormData(currentQ.id, opt)} className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold text-lg flex justify-between items-center ${ (formData as any)[currentQ.id] === opt ? 'border-blue-600 bg-blue-50/50 text-blue-700 shadow-md' : errors[currentQ.id] ? 'border-red-300 bg-red-50/50 text-red-800' : 'border-slate-100 hover:border-slate-200 text-slate-600' }`}>
-                            {opt}
-                            { (formData as any)[currentQ.id] === opt && <CheckCircle2 className="w-6 h-6 text-blue-600" /> }
-                        </button>
-                    ))}
+                    {currentQ.options?.map(opt => {
+                        const translatedOpt = getTranslatedOption(opt);
+                        return (
+                            <button key={opt} onClick={() => updateFormData(currentQ.id, translatedOpt)} className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold text-lg flex justify-between items-center ${ (formData as any)[currentQ.id] === translatedOpt ? 'border-blue-600 bg-blue-50/50 text-blue-700 shadow-md' : errors[currentQ.id] ? 'border-red-300 bg-red-50/50 text-red-800' : 'border-slate-100 hover:border-slate-200 text-slate-600' }`}>
+                                {translatedOpt}
+                                { (formData as any)[currentQ.id] === translatedOpt && <CheckCircle2 className="w-6 h-6 text-blue-600" /> }
+                            </button>
+                        );
+                    })}
                     {errors[currentQ.id] && <p className="text-red-500 text-sm font-bold mt-2 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> {errors[currentQ.id]}</p>}
                     </div>
                 ) : currentQ.type === 'checkbox' ? (
                     <div className="grid gap-3">
                     {currentQ.options?.map(opt => {
-                        const isSelected = (formData as any)[currentQ.id].includes(opt);
+                        const translatedOpt = getTranslatedOption(opt);
+                        const isSelected = (formData as any)[currentQ.id].includes(translatedOpt);
                         return (
                             <button key={opt} onClick={() => {
                                 let cur = (formData as any)[currentQ.id];
                                 if (opt === 'None / No Allergens') {
-                                    // If selecting 'None', clear everything else or deselect it
-                                    cur = isSelected ? [] : ['None / No Allergens'];
-                                } else {
-                                    // If selecting something else, remove 'None'
-                                    if (!isSelected) {
-                                        cur = [...cur.filter((x: string) => x !== 'None / No Allergens'), opt];
+                                    // Handle None logic with translated string? 
+                                    // opt is English 'None ...'. translatedOpt is localized.
+                                    // If we store localized, we must check localized.
+                                    
+                                    const noneTranslated = getTranslatedOption('None / No Allergens');
+                                    
+                                    // If clicking None
+                                    if (translatedOpt === noneTranslated) {
+                                         cur = isSelected ? [] : [noneTranslated];
                                     } else {
-                                        cur = cur.filter((x: string) => x !== opt);
+                                        // If clicking something else, remove None
+                                        if (!isSelected) {
+                                            cur = [...cur.filter((x: string) => x !== noneTranslated), translatedOpt];
+                                        } else {
+                                            cur = cur.filter((x: string) => x !== translatedOpt);
+                                        }
+                                    }
+                                } else {
+                                    // Generic logic if not specific 'None' check above
+                                    // Actually the check `if (opt === 'None ...')` works because `opt` is English loop var.
+                                    
+                                    const noneTranslated = getTranslatedOption('None / No Allergens');
+                                    
+                                     if (!isSelected) {
+                                        cur = [...cur.filter((x: string) => x !== noneTranslated), translatedOpt];
+                                    } else {
+                                        cur = cur.filter((x: string) => x !== translatedOpt);
                                     }
                                 }
                                 updateFormData(currentQ.id, cur);
                             }} className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-bold text-lg flex justify-between items-center ${ isSelected ? 'border-blue-600 bg-blue-50/50 text-blue-700 shadow-md' : errors[currentQ.id] ? 'border-red-300 bg-red-50/50 text-red-800' : 'border-slate-100 hover:border-slate-200 text-slate-600' }`}>
-                                {opt}
+                                {translatedOpt}
                                 { isSelected && <CheckCircle2 className="w-6 h-6 text-blue-600" /> }
                             </button>
                         );
