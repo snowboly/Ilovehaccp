@@ -15,6 +15,17 @@
     - **Syntax Repair:** Fixed a critical syntax error in `src/data/articles.ts` where the reformatting script inadvertently stripped closing backticks from article content strings.
     - **Diagnostics:** Added `scripts/check_breweries.js` and `scripts/check_db_content.js` to verify specific content integrity in the database.
 
+### Marketing Strategy (Jan 12, 2026)
+- **Inbound Submission Targets:**
+    - **AI Directories:** There's An AI For That, Futurepedia, TopAI.tools (Priority: High, immediate traffic).
+    - **SaaS Platforms:** Product Hunt (Planned Launch), BetaList, SaaSHub.
+    - **Industry Channels:** Food Safety Magazine, LinkedIn Groups (Food Safety Professionals), Reddit (`r/foodsafety`, `r/restauranteur`).
+- **Outbound Strategy:**
+    - **Apollo.io:** Utilization of Apollo.io for targeted cold outreach.
+        - **Target:** "Food Safety Managers", "Head of Quality", "Restaurant Owners".
+        - **Filter:** Food & Beverages, Hospitality, Catering (EU/USA focus).
+        - **Offer:** Direct B2B sales for "Starter Review" and "Expert Review" tiers.
+
 ### v3.7 Content Restoration & Expansion (Jan 12, 2026)
 - **Article Restoration:**
     - **Digital vs. Paper Records:** Successfully regenerated and restored this missing 4500-word expert article (`digital-vs-paper-records`).
@@ -109,6 +120,7 @@
 - **Automated Product Labels:** Implement a module to generate compliant food product labels based on the ingredients and allergens captured in the HACCP builder. This will include nutritional facts (optional), allergen bolding, and shelf-life guidance.
 
 ## Next Steps
-1.  **Content Expansion:** Run `node scripts/generate_eu_niche_batch.js` to generate and sync the next batch of EU niche guides.
-2.  **Marketing Launch:** Execute social media and community outreach plan.
-3.  **v2.0 Scoping:** Begin technical research for the "Automated Product Labels" module.
+1.  **Submission:** Submit the site to top AI Directories (Futurepedia, There's An AI For That).
+2.  **Outreach:** Set up Apollo.io account and begin prospecting for B2B leads.
+3.  **Content Expansion:** Run `node scripts/generate_eu_niche_batch.js` to generate the next batch of EU niche guides.
+4.  **v2.0 Scoping:** Begin technical research for the "Automated Product Labels" module.
