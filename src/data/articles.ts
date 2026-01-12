@@ -4286,7 +4286,7 @@ export const articles: Article[] = [
 
 <p>To ensure the quality and safety of their products, artisanal bakeries must implement robust food safety protocols, including Hazard Analysis and Critical Control Points (HACCP) plans. By doing so, bakeries can minimize the risk of contamination, protect their customers, and maintain the integrity of their brand.</p>
 
-<p>Don't let food safety concerns hold you back from sharing your passion for artisanal baking with the world. Use our free HACCP builder to generate your plan today and take the first step towards a safer, more successful bakery.</p>,
+<p>Don't let food safety concerns hold you back from sharing your passion for artisanal baking with the world. Use our free HACCP builder to generate your plan today and take the first step towards a safer, more successful bakery.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -4430,7 +4430,7 @@ export const articles: Article[] = [
 
 <p>Use our free HACCP builder at ilovehaccp.com to generate your plan today. With our easy-to-use tool, you can quickly and easily create a customized HACCP plan that meets your specific business needs.</p>
 
-<p>Stay ahead of the competition, build customer trust, and ensure the long-term success of your burger van business. Visit ilovehaccp.com now and start building your HACCP plan today.</p>,
+<p>Stay ahead of the competition, build customer trust, and ensure the long-term success of your burger van business. Visit ilovehaccp.com now and start building your HACCP plan today.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -4562,7 +4562,7 @@ export const articles: Article[] = [
 
 <p>A well-designed HACCP plan helps to identify potential hazards, establish critical control points, and implement effective control measures to prevent foodborne illnesses. By taking a proactive approach to food safety, butcher shops can protect their reputation, reduce the risk of costly recalls, and contribute to a safer food supply chain.</p>
 
-<p>To get started on creating a customized HACCP plan, use our free HACCP builder at ilovehaccp.com to generate your plan today.</p>,
+<p>To get started on creating a customized HACCP plan, use our free HACCP builder at ilovehaccp.com to generate your plan today.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -4687,7 +4687,7 @@ export const articles: Article[] = [
 
 <p>Don't let the complexity of HACCP planning hold you back. Creating a plan has never been easier. Use our free HACCP builder at ilovehaccp.com to generate your plan today.</p>
 
-<p>Our intuitive and user-friendly tool will guide you through the process, helping you to identify hazards, determine critical control points, and develop a customized plan that meets your specific needs. Take the first step towards protecting your business and your customers - visit ilovehaccp.com and start building your HACCP plan today.</p>,
+<p>Our intuitive and user-friendly tool will guide you through the process, helping you to identify hazards, determine critical control points, and develop a customized plan that meets your specific needs. Take the first step towards protecting your business and your customers - visit ilovehaccp.com and start building your HACCP plan today.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -4858,7 +4858,7 @@ export const articles: Article[] = [
 
 <p>Don't wait – take control of food safety in your school canteen and give your students, staff, and faculty the peace of mind that comes with knowing their food is safe and healthy.</p>
 
-<p>Use our free HACCP builder at ilovehaccp.com to generate your plan today.</p>,
+<p>Use our free HACCP builder at ilovehaccp.com to generate your plan today.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -4968,7 +4968,7 @@ export const articles: Article[] = [
 
 <p>By implementing a Hazard Analysis and Critical Control Points (HACCP) system, pizza takeaways can minimize the risk of foodborne illnesses and maintain high standards of food safety. A well-designed HACCP plan helps to identify potential hazards, implement controls, and monitor procedures to guarantee the quality and safety of the food.</p>
 
-<p>Don't leave your customers' health to chance - take proactive steps to ensure their safety. Use our free HACCP builder at ilovehaccp.com to generate your plan today and give your customers the confidence to enjoy their favorite pizzas, worry-free.</p>,
+<p>Don't leave your customers' health to chance - take proactive steps to ensure their safety. Use our free HACCP builder at ilovehaccp.com to generate your plan today and give your customers the confidence to enjoy their favorite pizzas, worry-free.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -5080,7 +5080,7 @@ export const articles: Article[] = [
 
 <p>Whether you're a seasoned gelato maker or just starting out, having a well-designed HACCP plan in place is crucial for protecting your customers, your business, and your reputation. Don't wait until it's too late - take the first step towards a safer and more successful gelato or ice cream parlor today.</p>
 
-<p>Use our free HACCP builder to generate your plan today and give yourself the peace of mind that comes with knowing your products are safe and delicious for all to enjoy.</p>,
+<p>Use our free HACCP builder to generate your plan today and give yourself the peace of mind that comes with knowing your products are safe and delicious for all to enjoy.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -5218,7 +5218,7 @@ export const articles: Article[] = [
 
 <p>Don't let food safety concerns hold you back from achieving success with your food truck business. Use our free HACCP builder to generate your plan today and take the first step towards ensuring the well-being of your customers and the longevity of your business.</p>
 
-<p>With a comprehensive HACCP plan in place, you can focus on what matters most - serving delicious food and making unforgettable experiences for your customers. Use our free HACCP builder to generate your plan today.</p>,
+<p>With a comprehensive HACCP plan in place, you can focus on what matters most - serving delicious food and making unforgettable experiences for your customers. Use our free HACCP builder to generate your plan today.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -5387,7 +5387,7 @@ export const articles: Article[] = [
 
 <p>Don't let food safety concerns hold you back from capitalizing on the opportunities presented by dark kitchens and ghost kitchens. Use our free HACCP builder to generate your plan today and take the first step towards ensuring the safety and quality of your food products.</p>
 
-<p>Our easy-to-use tool will guide you through the process of identifying hazards, implementing controls, and monitoring critical points in your kitchen operations. By prioritizing food safety and compliance, you can focus on what matters most - delivering delicious and safe food to your customers. Use our free HACCP builder to generate your plan today.</p>,
+<p>Our easy-to-use tool will guide you through the process of identifying hazards, implementing controls, and monitoring critical points in your kitchen operations. By prioritizing food safety and compliance, you can focus on what matters most - delivering delicious and safe food to your customers. Use our free HACCP builder to generate your plan today.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
@@ -5509,7 +5509,7 @@ export const articles: Article[] = [
 
 <p>Don't let food safety concerns hold you back from serving the freshest, most delicious sushi to your customers. Use our free HACCP builder to generate your plan today and take the first step towards protecting your customers, your reputation, and your business.</p>
 
-<p>With a robust HACCP plan in place, you can focus on what matters most - serving exceptional sushi and providing an outstanding dining experience for your customers. Use our free HACCP builder to generate your plan today.</p>,
+<p>With a robust HACCP plan in place, you can focus on what matters most - serving exceptional sushi and providing an outstanding dining experience for your customers. Use our free HACCP builder to generate your plan today.</p>`,
     "publishedAt": "Jan 11, 2026"
   },
   {
