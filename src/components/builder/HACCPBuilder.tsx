@@ -552,8 +552,16 @@ export default function HACCPBuilder() {
     <div ref={topRef} className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans text-slate-900 scroll-mt-24">
       <AnimatePresence mode="wait">
         {step === 'intro' && (
-          <motion.div key="intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="max-w-xl w-full bg-white rounded-[2.5rem] shadow-2xl p-12 text-center space-y-8 border border-slate-100">
-            <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
+          <motion.div key="intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="max-w-xl w-full bg-white rounded-[2.5rem] shadow-2xl p-12 text-center space-y-8 border border-slate-100 relative overflow-hidden">
+            {/* Disclaimer Banner */}
+            <div className="absolute top-0 left-0 w-full bg-amber-50 border-b border-amber-100 p-3 text-center">
+                <p className="text-[10px] font-bold text-amber-800 uppercase tracking-widest flex items-center justify-center gap-2">
+                    <AlertTriangle className="w-3 h-3" />
+                    Automated Guidance • Not Legal Advice
+                </p>
+            </div>
+
+            <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto shadow-inner mt-6">
                 <ShieldCheck className="w-10 h-10 text-blue-600" />
             </div>
             <div className="space-y-3">

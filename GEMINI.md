@@ -2,6 +2,14 @@
 
 ## Implementation Status
 
+### v3.10 Content Quality & Credibility (Jan 13, 2026)
+- **Regulatory Transparency:**
+    - **Source Links:** Added direct, authoritative links to **Regulation (EC) No 852/2004** and **Codex CXC 1-1969** on the `/resources` page.
+    - **Mapping Table:** Implemented a detailed table in `/resources` explaining exactly how the tool's 7-step output maps to specific Articles (5(2)(a-g)) of EU Regulation 852/2004.
+- **Legal Exposure Management:**
+    - **Prominent Disclaimer:** Added a visible, non-dismissible "Automated Guidance • Not Legal Advice" banner to the top of the HACCP Builder (`HACCPBuilder.tsx`).
+    - **Citation Enhancements:** Updated the `Citation` component to support descriptions for better context.
+
 ### v3.9 Compliance & Liability Mitigation (Jan 13, 2026)
 - **Legal Risk Reduction:**
     - **FDA Decoupling:** Removed all specific references to the FDA, FSMA, and 21 CFR to avoid US-centric liability.
