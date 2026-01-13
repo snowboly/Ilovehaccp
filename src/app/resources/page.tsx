@@ -64,6 +64,12 @@ export default function ResourcesPage() {
                   link="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32004R0852"
                 />
                 <Citation 
+                  source="UK" 
+                  title="Retained Reg (EC) 852/2004" 
+                  desc="UK retained law on food hygiene. Mirrors EU standards post-Brexit."
+                  link="https://www.legislation.gov.uk/eur/2004/852/contents"
+                />
+                <Citation 
                   source="Codex" 
                   title="CXC 1-1969 (2020 Revision)" 
                   desc="General Principles of Food Hygiene. The global baseline for HACCP systems."

@@ -2,6 +2,11 @@
 
 ## Implementation Status
 
+### v3.11 UK Regulatory Clarity (Jan 13, 2026)
+- **UK Compliance:**
+    - **Retained Law:** Added a dedicated citation for **Retained Regulation (EC) No 852/2004** to the `/resources` page to explicitly support UK users post-Brexit.
+    - **Context:** Clarified that this mirrors EU standards, providing reassurance to UK operators.
+
 ### v3.10 Content Quality & Credibility (Jan 13, 2026)
 - **Regulatory Transparency:**
     - **Source Links:** Added direct, authoritative links to **Regulation (EC) No 852/2004** and **Codex CXC 1-1969** on the `/resources` page.
