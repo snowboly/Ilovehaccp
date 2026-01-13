@@ -96,7 +96,7 @@ export const translations = {
         review: {
           title: "Expert Review",
           price: "From €99",
-          desc: "Refresh an existing HACCP plan.",
+          desc: "Audit Support: Failed an inspection? We review & correct your plan.",
           f1: "Full Professional Review",
           f2: "Latest Regulation Update",
           f3: "Detailed Action Report",

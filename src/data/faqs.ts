@@ -4,14 +4,32 @@ export interface FAQItem {
 }
 
 export const faqs: FAQItem[] = [
+  // Regulation-Triggered (SEO Goldmine)
+  {
+    q: "Do I need a HACCP plan in the UK?",
+    a: "Yes. Under UK food hygiene law (Regulation (EC) No 852/2004), all food business operators—including restaurants, takeaways, and retailers—must have a food safety management system based on HACCP principles. For very small businesses, this can be a simple, proportionate plan like our generated drafts."
+  },
+  {
+    q: "What are the HACCP requirements under Regulation 852/2004?",
+    a: "Article 5 of Regulation 852/2004 requires you to implement a procedure based on 7 principles: hazard analysis, identifying critical control points (CCPs), establishing limits, monitoring, corrective actions, verification, and documentation."
+  },
+  {
+    q: "What does an Environmental Health Officer (EHO) look for during an inspection?",
+    a: "An EHO looks for evidence that your HACCP plan is being followed daily. This includes completed temperature logs, cleaning schedules, staff training records, and proof that you know your Critical Control Points (CCPs). A 'dusty binder' isn't enough; they need to see active monitoring."
+  },
+  {
+    q: "Does a small food business need a full HACCP plan?",
+    a: "The law requires your plan to be 'proportionate' to your size and risk. A coffee shop needs a much simpler plan than a meat processing plant. Our tool automatically scales the complexity based on your business type to ensure you aren't overwhelmed with unnecessary paperwork."
+  },
+
   // General & Legal
   {
     q: "Is a generated HACCP plan legal?",
-    a: "Yes, provided it accurately reflects your actual operations. The law requires a plan based on HACCP principles; the tool doesn't matter. However, verification by a qualified person is always recommended, and you are responsible for its implementation."
+    a: "Yes, provided it accurately reflects your actual operations. The law requires a plan based on HACCP principles; the tool used to draft it does not matter. However, the business operator is responsible for validating and implementing the plan. We recommend our Professional Review for peace of mind."
   },
   {
     q: "Does this cover me for local health inspections?",
-    a: "Our output is designed to meet international standards (Codex Alimentarius, EU Reg 852/2004). Most local health authorities align with these principles. We recommend our Professional Review addon for expert validation."
+    a: "Our output is specifically designed to meet UK and EU standards (Regulation EC 852/2004). Most local health authorities align with these principles. For businesses in the UK, it complements frameworks like 'Safer Food, Better Business' (SFBB)."
   },
   {
     q: "Do I need to sign up to generate a plan?",
