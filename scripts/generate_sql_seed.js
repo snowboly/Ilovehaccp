@@ -9,8 +9,8 @@ async function run() {
   
   const content = fs.readFileSync(tsPath, 'utf-8');
 
-  // Split by article objects
-  const blocks = content.split('  {').filter(b => b.includes('slug:'));
+  // Split by article objects (robust regex for { preceded by whitespace/newline)
+  const blocks = content.split(/\n\s*\{/).filter(b => b.includes('slug:') || b.includes('"slug":') || b.includes("'slug':"));
   console.log(`Found ${blocks.length} blocks.`);
 
   const escapeLiteral = (str) => {

@@ -30,7 +30,7 @@ async function generateArticle(title) {
       - Use <blockquote> for "Expert Insights" or "Pro-Tips".
       - Use <strong> to highlight critical concepts, temperatures, or regulations.
       - Ensure there is a logical flow from introduction to actionable conclusion.
-      - Cite standards like Codex Alimentarius or FDA (21 CFR) where relevant.
+      - Cite standards like Codex Alimentarius where relevant.
       
       Output Format: JSON ONLY. No markdown fencing around the JSON.
       {

@@ -324,7 +324,10 @@ const HACCPDocument = ({ data, dict, logo, template = 'Minimal' }: Props) => {
         </View>
         
         <View style={{ position: 'absolute', bottom: 40 }}>
-            <Text style={{ fontSize: 8, color: '#9CA3AF' }}>{dict.disclaimer}</Text>
+            <Text style={{ fontSize: 8, color: '#9CA3AF', textAlign: 'center', paddingHorizontal: 40 }}>
+              This document is a generated draft based on provided inputs. It is designed for guidance only and does not constitute a legal certification. 
+              The operator is solely responsible for validating all critical limits, hazards, and procedures against local regulations before operational use.
+            </Text>
         </View>
       </Page>
 

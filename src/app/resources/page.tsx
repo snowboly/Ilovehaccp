@@ -46,18 +46,13 @@ export default function ResourcesPage() {
             <div>
               <h2 className="text-3xl font-black text-slate-900 mb-6 tracking-tight italic uppercase">Expert Editorial Integrity</h2>
               <p className="text-slate-600 mb-8 leading-relaxed text-lg font-medium">
-                Our knowledge base is curated by lead auditors and food microbiologists. Every article is cross-referenced with Codex Alimentarius and FDA guidelines to ensure operational accuracy.
+                Our knowledge base is curated by lead auditors and food microbiologists. Every article is cross-referenced with Codex Alimentarius to ensure operational accuracy.
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <Citation 
                   source="Codex" 
                   title="General Principles of Food Hygiene" 
                   link="https://www.fao.org/fao-who-codexalimentarius"
-                />
-                <Citation 
-                  source="FSMA" 
-                  title="FDA Preventive Controls for Human Food" 
-                  link="https://www.fda.gov/food"
                 />
               </div>
             </div>

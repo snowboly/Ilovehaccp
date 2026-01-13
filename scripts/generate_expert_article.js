@@ -74,7 +74,7 @@ async function generateOutline(title, persona) {
     Requirements:
     - The article must be a "definitive guide".
     - The outline must have at least 15-20 detailed sections/subsections.
-    - Include sections for: Regulatory Frameworks (FDA/EU), Scientific Foundations, Implementation Challenges, Technological Advancements, and Future Outlook.
+    - Include sections for: Regulatory Frameworks (International/EU), Scientific Foundations, Implementation Challenges, Technological Advancements, and Future Outlook.
     - Structure it like a professional whitepaper or a lead article in Food Safety Magazine.
     
     Output Format: JSON ONLY.

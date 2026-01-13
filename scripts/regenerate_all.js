@@ -32,8 +32,8 @@ const PERSONAS = [
   }
 ];
 
-const FDA_CONTEXT = `
-CORE HACCP PRINCIPLES (FDA/CODEX):
+const HACCP_CONTEXT = `
+CORE HACCP PRINCIPLES (CODEX ALIMENTARIUS):
 1. Conduct a hazard analysis. (Biological, Chemical, Physical).
 2. Determine Critical Control Points (CCPs).
 3. Establish Critical Limits.
@@ -97,7 +97,7 @@ async function generateOutline(title, persona) {
   console.log(`Generating exhaustive outline for "${title}"...`);
   const prompt = `
     You are ${persona.role}.
-    Context: ${FDA_CONTEXT}
+    Context: ${HACCP_CONTEXT}
     Task: Create a definitive, high-authority outline for a ${WORD_COUNT_TARGET}-word article titled "${title}".
     
     Requirements:

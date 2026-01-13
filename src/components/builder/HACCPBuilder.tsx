@@ -784,7 +784,7 @@ export default function HACCPBuilder() {
                 </div>
             </div>
             <div className="space-y-4">
-                <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-slate-900">Compliance Engine Active</h2>
+                <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-slate-900">Standardization Engine Active</h2>
                 <div className="bg-slate-900 text-emerald-400 font-mono p-8 rounded-[2rem] text-left border border-slate-800 shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500"></div>
                     <div className="flex items-center gap-3 animate-pulse">

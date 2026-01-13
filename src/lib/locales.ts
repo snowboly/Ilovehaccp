@@ -17,14 +17,14 @@ export const translations = {
         badge: "Rated #1 Food Safety Tool",
         titlePart1: "Create a HACCP Plan in Minutes —",
         titlePart2: "Without Consultants or Spreadsheets",
-        subtitle: "Create a compliant HACCP plan in minutes. Professional food safety tools for restaurants, manufacturers, and catering.",
-        check1: "Compliant",
+        subtitle: "Create a HACCP plan in minutes. Professional food safety tools for restaurants, manufacturers, and catering.",
+        check1: "Aligns with Standards",
         check2: "Custom to your business",
         check3: "Free to start",
         cta: "Build Your Plan Free",
         auditReady: "Audit Ready",
         validated: "Validated Logic",
-        compliance: { fda: "EC 852/2004", eu: "UK FSA Standards", codex: "Codex CXC 1-1969" }
+        compliance: { standard_1: "EC 852/2004", eu: "UK FSA Standards", codex: "Codex CXC 1-1969" }
       },
       audience: {
         title: "Is iLoveHACCP Right for You?",
@@ -61,7 +61,7 @@ export const translations = {
       howItWorks: {
         badge: "Simple Process",
         title: "How It Works",
-        subtitle: "Go from blank page to fully compliant in three simple steps.",
+        subtitle: "Go from blank page to audit-ready in three simple steps.",
         s1_title: "1. Answer questions",
         s1_desc: "Answer a few questions about your food business and processes.",
         s2_title: "2. Plan generated",
@@ -71,7 +71,7 @@ export const translations = {
         cta: "Start Your Plan Now"
       },
       pricing: {
-        title: "Choose Your Compliance Level",
+        title: "Choose Your Plan Level",
         subtitle: "From a quick readiness check to a fully validated professional system.",
         free: {
           title: "Free Plan",
@@ -114,7 +114,7 @@ export const translations = {
         }
       },
       finalCta: {
-        title: "Ready to get compliant?",
+        title: "Ready to start?",
         btn: "Create Your Free Plan",
         sub: "No credit card required. Cancel anytime."
       }
@@ -126,7 +126,7 @@ export const translations = {
     },
     wizard: {
       title: "Let's Build Your HACCP Plan",
-      subtitle: "Answer a few questions and our tool will draft a complete, compliance-ready document.",
+      subtitle: "Answer a few questions and our tool will draft a complete, standard-aligned document.",
       reassurance: "No HACCP knowledge needed. You can skip questions or edit later.",
       start: "Start Builder",
       next: "Next",
@@ -384,7 +384,7 @@ export const translations = {
         cta: "Cree su Plan Gratis",
         auditReady: "Listo para Auditoría",
         validated: "Lógica Validada",
-        compliance: { fda: "Cumple con FDA", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
+        compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
         title: "¿Es iLoveHACCP adecuado para usted?",
@@ -744,7 +744,7 @@ export const translations = {
         cta: "Créer votre Plan Gratuit",
         auditReady: "Prêt pour Audit",
         validated: "Logique Validée",
-        compliance: { fda: "Conforme FDA", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
+        compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
         title: "iLoveHACCP est-il fait pour vous ?",
@@ -1104,7 +1104,7 @@ export const translations = {
         cta: "Criar Plano Grátis",
         auditReady: "Pronto para Auditoria",
         validated: "Lógica Validada",
-        compliance: { fda: "Compatível com FDA", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
+        compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
         title: "O iLoveHACCP é ideal para si?",

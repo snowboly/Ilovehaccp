@@ -2,6 +2,17 @@
 
 ## Implementation Status
 
+### v3.9 Compliance & Liability Mitigation (Jan 13, 2026)
+- **Legal Risk Reduction:**
+    - **FDA Decoupling:** Removed all specific references to the FDA, FSMA, and 21 CFR to avoid US-centric liability.
+    - **Compliance Language:** Replaced absolute claims like "Compliant" and "Guaranteed" with softer terms like "Aligns with Standards" and "Standardization".
+    - **Disclaimers:** Added a robust "No Legal Advice & No Guarantee" section to the Terms of Service and a prominent disclaimer to the PDF cover page.
+- **Content Sanitization:**
+    - **Article Cleanup:** Removed articles with heavy FDA focus (`fda-vs-eu-regulations`, `haccp-and-fda-fsma-what-food-businesses-must-know`).
+    - **Global Replacements:** Replaced FDA-specific terms with generic international equivalents (e.g., "Regulatory Authorities", "Food Safety Authority") across all 76 articles.
+- **Auditor Rigor:**
+    - **Transparency:** Added explanations to the homepage about how the tool uses Codex-based decision trees and pre-validated critical limits to meet auditor expectations.
+
 ### v3.8 Formatting & Database Integrity (Jan 12, 2026)
 - **Formatting Overhaul:**
     - **Header Standardization:** Converted all `### Header` and `<p>### Header</p>` patterns to standard `<h3>Header</h3>` HTML tags across all articles.

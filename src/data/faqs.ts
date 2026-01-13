@@ -11,7 +11,7 @@ export const faqs: FAQItem[] = [
   },
   {
     q: "Does this cover me for local health inspections?",
-    a: "Our output is designed to meet international standards (Codex Alimentarius, FDA, EU Reg 852/2004). Most local health authorities align with these principles. We recommend our Professional Review addon for guaranteed local compliance."
+    a: "Our output is designed to meet international standards (Codex Alimentarius, EU Reg 852/2004). Most local health authorities align with these principles. We recommend our Professional Review addon for expert validation."
   },
   {
     q: "Do I need to sign up to generate a plan?",
@@ -39,7 +39,7 @@ export const faqs: FAQItem[] = [
   // Pricing & Billing
   {
     q: "What is included in the €79 Starter Review?",
-    a: "The Starter Review package includes full access to our builder tool, unlimited edits, PDF export, and a standard review of your plan by one of our food safety experts to ensure basic compliance."
+    a: "The Starter Review package includes full access to our builder tool, unlimited edits, PDF export, and a standard review of your plan by one of our food safety experts to ensure alignment with standards."
   },
   {
     q: "Do you offer refunds?",
