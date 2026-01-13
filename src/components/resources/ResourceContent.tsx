@@ -6,12 +6,14 @@ import { supabase } from '@/lib/supabase';
 import { articles as localArticles } from '@/data/articles';
 import ResourceTabs from '@/components/resources/ResourceTabs';
 
-export default function ResourceContent() {
-  const [articles, setArticles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function ResourceContent({ initialArticles = [] }: { initialArticles?: any[] }) {
+  const [articles, setArticles] = useState<any[]>(initialArticles);
+  const [loading, setLoading] = useState(initialArticles.length === 0);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
+    if (initialArticles.length > 0) return;
+
     async function fetchArticles() {
       const { data, error } = await supabase
         .from('articles')

@@ -29,7 +29,8 @@ const STATIC_ROUTES = [
     '/terms',
     '/cookies',
     '/refund-policy',
-    '/faqs'
+    '/faqs',
+    '/requirements-eu-uk'
 ];
 
 async function generate() {

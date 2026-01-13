@@ -1,7 +1,10 @@
 import { BookOpen, ShieldCheck } from 'lucide-react';
 import ResourceContent from '@/components/resources/ResourceContent';
+import IndustryDirectory from '@/components/resources/IndustryDirectory';
 import JSONLD from '@/components/layout/JSONLD';
 import { Metadata } from 'next';
+import { supabase } from '@/lib/supabase';
+import { articles as localArticles } from '@/data/articles';
 
 export const metadata: Metadata = {
   title: 'Food Safety Knowledge Base | HACCP Guides & Regulations',
@@ -9,7 +12,15 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.ilovehaccp.com/resources' }
 };
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  // Server-side fetch for SEO
+  const { data: dbArticles } = await supabase
+    .from('articles')
+    .select('slug, title, category, excerpt, read_time, image, published_at')
+    .order('created_at', { ascending: false });
+
+  const allArticles = dbArticles && dbArticles.length > 0 ? dbArticles : localArticles;
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -31,9 +42,11 @@ export default function ResourcesPage() {
             Everything you need to understand HACCP, compliance, and audit readiness.
           </p>
           
-          <ResourceContent />
+          <ResourceContent initialArticles={allArticles} />
         </div>
       </div>
+
+      <IndustryDirectory articles={allArticles} />
 
       <div className="container mx-auto px-4 pb-12">
         {/* Regulatory Mapping & Standards */}
