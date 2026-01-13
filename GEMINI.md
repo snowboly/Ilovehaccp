@@ -2,6 +2,15 @@
 
 ## Implementation Status
 
+### v3.12 Privacy & Security Compliance (Jan 13, 2026)
+- **Privacy Policy Enhancements:**
+    - **Data Retention:** Defined explicit timelines for account data (indefinite for active, 30-day purge for deleted).
+    - **Transparency:** Explicitly named **Groq Inc.** and **OpenAI** as technology partners with links to their respective privacy/security policies.
+    - **User Rights:** Expanded GDPR/CCPA section with clear instructions for Subject Access Requests (SAR).
+- **Terms of Service Enhancements:**
+    - **Data Security Section:** Added Section 6 detailing encryption standards (TLS 1.3, AES-256), RLS access controls, and a 72-hour incident notification commitment.
+    - **Renumbering:** Systematically updated all subsequent sections (up to 16) to maintain logical flow.
+
 ### v3.11 UK Regulatory Clarity (Jan 13, 2026)
 - **UK Compliance:**
     - **Retained Law:** Added a dedicated citation for **Retained Regulation (EC) No 852/2004** to the `/resources` page to explicitly support UK users post-Brexit.

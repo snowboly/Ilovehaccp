@@ -233,9 +233,9 @@ function DashboardContent() {
                     New Service
                 </div>
                 <h2 className="text-2xl font-black mb-2">Have an old HACCP plan?</h2>
-                <p className="text-slate-300 max-w-xl">
-                    Get it reviewed by our certified experts. We'll update it to align with the latest 2026 standards (International/EU) and provide a detailed action report.
-                </p>
+          <p className="text-slate-500 max-w-lg mb-6 leading-relaxed">
+            Get it reviewed by our certified experts. We&apos;ll update it to align with the latest 2026 standards (EU & UK) and provide a detailed action report.
+          </p>
             </div>
             <Link 
                 href="/contact?subject=Review" 

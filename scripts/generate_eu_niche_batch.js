@@ -144,8 +144,8 @@ async function generateArticle(niche) {
 }
 
 async function main() {
-    // Process batch 3 (indices 10 to 14)
-    for (let i = 10; i < 15; i++) {
+    // Process remaining niches (indices 11 to 19)
+    for (let i = 11; i < 20; i++) {
         await generateArticle(NICHES[i]);
         await sleep(2000); // Respect rate limits
     }

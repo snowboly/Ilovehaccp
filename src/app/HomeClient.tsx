@@ -156,7 +156,7 @@ export default function Home() {
                   <span className="text-blue-600">Zero Shortcuts.</span>
                 </h2>
                 <p className="text-xl text-slate-600 leading-relaxed font-medium mb-10">
-                  Our intelligence engine isn't just generating text—it's executing a logical risk assessment based on the global gold standards of food safety.
+                  Our intelligence engine isn't just generating text—it's executing a logical risk assessment based on strict EU and UK food safety standards.
                 </p>
                 
                 <div className="grid gap-6">

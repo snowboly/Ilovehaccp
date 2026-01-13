@@ -18,11 +18,7 @@ const merriweather = Merriweather({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.ilovehaccp.com'),
-  title: {
-    default: "iLoveHACCP | Free HACCP Plan Generator & Food Safety Tools",
-    template: "%s | iLoveHACCP"
-  },
-  description: "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP.",
+  description: "Free online HACCP tool for food businesses in the UK & Europe. Build compliant HACCP plans and prepare for audits with iLoveHACCP.",
   keywords: ["HACCP", "Food Safety", "HACCP Plan Generator", "Food Hygiene", "Restaurant Compliance"],
   authors: [{ name: "iLoveHACCP Team" }],
   robots: {
@@ -55,7 +51,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'iLoveHACCP | Food Safety Plans',
-    description: "Free online HACCP tool for food businesses. Build HACCP plans, manage compliance, and prepare for audits with iLoveHACCP.",
+    description: "Free online HACCP tool for food businesses in the UK & Europe. Build compliant HACCP plans and prepare for audits with iLoveHACCP.",
     images: ['/og-image.jpg'],
   },
   icons: {

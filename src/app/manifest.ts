@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'iLoveHACCP',
     short_name: 'iLoveHACCP',
-    description: 'Professional HACCP plan generator for food businesses.',
+    description: 'Professional HACCP plan generator for UK & EU food businesses.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

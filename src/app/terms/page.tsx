@@ -32,7 +32,7 @@ export default function TermsPage() {
           You acknowledge that:
         </p>
         <ul className="list-disc pl-6 mb-4 space-y-2">
-          <li><strong>Local Variation:</strong> Food safety regulations vary significantly by jurisdiction (country, state, county). Our automated tools use general international principles (Codex Alimentarius) which may not satisfy your specific local health authority requirements.</li>
+          <li><strong>Regulatory Scope:</strong> This tool is designed exclusively for food businesses operating under <strong>EU Regulation (EC) No 852/2004</strong> and applicable <strong>UK retained food law</strong>. It may not satisfy regulatory requirements for businesses operating outside these jurisdictions (e.g., FDA/USDA in the USA).</li>
           <li><strong>Operator Responsibility:</strong> You are solely responsible for validating the generated plan against your actual operations, verifying critical limits, and ensuring all hazards are adequately controlled.</li>
           <li><strong>Professional Review:</strong> We strongly recommend having your final plan reviewed by a qualified local food safety consultant or environmental health officer before operational use.</li>
         </ul>
@@ -108,6 +108,22 @@ export default function TermsPage() {
 
             <Section 
               number="6"
+              title="Data Security"
+              content={
+                <p>
+                  We implement industry-standard security measures to protect your data:
+                  <ul className="list-disc pl-5 mt-4 space-y-2">
+                    <li><strong>Encryption:</strong> All data is encrypted in transit via TLS 1.3 and at rest using AES-256 standards.</li>
+                    <li><strong>Access Controls:</strong> We use strict Row Level Security (RLS) to ensure you can only access your own data. Employee access to user data is restricted to essential support personnel and is logged.</li>
+                    <li><strong>Incident Response:</strong> In the event of a data breach, we will notify affected users within 72 hours of confirmation, in accordance with GDPR requirements.</li>
+                  </ul>
+                </p>
+              }
+              summary="We encrypt everything and lock it down. If hackers get in, we'll tell you immediately."
+            />
+
+            <Section 
+              number="7"
               title="Idea Submission"
               content={
                 <p>
@@ -118,7 +134,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="7"
+              number="8"
               title="Termination of Use"
               content={
                 <p>
@@ -129,7 +145,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="8"
+              number="9"
               title="No Guarantee of Compliance"
               content={
         <p className="mb-4">
@@ -140,7 +156,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="9"
+              number="10"
               title="Food Safety Liability Waiver"
               content={
                 <p>
@@ -151,7 +167,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="10"
+              number="11"
               title="Indemnification"
               content={
                 <p>
@@ -162,7 +178,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="11"
+              number="12"
               title="Warranties and Liability"
               content={
                 <>
@@ -179,7 +195,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="12"
+              number="13"
               title="Export Restrictions & Legal Compliance"
               content={
                 <p>
@@ -190,7 +206,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="13"
+              number="14"
               title="Language"
               content={
                 <p>
@@ -201,7 +217,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="14"
+              number="15"
               title="Choice of Law and Jurisdiction"
               content={
                 <p>
@@ -212,7 +228,7 @@ export default function TermsPage() {
             />
 
             <Section 
-              number="15"
+              number="16"
               title="Contact Information"
               content={
                 <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
@@ -233,8 +249,9 @@ export default function TermsPage() {
                   <a href="#" className="block hover:text-blue-600 transition-colors">Technology Disclaimer</a>
                   <a href="#" className="block hover:text-blue-600 transition-colors">3. Intellectual Property</a>
                   <a href="#" className="block hover:text-blue-600 transition-colors">5. Responsible Use</a>
-                  <a href="#" className="block hover:text-blue-600 transition-colors">8. Liability</a>
-                  <a href="#" className="block hover:text-blue-600 transition-colors">11. Jurisdiction</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">6. Data Security</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">9. Liability</a>
+                  <a href="#" className="block hover:text-blue-600 transition-colors">15. Jurisdiction</a>
                 </nav>
               </div>
               

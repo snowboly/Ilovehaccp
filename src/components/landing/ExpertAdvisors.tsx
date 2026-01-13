@@ -14,7 +14,7 @@ const experts = [
   {
     name: "Dr. Margarida",
     role: "Head of Compliance",
-    bio: "Overseeing global regulatory alignment and audit standards for all generated plans.",
+    bio: "Overseeing EU & UK regulatory alignment and audit standards for all generated plans.",
     image: "/team/margarida.svg",
     badge: "Compliance"
   },

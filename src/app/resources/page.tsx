@@ -48,7 +48,7 @@ export default function ResourcesPage() {
               <div>
                 <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight uppercase">Regulatory Standards & Mapping</h2>
                 <p className="text-slate-600 text-lg font-medium leading-relaxed max-w-3xl">
-                  Our system logic is rigorously mapped to international food safety frameworks. We provide direct access to the source texts for full transparency.
+                  Our system logic is rigorously mapped to EU and UK regulatory frameworks. We provide direct access to the source texts for full transparency.
                 </p>
               </div>
             </div>
@@ -72,7 +72,7 @@ export default function ResourcesPage() {
                 <Citation 
                   source="Codex" 
                   title="CXC 1-1969 (2020 Revision)" 
-                  desc="General Principles of Food Hygiene. The global baseline for HACCP systems."
+                  desc="General Principles of Food Hygiene. The foundational baseline for HACCP systems."
                   link="https://www.fao.org/fao-who-codexalimentarius/sh-proxy/en/?lnk=1&url=https%253A%252F%252Fworkspace.fao.org%252Fsites%252Fcodex%252FStandards%252FCXC%2B1-1969%252FCXC_001e.pdf"
                 />
               </div>

@@ -162,7 +162,7 @@ export default function HACCPBuilder() {
     businessLegalName: '',
     tradingName: '',
     country: '',
-    regulation: 'Codex Alimentarius',
+    regulation: 'EU Regulation 852/2004',
     businessType: 'Restaurant',
     employeeCount: '',
     productionScale: 'Small (<100 meals/day)',
@@ -308,7 +308,7 @@ export default function HACCPBuilder() {
   const questions = [
     // 1. Identity
     { id: 'businessLegalName', section: 'Identity', question: "What is your business legal name?", type: 'text', icon: <Building2 />, required: true },
-    { id: 'country', section: 'Region', question: "In which country do you operate?", type: 'text', icon: <Globe />, required: true },
+    { id: 'country', section: 'Region', question: "In which country do you operate?", description: "Optimized for UK & EU member states.", type: 'text', icon: <Globe />, required: true },
     { id: 'businessType', section: 'Sector', question: "Select your business type", type: 'radio', options: ['Restaurant', 'Bakery', 'Butcher Shop', 'Cafe / Coffee Shop', 'Food Manufacturer', 'Catering Service', 'Food Truck / Mobile Unit', 'Hotel Kitchen', 'School / Canteen', 'Hospital Kitchen', 'Ghost Kitchen'], icon: <Briefcase />, required: true },
     
     // 2. Inventory

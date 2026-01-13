@@ -69,27 +69,34 @@ export default function PrivacyPage() {
               content={
                 <>
                   <p>
-                    We use trusted third-party APIs to power our intelligence. When you click "Generate":
+                    To generate your HACCP plans, we securely transmit limited text prompts to our AI inference partners. We currently utilize:
                   </p>
                   <ul className="list-disc pl-5 space-y-2 mt-2">
-                    <li>Your text prompt is sent securely (TLS 1.3 encryption) to our inference partners (Groq Inc. or OpenAI).</li>
-                    <li>These partners are contractually bound <strong>not</strong> to retain your data for model training.</li>
-                    <li>Your data is ephemeral in their systems and persists only long enough to return the response.</li>
+                    <li><strong>Groq Inc.:</strong> For high-speed inference. <a href="https://groq.com/privacy/" target="_blank" rel="noreferrer">Groq Privacy Policy</a>.</li>
+                    <li><strong>OpenAI:</strong> For advanced reasoning tasks. Data is processed via their API Platform which is distinct from ChatGPT and does not use data for training. <a href="https://openai.com/enterprise-privacy" target="_blank" rel="noreferrer">OpenAI Enterprise Privacy</a>.</li>
                   </ul>
+                  <p className="mt-4">
+                    <strong>Zero-Training Guarantee:</strong> Both partners are contractually prohibited from using data sent via our API integrations for model training or improvement. Your operational secrets remain yours.
+                  </p>
                 </>
               }
-              summary="We send your text to our secure partners to get the result, but they aren't allowed to keep it or learn from it."
+              summary="We use Groq and OpenAI to process your data. They are under strict contract NOT to learn from your inputs."
             />
 
             <Section 
               number="4"
-              title="Data Retention"
+              title="Data Retention Policy"
               content={
                 <p>
-                  We store your generated plans in your secure dashboard indefinitely so you can access, edit, and re-download them. You may request the deletion of your account and all associated data at any time by contacting support or using the delete function in your dashboard.
+                  We retain your personal information and generated plans for as long as your account is active or as needed to provide you the Service.
+                  <ul className="list-disc pl-5 space-y-2 mt-2">
+                    <li><strong>Active Accounts:</strong> Plans are stored indefinitely to allow for editing and re-downloading.</li>
+                    <li><strong>Deleted Accounts:</strong> Upon request, your account data is logically deleted immediately and permanently purged from our backups within 30 days.</li>
+                    <li><strong>Inactive Accounts:</strong> Accounts inactive for over 24 months may be subject to automated deletion after email notification.</li>
+                  </ul>
                 </p>
               }
-              summary="We keep your plans until you tell us to delete them."
+              summary="We keep your plans while you need them. If you delete your account, they're gone from our servers within 30 days."
             />
 
             <Section 
@@ -97,17 +104,19 @@ export default function PrivacyPage() {
               title="Your Rights (GDPR & CCPA)"
               content={
                 <p>
-                  Under laws like GDPR and CCPA, you have the right to:
+                  We are committed to full compliance with the General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA). You have the right to:
                   <ul className="list-disc pl-5 space-y-2 mt-2">
-                    <li><strong>Access</strong> all data we hold on you.</li>
-                    <li><strong>Rectify</strong> any errors in your data.</li>
-                    <li><strong>Erase</strong> ("Right to be Forgotten") all your data.</li>
-                    <li><strong>Export</strong> your data in a portable format.</li>
+                    <li><strong>Access:</strong> Request a copy of all personal data we hold about you (Subject Access Request).</li>
+                    <li><strong>Rectification:</strong> Correct any inaccurate or incomplete data in your profile.</li>
+                    <li><strong>Erasure:</strong> Request the permanent deletion of your account and data ("Right to be Forgotten").</li>
+                    <li><strong>Portability:</strong> Receive your data in a structured, machine-readable format (JSON/CSV).</li>
                   </ul>
-                  To exercise these rights, simply email support@ilovehaccp.com.
+                  <p className="mt-4">
+                    To exercise any of these rights, please email our Data Protection Officer at <a href="mailto:support@ilovehaccp.com">support@ilovehaccp.com</a> with the subject line "Privacy Request". We will respond to all valid requests within 30 days.
+                  </p>
                 </p>
               }
-              summary="You own your data. You can see it, fix it, or delete it whenever you want."
+              summary="You own your data. Email us to see it, fix it, or delete it. We'll handle it within a month."
             />
 
             <Section 

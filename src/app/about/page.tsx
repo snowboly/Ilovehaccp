@@ -20,7 +20,7 @@ const team = [
     name: "Dr. Margarida",
     role: "Head of Compliance",
     image: "/team/margarida.svg",
-    bio: "Overseeing global regulatory alignment and audit standards.",
+    bio: "Overseeing EU & UK regulatory alignment and audit standards.",
     details: "Ensures every generated plan meets the strictest BRCGS/SQF criteria.",
     badge: "Compliance"
   },
@@ -68,7 +68,7 @@ export default function AboutPage() {
           </h1>
           <div className="max-w-3xl space-y-6">
             <p className="text-2xl text-slate-600 font-medium leading-relaxed">
-                At ilovehaccp.com, our mission is to democratize food safety compliance by making it clear, achievable, and automated for food businesses worldwide.
+                At ilovehaccp.com, our mission is to democratize food safety compliance by making it clear, achievable, and automated for food businesses across the UK and Europe.
             </p>
             <p className="text-lg text-slate-500 leading-relaxed">
                 We bridge the gap between rigorous scientific standards and operational reality. By combining the speed of precision technology with the rigour of certified Lead Auditors, we empower businesses—from local restaurants to industrial processors—with strategic solutions that safeguard public health and business continuity.
@@ -165,7 +165,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-widest mb-6">
-              <Users className="w-4 h-4" /> Global Expert Network
+              <Users className="w-4 h-4" /> Expert Network
             </div>
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">Who Stands Behind the Platform?</h2>
             <p className="text-lg text-slate-500 font-medium">

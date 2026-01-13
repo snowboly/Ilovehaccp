@@ -58,7 +58,7 @@ function highlightListTerms(html: string) {
 
 const PERSONAS: Record<string, any> = {
   "Dr. Joao": { name: "Dr. Joao", role: "Scientific Lead & Founder", bio: "The scientific visionary behind our tool logic.", image: "/team/joao.svg" },
-  "Dr. Margarida": { name: "Dr. Margarida", role: "Head of Compliance", bio: "Overseeing global regulatory alignment and audit standards.", image: "/team/margarida.svg" },
+  "Dr. Margarida": { name: "Dr. Margarida", role: "Head of Compliance", bio: "Overseeing EU & UK regulatory alignment and audit standards.", image: "/team/margarida.svg" },
   "Dr. Fabio": { name: "Dr. Fabio", role: "Lead Auditor", bio: "Ensuring practical applicability and audit readiness on the factory floor.", image: "/team/fabio.svg" },
   "Dr. Claudia": { name: "Dr. Claudia", role: "Technical Lead", bio: "Driving the technological innovation behind our hazard analysis engine.", image: "/team/claudia.svg" },
   "Dr. Isabel": { name: "Dr. Isabel", role: "Head of Ops", bio: "Managing operational excellence and customer success frameworks.", image: "/team/isabel.svg" }
