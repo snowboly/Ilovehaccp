@@ -316,16 +316,21 @@ const HACCPDocument = ({ data, dict, logo, template = 'Minimal' }: Props) => {
               <Text style={styles.coverLabel}>{dict.date_issue}:</Text>
               <Text style={styles.coverValue}>{today}</Text>
             </View>
-          <View style={styles.coverMetaRow}>
-            <Text style={styles.coverLabel}>{dict.standard}</Text>
-            <Text style={styles.coverValue}>EC Regulation 852/2004 / Codex</Text>
-          </View>
+            <View style={styles.coverMetaRow}>
+              <Text style={styles.coverLabel}>Regulatory Standard:</Text>
+              <Text style={{ ...styles.coverValue, fontWeight: 'bold' }}>EC Regulation 852/2004</Text>
+            </View>
+            <View style={styles.coverMetaRow}>
+              <Text style={styles.coverLabel}>Scientific Basis:</Text>
+              <Text style={styles.coverValue}>Codex Alimentarius (CXC 1-1969)</Text>
+            </View>
         </View>
         </View>
         
         <View style={{ position: 'absolute', bottom: 40 }}>
             <Text style={{ fontSize: 8, color: '#9CA3AF', textAlign: 'center', paddingHorizontal: 40 }}>
               This document is a generated draft based on provided inputs. It is designed for guidance only and does not constitute a legal certification. 
+              This platform is not intended for compliance with United States FDA or FSMA requirements.
               The operator is solely responsible for validating all critical limits, hazards, and procedures against local regulations before operational use.
             </Text>
         </View>

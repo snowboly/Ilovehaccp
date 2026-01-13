@@ -32,7 +32,7 @@ export default function TermsPage() {
           You acknowledge that:
         </p>
         <ul className="list-disc pl-6 mb-4 space-y-2">
-          <li><strong>Regulatory Scope:</strong> This tool is designed exclusively for food businesses operating under <strong>EU Regulation (EC) No 852/2004</strong> and applicable <strong>UK retained food law</strong>. It may not satisfy regulatory requirements for businesses operating outside these jurisdictions (e.g., FDA/USDA in the USA).</li>
+          <li><strong>Regulatory Scope:</strong> This tool is designed exclusively for food businesses operating under <strong>EU Regulation (EC) No 852/2004</strong> and applicable <strong>UK retained food law</strong>. This platform is not intended for compliance with United States FDA or FSMA requirements. It may not satisfy regulatory requirements for businesses operating outside these jurisdictions.</li>
           <li><strong>Operator Responsibility:</strong> You are solely responsible for validating the generated plan against your actual operations, verifying critical limits, and ensuring all hazards are adequately controlled.</li>
           <li><strong>Professional Review:</strong> We strongly recommend having your final plan reviewed by a qualified local food safety consultant or environmental health officer before operational use.</li>
         </ul>

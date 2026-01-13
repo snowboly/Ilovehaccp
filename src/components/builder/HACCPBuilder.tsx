@@ -557,7 +557,7 @@ export default function HACCPBuilder() {
             <div className="absolute top-0 left-0 w-full bg-amber-50 border-b border-amber-100 p-3 text-center">
                 <p className="text-[10px] font-bold text-amber-800 uppercase tracking-widest flex items-center justify-center gap-2">
                     <AlertTriangle className="w-3 h-3" />
-                    Automated Guidance • Not Legal Advice
+                    Automated Guidance • Not Legal Advice • No FDA/FSMA Compliance
                 </p>
             </div>
 

@@ -162,7 +162,7 @@ export default function Home() {
                 <div className="grid gap-6">
                   {[{
                     "title": "Codex Alimentarius",
-                    "desc": "Logic mapped to the CXC 1-1969 General Principles of Food Hygiene."
+                    "desc": "Scientific logic based on the CXC 1-1969 General Principles of Food Hygiene."
                   }, {
                     "title": "Auditor-Ready Structure",
                     "desc": "Output follows the standard 7-principle format expected by Environmental Health Officers."

@@ -129,7 +129,7 @@ export default function AboutPage() {
             <PillarCard 
                 icon={<Target className="w-8 h-8" />}
                 title="PRECISION"
-                desc="Our precision engine is trained on Codex Alimentarius standards, ensuring every hazard is correctly identified at a molecular level."
+                desc="Our precision engine is built upon the scientific framework of Codex Alimentarius, ensuring every hazard is correctly identified at a molecular level."
             />
             <PillarCard 
                 icon={<Lightbulb className="w-8 h-8" />}
