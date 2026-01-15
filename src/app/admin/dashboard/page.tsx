@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { 
     Loader2, FileText, Download, ShieldAlert, CheckCircle2, XCircle, 
     Eye, AlertTriangle, Send, LayoutDashboard, FileCheck, Files, 
-    Users, Clock, Search, ChevronRight, Save
+    Users, Clock, Search, ChevronRight, Save, ChevronLeft
 } from 'lucide-react';
 
 // --- Types ---
@@ -24,8 +24,14 @@ export default function AdminDashboard() {
   const [logs, setLogs] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
 
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
   // Review Workspace State
   const [selectedReviewPlan, setSelectedReviewPlan] = useState<any>(null); // For Review Detail View
+  const [loadingReview, setLoadingReview] = useState(false); // New: loading state for single plan fetch
   const [reviewComment, setReviewComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -36,17 +42,17 @@ export default function AdminDashboard() {
     const checkAuth = async () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) { router.push('/login'); return; }
-        fetchData('overview'); // Load overview by default
+        fetchData('overview', 1); // Load overview by default
     };
     checkAuth();
   }, []);
 
-  // Fetch Data based on View
+  // Fetch Data based on View or Page Change
   useEffect(() => {
-      fetchData(activeView);
-  }, [activeView]);
+      fetchData(activeView, page);
+  }, [activeView, page]);
 
-  const fetchData = async (view: ViewState) => {
+  const fetchData = async (view: ViewState, currentPage: number) => {
     setLoading(true);
     try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -58,16 +64,18 @@ export default function AdminDashboard() {
             if (!res.ok) throw new Error('Failed to fetch stats');
             const data = await res.json();
             setStats(data.stats);
-            // Also fetch recent plans for activity list
-            const plansRes = await fetch('/api/admin/plans', { headers });
+            // Also fetch recent plans for activity list (Page 1 always)
+            const plansRes = await fetch('/api/admin/plans?limit=5', { headers });
             const plansData = await plansRes.json();
             setPlans(plansData.plans || []);
         }
         else if (view === 'reviews' || view === 'plans') {
-            const res = await fetch('/api/admin/plans', { headers });
+            const res = await fetch(`/api/admin/plans?page=${currentPage}&limit=20`, { headers });
             if (!res.ok) throw new Error('Failed to fetch plans');
             const data = await res.json();
             setPlans(data.plans || []);
+            setTotalPages(data.pagination.totalPages);
+            setTotalCount(data.pagination.total);
         }
         else if (view === 'users') {
             const res = await fetch('/api/admin/users', { headers });
@@ -90,6 +98,30 @@ export default function AdminDashboard() {
   };
 
   // --- Actions ---
+
+  const handleSelectPlanForReview = async (planId: string) => {
+      setLoadingReview(true);
+      try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) return;
+          
+          // Fetch FULL details including heavy JSON blobs
+          const res = await fetch(`/api/admin/plans/${planId}`, {
+              headers: { 'Authorization': `Bearer ${session.access_token}` }
+          });
+          
+          if (!res.ok) throw new Error('Failed to load plan details');
+          const data = await res.json();
+          
+          setSelectedReviewPlan(data.plan);
+          setReviewComment(data.plan.review_comments || '');
+      } catch (e) {
+          alert('Could not load plan details.');
+          console.error(e);
+      } finally {
+          setLoadingReview(false);
+      }
+  };
 
   const handleReviewAction = async (action: 'ADD_COMMENT' | 'COMPLETE_REVIEW') => {
     if (!selectedReviewPlan) return;
@@ -118,7 +150,7 @@ export default function AdminDashboard() {
         if (action === 'COMPLETE_REVIEW') {
             alert('Review completed successfully.');
             setSelectedReviewPlan(null); // Go back to list
-            fetchData('reviews'); // Refresh
+            fetchData('reviews', page); // Refresh list
         } else {
             alert('Comment saved.');
         }
@@ -148,29 +180,77 @@ export default function AdminDashboard() {
     } catch (e) { alert('Download failed'); }
   };
 
+  const handleToggleStatus = async (planId: string, currentStatus: string | null) => {
+      const newStatus = currentStatus === 'paid' ? null : 'paid';
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      if (!confirm(`Mark plan as ${newStatus ? 'PAID' : 'UNPAID'}?`)) return;
+
+      try {
+          const res = await fetch('/api/admin/toggle-status', {
+              method: 'POST',
+              headers: { 
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${session.access_token}` 
+              },
+              body: JSON.stringify({ planId, status: newStatus })
+          });
+          if (res.ok) {
+              fetchData(activeView, page); // Refresh
+          }
+      } catch (e) {
+          alert("Failed to update status");
+      }
+  };
+
   // --- Views ---
+
+  const renderPagination = () => (
+      <div className="flex items-center justify-between p-4 border-t border-slate-200 bg-slate-50">
+          <span className="text-xs text-slate-500">
+              Page <strong>{page}</strong> of <strong>{totalPages}</strong> ({totalCount} items)
+          </span>
+          <div className="flex gap-2">
+              <button 
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-bold disabled:opacity-50"
+              >
+                  Previous
+              </button>
+              <button 
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-bold disabled:opacity-50"
+              >
+                  Next
+              </button>
+          </div>
+      </div>
+  );
 
   const renderSidebar = () => (
       <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col fixed h-full">
           <div className="p-6 border-b border-slate-800">
               <h1 className="text-white font-black text-xl tracking-tight">Oversight<span className="text-blue-500">Console</span></h1>
-              <p className="text-xs text-slate-500 mt-1">v3.0 Secure Admin</p>
+              <p className="text-xs text-slate-500 mt-1">v3.1 Secure Admin</p>
           </div>
           <nav className="flex-1 p-4 space-y-1">
-              <button onClick={() => { setActiveView('overview'); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'overview' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
+              <button onClick={() => { setActiveView('overview'); setPage(1); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'overview' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
                   <LayoutDashboard className="w-5 h-5" /> Overview
               </button>
-              <button onClick={() => { setActiveView('reviews'); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'reviews' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
+              <button onClick={() => { setActiveView('reviews'); setPage(1); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'reviews' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
                   <FileCheck className="w-5 h-5" /> Expert Reviews
                   {stats?.pendingReviews > 0 && <span className="ml-auto bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{stats.pendingReviews}</span>}
               </button>
-              <button onClick={() => { setActiveView('plans'); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'plans' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
+              <button onClick={() => { setActiveView('plans'); setPage(1); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'plans' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
                   <Files className="w-5 h-5" /> All Plans
               </button>
-              <button onClick={() => { setActiveView('users'); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'users' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
+              <button onClick={() => { setActiveView('users'); setPage(1); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'users' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
                   <Users className="w-5 h-5" /> Users
               </button>
-              <button onClick={() => { setActiveView('audit'); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'audit' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
+              <button onClick={() => { setActiveView('audit'); setPage(1); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'audit' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
                   <ShieldAlert className="w-5 h-5" /> Audit Log
               </button>
           </nav>
@@ -218,6 +298,9 @@ export default function AdminDashboard() {
 
   const renderReviewWorkspace = () => {
       const plan = selectedReviewPlan;
+      if (loadingReview) return <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin w-8 h-8 text-blue-600" /></div>;
+      if (!plan) return null;
+
       return (
           <div className="h-[calc(100vh-8rem)] flex flex-col">
               <div className="flex items-center justify-between mb-6">
@@ -249,7 +332,7 @@ export default function AdminDashboard() {
                            <div>
                                <label className="text-xs font-bold text-slate-400 uppercase">Hazard Analysis Snapshot</label>
                                <div className="mt-2 bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono max-h-60 overflow-y-auto">
-                                   {JSON.stringify(plan.hazard_analysis, null, 2)}
+                                   {plan.hazard_analysis ? JSON.stringify(plan.hazard_analysis, null, 2) : 'No Data'}
                                </div>
                            </div>
                       </div>
@@ -333,10 +416,10 @@ export default function AdminDashboard() {
                               </td>
                               <td className="p-4 text-right">
                                   <button 
-                                      onClick={() => { setSelectedReviewPlan(plan); setReviewComment(plan.review_comments || ''); }}
-                                      className="text-blue-600 font-bold hover:underline"
+                                      onClick={() => handleSelectPlanForReview(plan.id)}
+                                      className="text-blue-600 font-bold hover:underline flex items-center gap-1 ml-auto"
                                   >
-                                      View Review
+                                      View Review <Eye className="w-3 h-3" />
                                   </button>
                               </td>
                           </tr>
@@ -346,6 +429,7 @@ export default function AdminDashboard() {
                       )}
                   </tbody>
               </table>
+              {renderPagination()}
           </div>
       </div>
   );
@@ -374,7 +458,8 @@ export default function AdminDashboard() {
                                       <span className="text-slate-400 text-xs">Draft</span>
                                   }
                               </td>
-                              <td className="p-4 text-right">
+                              <td className="p-4 text-right flex gap-2 justify-end">
+                                  <button onClick={() => handleToggleStatus(plan.id, plan.payment_status)} className="p-1 text-slate-300 hover:text-slate-600" title="Toggle Payment">$</button>
                                   <button onClick={() => handleDownloadWord(plan)} className="text-slate-400 hover:text-blue-600">
                                       <Download className="w-4 h-4" />
                                   </button>
@@ -383,6 +468,7 @@ export default function AdminDashboard() {
                       ))}
                   </tbody>
               </table>
+              {renderPagination()}
           </div>
       </div>
   );
