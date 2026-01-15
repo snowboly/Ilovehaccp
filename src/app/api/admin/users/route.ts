@@ -20,13 +20,25 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // List users (pagination defaults to 50)
-    const { data: { users }, error } = await supabaseService.auth.admin.listUsers();
+    // Pagination Params
+    const url = new URL(req.url);
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const limit = parseInt(url.searchParams.get('limit') || '50');
+    const safeLimit = Math.min(Math.max(limit, 1), 100);
+    const safePage = Math.max(page, 1);
+
+    // List users
+    const { data, error } = await supabaseService.auth.admin.listUsers({
+        page: safePage,
+        perPage: safeLimit
+    });
 
     if (error) throw error;
 
+    const users = data.users || [];
+    const total = (data as any).total || 0;
+
     // Get plan counts for each user to enrich
-    // This approach is a bit N+1 but okay for admin dashboard with low volume
     const enrichedUsers = await Promise.all(users.map(async (u) => {
         const { count } = await supabaseService
             .from('plans')
@@ -42,7 +54,15 @@ export async function GET(req: Request) {
         };
     }));
 
-    return NextResponse.json({ users: enrichedUsers });
+    return NextResponse.json({ 
+        users: enrichedUsers,
+        pagination: {
+            page: safePage,
+            limit: safeLimit,
+            total: total || 0,
+            totalPages: Math.ceil((total || 0) / safeLimit)
+        }
+    });
 
   } catch (error: any) {
     console.error('Admin Users Error:', error);
