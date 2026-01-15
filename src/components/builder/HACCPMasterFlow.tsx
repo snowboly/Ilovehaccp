@@ -321,31 +321,23 @@ export default function HACCPMasterFlow() {
       case 'ccp_management':
         const ccpList = getIdentifiedCCPs();
         
-        if (currentCCPIndex < ccpList.length - 1) {
-            const existingMgmt = newAnswers.ccp_management || [];
-            const currentCCP = ccpList[currentCCPIndex];
-            // Flatten answers into the object
-            newAnswers.ccp_management = [...existingMgmt, { 
-                ccp_id: currentCCP.step_name + '_' + currentCCP.hazard, // unique composite key
-                step_name: currentCCP.step_name, 
-                hazard: currentCCP.hazard, 
-                ...data 
-            }];
-            setAllAnswers(newAnswers);
-            setCurrentCCPIndex(prev => prev + 1);
-        } else {
-            // Loop done
-            const existingMgmt = newAnswers.ccp_management || [];
-            const currentCCP = ccpList[currentCCPIndex];
-            newAnswers.ccp_management = [...existingMgmt, { 
-                ccp_id: currentCCP.step_name + '_' + currentCCP.hazard,
-                step_name: currentCCP.step_name, 
-                hazard: currentCCP.hazard, 
-                ...data 
-            }];
-            setAllAnswers(newAnswers);
-            setCurrentSection('validation');
-        }
+        // Transform the nested group answers back into the array structure
+        const flattenedManagement = ccpList.map((ccp: any) => {
+            const groupKey = `ccp_${ccp.step_name}_${ccp.hazard}`.replace(/[^a-zA-Z0-9]/g, '_');
+            const groupData = data[groupKey] || {};
+            
+            return {
+                ccp_id: groupKey,
+                step_name: ccp.step_name,
+                hazard: ccp.hazard,
+                ...groupData
+            };
+        });
+
+        // Save
+        newAnswers.ccp_management = flattenedManagement;
+        setAllAnswers(newAnswers);
+        setCurrentSection('validation');
         break;
 
       case 'validation':
@@ -382,7 +374,7 @@ export default function HACCPMasterFlow() {
         });
         const data = await res.json();
         setGeneratedPlan(data);
-        setCurrentSection('complete'); // Go to summary, wait for user to validate
+        setCurrentSection('complete'); 
         setValidationStatus('idle');
     } catch (e) {
         console.error(e);
@@ -406,14 +398,11 @@ export default function HACCPMasterFlow() {
           const data = await res.json();
           setValidationReport(data);
           setValidationStatus('completed');
-          
-          // Save the completed plan WITH validation
           await savePlan(plan, data);
-
       } catch (e) {
           console.error(e);
           alert("Validation failed");
-          setValidationStatus('idle'); // Allow retry
+          setValidationStatus('idle');
       }
   };
 
@@ -423,10 +412,9 @@ export default function HACCPMasterFlow() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                draftId, // Pass draft ID to mark as generated
-                // We map the new structure to what the DB expects
+                draftId, 
                 businessName: allAnswers.product?.businessLegalName,
-                businessType: allAnswers.product?.product_category, // or business_type
+                businessType: allAnswers.product?.product_category,
                 fullPlan: { ...fullPlan, validation: validationReport },
                 metadata: {
                     framework_version: "1.0.0",
@@ -439,14 +427,11 @@ export default function HACCPMasterFlow() {
                         validation: "1.0.0"
                     }
                 },
-                answers: allAnswers // Store raw answers for editing
+                answers: allAnswers 
             })
         });
-        
-        // Clear draft on successful save (converted to plan)
         localStorage.removeItem('haccp_draft_id');
         setDraftId(null);
-        
       } catch (e) {
           console.error("Auto-save failed", e);
       }
@@ -468,7 +453,6 @@ export default function HACCPMasterFlow() {
 
   if (currentSection === 'hazards') {
       const step = allAnswers.process?.process_steps?.[currentStepIndex];
-      // Inject Step Name into Section Title dynamically
       const dynamicSchema = { 
           ...hazardQuestions, 
           section: `Hazard Analysis: ${step?.step_name || 'Unknown Step'}` 
@@ -491,7 +475,6 @@ export default function HACCPMasterFlow() {
                     </div>
                 </div>
             )}
-            {/* Key ensures component resets state for new step */}
             <HACCPQuestionnaire 
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('hazards', d)} 
@@ -505,11 +488,9 @@ export default function HACCPMasterFlow() {
       const currentHazard = sigHazards[currentCCPIndex];
 
       if (!currentHazard) {
-          // Should not happen if logic in handleSectionComplete works, but safe fallback
           return <div className="p-10 text-center">No significant hazards identified. Moving to next section...</div>;
       }
 
-      // Inject Context into Section Title dynamically
       const dynamicSchema = { 
           ...ccpDeterminationQuestions, 
           section: `CCP Determination: ${currentHazard.step_name}`,
@@ -551,29 +532,39 @@ export default function HACCPMasterFlow() {
 
   if (currentSection === 'ccp_management') {
       const ccpList = getIdentifiedCCPs();
-      const currentCCP = ccpList[currentCCPIndex];
 
-      if (!currentCCP) {
+      if (ccpList.length === 0) {
           return <div className="p-10 text-center">No CCPs to manage. Moving to next section...</div>;
       }
 
+      // Construct Dynamic Schema: One group per CCP
+      const dynamicQuestions = ccpList.map((ccp: any, idx: number) => {
+          const groupId = `ccp_${ccp.step_name}_${ccp.hazard}`.replace(/[^a-zA-Z0-9]/g, '_');
+          
+          return {
+              id: groupId,
+              text: `📍 CCP #${idx + 1} — ${ccp.step_name} (${ccp.hazard})`,
+              type: 'group',
+              questions: ccpManagementQuestions.questions // Reuse standard questions inside the group
+          };
+      });
+
       const dynamicSchema = { 
           ...ccpManagementQuestions, 
-          section: `CCP Management: ${currentCCP.step_name}` 
+          section: `CCP Management (${ccpList.length} Critical Points)`,
+          questions: dynamicQuestions
       } as unknown as HACCPSectionData;
 
        return (
-        <div key={currentCCPIndex} className="animate-in fade-in slide-in-from-right-8 duration-500">
-            <div className="bg-red-50 border-l-4 border-red-600 p-6 rounded-r-xl mb-8 max-w-3xl mx-auto shadow-sm">
+        <div className="animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-r-xl mb-8 max-w-3xl mx-auto shadow-sm">
                 <div className="flex items-start gap-3">
-                    <ShieldAlert className="w-6 h-6 text-red-600 mt-1" />
+                    <Info className="w-6 h-6 text-blue-600 mt-1" />
                     <div>
-                        <h3 className="font-black text-red-900 text-lg mb-1">CCP Context</h3>
-                        <p className="text-red-800 font-medium text-sm">
-                            <strong>Process Step:</strong> {currentCCP.step_name}
-                        </p>
-                        <p className="text-red-800 font-medium text-sm mt-1">
-                            <strong>Hazard:</strong> {currentCCP.hazard}
+                        <h3 className="font-black text-blue-900 text-lg mb-1">CCP Management Strategy</h3>
+                        <p className="text-blue-800 font-medium text-sm">
+                            You have identified <strong>{ccpList.length} Critical Control Points</strong>. 
+                            Define the monitoring and control limits for each one below to ensure food safety.
                         </p>
                     </div>
                 </div>
@@ -582,7 +573,15 @@ export default function HACCPMasterFlow() {
             <HACCPQuestionnaire 
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('ccp_management', d)} 
-                initialData={allAnswers.ccp_management?.[currentCCPIndex]?.data}
+                // Initial data mapping: { group_id: { ...answers } }
+                initialData={
+                    allAnswers.ccp_management 
+                    ? allAnswers.ccp_management.reduce((acc: any, item: any) => {
+                        if(item.ccp_id) acc[item.ccp_id] = item;
+                        return acc;
+                    }, {})
+                    : {}
+                }
             />
         </div>
        );
