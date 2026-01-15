@@ -2,6 +2,24 @@
 
 ## Implementation Status
 
+### v3.21 Builder Logic Refinement (Jan 15, 2026)
+- **CCP Logic:** Implemented dynamic "Card Group" wizard step for CCP Management, iterating through identified CCPs with context.
+- **Conditional Workflow:** Section 8 (CCP Management) is now automatically skipped if no CCPs are identified in the Hazard Analysis.
+- **Data Structure:** Flattened CCP answer schema to include `ccp_id` and all nested answers in a clean array.
+- **Export & Validation:** Updated PDF/Word generation and AI Validation rules to handle plans with "No CCPs" correctly (controlled via PRPs).
+
+### v3.20 Admin Dashboard & Security Overhaul (Jan 15, 2026)
+- **Oversight Console:** Implemented a new Admin Dashboard with strict "Observer" role enforcement.
+- **Expert Review Workflow:** Added a dedicated workspace for the €79 tier, featuring split-screen context and reviewer comments.
+- **Audit Logging:** Migrated to a generic `access_logs` system to track `VIEW`, `ADD_COMMENT`, and `COMPLETE_REVIEW` actions by admins.
+- **Security Hardening:** Implemented lightweight list fetching and separate, logged endpoints for detailed plan access to prevent data leakage.
+- **Pagination:** Added server-side pagination to the Plans list to ensure scalability.
+
+### v3.19 Dashboard UX Refinement (Jan 15, 2026)
+- **Import Confirmation:** Added a safety modal for the "Claim Plan" feature to prevent accidental imports and ensure ID accuracy.
+- **Retention Banner:** Implemented a prominent "Resume Draft" banner that appears automatically if an unfinished plan exists, reducing user abandonment.
+- **Visual Feedback:** Integrated `AlertTriangle` and `History` icons for better context in dashboard actions.
+
 ### v3.12 Privacy & Security Compliance (Jan 13, 2026)
 - **Privacy Policy Enhancements:**
     - **Data Retention:** Defined explicit timelines for account data (indefinite for active, 30-day purge for deleted).
