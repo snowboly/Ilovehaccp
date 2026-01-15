@@ -324,14 +324,25 @@ export default function HACCPMasterFlow() {
         if (currentCCPIndex < ccpList.length - 1) {
             const existingMgmt = newAnswers.ccp_management || [];
             const currentCCP = ccpList[currentCCPIndex];
-            newAnswers.ccp_management = [...existingMgmt, { step_name: currentCCP.step_name, hazard: currentCCP.hazard, data }];
+            // Flatten answers into the object
+            newAnswers.ccp_management = [...existingMgmt, { 
+                ccp_id: currentCCP.step_name + '_' + currentCCP.hazard, // unique composite key
+                step_name: currentCCP.step_name, 
+                hazard: currentCCP.hazard, 
+                ...data 
+            }];
             setAllAnswers(newAnswers);
             setCurrentCCPIndex(prev => prev + 1);
         } else {
             // Loop done
             const existingMgmt = newAnswers.ccp_management || [];
             const currentCCP = ccpList[currentCCPIndex];
-            newAnswers.ccp_management = [...existingMgmt, { step_name: currentCCP.step_name, hazard: currentCCP.hazard, data }];
+            newAnswers.ccp_management = [...existingMgmt, { 
+                ccp_id: currentCCP.step_name + '_' + currentCCP.hazard,
+                step_name: currentCCP.step_name, 
+                hazard: currentCCP.hazard, 
+                ...data 
+            }];
             setAllAnswers(newAnswers);
             setCurrentSection('validation');
         }
