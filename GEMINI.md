@@ -2,6 +2,12 @@
 
 ## Implementation Status
 
+### v3.25 Final Polish & Verification (Jan 15, 2026)
+- **CCP Logic Verification:** Confirmed implementation of conditional, single-page CCP management with flattened data structures for accurate reporting.
+- **Notification Hardening:** Verified idempotent webhook handling to prevent duplicate emails and side effects.
+- **UX Finalization:** Completed rollout of contextual tooltips across the builder and resolved minor build issues.
+- **Admin Review API:** Exposed hardened API endpoints for review in a dedicated `review_hardening` folder.
+
 ### v3.24 Phase 1 Backend Hardening (Jan 15, 2026)
 - **Authorization Binding:** Hardened critical API routes (`save-plan`, `download-pdf`, `download-word`) to enforce strict server-side ownership checks, preventing cross-user data access.
 - **Entitlement Enforcement:** Implemented robust payment tier and validation status checks directly in the export endpoints, ensuring users can only download what they've paid for and what is compliant.
