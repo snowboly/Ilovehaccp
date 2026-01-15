@@ -16,6 +16,7 @@ import validationQuestions from '@/data/haccp/haccp_verification_validation_revi
 import { generateHACCPWordDoc } from '@/lib/export-utils';
 import { AlertTriangle, Info, Edit, ShieldAlert } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 type SectionKey = 
   | 'product' 
@@ -612,7 +613,10 @@ export default function HACCPMasterFlow() {
               {validationStatus === 'idle' && (
                   <div className="bg-white border border-slate-200 p-12 rounded-3xl shadow-sm text-center space-y-8">
                       <div className="space-y-2">
-                          <h2 className="text-2xl font-black text-slate-900">Validation Status</h2>
+                          <div className="flex items-center justify-center gap-2">
+                              <h2 className="text-2xl font-black text-slate-900">Validation Status</h2>
+                              <Tooltip text="Validation checks whether the HACCP plan logic is complete and internally consistent. It does not represent regulatory or audit approval." />
+                          </div>
                           <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-500 px-4 py-2 rounded-full font-bold uppercase tracking-widest text-sm">
                               <Info className="w-4 h-4" /> Not yet validated
                           </div>

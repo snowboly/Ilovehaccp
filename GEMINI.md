@@ -2,6 +2,17 @@
 
 ## Implementation Status
 
+### v3.23 Contextual Guidance (Jan 15, 2026)
+- **Tooltip System:** Implemented a reusable, mobile-friendly tooltip component for explaining technical HACCP terms without influencing user decisions.
+- **Content Enrichment:** Added neutral, auditor-safe tooltips to 10 key areas including Hazard Severity, Likelihood, CCP Identification, Critical Limits, and Verification Activities.
+- **Schema Update:** Extended the JSON question schema to support an optional `tooltip` field for centralized content management.
+
+### v3.22 Builder UX & Stability (Jan 15, 2026)
+- **CCP Management UX:** Replaced the sequential CCP wizard loop with a single, consolidated page displaying all Critical Control Points as "Card Groups" for better overview.
+- **Dynamic Schema:** Implemented on-the-fly schema generation to render multiple CCP monitoring sections dynamically based on Hazard Analysis results.
+- **Code Restoration:** Resolved a critical regression where generation and validation logic was accidentally removed during refactoring.
+- **Stability:** Fixed build errors related to duplicate code blocks and missing function definitions.
+
 ### v3.21 Builder Logic Refinement (Jan 15, 2026)
 - **CCP Logic:** Implemented dynamic "Card Group" wizard step for CCP Management, iterating through identified CCPs with context.
 - **Conditional Workflow:** Section 8 (CCP Management) is now automatically skipped if no CCPs are identified in the Hazard Analysis.

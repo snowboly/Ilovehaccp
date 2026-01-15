@@ -1,0 +1,96 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Product Description",
+  "questions": [
+    {
+      "id": "plan_scope",
+      "text": "Does this HACCP plan apply to:",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        "A Single Product",
+        "A Product Family / Category",
+        "A Process Line / Technology"
+      ]
+    },
+    {
+      "id": "product_name",
+      "text": "Name of Product / Family / Line",
+      "description": "If covering a family, use a representative name (e.g., 'Frozen Ready Meals').",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "product_category",
+      "text": "Product category",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        "Raw",
+        "Ready-to-eat (RTE)",
+        "Heat-treated",
+        "Shelf-stable",
+        "Frozen",
+        "Refrigerated"
+      ]
+    },
+    {
+      "id": "key_ingredients",
+      "text": "Key ingredients / Formulation",
+      "description": "For families, list typical ingredients. Detailed recipes can be managed separately.",
+      "type": "multiline_text",
+      "required": true
+    },
+    {
+      "id": "allergens_present",
+      "text": "Allergens present",
+      "type": "multi_select",
+      "required": true,
+      "options": [
+        "Milk",
+        "Eggs",
+        "Fish",
+        "Crustaceans",
+        "Molluscs",
+        "Peanuts",
+        "Tree nuts",
+        "Soy",
+        "Gluten",
+        "Sesame",
+        "Sulphites",
+        "None"
+      ]
+    },
+    {
+      "id": "packaging_type",
+      "text": "Packaging type",
+      "type": "text",
+      "required": false
+    },
+    {
+      "id": "shelf_life",
+      "text": "Shelf life",
+      "type": "text",
+      "required": false
+    },
+    {
+      "id": "storage_conditions",
+      "text": "Storage conditions",
+      "type": "single_select",
+      "required": false,
+      "options": [
+        "Ambient",
+        "Refrigerated",
+        "Frozen"
+      ]
+    },
+    {
+      "id": "intended_use",
+      "text": "Intended use",
+      "tooltip": "Intended use describes how the product is expected to be used by the consumer, including whether it is ready-to-eat or requires further preparation.",
+      "type": "text",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Hazard Analysis",
+  "scope": "per_process_step",
+  "questions": [
+    {
+      "id": "hazard_identification",
+      "text": "Hazard Identification",
+      "type": "group",
+      "questions": [
+        {
+          "id": "bio_hazards",
+          "text": "Are there BIOLOGICAL hazards reasonably likely to occur at this step?",
+          "type": "boolean",
+          "required": true,
+          "conditional_questions": [
+            {
+              "id": "bio_hazards_description",
+              "text": "Description of Biological hazards",
+              "type": "text",
+              "required": true,
+              "show_if": true
+            }
+          ]
+        },
+        {
+          "id": "chem_hazards",
+          "text": "Are there CHEMICAL hazards reasonably likely to occur at this step?",
+          "type": "boolean",
+          "required": true,
+          "conditional_questions": [
+            {
+              "id": "chem_hazards_description",
+              "text": "Description of Chemical hazards",
+              "type": "text",
+              "required": true,
+              "show_if": true
+            }
+          ]
+        },
+        {
+          "id": "phys_hazards",
+          "text": "Are there PHYSICAL hazards reasonably likely to occur at this step?",
+          "type": "boolean",
+          "required": true,
+          "conditional_questions": [
+            {
+              "id": "phys_hazards_description",
+              "text": "Description of Physical hazards",
+              "type": "text",
+              "required": true,
+              "show_if": true
+            }
+          ]
+        },
+        {
+          "id": "allergen_hazards",
+          "text": "Are there ALLERGEN hazards reasonably likely to occur at this step?",
+          "type": "boolean",
+          "required": true,
+          "conditional_questions": [
+            {
+              "id": "allergen_hazards_description",
+              "text": "Description of Allergen hazards",
+              "type": "text",
+              "required": true,
+              "show_if": true
+            }
+          ]
+        },
+        {
+          "id": "no_hazards_justification",
+          "text": "Justification for no hazards identified",
+          "type": "text",
+          "required": "when_all_hazards_false",
+          "show_if_all_false": ["bio_hazards", "chem_hazards", "phys_hazards", "allergen_hazards"]
+        }
+      ]
+    },
+    {
+      "id": "hazard_evaluation",
+      "text": "Hazard Evaluation",
+      "type": "group_per_hazard",
+      "questions": [
+        {
+          "id": "severity",
+          "text": "Severity of the hazard",
+          "description": "Low: No injury, minor quality issue. Medium: Reversible illness, short-term impact. High: Serious illness or hospitalization.",
+          "tooltip": "Severity describes how serious the impact would be if this hazard occurred, ranging from minor quality issues to serious illness.",
+          "type": "single_select",
+          "options": ["Low", "Medium", "High"],
+          "required": true
+        },
+        {
+          "id": "likelihood",
+          "text": "Likelihood of occurrence",
+          "description": "Low: Unlikely to occur. Medium: Occasional. High: Likely or frequent.",
+          "tooltip": "Likelihood describes how often this hazard could realistically occur under your actual process conditions.",
+          "type": "single_select",
+          "options": ["Low", "Medium", "High"],
+          "required": true
+        },
+        {
+          "id": "is_significant",
+          "text": "Is this hazard significant?",
+          "type": "boolean",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "control_measures",
+      "text": "Existing Control Measures",
+      "type": "group_per_hazard",
+      "questions": [
+        {
+          "id": "applied_controls",
+          "text": "What control measures apply to this hazard?",
+          "type": "multi_select",
+          "options": [
+            "Prerequisite Program (PRP)",
+            "Process control",
+            "None"
+          ],
+          "required": true
+        }
+      ]
+    }
+  ]
+}

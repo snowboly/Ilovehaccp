@@ -1,0 +1,129 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Verification, Validation, Review & Records",
+  "questions": [
+    {
+      "id": "validation_group",
+      "text": "Validation",
+      "type": "group",
+      "questions": [
+        {
+          "id": "haccp_validation_method",
+          "text": "How was the HACCP plan validated?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "haccp_validator",
+          "text": "Who performed the validation?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "haccp_validation_date",
+          "text": "When was the HACCP plan initially validated?",
+          "type": "date",
+          "required": true
+        },
+        {
+          "id": "document_style",
+          "text": "Choose a document style for export",
+          "type": "single_select",
+          "options": [
+            "Audit Classic",
+            "Professional Modern"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "verification_group",
+      "text": "Verification",
+      "type": "group",
+      "questions": [
+        {
+          "id": "system_verification_activities",
+          "text": "What verification activities are performed to confirm the HACCP system is working?",
+          "tooltip": "Verification activities confirm that the HACCP system is working as intended, such as record reviews or checks of monitoring procedures.",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "system_verification_frequency",
+          "text": "Verification frequency",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "system_verification_responsibility",
+          "text": "Who is responsible for verification?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "review_group",
+      "text": "Review",
+      "type": "group",
+      "questions": [
+        {
+          "id": "review_frequency",
+          "text": "How often is the HACCP plan reviewed?",
+          "type": "single_select",
+          "options": [
+            "Annually",
+            "After process change",
+            "After incident or recall",
+            "After audit findings"
+          ],
+          "required": true
+        },
+        {
+          "id": "review_triggers",
+          "text": "What events trigger a HACCP plan review?",
+          "type": "multi_select",
+          "options": [
+            "Annually",
+            "After process change",
+            "After incident or recall",
+            "After audit findings"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "records_group",
+      "text": "Records & Document Control",
+      "type": "group",
+      "questions": [
+        {
+          "id": "record_storage_location",
+          "text": "Where are HACCP records stored?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "record_retention_period",
+          "text": "Record retention period",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "document_control_method",
+          "text": "How are documents controlled and updated?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "rules": [
+    "Validation must exist before plan approval",
+    "Verification and review must be ongoing",
+    "Output must support audit traceability"
+  ]
+}

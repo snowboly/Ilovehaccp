@@ -1,0 +1,125 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "CCP Management",
+  "scope": "per_ccp",
+  "questions": [
+    {
+      "id": "critical_limits",
+      "text": "Critical Limits",
+      "tooltip": "A critical limit is the minimum or maximum value that must be met to ensure the CCP is under control. It must be measurable.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "critical_limit_value",
+          "text": "What is the critical limit for this CCP?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "critical_limit_basis",
+          "text": "What is the scientific or regulatory basis for this critical limit?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "monitoring",
+      "text": "Monitoring",
+      "type": "group",
+      "questions": [
+        {
+          "id": "monitoring_parameter",
+          "text": "What parameter is monitored?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "monitoring_method",
+          "text": "How is monitoring performed?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "monitoring_frequency",
+          "text": "Monitoring frequency",
+          "tooltip": "Monitoring frequency describes how often the CCP is checked to ensure it remains under control (e.g. time-based, per batch, per shift).",
+          "type": "single_select",
+          "options": [
+            "Continuous",
+            "Each batch",
+            "Hourly",
+            "Daily",
+            "Other"
+          ],
+          "required": true
+        },
+        {
+          "id": "monitoring_responsibility",
+          "text": "Who is responsible for monitoring?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "corrective_actions",
+      "text": "Corrective Actions",
+      "tooltip": "Corrective actions describe what happens when monitoring shows a critical limit has been exceeded, including how control is restored.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "deviation_action",
+          "text": "What action is taken if the critical limit is exceeded?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "product_handling",
+          "text": "How is affected product handled?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "root_cause_correction",
+          "text": "How is the cause of deviation corrected?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "verification",
+      "text": "Verification",
+      "type": "group",
+      "questions": [
+        {
+          "id": "verification_activities",
+          "text": "What verification activities are performed?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "verification_frequency",
+          "text": "Verification frequency",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "records",
+      "text": "Records",
+      "type": "group",
+      "questions": [
+        {
+          "id": "ccp_records",
+          "text": "What records are maintained for this CCP?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Process Flow Diagram",
+  "questions": [
+    {
+      "id": "diagram_created",
+      "text": "Have you created a complete process flow diagram?",
+      "type": "boolean",
+      "required": true,
+      "validation": {
+        "prevent_proceed_on": false,
+        "error_message": "A complete process flow diagram is required to continue according to Codex Step 4."
+      }
+    },
+    {
+      "id": "process_steps",
+      "text": "List all process steps in the order they occur.",
+      "tooltip": "Process steps describe the main stages of your operation from receiving to dispatch and should reflect how the process actually works.",
+      "type": "repeatable_list",
+      "required": true,
+      "min_items": 1,
+      "item_schema": {
+        "fields": [
+          {
+            "id": "step_id",
+            "text": "Step ID",
+            "type": "hidden_auto_id"
+          },
+          {
+            "id": "step_name",
+            "text": "Step name",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "step_description",
+            "text": "Step description",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "rework_exists",
+      "text": "Does this process include any rework, recycling, or reprocessing steps?",
+      "type": "boolean",
+      "required": true,
+      "conditional_questions": [
+        {
+          "id": "rework_description",
+          "text": "Description of rework, recycling, or reprocessing",
+          "type": "text",
+          "required": true,
+          "show_if": true
+        }
+      ]
+    },
+    {
+      "id": "diagram_verified",
+      "text": "Has the process flow diagram been verified on-site?",
+      "type": "boolean",
+      "required": true
+    }
+  ]
+}

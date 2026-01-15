@@ -1,0 +1,63 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "CCP Determination",
+  "scope": "per_significant_hazard",
+  "logic_source": "Codex Alimentarius Decision Tree",
+  "questions": [
+    {
+      "id": "q1_control_measure",
+      "text": "Is there a control measure for the identified hazard at this step?",
+      "tooltip": "A Critical Control Point (CCP) is a step where control is essential to prevent, eliminate, or reduce a food safety hazard to an acceptable level.",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "q2_step_designed_to_eliminate",
+      "text": "Is this step specifically designed to eliminate or reduce the hazard to an acceptable level?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "q3_contamination_possible",
+      "text": "Could contamination with the hazard occur at this step, or could it increase to unacceptable levels?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "q4_subsequent_step",
+      "text": "Will a subsequent step eliminate or reduce the hazard to an acceptable level?",
+      "type": "boolean",
+      "required": true
+    }
+  ],
+  "outcome_logic": [
+    {
+      "conditions": { "q1_control_measure": false },
+      "outcome": "Not a CCP"
+    },
+    {
+      "conditions": { "q2_step_designed_to_eliminate": true },
+      "outcome": "CCP"
+    },
+    {
+      "conditions": {
+        "q2_step_designed_to_eliminate": false,
+        "q3_contamination_possible": true,
+        "q4_subsequent_step": false
+      },
+      "outcome": "CCP"
+    },
+    {
+      "conditions": {
+        "q2_step_designed_to_eliminate": false,
+        "q4_subsequent_step": true
+      },
+      "outcome": "Not a CCP"
+    },
+    {
+      "conditions": "default",
+      "outcome": "OPRP"
+    }
+  ]
+}

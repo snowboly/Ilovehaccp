@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Prerequisite Programs",
+  "questions": [
+    {
+      "id": "prp_cleaning_sanitation",
+      "text": "Cleaning and sanitation",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_personal_hygiene",
+      "text": "Personal hygiene",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_pest_control",
+      "text": "Pest control",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_supplier_approval",
+      "text": "Supplier approval and raw material control",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_allergen_management",
+      "text": "Allergen management",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_maintenance_calibration",
+      "text": "Maintenance and calibration",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_training",
+      "text": "Training",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_traceability_recall",
+      "text": "Traceability and recall",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_waste_management",
+      "text": "Waste management",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_water_air_quality",
+      "text": "Water and air quality",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_glass_brittle_plastic",
+      "text": "Glass and brittle plastic control",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    },
+    {
+      "id": "prp_food_defense_fraud",
+      "text": "Food defense / food fraud (where applicable)",
+      "type": "prp_group",
+      "required": true,
+      "fields": [
+        { "id": "exists", "text": "PRP exists?", "type": "boolean", "required": true },
+        { "id": "documented", "text": "PRP documented?", "type": "boolean", "required": true },
+        { "id": "reference", "text": "Reference document name or ID", "type": "text", "required": false }
+      ]
+    }
+  ]
+}
