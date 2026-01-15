@@ -30,14 +30,43 @@ export async function POST(req: Request) {
     const planId = session.metadata?.planId;
 
     if (planId) {
-      console.log(`Payment confirmed for Plan: ${planId}`);
+      const tier = session.metadata?.tier; // professional or expert
+
+      // 1. Idempotency Check
+      const { data: existingPlan, error: fetchError } = await supabaseService
+          .from('plans')
+          .select('payment_status')
+          .eq('id', planId)
+          .single();
+
+      if (fetchError) {
+          console.error("Failed to fetch plan for idempotency check:", fetchError);
+          // We proceed cautiously or fail? If DB is down, we fail.
+          return NextResponse.json({ error: 'Database error' }, { status: 500 });
+      }
+
+      if (existingPlan?.payment_status === 'paid') {
+          console.log(`[Idempotency] Skipping duplicate webhook for plan ${planId}`);
+          return NextResponse.json({ received: true });
+      }
+
+      console.log(`Processing payment for Plan: ${planId} (${tier})`);
       
+      const updateData: any = { 
+          payment_status: 'paid',
+          status: 'completed',
+          tier: tier
+      };
+
+      // If Expert tier, trigger the review workflow
+      if (tier === 'expert') {
+          updateData.review_requested = true;
+          updateData.review_status = 'pending';
+      }
+
       const { error } = await supabaseService
         .from('plans')
-        .update({ 
-            payment_status: 'paid',
-            status: 'completed'
-        })
+        .update(updateData)
         .eq('id', planId);
 
       if (error) {
