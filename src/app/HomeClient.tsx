@@ -277,7 +277,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-4 gap-8 max-w-[1400px] mx-auto">
+            <div className="grid lg:grid-cols-3 gap-8 max-w-[1200px] mx-auto">
               {/* Free Tier */}
               <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 hover:border-slate-700 transition-colors flex flex-col shadow-2xl">
                 <div className="mb-8">
@@ -297,8 +297,8 @@ export default function Home() {
                   <li className="flex items-center gap-3 text-sm text-slate-300">
                     <CheckCircle2 className="w-5 h-5 text-blue-500" /> {t('landing.pricing.free.f3')}
                   </li>
-                  <li className="flex items-center gap-3 text-sm text-slate-300 text-slate-500">
-                    <X className="w-5 h-5 text-slate-700" /> {t('landing.pricing.free.f4')}
+                  <li className="flex items-center gap-3 text-sm text-slate-300">
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> {t('landing.pricing.free.f4')}
                   </li>
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-slate-900 font-black text-center transition-all hover:bg-slate-100 shadow-xl">
@@ -323,11 +323,17 @@ export default function Home() {
                   <li className="flex items-center gap-3 text-sm font-bold text-white">
                     <CheckCircle2 className="w-5 h-5 text-blue-200" /> {t('landing.pricing.starter.f1')}
                   </li>
-                  <li className="flex items-center gap-3 text-sm text-white">
-                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> <strong>{t('landing.pricing.starter.f2')}</strong>
+                  <li className="flex items-center gap-3 text-sm text-white font-bold">
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> {t('landing.pricing.starter.f2')}
                   </li>
-                  <li className="flex items-center gap-3 text-sm text-white">
-                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> <strong>{t('landing.pricing.starter.f3')}</strong>
+                  <li className="flex items-center gap-3 text-sm text-white font-bold">
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> {t('landing.pricing.starter.f3')}
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-white font-bold">
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> {t('landing.pricing.starter.f4')}
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-white font-bold">
+                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> {t('landing.pricing.starter.f5')}
                   </li>
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-black text-center transition-all shadow-xl">
@@ -355,37 +361,12 @@ export default function Home() {
                   <li className="flex items-center gap-3 text-sm text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500" /> {t('landing.pricing.review.f3')}
                   </li>
+                  <li className="flex items-center gap-3 text-sm text-slate-300 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" /> {t('landing.pricing.review.f4')}
+                  </li>
                 </ul>
                 <Link href="/contact?subject=Review" className="w-full py-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-center transition-all border border-slate-700">
                   {t('landing.pricing.review.cta')}
-                </Link>
-              </div>
-
-              {/* Strategic Enterprise */}
-              <div className="bg-amber-50 rounded-[2.5rem] p-8 border border-amber-200 hover:border-amber-300 transition-all flex flex-col shadow-lg shadow-amber-900/5">
-                <div className="mb-8">
-                  <h3 className="text-xl font-black text-amber-900 mb-2">{t('landing.pricing.enterprise.title')}</h3>
-                  <div className="flex items-baseline">
-                    <span className="text-4xl font-black text-amber-900">{t('landing.pricing.enterprise.price')}</span>
-                  </div>
-                  <p className="text-amber-700/70 mt-4 text-sm font-medium leading-relaxed">{t('landing.pricing.enterprise.desc')}</p>
-                </div>
-                <ul className="space-y-4 mb-8 flex-1">
-                  <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> <strong>{t('landing.pricing.enterprise.f1')}</strong>
-                  </li>
-                  <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> {t('landing.pricing.enterprise.f2')}
-                  </li>
-                  <li className="flex items-center gap-3 text-sm text-amber-800 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> {t('landing.pricing.enterprise.f3')}
-                  </li>
-                  <li className="flex items-center gap-3 text-sm text-amber-800 font-black">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" /> {t('landing.pricing.enterprise.f4')}
-                  </li>
-                </ul>
-                <Link href="/contact" className="w-full py-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-center transition-all shadow-lg shadow-amber-600/20">
-                  {t('landing.pricing.enterprise.cta')}
                 </Link>
               </div>
             </div>
