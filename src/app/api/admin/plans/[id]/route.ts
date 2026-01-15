@@ -6,10 +6,12 @@ const ADMIN_EMAILS = [
     'joao@scriptworkflow.com'
 ];
 
-async function logAdminAction(adminEmail: string, planId: string, action: string, details: any = {}) {
-    await supabaseService.from('admin_audit_logs').insert({
-        admin_email: adminEmail,
-        plan_id: planId,
+async function logAdminAction(adminEmail: string, entityId: string, action: string, details: any = {}) {
+    await supabaseService.from('access_logs').insert({
+        actor_email: adminEmail,
+        actor_role: 'admin',
+        entity_type: 'plan',
+        entity_id: entityId,
         action,
         details
     });

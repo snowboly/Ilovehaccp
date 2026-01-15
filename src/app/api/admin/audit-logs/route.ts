@@ -21,7 +21,7 @@ export async function GET(req: Request) {
     }
 
     const { data: logs, error } = await supabaseService
-        .from('admin_audit_logs')
+        .from('access_logs')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(100);

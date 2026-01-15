@@ -518,7 +518,7 @@ export default function AdminDashboard() {
                       {logs.map(log => (
                           <tr key={log.id} className="hover:bg-slate-800/50">
                               <td className="p-4 text-slate-500">{new Date(log.created_at).toLocaleString()}</td>
-                              <td className="p-4 text-blue-400">{log.admin_email}</td>
+                              <td className="p-4 text-blue-400">{log.actor_email}</td>
                               <td className="p-4 text-white font-bold">{log.action}</td>
                               <td className="p-4 text-slate-500 truncate max-w-xs">{JSON.stringify(log.details)}</td>
                           </tr>
