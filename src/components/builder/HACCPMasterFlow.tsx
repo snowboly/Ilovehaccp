@@ -155,6 +155,7 @@ export default function HACCPMasterFlow() {
   const [generatedPlan, setGeneratedPlan] = useState<any>(null);
   const [validationReport, setValidationReport] = useState<any>(null);
   const [validationStatus, setValidationStatus] = useState<'idle' | 'running' | 'completed'>('idle');
+  const [exportTemplate, setExportTemplate] = useState('Audit Classic');
 
   // Helper: Detect Generic Risk Pattern
   const checkGenericRiskPattern = () => {
@@ -182,28 +183,31 @@ export default function HACCPMasterFlow() {
       analysis.forEach((stepData: any) => {
           const d = stepData.data;
           
-          // Parse nested groups (hazard_identification, hazard_evaluation)
-          const ident = d.hazard_identification || d;
-          const evalData = d.hazard_evaluation || d;
+          // d.hazard_evaluation is now keyed by hazard ID (bio, chem, phys, allergen)
+          const evaluations = d.hazard_evaluation || {};
+          const controls = d.control_measures || {}; // Also keyed by hazard ID if it uses group_per_hazard
           
-          // Construct a list of identified hazards text
-          const identified: string[] = [];
-          if (ident.bio_hazards) identified.push(ident.bio_hazards_description || "Biological Hazard");
-          if (ident.chem_hazards) identified.push(ident.chem_hazards_description || "Chemical Hazard");
-          if (ident.phys_hazards) identified.push(ident.phys_hazards_description || "Physical Hazard");
-          if (ident.allergen_hazards) identified.push(ident.allergen_hazards_description || "Allergen Hazard");
-          
-          if (identified.length > 0) {
-              if (evalData.is_significant === true) {
+          // Map of hazard IDs to human readable names
+          const hazardMap: Record<string, string> = {
+              bio: d.hazard_identification?.bio_hazards_description || "Biological Hazard",
+              chem: d.hazard_identification?.chem_hazards_description || "Chemical Hazard",
+              phys: d.hazard_identification?.phys_hazards_description || "Physical Hazard",
+              allergen: d.hazard_identification?.allergen_hazards_description || "Allergen Hazard"
+          };
+
+          // Iterate over potential hazard keys
+          ['bio', 'chem', 'phys', 'allergen'].forEach(key => {
+              const evalData = evaluations[key];
+              if (evalData && evalData.is_significant === true) {
                   flattened.push({
-                      step_name: stepData.step_id, 
-                      hazards: identified.join(", "),
+                      step_name: stepData.step_id,
+                      hazards: hazardMap[key],
                       severity: evalData.severity,
                       likelihood: evalData.likelihood,
-                      control_measure: d.control_measures?.applied_controls 
+                      control_measure: controls[key]?.applied_controls // Get controls for this specific hazard
                   });
               }
-          }
+          });
       });
       
       // Map step_id to step_name
@@ -605,8 +609,8 @@ export default function HACCPMasterFlow() {
       return (
           <div className="max-w-4xl mx-auto p-10 space-y-8">
               <div className="bg-emerald-50 border border-emerald-100 p-8 rounded-3xl text-center space-y-4">
-                  <h1 className="text-4xl font-black text-emerald-900">HACCP Plan Draft Ready</h1>
-                  <p className="text-emerald-700">Your plan has been generated. Validate it to check for compliance.</p>
+                  <h1 className="text-4xl font-black text-emerald-900">Draft Created</h1>
+                  <p className="text-emerald-700">Validation is required for final export. Run the check below to proceed.</p>
               </div>
 
               {/* 1. Idle State: Not yet validated */}
@@ -719,6 +723,24 @@ export default function HACCPMasterFlow() {
                     {/* Export Controls - Only visible after validation */}
                     <div className="bg-slate-900 p-8 rounded-3xl text-center space-y-6">
                         <h2 className="text-2xl font-black text-white">Export Documents</h2>
+                        
+                        {/* Document Style Selection */}
+                        <div className="flex justify-center gap-4 mb-4">
+                            {['Audit Classic', 'Professional Modern'].map(style => (
+                                <button
+                                    key={style}
+                                    onClick={() => setExportTemplate(style)}
+                                    className={`px-4 py-2 rounded-xl font-bold text-sm transition-all border-2 ${
+                                        exportTemplate === style 
+                                        ? 'bg-blue-600 border-blue-600 text-white' 
+                                        : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
+                                    }`}
+                                >
+                                    {style}
+                                </button>
+                            ))}
+                        </div>
+
                         {validationReport?.block_export || validationReport?.section_1_overall_assessment?.audit_readiness === "Major Gaps" ? (
                             <div className="space-y-6">
                                 <div className="bg-red-500/10 border border-red-500/50 text-red-200 p-4 rounded-xl font-bold">
@@ -751,7 +773,7 @@ export default function HACCPMasterFlow() {
                                         businessName: allAnswers.product?.businessLegalName || "My Business",
                                         full_plan: {
                                             ...generatedPlan?.full_plan,
-                                            _original_inputs: allAnswers 
+                                            _original_inputs: { ...allAnswers, template: exportTemplate }
                                         }
                                     })}
                                     className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50"

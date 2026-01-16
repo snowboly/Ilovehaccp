@@ -4,41 +4,6 @@
   "section": "Verification, Validation, Review & Records",
   "questions": [
     {
-      "id": "validation_group",
-      "text": "Validation",
-      "type": "group",
-      "questions": [
-        {
-          "id": "haccp_validation_method",
-          "text": "How was the HACCP plan validated?",
-          "type": "text",
-          "required": true
-        },
-        {
-          "id": "haccp_validator",
-          "text": "Who performed the validation?",
-          "type": "text",
-          "required": true
-        },
-        {
-          "id": "haccp_validation_date",
-          "text": "When was the HACCP plan initially validated?",
-          "type": "date",
-          "required": true
-        },
-        {
-          "id": "document_style",
-          "text": "Choose a document style for export",
-          "type": "single_select",
-          "options": [
-            "Audit Classic",
-            "Professional Modern"
-          ],
-          "required": true
-        }
-      ]
-    },
-    {
       "id": "verification_group",
       "text": "Verification",
       "type": "group",
@@ -122,7 +87,6 @@
     }
   ],
   "rules": [
-    "Validation must exist before plan approval",
     "Verification and review must be ongoing",
     "Output must support audit traceability"
   ]

@@ -303,31 +303,50 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
         );
 
       case 'group_per_hazard':
-        // This type iterates based on hazards identified in hazard_identification group
-        // Note: For simplicity, we assume identification is in the same 'answers' object under hazard_identification key
-        // But QuestionCard only receives ITS value. 
-        // We need to look at parent state? This is a design flaw in QuestionCard if it doesn't have context.
-        // HOWEVER, in HACCPQuestionnaire, identification answers are passed as 'value' if we are at top level.
-        // If we are nested, it's harder.
-        
+        // Determine identified hazards from context
+        const ident = context?.hazard_identification || {};
+        const activeHazards = [];
+        if (ident.bio_hazards) activeHazards.push({ id: 'bio', name: 'Biological Hazard' });
+        if (ident.chem_hazards) activeHazards.push({ id: 'chem', name: 'Chemical Hazard' });
+        if (ident.phys_hazards) activeHazards.push({ id: 'phys', name: 'Physical Hazard' });
+        if (ident.allergen_hazards) activeHazards.push({ id: 'allergen', name: 'Allergen Hazard' });
+
+        if (activeHazards.length === 0) return <div className="text-slate-400 italic p-4 bg-slate-50 rounded-xl">No hazards identified in previous step.</div>;
+
         return (
-            <div className="bg-slate-50 p-4 rounded-2xl space-y-4">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Hazard Evaluation Loop</p>
-                {/* 
-                   Due to component isolation, we can't easily see other group's values here without 
-                   passing the whole 'answers' object to QuestionCard. 
-                   For now, we render a generic evaluation if hazards exist.
-                */}
-                <div className="space-y-6">
-                    {question.questions?.map(subQ => (
-                        <QuestionCard 
-                            key={subQ.id}
-                            question={subQ} 
-                            value={value?.[subQ.id]} 
-                            onChange={(id, val) => onChange(question.id, { ...value, [id]: val })}
-                        />
-                    ))}
-                </div>
+            <div className="space-y-8">
+                {activeHazards.map(haz => (
+                    <div key={haz.id} className="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div className="flex items-center gap-2 mb-6 pb-4 border-b border-slate-200">
+                            <span className={`w-3 h-3 rounded-full ${
+                                haz.id === 'bio' ? 'bg-red-500' : 
+                                haz.id === 'chem' ? 'bg-yellow-500' : 
+                                haz.id === 'phys' ? 'bg-blue-500' : 'bg-purple-500'
+                            }`}></span>
+                            <h4 className="font-black text-slate-700 uppercase tracking-widest text-sm">
+                                {haz.name} Evaluation
+                            </h4>
+                        </div>
+                        <div className="space-y-6">
+                            {question.questions?.map(subQ => (
+                                <div key={`${haz.id}_${subQ.id}`} className="border-t border-slate-200 pt-4 first:border-0 first:pt-0">
+                                    <QuestionCard 
+                                        question={subQ} 
+                                        value={value?.[haz.id]?.[subQ.id]} 
+                                        onChange={(id, val) => {
+                                            const hazardValues = value?.[haz.id] || {};
+                                            onChange(question.id, { 
+                                                ...value, 
+                                                [haz.id]: { ...hazardValues, [id]: val } 
+                                            });
+                                        }}
+                                        context={context} // Pass context down recursively
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
         );
 

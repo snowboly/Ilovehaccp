@@ -176,7 +176,7 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
 
           new Paragraph({ text: "", pageBreakBefore: true }),
           new Paragraph({ children: [new TextRun({ text: "Prepared by: ____________________ Date: _______", ...styles.paragraph.run })], spacing: { before: 400, after: 400 } }),
-          new Paragraph({ children: [new TextRun({ text: "Approved by: ____________________ Date: _______", ...styles.paragraph.run })] }),
+          new Paragraph({ children: [new TextRun({ text: "Reviewed by (if applicable): ____________________ Date: _______", ...styles.paragraph.run })] }),
         ],
       },
     ],

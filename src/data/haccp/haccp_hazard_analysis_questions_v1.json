@@ -104,6 +104,7 @@
         {
           "id": "is_significant",
           "text": "Is this hazard significant?",
+          "tooltip": "A significant hazard is one that is likely to occur and likely to cause illness or injury if not controlled. This decision triggers the CCP determination process.",
           "type": "boolean",
           "required": true
         }

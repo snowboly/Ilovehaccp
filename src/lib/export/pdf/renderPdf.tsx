@@ -93,7 +93,7 @@ export const HACCPDocumentModular = ({ data, dict, logo, theme }: any) => {
                 { l: "Date Generated", v: today },
                 { l: "Plan Version", v: `v${planVersion}` },
                 { l: "Prepared by", v: "____________________" },
-                { l: "Approved by", v: "____________________" },
+                { l: "Reviewed by (if applicable)", v: "____________________" },
             ].map((m, i) => (
                 <View key={i} style={styles.metaRow}>
                     <Text style={styles.label}>{m.l}:</Text>
@@ -202,7 +202,7 @@ export const HACCPDocumentModular = ({ data, dict, logo, theme }: any) => {
 
         <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ width: '45%', borderTopWidth: 1, borderTopColor: theme.colors.text, paddingTop: 5 }}><Text>Prepared by: ________________</Text></View>
-            <View style={{ width: '45%', borderTopWidth: 1, borderTopColor: theme.colors.text, paddingTop: 5 }}><Text>Approved by: ________________</Text></View>
+            <View style={{ width: '45%', borderTopWidth: 1, borderTopColor: theme.colors.text, paddingTop: 5 }}><Text>Reviewed by (if applicable): ________________</Text></View>
         </View>
 
         {renderFooter(theme, planVersion)}

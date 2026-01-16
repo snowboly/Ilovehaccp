@@ -18,15 +18,17 @@
         },
         {
           "id": "critical_limit_basis",
-          "text": "What is the scientific or regulatory basis for this critical limit?",
+          "text": "Scientific or regulatory basis (Optional)",
+          "tooltip": "Cite the source of your limit (e.g. FSA Guidelines, Regulation 852/2004) if known.",
           "type": "text",
-          "required": true
+          "required": false
         }
       ]
     },
     {
       "id": "monitoring",
       "text": "Monitoring",
+      "tooltip": "Monitoring is the real-time measurement or observation of a CCP to ensure it is within critical limits.",
       "type": "group",
       "questions": [
         {
@@ -44,7 +46,6 @@
         {
           "id": "monitoring_frequency",
           "text": "Monitoring frequency",
-          "tooltip": "Monitoring frequency describes how often the CCP is checked to ensure it remains under control (e.g. time-based, per batch, per shift).",
           "type": "single_select",
           "options": [
             "Continuous",
@@ -92,6 +93,7 @@
     {
       "id": "verification",
       "text": "Verification",
+      "tooltip": "Verification confirms that the HACCP system is working as intended (e.g. reviewing records, calibration, testing).",
       "type": "group",
       "questions": [
         {
