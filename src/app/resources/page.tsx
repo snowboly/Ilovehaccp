@@ -30,7 +30,6 @@ export default async function ResourcesPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <JSONLD data={structuredData} />
       {/* Header */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-16 text-center">
@@ -136,6 +135,7 @@ export default async function ResourcesPage() {
           </div>
         </section>
       </div>
+      <JSONLD data={structuredData} />
     </div>
   );
 }

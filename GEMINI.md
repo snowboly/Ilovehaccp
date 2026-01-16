@@ -2,6 +2,9 @@
 
 ## Implementation Status
 
+### v3.26 Hydration Fix (Jan 15, 2026)
+- **JSON-LD Placement:** Moved the `JSONLD` component to the bottom of the `ResourcesPage` JSX structure to resolve a React hydration mismatch caused by `<script>` tag placement at the root level.
+
 ### v3.25 Final Polish & Verification (Jan 15, 2026)
 - **CCP Logic Verification:** Confirmed implementation of conditional, single-page CCP management with flattened data structures for accurate reporting.
 - **Notification Hardening:** Verified idempotent webhook handling to prevent duplicate emails and side effects.
