@@ -2,6 +2,10 @@
 
 ## Implementation Status
 
+### v3.27 Content Expansion (Jan 15, 2026)
+- **Niche Guides:** Generated 10 new high-value EU industry guides targeting "Meal Prep", "Home Bakers", "Street Food", "Seafood", "Vegan Cafes", and "Nightclubs".
+- **SEO Update:** Regenerated `sitemap.xml` to include all 101 articles for immediate indexing.
+
 ### v3.26 Hydration Fix (Jan 15, 2026)
 - **JSON-LD Placement:** Moved the `JSONLD` component to the bottom of the `ResourcesPage` JSX structure to resolve a React hydration mismatch caused by `<script>` tag placement at the root level.
 

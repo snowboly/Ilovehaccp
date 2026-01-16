@@ -27,7 +27,17 @@ const NICHES = [
     "Mobile Coffee Carts",
     "Hotel Breakfast Buffets",
     "Corporate Offices Catering",
-    "Pop-up Restaurants"
+    "Pop-up Restaurants",
+    "Meal Prep Services",
+    "Home Bakers",
+    "Street Food Stalls",
+    "Farm Shops",
+    "Delis and Charcuteries",
+    "Seafood Restaurants",
+    "Vegan and Plant-Based Cafes",
+    "Event Catering",
+    "Community Kitchens",
+    "Nightclubs and Bars"
 ];
 
 // --- SETUP ---
@@ -144,8 +154,8 @@ async function generateArticle(niche) {
 }
 
 async function main() {
-    // Process remaining niches (indices 11 to 19)
-    for (let i = 11; i < 20; i++) {
+    // Process new batch of niches (indices 20 to 29)
+    for (let i = 20; i < 30; i++) {
         await generateArticle(NICHES[i]);
         await sleep(2000); // Respect rate limits
     }
