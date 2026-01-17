@@ -4,16 +4,17 @@
   "section": "CCP Management",
   "scope": "per_ccp",
   "questions": {
-    "data": [
+    "translation": [
       {
         "id": "critical_limits",
-        "text": "Limites Críticos",
-        "tooltip": "Um limite crítico é o valor mínimo ou máximo que deve ser atingido para garantir que o PCC esteja sob controle. Ele deve ser mensurável.",
+        "text": "Limites Críticas",
+        "tooltip": "Um limite crítico é o valor mínimo ou máximo que deve ser atendido para garantir que o PCC esteja sob controle. Ele deve ser mensurável.",
         "type": "group",
         "questions": [
           {
             "id": "critical_limit_value",
             "text": "Qual é o limite crítico para este PCC?",
+            "tooltip": "Um valor preciso (por exemplo, >75°C, <5°C, pH <4,6) que separa o seguro do inseguro. Ele deve ser mensurável em tempo real.",
             "type": "text",
             "required": true
           },
@@ -50,7 +51,7 @@
             "type": "single_select",
             "options": [
               "Contínuo",
-              "Cada lote",
+              "A cada lote",
               "Horário",
               "Diário",
               "Outro"
@@ -74,6 +75,7 @@
           {
             "id": "deviation_action",
             "text": "Qual ação é tomada se o limite crítico for excedido?",
+            "tooltip": "Ação imediata para trazer o processo de volta ao controle (por exemplo, continuar cozinhando, descartar o produto).",
             "type": "text",
             "required": true
           },
@@ -85,7 +87,8 @@
           },
           {
             "id": "root_cause_correction",
-            "text": "Como a causa da divergência é corrigida?",
+            "text": "Como a causa da desviação é corrigida?",
+            "tooltip": "Explique como você corrige a questão subjacente (por exemplo, reparar a geladeira, retreinar a equipe) para evitar a recorrência.",
             "type": "text",
             "required": true
           }

@@ -13,6 +13,7 @@
         {
           "id": "critical_limit_value",
           "text": "What is the critical limit for this CCP?",
+          "tooltip": "A precise value (e.g. >75°C, <5°C, pH <4.6) that separates safe from unsafe. It must be measurable in real-time.",
           "type": "text",
           "required": true
         },
@@ -73,6 +74,7 @@
         {
           "id": "deviation_action",
           "text": "What action is taken if the critical limit is exceeded?",
+          "tooltip": "Immediate action to bring the process back under control (e.g. continue cooking, discard product).",
           "type": "text",
           "required": true
         },
@@ -85,6 +87,7 @@
         {
           "id": "root_cause_correction",
           "text": "How is the cause of deviation corrected?",
+          "tooltip": "Explain how you fix the underlying issue (e.g. repair fridge, retrain staff) to prevent recurrence.",
           "type": "text",
           "required": true
         }

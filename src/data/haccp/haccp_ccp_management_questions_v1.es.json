@@ -3,127 +3,128 @@
   "locked": true,
   "section": "CCP Management",
   "scope": "per_ccp",
-  "questions": {
-    "data": [
-      {
-        "id": "critical_limits",
-        "text": "Límites Críticos",
-        "tooltip": "Un límite crítico es el valor mínimo o máximo que debe cumplirse para garantizar que el PCC esté bajo control. Debe ser medible.",
-        "type": "group",
-        "questions": [
-          {
-            "id": "critical_limit_value",
-            "text": "¿Cuál es el límite crítico para este PCC?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "critical_limit_basis",
-            "text": "Base científica o regulatoria (Opcional)",
-            "tooltip": "Cite la fuente de su límite (por ejemplo, Directrices de la FSA, Reglamento 852/2004) si se conoce.",
-            "type": "text",
-            "required": false
-          }
-        ]
-      },
-      {
-        "id": "monitoring",
-        "text": "Monitoreo",
-        "tooltip": "El monitoreo es la medición o observación en tiempo real de un PCC para garantizar que esté dentro de los límites críticos.",
-        "type": "group",
-        "questions": [
-          {
-            "id": "monitoring_parameter",
-            "text": "¿Qué parámetro se monitorea?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "monitoring_method",
-            "text": "¿Cómo se realiza el monitoreo?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "monitoring_frequency",
-            "text": "Frecuencia de monitoreo",
-            "type": "single_select",
-            "options": [
-              "Continuo",
-              "Cada lote",
-              "Horario",
-              "Diario",
-              "Otro"
-            ],
-            "required": true
-          },
-          {
-            "id": "monitoring_responsibility",
-            "text": "¿Quién es responsable del monitoreo?",
-            "type": "text",
-            "required": true
-          }
-        ]
-      },
-      {
-        "id": "corrective_actions",
-        "text": "Acciones Correctivas",
-        "tooltip": "Las acciones correctivas describen qué sucede cuando el monitoreo muestra que se ha excedido un límite crítico, incluyendo cómo se restaura el control.",
-        "type": "group",
-        "questions": [
-          {
-            "id": "deviation_action",
-            "text": "¿Qué acción se toma si se excede el límite crítico?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "product_handling",
-            "text": "¿Cómo se maneja el producto afectado?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "root_cause_correction",
-            "text": "¿Cómo se corrige la causa de la desviación?",
-            "type": "text",
-            "required": true
-          }
-        ]
-      },
-      {
-        "id": "verification",
-        "text": "Verificación",
-        "tooltip": "La verificación confirma que el sistema HACCP funciona como se pretende (por ejemplo, revisar registros, calibración, pruebas).",
-        "type": "group",
-        "questions": [
-          {
-            "id": "verification_activities",
-            "text": "¿Qué actividades de verificación se realizan?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "verification_frequency",
-            "text": "Frecuencia de verificación",
-            "type": "text",
-            "required": true
-          }
-        ]
-      },
-      {
-        "id": "records",
-        "text": "Registros",
-        "type": "group",
-        "questions": [
-          {
-            "id": "ccp_records",
-            "text": "¿Qué registros se mantienen para este PCC?",
-            "type": "text",
-            "required": true
-          }
-        ]
-      }
-    ]
-  }
+  "questions": [
+    {
+      "id": "critical_limits",
+      "text": "Límites Críticos",
+      "tooltip": "Un límite crítico es el valor mínimo o máximo que debe cumplirse para garantizar que el PCC esté bajo control. Debe ser medible.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "critical_limit_value",
+          "text": "¿Cuál es el límite crítico para este PCC?",
+          "tooltip": "Un valor preciso (por ejemplo, >75°C, <5°C, pH <4.6) que separa lo seguro de lo inseguro. Debe ser medible en tiempo real.",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "critical_limit_basis",
+          "text": "Base científica o regulatoria (Opcional)",
+          "tooltip": "Cite la fuente de su límite (por ejemplo, Directrices de la FSA, Reglamento 852/2004) si se conoce.",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "monitoring",
+      "text": "Monitoreo",
+      "tooltip": "El monitoreo es la medición o observación en tiempo real de un PCC para garantizar que esté dentro de los límites críticos.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "monitoring_parameter",
+          "text": "¿Qué parámetro se monitorea?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "monitoring_method",
+          "text": "¿Cómo se realiza el monitoreo?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "monitoring_frequency",
+          "text": "Frecuencia de monitoreo",
+          "type": "single_select",
+          "options": [
+            "Continuo",
+            "Cada lote",
+            "Horario",
+            "Diario",
+            "Otro"
+          ],
+          "required": true
+        },
+        {
+          "id": "monitoring_responsibility",
+          "text": "¿Quién es responsable del monitoreo?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "corrective_actions",
+      "text": "Acciones Correctivas",
+      "tooltip": "Las acciones correctivas describen qué sucede cuando el monitoreo muestra que se ha excedido un límite crítico, incluyendo cómo se restaura el control.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "deviation_action",
+          "text": "¿Qué acción se toma si se excede el límite crítico?",
+          "tooltip": "Acción inmediata para devolver el proceso al control (por ejemplo, continuar cocinando, desechar el producto).",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "product_handling",
+          "text": "¿Cómo se maneja el producto afectado?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "root_cause_correction",
+          "text": "¿Cómo se corrige la causa de la desviación?",
+          "tooltip": "Explique cómo se soluciona el problema subyacente (por ejemplo, reparar la nevera, volver a capacitar al personal) para prevenir la recurrencia.",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "verification",
+      "text": "Verificación",
+      "tooltip": "La verificación confirma que el sistema HACCP funciona como se pretende (por ejemplo, revisar registros, calibración, pruebas).",
+      "type": "group",
+      "questions": [
+        {
+          "id": "verification_activities",
+          "text": "¿Qué actividades de verificación se realizan?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "verification_frequency",
+          "text": "Frecuencia de verificación",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "records",
+      "text": "Registros",
+      "type": "group",
+      "questions": [
+        {
+          "id": "ccp_records",
+          "text": "¿Qué registros se mantienen para este PCC?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    }
+  ]
 }

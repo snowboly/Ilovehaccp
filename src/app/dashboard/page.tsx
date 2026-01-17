@@ -81,9 +81,13 @@ function DashboardContent() {
 
   const fetchPlans = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { data, error } = await supabase
         .from('plans')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -446,17 +450,20 @@ function DashboardContent() {
                                     {/* Upgrade Actions for Unpaid */}
                                     {plan.payment_status !== 'paid' && (
                                         <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+                                            <p className="text-[10px] text-slate-400 font-medium mb-2 leading-tight">
+                                                Export is optional. Useful for sharing with inspectors or consultants.
+                                            </p>
                                             <button 
                                                 onClick={() => handleUpgrade(plan, 'professional')}
                                                 className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 rounded-xl text-xs font-black transition-all"
                                             >
-                                                Unlock Export (€39)
+                                                Get Official Documents (€39)
                                             </button>
                                             <button 
                                                 onClick={() => handleUpgrade(plan, 'expert')}
                                                 className="w-full bg-slate-900 hover:bg-black text-white py-2 rounded-xl text-xs font-black transition-all"
                                             >
-                                                Request Expert Review (€79)
+                                                Add Expert Review (€79)
                                             </button>
                                         </div>
                                     )}

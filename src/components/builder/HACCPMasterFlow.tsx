@@ -12,6 +12,8 @@ import { AlertTriangle, Info, Edit, ShieldAlert } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Tooltip } from '@/components/ui/Tooltip';
 
+import { useSearchParams } from 'next/navigation';
+
 type SectionKey = 
   | 'product' 
   | 'process' 
@@ -26,6 +28,7 @@ type SectionKey =
 
 export default function HACCPMasterFlow() {
   const { language } = useLanguage();
+  const searchParams = useSearchParams();
   const [currentSection, setCurrentSection] = useState<SectionKey>('product');
   const [allAnswers, setAllAnswers] = useState<any>({});
   const [draftId, setDraftId] = useState<string | null>(null);
@@ -36,17 +39,52 @@ export default function HACCPMasterFlow() {
   // 1. Initialize Draft on Mount
   useEffect(() => {
     const initDraft = async () => {
-        // Check for existing plan first (Persistence)
-        const planId = localStorage.getItem('haccp_plan_id');
-        if (planId) {
+        const urlId = searchParams.get('id');
+        
+        // A. Priority: URL Parameter (Resume specific plan/draft)
+        if (urlId) {
+            // Try as PLAN first (Paid/Generated)
             try {
-                const res = await fetch(`/api/admin/plans/${planId}`, { headers: { Authorization: '' } }); // Oops, need auth or public endpoint?
-                // api/admin/plans/[id] is protected.
-                // We should use /api/plans/[id] if available? Or verify if we can access it.
-                // Actually, the user might be anonymous.
-                // HACCPBuilder.tsx uses `/api/plans/${loadId}`.
-                // I should use that.
-                
+                const planRes = await fetch(`/api/plans/${urlId}`);
+                if (planRes.ok) {
+                    const data = await planRes.json();
+                    if (data.plan) {
+                        console.log("Restored PLAN from URL:", urlId);
+                        setGeneratedPlan(data.plan);
+                        setValidationReport(data.plan.full_plan?.validation);
+                        setAllAnswers(data.plan.full_plan?._original_inputs || {});
+                        setValidationStatus(data.plan.full_plan?.validation ? 'completed' : 'idle');
+                        setCurrentSection('complete');
+                        // Update local storage to match current focus
+                        localStorage.setItem('haccp_plan_id', urlId);
+                        return;
+                    }
+                }
+            } catch (e) { console.error("Not a plan, checking draft..."); }
+
+            // Try as DRAFT
+            try {
+                const draftRes = await fetch(`/api/drafts/${urlId}`);
+                if (draftRes.ok) {
+                    const data = await draftRes.json();
+                    if (data.draft) {
+                        console.log("Restored DRAFT from URL:", urlId);
+                        setDraftId(urlId);
+                        if (data.draft.answers) {
+                            setAllAnswers(data.draft.answers);
+                        }
+                        // Update local storage
+                        localStorage.setItem('haccp_draft_id', urlId);
+                        return;
+                    }
+                }
+            } catch (e) { console.error("Failed to restore draft from URL"); }
+        }
+
+        // B. Fallback: LocalStorage (Resume last session)
+        const planId = localStorage.getItem('haccp_plan_id');
+        if (planId && !urlId) {
+            try {
                 const planRes = await fetch(`/api/plans/${planId}`);
                 if (planRes.ok) {
                     const data = await planRes.json();
@@ -59,11 +97,11 @@ export default function HACCPMasterFlow() {
                         return;
                     }
                 }
-            } catch (e) { console.error("Failed to restore plan"); }
+            } catch (e) { console.error("Failed to restore plan from storage"); }
         }
 
         const storedId = localStorage.getItem('haccp_draft_id');
-        if (storedId) {
+        if (storedId && !urlId) {
             try {
                 const res = await fetch(`/api/drafts/${storedId}`);
                 if (res.ok) {
@@ -75,10 +113,11 @@ export default function HACCPMasterFlow() {
                     return;
                 }
             } catch (e) {
-                console.error("Failed to restore draft");
+                console.error("Failed to restore draft from storage");
             }
         }
 
+        // C. Fallback: Create New
         try {
             const res = await fetch('/api/drafts', { method: 'POST' });
             if (res.ok) {
@@ -92,7 +131,7 @@ export default function HACCPMasterFlow() {
     };
     
     initDraft();
-  }, []);
+  }, [searchParams]);
 
   // 2. Autosave with Debounce & Serial Queue
   useEffect(() => {
@@ -758,19 +797,19 @@ export default function HACCPMasterFlow() {
                                             <ShieldAlert className="w-6 h-6" />
                                         </div>
                                         <h3 className="text-xl font-black text-slate-900 mb-2">Upgrade to View Details</h3>
-                                        <p className="text-slate-500 font-medium mb-6">Detailed gap analysis and document export are available after upgrade.</p>
+                                        <p className="text-slate-500 font-medium mb-6">Detailed recommendations are available after upgrade.</p>
                                         <div className="space-y-3">
                                             <button 
                                                 onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
                                                 className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors w-full"
                                             >
-                                                Unlock export (€39)
+                                                Get Official Documents (€39)
                                             </button>
                                             <button 
                                                 onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
                                                 className="bg-white text-slate-700 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors w-full"
                                             >
-                                                Request expert review (€79)
+                                                Add Expert Review (€79)
                                             </button>
                                         </div>
                                     </div>
@@ -878,7 +917,7 @@ export default function HACCPMasterFlow() {
                                         onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
                                         className="bg-blue-600 text-white w-full sm:w-auto px-12 py-4 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50 text-lg"
                                     >
-                                        Unlock export — €39 (one-time)
+                                        Get Official Documents (€39)
                                     </button>
                                     <p className="text-xs text-slate-500 mt-4">This is a self-service document export. Regulatory approval is not included.</p>
                                 </div>
@@ -887,7 +926,10 @@ export default function HACCPMasterFlow() {
                             // PAID STATE
                             <div className="text-center space-y-6">
                                 <h2 className="text-3xl font-black text-white">Export unlocked</h2>
-                                <p className="text-slate-400">You can now download your HACCP plan as a Word or PDF document.</p>
+                                <p className="text-slate-400">
+                                    You can now download your HACCP plan as a Word or PDF document.
+                                    <br/><span className="text-xs opacity-75 mt-1 block">Your document reflects the information you entered in the builder.</span>
+                                </p>
 
                                 <div className="flex justify-center gap-4">
                                     <button 

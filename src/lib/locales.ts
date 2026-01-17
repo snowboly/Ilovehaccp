@@ -79,20 +79,20 @@ export const translations = {
           desc: "Build and preview your plan logic for free.",
           f1: "Full HACCP Builder",
           f2: "Draft Autosave",
-          f3: "Validation (View Results)",
-          f4: "Watermarked PDF Preview",
+          f3: "Check Audit Readiness",
+          f4: "Download Draft Preview",
           cta: "Start Building"
         },
         starter: {
           badge: "Most Popular",
-          title: "Export your HACCP plan",
+          title: "Official Document Export",
           price: "€39",
           desc: "Self-service document export. Regulatory approval not included.",
-          f1: "Word & PDF export",
-          f2: "Watermark removed",
+          f1: "Unlocks Word & PDF",
+          f2: "Removes Draft Watermark",
           f3: "Your completed HACCP content",
           f4: "Instant Download",
-          cta: "Unlock export"
+          cta: "Get Official Documents"
         },
         review: {
           title: "Optional expert review",
