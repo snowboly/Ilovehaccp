@@ -641,7 +641,7 @@ export default function HACCPMasterFlow() {
                       <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-100 border-t-blue-600 mx-auto"></div>
                       <div>
                           <h2 className="text-2xl font-black text-slate-900">Auditing Plan...</h2>
-                          <p className="text-slate-500">Our AI auditor is checking your plan against Codex standards.</p>
+                          <p className="text-slate-500">Our system auditor is checking your plan against Codex standards.</p>
                       </div>
                   </div>
               )}
@@ -654,7 +654,7 @@ export default function HACCPMasterFlow() {
                             <h2 className="text-2xl font-black text-slate-900">Audit Report</h2>
                             <div className="text-right">
                                 <p className="text-xs font-bold text-slate-400 uppercase">Validated by</p>
-                                <p className="font-bold text-slate-900">iLoveHACCP AI Auditor</p>
+                                <p className="font-bold text-slate-900">iLoveHACCP Auditor</p>
                             </div>
                         </div>
                         

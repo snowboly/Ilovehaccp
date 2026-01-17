@@ -69,7 +69,7 @@ export default function PrivacyPage() {
               content={
                 <>
                   <p>
-                    To generate your HACCP plans, we securely transmit limited text prompts to our AI inference partners. We currently utilize:
+                    To generate your HACCP plans, we securely transmit limited text prompts to our data processing partners. We currently utilize:
                   </p>
                   <ul className="list-disc pl-5 space-y-2 mt-2">
                     <li><strong>Groq Inc.:</strong> For high-speed inference. <a href="https://groq.com/privacy/" target="_blank" rel="noreferrer">Groq Privacy Policy</a>.</li>

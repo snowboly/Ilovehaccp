@@ -82,18 +82,17 @@ export const translations = {
                 f3: "Validation (View Results)",
                 f4: "Watermarked PDF Preview",
                 cta: "Start Building"
-              },      starter: {
-        badge: "Most Popular",
-        title: "Professional Export",
-        price: "€39",
-        desc: "Unlock everything you need for official submission.",
-        f1: "Clean PDF (No Watermark)",
-        f2: "Editable Word (.docx) Export",
-        f3: "Versioned Documents",
-        f4: "All Validation Results Visible",
-        f5: "Audit-Ready Format",
-        cta: "Upgrade Plan"
-      },
+              },        starter: {
+          badge: "Most Popular",
+          title: "Professional Export",
+          price: "€39",
+          desc: "Unlock everything you need for official submission.",
+          f1: "Clean PDF (No Watermark)",
+          f2: "Editable Word (.docx) Export",
+          f3: "Versioned Documents",
+          f4: "All Validation Results Visible",
+          cta: "Upgrade Plan"
+        },
       review: {
         title: "Expert Review",
         price: "€79",
@@ -436,7 +435,7 @@ export const translations = {
           price: "€0",
           desc: "Cree y revise su plan HACCP de forma gratuita.",
           f1: "Constructor HACCP Completo",
-          f2: "Generación de Plan por IA",
+          f2: "Generación de Plan Automática",
           f3: "Resultados de Validación",
           f4: "Exportación Limpia (Bloqueada)",
           cta: "Comenzar"
@@ -792,7 +791,7 @@ export const translations = {
           price: "€0",
           desc: "Construisez et révisez votre plan HACCP gratuitement.",
           f1: "Générateur HACCP Complet",
-          f2: "Génération de Plan par IA",
+          f2: "Génération Automatique de Plan",
           f3: "Résultats de Validation",
           f4: "Exportation Propre (Bloquée)",
           cta: "Commencer"
@@ -1158,7 +1157,7 @@ export const translations = {
           price: "€0",
           desc: "Construa e reveja o seu plano HACCP gratuitamente.",
           f1: "Criador HACCP Completo",
-          f2: "Geração de Plano por IA",
+          f2: "Geração Automática de Plano",
           f3: "Resultados de Validação",
           f4: "Exportação Limpa (Bloqueada)",
           cta: "Começar"

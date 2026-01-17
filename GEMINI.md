@@ -2,6 +2,10 @@
 
 ## Implementation Status
 
+### v3.28 Branding Update (Jan 15, 2026)
+- **Terminology Shift:** Replaced "AI" with "Automated", "System", or "Tool" across user-facing interfaces (Builder, Pricing, Privacy) to position the product as a professional compliance tool rather than a generic AI generator.
+- **Content Expansion:** Generated 10 new high-value EU industry guides targeting "Meal Prep", "Home Bakers", "Street Food", "Seafood", "Vegan Cafes", and "Nightclubs".
+
 ### v3.27 Content Expansion (Jan 15, 2026)
 - **Niche Guides:** Generated 10 new high-value EU industry guides targeting "Meal Prep", "Home Bakers", "Street Food", "Seafood", "Vegan Cafes", and "Nightclubs".
 - **SEO Update:** Regenerated `sitemap.xml` to include all 101 articles for immediate indexing.
