@@ -1033,16 +1033,10 @@ export default function HACCPMasterFlow() {
                                         onClick={handleDownloadPdf}
                                         className="bg-white text-slate-900 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
                                     >
-                                        Download Preview (Watermarked)
-                                    </button>
-                                    <button 
-                                        onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
-                                        className="bg-blue-600 text-white px-6 py-3 rounded-xl font-black hover:bg-blue-700 transition-all shadow-lg"
-                                    >
-                                        Get Official Documents (€39)
+                                        Download Preview (Watermarked PDF)
                                     </button>
                                 </div>
-                                <p className="text-xs text-slate-500">This is a self-service document export. Regulatory approval is not included.</p>
+                                <p className="text-xs text-slate-500">Full exports are available after upgrade above.</p>
                             </div>
                         ) : (
                             // PAID STATE
