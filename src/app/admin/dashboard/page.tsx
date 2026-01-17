@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { ADMIN_EMAILS } from '@/lib/constants';
 import { 
     Loader2, FileText, Download, ShieldAlert, CheckCircle2, XCircle, 
     Eye, AlertTriangle, Send, LayoutDashboard, FileCheck, Files, 
@@ -41,7 +42,17 @@ export default function AdminDashboard() {
   useEffect(() => {
     const checkAuth = async () => {
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session) { router.push('/login'); return; }
+        if (!session) { 
+            router.push('/login'); 
+            return; 
+        }
+
+        if (!session.user.email || !ADMIN_EMAILS.includes(session.user.email)) {
+            console.warn('Unauthorized admin access attempt:', session.user.email);
+            router.push('/dashboard');
+            return;
+        }
+
         fetchData('overview', 1); // Load overview by default
     };
     checkAuth();
