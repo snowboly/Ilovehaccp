@@ -47,6 +47,7 @@ interface Plan {
   review_status?: 'pending' | 'completed';
   review_comments?: string;
   reviewed_at?: string;
+  is_locked?: boolean;
 }
 
 function DashboardContent() {
@@ -113,7 +114,7 @@ function DashboardContent() {
     } catch (err: any) {
       console.error('Error deleting plan:', err);
       if (err.code === '23503') { // Foreign Key Violation
-          alert('Cannot delete plan: It is linked to an active expert review request. Please contact support.');
+          alert('Cannot delete plan: It has active dependencies (like expert review requests or audit logs). Please run the latest database migration to enable cascading deletes.');
       } else {
           alert('Failed to delete plan. Please try again.');
       }
