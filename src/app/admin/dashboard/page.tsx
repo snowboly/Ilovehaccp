@@ -38,24 +38,9 @@ export default function AdminDashboard() {
 
   const router = useRouter();
 
-  // Initial Auth Check
+  // Initial Load
   useEffect(() => {
-    const checkAuth = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) { 
-            router.push('/login'); 
-            return; 
-        }
-
-        if (!session.user.email || !ADMIN_EMAILS.includes(session.user.email)) {
-            console.warn('Unauthorized admin access attempt:', session.user.email);
-            router.push('/dashboard');
-            return;
-        }
-
-        fetchData('overview', 1); // Load overview by default
-    };
-    checkAuth();
+    fetchData('overview', 1); // Load overview by default
   }, []);
 
   // Fetch Data based on View or Page Change
