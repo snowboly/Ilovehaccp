@@ -92,7 +92,7 @@ export const translations = {
           f2: "Removes Draft Watermark",
           f3: "Your completed HACCP content",
           f4: "Instant Download",
-          cta: "Get Official Documents"
+          cta: "Start Building"
         },
         review: {
           title: "Optional expert review",
@@ -449,7 +449,7 @@ export const translations = {
           f1: "Eliminar todas las marcas de agua",
           f2: "PDF y Word (.docx) Limpios",
           f3: "Versionado Dinámico",
-          cta: "Desbloquear Ahora"
+          cta: "Comenzar"
         },
         review: {
           title: "Revisión de Expertos",
@@ -805,7 +805,7 @@ export const translations = {
           f1: "Supprimer tous les filigranes",
           f2: "PDF et Word (.docx) Propres",
           f3: "Versionnage Dynamique",
-          cta: "Débloquer Maintenant"
+          cta: "Commencer"
         },
         review: {
           title: "Révision d'Expert",
@@ -1171,7 +1171,7 @@ export const translations = {
           f1: "Remover todas as marcas de água",
           f2: "PDF e Word (.docx) Limpos",
           f3: "Versionamento Dinâmico",
-          cta: "Desbloquear Agora"
+          cta: "Começar"
         },
         review: {
           title: "Revisão de Especialista",
