@@ -4,15 +4,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HACCPSectionData } from '@/types/haccp';
 import HACCPQuestionnaire from './HACCPQuestionnaire';
+import { getQuestions } from '@/data/haccp/loader';
+import { useLanguage } from '@/lib/i18n';
 
-// Import all JSON schemas
-import productQuestions from '@/data/haccp/haccp_product_description_questions_v1.json';
-import processQuestions from '@/data/haccp/haccp_process_flow_questions_v1.json';
-import prpQuestions from '@/data/haccp/haccp_prerequisite_programs_questions_v1.json';
-import hazardQuestions from '@/data/haccp/haccp_hazard_analysis_questions_v1.json';
-import ccpDeterminationQuestions from '@/data/haccp/haccp_ccp_determination_questions_v1.json';
-import ccpManagementQuestions from '@/data/haccp/haccp_ccp_management_questions_v1.json';
-import validationQuestions from '@/data/haccp/haccp_verification_validation_review_v1.json';
 import { generateHACCPWordDoc } from '@/lib/export-utils';
 import { AlertTriangle, Info, Edit, ShieldAlert } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -31,6 +25,7 @@ type SectionKey =
   | 'complete';
 
 export default function HACCPMasterFlow() {
+  const { language } = useLanguage();
   const [currentSection, setCurrentSection] = useState<SectionKey>('product');
   const [allAnswers, setAllAnswers] = useState<any>({});
   const [draftId, setDraftId] = useState<string | null>(null);
@@ -476,21 +471,21 @@ export default function HACCPMasterFlow() {
   // --- Render Helpers ---
 
   if (currentSection === 'product') {
-      return <HACCPQuestionnaire sectionData={productQuestions as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />;
+      return <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />;
   }
   
   if (currentSection === 'process') {
-      return <HACCPQuestionnaire sectionData={processQuestions as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('process', d)} initialData={allAnswers.process} />;
+      return <HACCPQuestionnaire sectionData={getQuestions('process', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('process', d)} initialData={allAnswers.process} />;
   }
 
   if (currentSection === 'prp') {
-      return <HACCPQuestionnaire sectionData={prpQuestions as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('prp', d)} initialData={allAnswers.prp} />;
+      return <HACCPQuestionnaire sectionData={getQuestions('prp', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('prp', d)} initialData={allAnswers.prp} />;
   }
 
   if (currentSection === 'hazards') {
       const step = allAnswers.process?.process_steps?.[currentStepIndex];
       const dynamicSchema = { 
-          ...hazardQuestions, 
+          ...getQuestions('hazards', language), 
           section: `Hazard Analysis: ${step?.step_name || 'Unknown Step'}` 
       } as unknown as HACCPSectionData;
 
@@ -522,15 +517,16 @@ export default function HACCPMasterFlow() {
   if (currentSection === 'ccp_determination') {
       const sigHazards = getSignificantHazards();
       const currentHazard = sigHazards[currentCCPIndex];
+      const questionsData = getQuestions('ccp_determination', language);
 
       if (!currentHazard) {
           return <div className="p-10 text-center">No significant hazards identified. Moving to next section...</div>;
       }
 
       const dynamicSchema = { 
-          ...ccpDeterminationQuestions, 
+          ...questionsData, 
           section: `CCP Determination: ${currentHazard.step_name}`,
-          questions: ccpDeterminationQuestions.questions.map((q: any) => ({
+          questions: questionsData.questions.map((q: any) => ({
               ...q,
               description: q.id === 'q1_control_measure' 
                 ? `For hazard: "${currentHazard.hazards}" at step "${currentHazard.step_name}"`
@@ -568,6 +564,7 @@ export default function HACCPMasterFlow() {
 
   if (currentSection === 'ccp_management') {
       const ccpList = getIdentifiedCCPs();
+      const questionsData = getQuestions('ccp_management', language);
 
       if (ccpList.length === 0) {
           return <div className="p-10 text-center">No CCPs to manage. Moving to next section...</div>;
@@ -581,12 +578,12 @@ export default function HACCPMasterFlow() {
               id: groupId,
               text: `📍 CCP #${idx + 1} — ${ccp.step_name} (${ccp.hazard})`,
               type: 'group',
-              questions: ccpManagementQuestions.questions // Reuse standard questions inside the group
+              questions: questionsData.questions // Reuse standard questions inside the group
           };
       });
 
       const dynamicSchema = { 
-          ...ccpManagementQuestions, 
+          ...questionsData, 
           section: `CCP Management (${ccpList.length} Critical Points)`,
           questions: dynamicQuestions
       } as unknown as HACCPSectionData;
@@ -624,7 +621,7 @@ export default function HACCPMasterFlow() {
   }
 
   if (currentSection === 'validation') {
-       return <HACCPQuestionnaire sectionData={validationQuestions as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('validation', d)} />;
+       return <HACCPQuestionnaire sectionData={getQuestions('validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('validation', d)} />;
   }
 
   if (currentSection === 'generating' || currentSection === 'validating') {

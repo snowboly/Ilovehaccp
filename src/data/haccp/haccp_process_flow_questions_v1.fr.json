@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Process Flow Diagram",
+  "questions": {
+    "translations": [
+      {
+        "id": "diagram_created",
+        "text": "Avez-vous créé un diagramme de flux de processus complet ?",
+        "type": "boolean",
+        "required": true,
+        "validation": {
+          "prevent_proceed_on": false,
+          "error_message": "Un diagramme de flux de processus complet est requis pour continuer conformément à l'étape 4 du Codex."
+        }
+      },
+      {
+        "id": "process_steps",
+        "text": "Listez toutes les étapes de processus dans l'ordre où elles se produisent.",
+        "tooltip": "Les étapes de processus décrivent les principales étapes de votre exploitation, de la réception à l'expédition, et devraient refléter la façon dont le processus fonctionne réellement.",
+        "type": "repeatable_list",
+        "required": true,
+        "min_items": 1,
+        "item_schema": {
+          "fields": [
+            {
+              "id": "step_id",
+              "text": "ID d'étape",
+              "type": "hidden_auto_id"
+            },
+            {
+              "id": "step_name",
+              "text": "Nom d'étape",
+              "type": "text",
+              "required": true
+            },
+            {
+              "id": "step_description",
+              "text": "Description d'étape",
+              "type": "text",
+              "required": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "rework_exists",
+        "text": "Ce processus inclut-il des étapes de reprise, de recyclage ou de retraitement ?",
+        "type": "boolean",
+        "required": true,
+        "conditional_questions": [
+          {
+            "id": "rework_description",
+            "text": "Description de la reprise, du recyclage ou du retraitement",
+            "type": "text",
+            "required": true,
+            "show_if": true
+          }
+        ]
+      },
+      {
+        "id": "diagram_verified",
+        "text": "Le diagramme de flux de processus a-t-il été vérifié sur le site ?",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  }
+}

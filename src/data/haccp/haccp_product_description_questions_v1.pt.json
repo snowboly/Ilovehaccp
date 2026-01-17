@@ -1,0 +1,110 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Product Description",
+  "questions": {
+    "translations": [
+      {
+        "id": "businessLegalName",
+        "text": "Nome Legal da Empresa",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "business_address",
+        "text": "Endereço da Empresa (Opcional)",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "plan_scope",
+        "text": "Este plano HACCP se aplica a:",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Um Produto Único",
+          "Uma Família de Produtos / Categoria",
+          "Uma Linha de Processo / Tecnologia"
+        ]
+      },
+      {
+        "id": "product_name",
+        "text": "Nome do Produto / Família / Linha",
+        "description": "Se estiver cobrindo uma família, use um nome representativo (por exemplo, 'Refeições Congeladas Prontas').",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "product_category",
+        "text": "Categoria do produto",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Cru",
+          "Pronto para Consumo (RTE)",
+          "Tratado Termicamente",
+          "Estável em Prateleira",
+          "Congelado",
+          "Refrigerado"
+        ]
+      },
+      {
+        "id": "key_ingredients",
+        "text": "Ingredientes Chave / Formulação",
+        "description": "Para famílias, liste os ingredientes típicos. Receitas detalhadas podem ser gerenciadas separadamente.",
+        "type": "multiline_text",
+        "required": true
+      },
+      {
+        "id": "allergens_present",
+        "text": "Alérgenos presentes",
+        "type": "multi_select",
+        "required": true,
+        "options": [
+          "Leite",
+          "Ovos",
+          "Peixe",
+          "Crustáceos",
+          "Moluscos",
+          "Amendoins",
+          "Nozes",
+          "Soja",
+          "Glúten",
+          "Sésamo",
+          "Sulfites",
+          "Nenhum"
+        ]
+      },
+      {
+        "id": "packaging_type",
+        "text": "Tipo de Embalagem",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "shelf_life",
+        "text": "Vida Útil",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "storage_conditions",
+        "text": "Condições de Armazenamento",
+        "type": "single_select",
+        "required": false,
+        "options": [
+          "Ambiente",
+          "Refrigerado",
+          "Congelado"
+        ]
+      },
+      {
+        "id": "intended_use",
+        "text": "Uso Pretendido",
+        "tooltip": "O uso pretendido descreve como o produto é esperado para ser usado pelo consumidor, incluindo se está pronto para consumo ou requer preparação adicional.",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

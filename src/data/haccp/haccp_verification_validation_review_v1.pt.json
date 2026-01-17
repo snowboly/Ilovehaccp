@@ -1,0 +1,95 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Verification, Validation, Review & Records",
+  "questions": {
+    "translation": [
+      {
+        "id": "verification_group",
+        "text": "Verificação",
+        "type": "group",
+        "questions": [
+          {
+            "id": "system_verification_activities",
+            "text": "Quais atividades de verificação são realizadas para confirmar que o sistema HACCP está funcionando?",
+            "tooltip": "As atividades de verificação confirmam que o sistema HACCP está funcionando conforme pretendido, como revisões de registros ou verificações de procedimentos de monitoramento.",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "system_verification_frequency",
+            "text": "Frequência de verificação",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "system_verification_responsibility",
+            "text": "Quem é responsável pela verificação?",
+            "type": "text",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "review_group",
+        "text": "Revisão",
+        "type": "group",
+        "questions": [
+          {
+            "id": "review_frequency",
+            "text": "Com que frequência o plano HACCP é revisado?",
+            "type": "single_select",
+            "options": [
+              "Anualmente",
+              "Após mudança no processo",
+              "Após incidente ou recall",
+              "Após achados de auditoria"
+            ],
+            "required": true
+          },
+          {
+            "id": "review_triggers",
+            "text": "Quais eventos desencadeiam uma revisão do plano HACCP?",
+            "type": "multi_select",
+            "options": [
+              "Anualmente",
+              "Após mudança no processo",
+              "Após incidente ou recall",
+              "Após achados de auditoria"
+            ],
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "records_group",
+        "text": "Registros e Controle de Documentos",
+        "type": "group",
+        "questions": [
+          {
+            "id": "record_storage_location",
+            "text": "Onde os registros HACCP são armazenados?",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "record_retention_period",
+            "text": "Período de retenção de registros",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "document_control_method",
+            "text": "Como os documentos são controlados e atualizados?",
+            "type": "text",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  "rules": [
+    "Verification and review must be ongoing",
+    "Output must support audit traceability"
+  ]
+}

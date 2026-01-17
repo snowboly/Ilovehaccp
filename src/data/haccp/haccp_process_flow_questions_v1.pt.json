@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Process Flow Diagram",
+  "questions": {
+    "translation": [
+      {
+        "id": "diagram_created",
+        "text": "Você criou um diagrama de fluxo de processo completo?",
+        "type": "boolean",
+        "required": true,
+        "validation": {
+          "prevent_proceed_on": false,
+          "error_message": "Um diagrama de fluxo de processo completo é necessário para continuar de acordo com o Passo 4 do Codex."
+        }
+      },
+      {
+        "id": "process_steps",
+        "text": "Liste todas as etapas do processo na ordem em que ocorrem.",
+        "tooltip": "As etapas do processo descrevem as principais fases da sua operação, desde a recepção até a expedição, e devem refletir como o processo realmente funciona.",
+        "type": "repeatable_list",
+        "required": true,
+        "min_items": 1,
+        "item_schema": {
+          "fields": [
+            {
+              "id": "step_id",
+              "text": "ID da etapa",
+              "type": "hidden_auto_id"
+            },
+            {
+              "id": "step_name",
+              "text": "Nome da etapa",
+              "type": "text",
+              "required": true
+            },
+            {
+              "id": "step_description",
+              "text": "Descrição da etapa",
+              "type": "text",
+              "required": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "rework_exists",
+        "text": "Este processo inclui alguma etapa de retrabalho, reciclagem ou reprocessamento?",
+        "type": "boolean",
+        "required": true,
+        "conditional_questions": [
+          {
+            "id": "rework_description",
+            "text": "Descrição do retrabalho, reciclagem ou reprocessamento",
+            "type": "text",
+            "required": true,
+            "show_if": true
+          }
+        ]
+      },
+      {
+        "id": "diagram_verified",
+        "text": "O diagrama de fluxo de processo foi verificado no local?",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  }
+}

@@ -3,50 +3,54 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { supabaseService } from '@/lib/supabase';
 import { generateWordDocument } from '@/lib/word-generator';
+import { emailTranslations } from '@/lib/email-locales';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
 export async function POST(req: Request) {
   try {
-    const { email, businessName, planId, amount } = await req.json();
+    const { email, businessName, planId, amount, language = 'en' } = await req.json();
 
     if (!process.env.RESEND_API_KEY) {
       console.warn("RESEND_API_KEY is missing. Email not sent.");
       return NextResponse.json({ success: false, error: "Email service not configured" }, { status: 500 });
     }
 
+    // Select Locale (Fallback to EN)
+    const t = (emailTranslations as any)[language]?.payment_confirmed || emailTranslations.en.payment_confirmed;
+
     // 1. Email to User
     await resend.emails.send({
       from: 'iLoveHACCP <noreply@ilovehaccp.com>',
       to: [email],
       replyTo: 'support@ilovehaccp.com',
-      subject: `Payment Confirmed: Professional Review for ${businessName}`,
+      subject: t.subject.replace('{businessName}', businessName),
       html: `
         <div style="font-family: sans-serif; color: #333;">
-          <h1>Payment Confirmed</h1>
-          <p>Hi there,</p>
-          <p>Thank you for purchasing the <strong>Starter Review</strong> package for <strong>${businessName}</strong>.</p>
+          <h1>${t.title}</h1>
+          <p>${t.greeting}</p>
+          <p>${t.thank_you.replace('{businessName}', businessName)}</p>
           
           <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin: 20px 0;">
-            <strong style="color: #166534;">Next Steps:</strong>
+            <strong style="color: #166534;">${t.next_steps_title}</strong>
             <ul style="color: #15803d;">
-              <li>Our food safety expert has been notified and assigned to your plan.</li>
-              <li>We will review your documentation within the next 48 hours.</li>
-              <li>We may contact you via this email if we need clarification on your processes.</li>
+              <li>${t.step_1}</li>
+              <li>${t.step_2}</li>
+              <li>${t.step_3}</li>
             </ul>
           </div>
 
-          <p>In the meantime, you can access your unlocked Word (DOCX) document here:</p>
-          <p><a href="https://www.ilovehaccp.com/dashboard" style="background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Go to Dashboard</a></p>
+          <p>${t.access_doc}</p>
+          <p><a href="https://www.ilovehaccp.com/dashboard" style="background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">${t.dashboard_btn}</a></p>
           
-          <p>If you have specific questions for the auditor, simply <strong>reply to this email</strong>.</p>
+          <p>${t.questions}</p>
           
           <p style="font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 10px; margin-top: 20px;">
-            Disclaimer: This review is advisory and provided for guidance only. It does not replace official audits or regulatory approvals.
+            ${t.disclaimer}
           </p>
           
           <br/>
-          <p>Best regards,<br/>The iLoveHACCP Team</p>
+          <p>${t.sign_off}</p>
         </div>
       `,
     });

@@ -1,0 +1,129 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "CCP Management",
+  "scope": "per_ccp",
+  "questions": {
+    "data": [
+      {
+        "id": "critical_limits",
+        "text": "Limites Críticos",
+        "tooltip": "Um limite crítico é o valor mínimo ou máximo que deve ser atingido para garantir que o PCC esteja sob controle. Ele deve ser mensurável.",
+        "type": "group",
+        "questions": [
+          {
+            "id": "critical_limit_value",
+            "text": "Qual é o limite crítico para este PCC?",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "critical_limit_basis",
+            "text": "Base científica ou regulatória (Opcional)",
+            "tooltip": "Cite a fonte do seu limite (por exemplo, Diretrizes da ANVISA, Regulamento 852/2004) se conhecida.",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "monitoring",
+        "text": "Monitoramento",
+        "tooltip": "Monitoramento é a medição ou observação em tempo real de um PCC para garantir que esteja dentro dos limites críticos.",
+        "type": "group",
+        "questions": [
+          {
+            "id": "monitoring_parameter",
+            "text": "Qual parâmetro é monitorado?",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "monitoring_method",
+            "text": "Como o monitoramento é realizado?",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "monitoring_frequency",
+            "text": "Frequência de monitoramento",
+            "type": "single_select",
+            "options": [
+              "Contínuo",
+              "Cada lote",
+              "Horário",
+              "Diário",
+              "Outro"
+            ],
+            "required": true
+          },
+          {
+            "id": "monitoring_responsibility",
+            "text": "Quem é responsável pelo monitoramento?",
+            "type": "text",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "corrective_actions",
+        "text": "Ações Corretivas",
+        "tooltip": "Ações corretivas descrevem o que acontece quando o monitoramento mostra que um limite crítico foi excedido, incluindo como o controle é restaurado.",
+        "type": "group",
+        "questions": [
+          {
+            "id": "deviation_action",
+            "text": "Qual ação é tomada se o limite crítico for excedido?",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "product_handling",
+            "text": "Como o produto afetado é manuseado?",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "root_cause_correction",
+            "text": "Como a causa da divergência é corrigida?",
+            "type": "text",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "verification",
+        "text": "Verificação",
+        "tooltip": "Verificação confirma que o sistema HACCP está funcionando como pretendido (por exemplo, revisando registros, calibração, testes).",
+        "type": "group",
+        "questions": [
+          {
+            "id": "verification_activities",
+            "text": "Quais atividades de verificação são realizadas?",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "verification_frequency",
+            "text": "Frequência de verificação",
+            "type": "text",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "records",
+        "text": "Registros",
+        "type": "group",
+        "questions": [
+          {
+            "id": "ccp_records",
+            "text": "Quais registros são mantidos para este PCC?",
+            "type": "text",
+            "required": true
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "CCP Determination",
+  "scope": "per_significant_hazard",
+  "logic_source": "Codex Alimentarius Decision Tree",
+  "questions": {
+    "questions": [
+      {
+        "id": "q1_control_measure",
+        "text": "¿Existe una medida de control para el peligro identificado en este paso?",
+        "tooltip": "Un Punto Crítico de Control (PCC) es un paso donde el control es esencial para prevenir, eliminar o reducir un peligro para la seguridad alimentaria a un nivel aceptable.",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "id": "q2_step_designed_to_eliminate",
+        "text": "¿Está este paso diseñado específicamente para eliminar o reducir el peligro a un nivel aceptable?",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "id": "q3_contamination_possible",
+        "text": "¿Puede ocurrir contaminación con el peligro en este paso, o podría aumentar a niveles inaceptables?",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "id": "q4_subsequent_step",
+        "text": "¿Eliminará o reducirá un paso posterior el peligro a un nivel aceptable?",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  },
+  "outcome_logic": [
+    {
+      "conditions": {
+        "q1_control_measure": false
+      },
+      "outcome": "Not a CCP"
+    },
+    {
+      "conditions": {
+        "q2_step_designed_to_eliminate": true
+      },
+      "outcome": "CCP"
+    },
+    {
+      "conditions": {
+        "q2_step_designed_to_eliminate": false,
+        "q3_contamination_possible": true,
+        "q4_subsequent_step": false
+      },
+      "outcome": "CCP"
+    },
+    {
+      "conditions": {
+        "q2_step_designed_to_eliminate": false,
+        "q4_subsequent_step": true
+      },
+      "outcome": "Not a CCP"
+    },
+    {
+      "conditions": "default",
+      "outcome": "OPRP"
+    }
+  ]
+}

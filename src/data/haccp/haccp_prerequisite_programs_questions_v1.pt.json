@@ -1,0 +1,321 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Prerequisite Programs",
+  "questions": {
+    "data": [
+      {
+        "id": "prp_cleaning_sanitation",
+        "text": "Limpeza e saneamento",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_personal_hygiene",
+        "text": "Higiene pessoal",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_pest_control",
+        "text": "Controle de pragas",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_supplier_approval",
+        "text": "Aprovação de fornecedores e controle de matérias-primas",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_allergen_management",
+        "text": "Gerenciamento de alérgenos",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_maintenance_calibration",
+        "text": "Manutenção e calibração",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_training",
+        "text": "Treinamento",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_traceability_recall",
+        "text": "Rastreabilidade e recall",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_waste_management",
+        "text": "Gerenciamento de resíduos",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_water_air_quality",
+        "text": "Qualidade da água e do ar",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_glass_brittle_plastic",
+        "text": "Controle de vidro e plástico quebradiço",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "prp_food_defense_fraud",
+        "text": "Defesa alimentar / fraude alimentar (quando aplicável)",
+        "type": "prp_group",
+        "required": true,
+        "fields": [
+          {
+            "id": "exists",
+            "text": "PRP existe?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "documented",
+            "text": "PRP documentado?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "id": "reference",
+            "text": "Nome ou ID do documento de referência",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Product Description",
+  "questions": {
+    "translations": [
+      {
+        "id": "businessLegalName",
+        "text": "Dénomination légale de l'entreprise",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "business_address",
+        "text": "Adresse de l'entreprise (Facultatif)",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "plan_scope",
+        "text": "Ce plan HACCP s'applique à :",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Un seul produit",
+          "Une famille de produits / catégorie",
+          "Une ligne de processus / technologie"
+        ]
+      },
+      {
+        "id": "product_name",
+        "text": "Nom du produit / famille / ligne",
+        "description": "Si vous couvrez une famille, utilisez un nom représentatif (par exemple, 'Repas préparés surgelés').",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "product_category",
+        "text": "Catégorie de produit",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Cru",
+          "Prêt-à-manger (PAM)",
+          "Traitement thermique",
+          "Stable à température ambiante",
+          "Surgelé",
+          "Réfrigéré"
+        ]
+      },
+      {
+        "id": "key_ingredients",
+        "text": "Ingrédients clés / Formulation",
+        "description": "Pour les familles, listez les ingrédients typiques. Les recettes détaillées peuvent être gérées séparément.",
+        "type": "multiline_text",
+        "required": true
+      },
+      {
+        "id": "allergens_present",
+        "text": "Allergènes présents",
+        "type": "multi_select",
+        "required": true,
+        "options": [
+          "Lait",
+          "Oeufs",
+          "Poissons",
+          "Crustacés",
+          "Mollusques",
+          "Arachides",
+          "Noix",
+          "Soja",
+          "Gluten",
+          "Sésame",
+          "Sulfites",
+          "Aucun"
+        ]
+      },
+      {
+        "id": "packaging_type",
+        "text": "Type d'emballage",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "shelf_life",
+        "text": "Durée de conservation",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "storage_conditions",
+        "text": "Conditions de stockage",
+        "type": "single_select",
+        "required": false,
+        "options": [
+          "Ambiant",
+          "Réfrigéré",
+          "Surgelé"
+        ]
+      },
+      {
+        "id": "intended_use",
+        "text": "Utilisation prévue",
+        "tooltip": "L'utilisation prévue décrit la façon dont le produit est censé être utilisé par le consommateur, y compris s'il est prêt-à-manger ou nécessite une préparation supplémentaire.",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

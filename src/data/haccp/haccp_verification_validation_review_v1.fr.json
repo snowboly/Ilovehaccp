@@ -1,0 +1,95 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Verification, Validation, Review & Records",
+  "questions": {
+    "translation": [
+      {
+        "id": "verification_group",
+        "text": "Vérification",
+        "type": "group",
+        "questions": [
+          {
+            "id": "system_verification_activities",
+            "text": "Quelles activités de vérification sont réalisées pour confirmer que le système HACCP fonctionne?",
+            "tooltip": "Les activités de vérification confirment que le système HACCP fonctionne comme prévu, telles que l'examen des dossiers ou la vérification des procédures de surveillance.",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "system_verification_frequency",
+            "text": "Fréquence de vérification",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "system_verification_responsibility",
+            "text": "Qui est responsable de la vérification?",
+            "type": "text",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "review_group",
+        "text": "Examen",
+        "type": "group",
+        "questions": [
+          {
+            "id": "review_frequency",
+            "text": "À quelle fréquence le plan HACCP est-il examiné?",
+            "type": "single_select",
+            "options": [
+              "Annuellement",
+              "Après un changement de processus",
+              "Après un incident ou un rappel",
+              "Après des constats d'audit"
+            ],
+            "required": true
+          },
+          {
+            "id": "review_triggers",
+            "text": "Quels événements déclenchent un examen du plan HACCP?",
+            "type": "multi_select",
+            "options": [
+              "Annuellement",
+              "Après un changement de processus",
+              "Après un incident ou un rappel",
+              "Après des constats d'audit"
+            ],
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "records_group",
+        "text": "Dossiers et contrôle des documents",
+        "type": "group",
+        "questions": [
+          {
+            "id": "record_storage_location",
+            "text": "Où sont stockés les dossiers HACCP?",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "record_retention_period",
+            "text": "Période de conservation des dossiers",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "document_control_method",
+            "text": "Comment les documents sont-ils contrôlés et mis à jour?",
+            "type": "text",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  "rules": [
+    "Verification and review must be ongoing",
+    "Output must support audit traceability"
+  ]
+}

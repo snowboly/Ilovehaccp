@@ -1,0 +1,110 @@
+{
+  "version": "1.0.0",
+  "locked": true,
+  "section": "Product Description",
+  "questions": {
+    "translations": [
+      {
+        "id": "businessLegalName",
+        "text": "Nombre Legal del Negocio",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "business_address",
+        "text": "Dirección del Negocio (Opcional)",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "plan_scope",
+        "text": "¿A qué se aplica este plan de HACCP?",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Un Solo Producto",
+          "Una Familia / Categoría de Productos",
+          "Una Línea de Proceso / Tecnología"
+        ]
+      },
+      {
+        "id": "product_name",
+        "text": "Nombre del Producto / Familia / Línea",
+        "description": "Si se trata de una familia, utilice un nombre representativo (por ejemplo, 'Comidas Preparadas Congeladas').",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "product_category",
+        "text": "Categoría del producto",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Crudo",
+          "Listo para Consumir (RTE)",
+          "Tratado Térmicamente",
+          "Estable a Temperatura Ambiente",
+          "Congelado",
+          "Refrigerado"
+        ]
+      },
+      {
+        "id": "key_ingredients",
+        "text": "Ingredientes clave / Formulación",
+        "description": "Para familias, enumere los ingredientes típicos. Las recetas detalladas se pueden gestionar por separado.",
+        "type": "multiline_text",
+        "required": true
+      },
+      {
+        "id": "allergens_present",
+        "text": "Alergenos presentes",
+        "type": "multi_select",
+        "required": true,
+        "options": [
+          "Leche",
+          "Huevos",
+          "Pescado",
+          "Crustáceos",
+          "Moluscos",
+          "Maní",
+          "Frutos secos",
+          "Soja",
+          "Gluten",
+          "Sésamo",
+          "Sulfites",
+          "Ninguno"
+        ]
+      },
+      {
+        "id": "packaging_type",
+        "text": "Tipo de envasado",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "shelf_life",
+        "text": "Vida útil",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "storage_conditions",
+        "text": "Condiciones de almacenamiento",
+        "type": "single_select",
+        "required": false,
+        "options": [
+          "Ambiental",
+          "Refrigerado",
+          "Congelado"
+        ]
+      },
+      {
+        "id": "intended_use",
+        "text": "Uso previsto",
+        "tooltip": "El uso previsto describe cómo se espera que el consumidor utilice el producto, incluyendo si está listo para comer o requiere una preparación adicional.",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}
