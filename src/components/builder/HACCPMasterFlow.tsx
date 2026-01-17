@@ -828,13 +828,20 @@ export default function HACCPMasterFlow() {
                         ) : generatedPlan?.payment_status !== 'paid' ? (
                             // UNPAID STATE
                             <div className="space-y-6">
-                                <p className="text-slate-400 font-medium">Your plan is ready for export. Upgrade to download clean PDF & Word documents.</p>
+                                <p className="text-slate-400 font-medium">Your plan is ready. Download a watermarked preview or upgrade for the official files.</p>
                                 <div className="flex flex-col sm:flex-row justify-center gap-4">
+                                    <a 
+                                        href={`/api/download-pdf?planId=${generatedPlan?.id || ''}`}
+                                        target="_blank"
+                                        className="bg-white text-slate-900 border border-slate-700 px-8 py-4 rounded-xl font-bold hover:bg-slate-800 hover:text-white transition-all flex items-center justify-center gap-2"
+                                    >
+                                        Download Preview (Watermarked)
+                                    </a>
                                     <button 
                                         onClick={() => window.location.href = '/dashboard'}
                                         className="bg-blue-600 text-white px-8 py-4 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2"
                                     >
-                                        Unlock Export (€39)
+                                        Unlock Official Export (€39)
                                     </button>
                                 </div>
                             </div>
