@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, ShieldCheck, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -18,17 +18,19 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next');
 
   // Auto-redirect if email confirmation link logs the user in automatically
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        router.push('/dashboard');
+        router.push(next || '/dashboard');
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [router]);
+  }, [router, next]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +44,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
           email,
           password,
           options: {
-            emailRedirectTo: `${origin}/login`,
+            emailRedirectTo: `${origin}/login${next ? `?next=${encodeURIComponent(next)}` : ''}`,
           },
         });
         if (error) throw error;
@@ -53,7 +55,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
           password,
         });
         if (error) throw error;
-        router.push('/dashboard');
+        router.push(next || '/dashboard');
       } else if (view === 'forgot_password') {
         const origin = window.location.origin;
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -174,7 +176,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
                 supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: `${window.location.origin}/dashboard`,
+                        redirectTo: `${window.location.origin}${next || '/dashboard'}`,
                     },
                 }).then(({ error }) => {
                     if (error) {

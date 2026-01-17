@@ -61,13 +61,16 @@ export async function GET(req: Request) {
     const dict = getDictionary(lang).pdf;
     const fullPlan = plan.full_plan || {};
     const originalInputs = fullPlan._original_inputs || {};
+    const productInputs = originalInputs.product || {};
     
     const pdfData = {
         businessName: plan.business_name,
-        productName: plan.product_name || "HACCP Plan",
-        productDescription: plan.product_description || "Generated Plan",
-        intendedUse: plan.intended_use || "General",
-        storageType: plan.storage_type || "Standard",
+        productName: productInputs.product_name || plan.product_name || "HACCP Plan",
+        productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
+        intendedUse: productInputs.intended_use || plan.intended_use || "General",
+        storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
+        mainIngredients: productInputs.key_ingredients || "Standard",
+        shelfLife: productInputs.shelf_life || "As per label",
         analysis: plan.hazard_analysis || [],
         fullPlan: fullPlan,
         planVersion,

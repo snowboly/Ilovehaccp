@@ -74,11 +74,21 @@ export async function GET(req: Request) {
     const planVersion = latestVersion?.version_number || 1;
 
     // 4. Generate Doc
+    const fullPlan = plan.full_plan || {};
+    const originalInputs = fullPlan._original_inputs || {};
+    const productInputs = originalInputs.product || {};
+
     const buffer = await generateWordDocument({
         businessName: plan.business_name,
-        full_plan: plan.full_plan,
+        full_plan: fullPlan,
         planVersion,
-        template: plan.full_plan?._original_inputs?.template || plan.full_plan?.validation?.document_style
+        template: originalInputs.template || fullPlan.validation?.document_style,
+        productName: productInputs.product_name || plan.product_name || "HACCP Plan",
+        productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
+        mainIngredients: productInputs.key_ingredients || "Standard",
+        intendedUse: productInputs.intended_use || plan.intended_use || "General",
+        storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
+        shelfLife: productInputs.shelf_life || "As per label"
     }, lang);
 
     // 5. Return Stream

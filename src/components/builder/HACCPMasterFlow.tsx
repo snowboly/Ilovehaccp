@@ -905,26 +905,73 @@ export default function HACCPMasterFlow() {
                             </div>
                             
                             {generatedPlan?.payment_status !== 'paid' && (
-                                <div className="absolute inset-0 flex items-center justify-center z-10">
-                                    <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-slate-200 text-center max-w-md mx-auto">
-                                        <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                                            <ShieldAlert className="w-6 h-6" />
+                                <div className="absolute inset-0 flex items-center justify-center z-10 bg-white/95 backdrop-blur-sm rounded-3xl">
+                                    <div className="max-w-4xl w-full px-6">
+                                        <div className="text-center mb-8">
+                                            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                                <ShieldAlert className="w-6 h-6" />
+                                            </div>
+                                            <h3 className="text-2xl font-black text-slate-900 mb-2">Upgrade to View Details</h3>
+                                            <p className="text-slate-500 font-medium">Unlock your full HACCP plan and remove watermarks.</p>
                                         </div>
-                                        <h3 className="text-xl font-black text-slate-900 mb-2">Upgrade to View Details</h3>
-                                        <p className="text-slate-500 font-medium mb-6">Detailed recommendations are available after upgrade.</p>
-                                        <div className="space-y-3">
-                                            <button 
-                                                onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
-                                                className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors w-full"
-                                            >
-                                                Get Official Documents (€39)
-                                            </button>
-                                            <button 
-                                                onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
-                                                className="bg-white text-slate-700 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors w-full"
-                                            >
-                                                Add Expert Review (€79)
-                                            </button>
+
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            {/* Tier 39 */}
+                                            <div className="bg-white border-2 border-slate-100 p-6 rounded-2xl hover:border-blue-100 transition-colors shadow-xl shadow-slate-200/50">
+                                                <div className="mb-4">
+                                                    <h4 className="font-black text-slate-900 text-lg">Self-Service Export</h4>
+                                                    <p className="text-3xl font-black text-slate-900 mt-2">€39 <span className="text-sm text-slate-400 font-medium text-base">+ VAT</span></p>
+                                                </div>
+                                                <ul className="space-y-3 mb-8 text-left">
+                                                    {[
+                                                        "Download HACCP plan as Word (DOCX)",
+                                                        "Download HACCP plan as PDF (no watermark)",
+                                                        "Remove “Draft” watermark",
+                                                        "Save documents for future access", 
+                                                        "Share with inspectors or consultants"
+                                                    ].map((item, i) => (
+                                                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+                                                            <span className="text-emerald-500 font-bold">✓</span> {item}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                                <button 
+                                                    onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
+                                                    className="bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-colors w-full flex items-center justify-center gap-2"
+                                                >
+                                                    Export Documents
+                                                </button>
+                                            </div>
+
+                                            {/* Tier 79 */}
+                                            <div className="bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-xl shadow-blue-900/10">
+                                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                                    Recommended
+                                                </div>
+                                                <div className="mb-4">
+                                                    <h4 className="font-black text-blue-900 text-lg">Expert Review</h4>
+                                                    <p className="text-3xl font-black text-blue-900 mt-2">€79 <span className="text-sm text-blue-400 font-medium text-base">+ VAT</span></p>
+                                                </div>
+                                                <ul className="space-y-3 mb-8 text-left">
+                                                    {[
+                                                        "Includes all Export features (€39)",
+                                                        "Human review by a food safety professional",
+                                                        "Written feedback on gaps and clarity",
+                                                        "Review stored in dashboard",
+                                                        "Priority Email Support"
+                                                    ].map((item, i) => (
+                                                        <li key={i} className="flex items-start gap-3 text-sm text-blue-800 font-medium">
+                                                            <span className="text-blue-600 font-bold">✓</span> {item}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                                <button 
+                                                    onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
+                                                    className="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20"
+                                                >
+                                                    Request Expert Review
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
