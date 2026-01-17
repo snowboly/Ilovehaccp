@@ -463,6 +463,37 @@ export default function HACCPMasterFlow() {
     }
   };
 
+  const handleDownloadPdf = async () => {
+      if (!generatedPlan?.id) return;
+      try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) return;
+
+          const res = await fetch(`/api/download-pdf?planId=${generatedPlan.id}&lang=${language}`, {
+              headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+          
+          if (!res.ok) {
+              const err = await res.json();
+              alert(err.error || 'Download failed');
+              return;
+          }
+          
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+      } catch (e) {
+          console.error(e);
+          alert('Failed to download PDF.');
+      }
+  };
+
   const handleRunValidation = async () => {
       if (!generatedPlan) return;
       setValidationStatus('running');
@@ -951,13 +982,12 @@ export default function HACCPMasterFlow() {
                             // UNPAID STATE
                             <div className="text-center pt-4 space-y-4">
                                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                                    <a 
-                                        href={`/api/download-pdf?planId=${generatedPlan?.id || ''}`}
-                                        target="_blank"
+                                    <button 
+                                        onClick={handleDownloadPdf}
                                         className="bg-white text-slate-900 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
                                     >
                                         Download Preview (Watermarked)
-                                    </a>
+                                    </button>
                                     <button 
                                         onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
                                         className="bg-blue-600 text-white px-6 py-3 rounded-xl font-black hover:bg-blue-700 transition-all shadow-lg"
@@ -989,13 +1019,12 @@ export default function HACCPMasterFlow() {
                                     >
                                         Download Word (.docx)
                                     </button>
-                                    <a 
-                                        href={`/api/download-pdf?planId=${generatedPlan?.id || ''}`}
-                                        target="_blank"
+                                    <button 
+                                        onClick={handleDownloadPdf}
                                         className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center gap-2"
                                     >
                                         Download PDF (.pdf)
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         )}

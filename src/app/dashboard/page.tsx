@@ -154,6 +154,37 @@ function DashboardContent() {
       }
   };
 
+  const handleDownloadPdf = async (plan: Plan) => {
+      try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) return;
+
+          // Default to EN if no language context (dashboard is EN-only for now or we can use useLanguage if we add it)
+          const res = await fetch(`/api/download-pdf?planId=${plan.id}&lang=en`, {
+              headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+          
+          if (!res.ok) {
+              const err = await res.json();
+              alert(err.error || 'Download failed');
+              return;
+          }
+          
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+      } catch (e) {
+          console.error(e);
+          alert('Failed to download PDF.');
+      }
+  };
+
   const handleUpgrade = async (plan: Plan, tier: 'professional' | 'expert') => {
     try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -482,13 +513,12 @@ function DashboardContent() {
                                     
                                     {exportPermission.allowed ? (
                                         <div className="relative group">
-                                            <a
-                                                href={`/api/download-pdf?planId=${plan.id}`}
-                                                target="_blank"
+                                            <button
+                                                onClick={() => handleDownloadPdf(plan)}
                                                 className="w-full flex items-center justify-center gap-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors"
                                             >
                                                 <Download className="h-3 w-3" /> PDF
-                                            </a>
+                                            </button>
                                             {plan.payment_status !== 'paid' && (
                                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-40 bg-slate-900 text-white text-[10px] p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity text-center pointer-events-none z-20">
                                                     Includes Watermark. Upgrade to remove.
