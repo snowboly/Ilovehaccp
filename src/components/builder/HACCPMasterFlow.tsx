@@ -73,7 +73,7 @@ export default function HACCPMasterFlow() {
             try {
                 const draftRes = await fetch(`/api/drafts/${urlId}`);
                 if (draftRes.ok) {
-                    const data = await res.json();
+                    const data = await draftRes.json();
                     if (data.draft) {
                         console.log("Restored DRAFT from URL:", urlId);
                         setDraftId(urlId);
