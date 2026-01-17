@@ -2,34 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { 
-  ShieldCheck, 
-  Plus, 
-  FileText, 
-  Clock, 
-  MoreVertical, 
-  Trash2, 
-  Edit,
-  LogOut,
+import {
+  FileText,
   Download,
-  Loader2,
-  CheckCircle2,
-  XCircle,
+  Clock,
+  Edit,
+  Plus,
+  Trash2,
+  Link2,
   Lock,
-  Search,
-  LayoutGrid,
-  List as ListIcon,
+  XCircle,
+  CheckCircle2,
+  AlertTriangle,
+  FileDigit,
+  LayoutDashboard,
+  ShieldCheck,
   Settings,
+  LogOut,
   ArrowRight,
-  Link2
+  MoreVertical,
+  Loader2,
+  History
 } from 'lucide-react';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import HACCPDocument from '@/components/pdf/HACCPDocument';
-import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { getDictionary } from '@/lib/locales';
+import { isExportAllowed } from '@/lib/export/permissions';
 
 interface Plan {
   id: string;
@@ -38,11 +37,16 @@ interface Plan {
   created_at: string;
   status: string;
   payment_status: string;
+  tier?: 'professional' | 'expert';
   hazard_analysis: any;
   full_plan: any;
   intended_use: string;
   storage_type: string;
   business_type: string;
+  review_requested?: boolean;
+  review_status?: 'pending' | 'completed';
+  review_comments?: string;
+  reviewed_at?: string;
 }
 
 function DashboardContent() {
@@ -53,13 +57,13 @@ function DashboardContent() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [importId, setImportId] = useState('');
   const [importing, setImporting] = useState(false);
+  const [importConfirmation, setImportConfirmation] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     if (searchParams.get('session_id')) {
         setShowSuccess(true);
-        // Clear URL params without reloading
         window.history.replaceState({}, '', '/dashboard');
     }
 
@@ -122,7 +126,11 @@ function DashboardContent() {
               headers: { Authorization: `Bearer ${session.access_token}` }
           });
           
-          if (!res.ok) throw new Error('Download failed');
+          if (!res.ok) {
+              const err = await res.json();
+              alert(err.error || 'Download failed');
+              return;
+          }
           
           const blob = await res.blob();
           const url = window.URL.createObjectURL(blob);
@@ -138,16 +146,46 @@ function DashboardContent() {
       }
   };
 
-  const handleImport = async (e: React.FormEvent) => {
+  const handleUpgrade = async (plan: Plan, tier: 'professional' | 'expert') => {
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) { router.push('/login'); return; }
+
+        const res = await fetch('/api/create-checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({ tier, planId: plan.id, businessName: plan.business_name })
+        });
+
+        const data = await res.json();
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert(data.error || "Failed to start checkout");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("System error starting checkout.");
+    }
+  };
+
+  const handleImport = (e: React.FormEvent) => {
     e.preventDefault();
     if (!importId) return;
     
-    // Extract ID if full URL is pasted
     let cleanId = importId.trim();
     if (cleanId.includes('id=')) {
         cleanId = cleanId.split('id=')[1].split('&')[0];
     }
-    
+    setImportConfirmation(cleanId);
+  };
+
+  const confirmImport = async () => {
+    if (!importConfirmation) return;
+
     setImporting(true);
     try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -159,7 +197,7 @@ function DashboardContent() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${session.access_token}`
             },
-            body: JSON.stringify({ planId: cleanId })
+            body: JSON.stringify({ planId: importConfirmation })
         });
         
         const data = await res.json();
@@ -167,6 +205,7 @@ function DashboardContent() {
         
         alert('Plan imported successfully!');
         setImportId('');
+        setImportConfirmation(null);
         fetchPlans();
     } catch (err: any) {
         alert(err.message);
@@ -174,6 +213,9 @@ function DashboardContent() {
         setImporting(false);
     }
   };
+
+  const drafts = plans.filter(p => p.status === 'draft');
+  const generatedPlans = plans.filter(p => p.status !== 'draft');
 
   if (loading) {
     return (
@@ -185,7 +227,6 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
       <nav className="bg-white border-b px-4 lg:px-6 h-16 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
           <ShieldCheck className="h-6 w-6 text-blue-600" />
@@ -208,15 +249,26 @@ function DashboardContent() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         {showSuccess && (
             <div className="mb-8 bg-emerald-50 border border-emerald-200 text-emerald-800 px-6 py-4 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <CheckCircle2 className="w-6 h-6 text-emerald-500" />
                     <div>
-                        <span className="font-bold text-lg text-emerald-900 block">Payment Successful!</span>
-                        <span className="font-medium text-sm">Your plan is unlocked. Our expert has been notified and will contact you via email within 48h.</span>
+                        <span className="font-bold text-lg text-emerald-900 block">
+                            {plans.find(p => p.id === searchParams.get('plan_id'))?.tier === 'expert' ? 'Review Requested' : 'Export Unlocked'}
+                        </span>
+                        <span className="font-medium text-sm">
+                            {plans.find(p => p.id === searchParams.get('plan_id'))?.tier === 'expert'
+                                ? (
+                                    <>
+                                        Your HACCP plan has been submitted for expert review. You will be notified when feedback is available.
+                                        <br/>
+                                        <span className="text-xs opacity-75">Expert reviews do not replace official audits or approvals.</span>
+                                    </>
+                                )
+                                : 'You can now download your HACCP plan as a Word or PDF document.'}
+                        </span>
                     </div>
                 </div>
                 <button onClick={() => setShowSuccess(false)} className="text-emerald-400 hover:text-emerald-600">
@@ -225,34 +277,34 @@ function DashboardContent() {
             </div>
         )}
 
-        {/* Promo Banner for Review Service */}
-        <div className="mb-8 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-            <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 bg-blue-500/20 text-blue-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 border border-blue-500/30">
-                    New Service
+        {/* Resume Draft Banner */}
+        {drafts.length > 0 && (
+            <div className="mb-8 bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-2xl shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    <div className="bg-white/20 p-3 rounded-full">
+                        <History className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-xl">You have an unfinished HACCP plan</h3>
+                        <p className="text-blue-100 text-sm">Don't lose your progress. Resume where you left off.</p>
+                    </div>
                 </div>
-                <h2 className="text-2xl font-black mb-2">Have an old HACCP plan?</h2>
-          <p className="text-slate-500 max-w-lg mb-6 leading-relaxed">
-            Get it reviewed by our certified experts. We&apos;ll update it to align with the latest 2026 standards (EU & UK) and provide a detailed action report.
-          </p>
+                <Link 
+                    href={`/builder?id=${drafts[0].id}`}
+                    className="whitespace-nowrap bg-white text-blue-700 hover:bg-blue-50 px-6 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2"
+                >
+                    Resume Draft <ArrowRight className="w-4 h-4" />
+                </Link>
             </div>
-            <Link 
-                href="/contact?subject=Review" 
-                className="relative z-10 whitespace-nowrap bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors shadow-lg flex items-center gap-2"
-            >
-                Get Reviewed <span className="text-blue-600 font-medium">From</span> <span className="text-blue-600">€99</span> <ArrowRight className="w-4 h-4" />
-            </Link>
-        </div>
+        )}
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">My Plans</h1>
+            <h1 className="text-2xl font-bold text-gray-900">My Dashboard</h1>
             <p className="text-gray-500">Manage your food safety documentation</p>
           </div>
           <Link
             href="/builder"
-            target="_blank"
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
             <Plus className="h-5 w-5" />
@@ -260,120 +312,220 @@ function DashboardContent() {
           </Link>
         </div>
 
-        {plans.length === 0 ? (
-          <div className="bg-white rounded-xl border border-dashed border-gray-300 p-12 text-center">
-            <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="h-8 w-8 text-blue-600" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No plans yet</h3>
-            <p className="text-gray-500 mb-6">Get started by creating your first HACCP plan.</p>
-            <Link
-              href="/builder"
-              className="inline-flex items-center gap-2 text-blue-600 hover:underline font-medium"
-            >
-              Start Builder <Plus className="h-4 w-4" />
-            </Link>
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {plans.map((plan) => (
-              <div key={plan.id} className="bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
-                <div className="p-6 flex-1">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex gap-2">
-                        <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                            plan.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
-                        }`}>
-                        {plan.payment_status === 'paid' ? 'Paid' : 'Draft'}
+        {/* Section A: In Progress */}
+        {drafts.length > 0 && (
+            <section className="mb-12">
+                <div className="flex items-center gap-2 mb-6">
+                    <div className="bg-amber-100 p-2 rounded-lg">
+                        <History className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <h2 className="text-xl font-black text-slate-900">In Progress (Autosaved)</h2>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {drafts.map(plan => (
+                        <div key={plan.id} className="bg-white rounded-xl border-2 border-dashed border-slate-200 p-6 flex flex-col justify-between hover:border-blue-300 transition-colors">
+                            <div>
+                                <h3 className="font-bold text-slate-900 mb-1">{plan.product_name || 'Unnamed Draft'}</h3>
+                                <p className="text-slate-500 text-xs mb-4 uppercase font-black tracking-widest">{plan.business_name || 'No business set'}</p>
+                                <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold">
+                                    <Clock className="w-3 h-3" /> Updated {new Date(plan.created_at).toLocaleDateString()}
+                                </div>
+                            </div>
+                            <div className="mt-6 flex gap-2">
+                                <Link 
+                                    href={`/builder?id=${plan.id}`}
+                                    className="flex-1 bg-slate-900 text-white py-2 rounded-lg text-xs font-black text-center hover:bg-black"
+                                >
+                                    Resume
+                                </Link>
+                                <button 
+                                    onClick={() => handleDelete(plan.id)}
+                                    className="p-2 text-slate-400 hover:text-red-600"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div className="relative group">
-                      <button className="text-gray-400 hover:text-gray-600">
-                        <MoreVertical className="h-5 w-5" />
-                      </button>
-                      {/* Simple Dropdown */}
-                      <div className="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-lg hidden group-hover:block z-10">
-                        <button 
-                          onClick={() => handleDelete(plan.id)}
-                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-                        >
-                          <Trash2 className="h-4 w-4" /> Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-lg mb-1">{plan.product_name || 'Untitled Plan'}</h3>
-                  <p className="text-gray-500 text-sm mb-4">{plan.business_name}</p>
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <Clock className="h-3 w-3" />
-                    Last edited {new Date(plan.created_at).toLocaleDateString()}
-                  </div>
+                    ))}
                 </div>
-                <div className="border-t bg-gray-50 p-4 grid grid-cols-3 gap-2">
-                  <Link 
-                      href={`/builder?id=${plan.id}`}
-                      target="_blank"
-                      className="flex items-center justify-center gap-1 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors"
-                  >
-                      <Edit className="h-3 w-3" /> Edit
-                  </Link>
-                  
-                  <PDFDownloadLink
-                      document={
-                      <HACCPDocument 
-                          dict={dict}
-                          data={{
-                          businessName: plan.business_name,
-                          productName: plan.product_name,
-                          productDescription: `HACCP Plan for ${plan.business_type}`,
-                          intendedUse: plan.intended_use,
-                          storageType: plan.storage_type,
-                          analysis: plan.hazard_analysis,
-                          fullPlan: plan.full_plan
-                          }} 
-                      />
-                      }
-                      fileName={`${plan.business_name.replace(/\s+/g, '_')}_HACCP.pdf`}
-                      className="flex items-center justify-center gap-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors"
-                  >
-                      {({ loading }) => (
-                      <>
-                          {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
-                          PDF
-                      </>
-                      )}
-                  </PDFDownloadLink>
-
-                  {plan.payment_status === 'paid' ? (
-                      <button
-                          onClick={() => handleDownloadWord(plan)}
-                          className="flex items-center justify-center gap-1 bg-blue-800 text-white py-2 rounded-lg text-xs font-medium hover:bg-blue-900 transition-colors"
-                          title="Download Editable Word Doc"
-                      >
-                          <FileText className="h-3 w-3" /> DOCX
-                      </button>
-                  ) : (
-                      <button disabled className="flex items-center justify-center gap-1 bg-gray-100 text-gray-400 py-2 rounded-lg text-xs font-medium cursor-not-allowed" title="Upgrade to Unlock Word">
-                          <Lock className="h-3 w-3" /> DOCX
-                      </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+            </section>
         )}
+
+        {/* Section B: Generated Plans */}
+        <section>
+            <div className="flex items-center gap-2 mb-6">
+                <div className="bg-blue-100 p-2 rounded-lg">
+                    <ShieldCheck className="w-5 h-5 text-blue-600" />
+                </div>
+                <h2 className="text-xl font-black text-slate-900">HACCP Plans</h2>
+            </div>
+
+            {generatedPlans.length === 0 ? (
+                <div className="bg-white rounded-xl border border-dashed border-gray-300 p-12 text-center">
+                    <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileText className="h-8 w-8 text-blue-600" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">No generated plans yet</h3>
+                    <p className="text-gray-500 mb-6">Complete the builder to generate your first professional plan.</p>
+                </div>
+            ) : (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {generatedPlans.map((plan) => {
+                        const exportPermission = isExportAllowed(plan);
+                        return (
+                            <div key={plan.id} className="bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col border-slate-200">
+                                <div className="p-6 flex-1">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border ${
+                                            plan.payment_status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-blue-50 text-blue-700 border-blue-100'
+                                        }`}>
+                                            {plan.payment_status === 'paid' ? (plan.tier === 'expert' ? 'Expert' : 'Professional') : 'Free Draft'}
+                                        </div>
+                                        <button onClick={() => handleDelete(plan.id)} className="text-slate-300 hover:text-red-600"><Trash2 className="w-4 h-4"/></button>
+                                    </div>
+                                    <h3 className="font-bold text-lg mb-1">{plan.product_name || 'Untitled Plan'}</h3>
+                                    <p className="text-gray-500 text-sm mb-4">{plan.business_name}</p>
+                                    
+                                    <div className="space-y-3 mb-4">
+                                        <div className="flex items-center justify-between text-xs border-b border-slate-50 pb-2">
+                                            <span className="text-slate-400 font-bold uppercase tracking-tighter">Version</span>
+                                            <span className="font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded">v1</span>
+                                        </div>
+                                        
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Audit Readiness</span>
+                                            {(() => {
+                                                const status = plan.full_plan?.validation?.section_1_overall_assessment?.audit_readiness;
+                                                if (!status) return (
+                                                    <div className="flex items-center gap-2 text-slate-400 font-bold text-sm">
+                                                        <div className="w-2 h-2 rounded-full bg-slate-300"></div> Not Validated
+                                                    </div>
+                                                );
+                                                if (status === 'Major Gaps') return (
+                                                    <div className="flex items-center gap-2 text-red-600 font-black text-sm">
+                                                        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div> Major Gaps Found
+                                                    </div>
+                                                );
+                                                return (
+                                                    <div className="flex items-center gap-2 text-emerald-600 font-black text-sm">
+                                                        <div className="w-2 h-2 rounded-full bg-emerald-500"></div> Compliance OK
+                                                    </div>
+                                                );
+                                            })()}
+                                        </div>
+
+                                        {plan.tier === 'expert' && (
+                                            <div className="pt-2 border-t border-slate-50 mt-2">
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Expert Review</span>
+                                                    {plan.review_status === 'completed' ? (
+                                                        <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                                                            <CheckCircle2 className="w-3 h-3" /> Completed
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-[10px] text-amber-600 font-bold flex items-center gap-1 animate-pulse">
+                                                            <Clock className="w-3 h-3" /> In Queue
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {plan.review_comments && (
+                                                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 mt-2">
+                                                        <p className="text-[11px] font-bold text-blue-900 mb-1 flex items-center gap-1">
+                                                            <ShieldCheck className="w-3 h-3" /> Reviewer Recommendations:
+                                                        </p>
+                                                        <p className="text-[11px] text-blue-800 leading-relaxed whitespace-pre-wrap italic">
+                                                            "{plan.review_comments}"
+                                                        </p>
+                                                        <p className="text-[9px] text-blue-400 mt-2">Note: Expert reviews are advisory and do not replace official audits or approvals.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Upgrade Actions for Unpaid */}
+                                    {plan.payment_status !== 'paid' && (
+                                        <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+                                            <button 
+                                                onClick={() => handleUpgrade(plan, 'professional')}
+                                                className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 rounded-xl text-xs font-black transition-all"
+                                            >
+                                                Unlock Export (€39)
+                                            </button>
+                                            <button 
+                                                onClick={() => handleUpgrade(plan, 'expert')}
+                                                className="w-full bg-slate-900 hover:bg-black text-white py-2 rounded-xl text-xs font-black transition-all"
+                                            >
+                                                Request Expert Review (€79)
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="border-t bg-gray-50 p-4 grid grid-cols-2 gap-2">
+                                    <Link 
+                                        href={`/builder?id=${plan.id}`}
+                                        className="flex items-center justify-center gap-1 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-xs font-bold hover:bg-gray-100 transition-colors"
+                                    >
+                                        <Edit className="h-3 w-3" /> Edit
+                                    </Link>
+                                    
+                                    {exportPermission.allowed ? (
+                                        <div className="relative group">
+                                            <a
+                                                href={`/api/download-pdf?planId=${plan.id}`}
+                                                target="_blank"
+                                                className="w-full flex items-center justify-center gap-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors"
+                                            >
+                                                <Download className="h-3 w-3" /> PDF
+                                            </a>
+                                            {plan.payment_status !== 'paid' && (
+                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-40 bg-slate-900 text-white text-[10px] p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity text-center pointer-events-none z-20">
+                                                    Includes Watermark. Upgrade to remove.
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <button 
+                                            disabled 
+                                            className="flex items-center justify-center gap-1 bg-red-50 text-red-400 border border-red-100 py-2 rounded-lg text-xs font-bold cursor-not-allowed w-full"
+                                            title="Validation Failed: Fix Major Gaps to Unlock Export"
+                                        >
+                                            <Lock className="h-3 w-3" /> Blocked
+                                        </button>
+                                    )}
+
+                                    {plan.payment_status === 'paid' && exportPermission.allowed ? (
+                                        <button
+                                            onClick={() => handleDownloadWord(plan)}
+                                            className="col-span-2 flex items-center justify-center gap-1 bg-slate-900 text-white py-2 rounded-lg text-xs font-bold hover:bg-black transition-colors"
+                                        >
+                                            <FileText className="h-3 w-3" /> Download Word (.docx)
+                                        </button>
+                                    ) : plan.payment_status !== 'paid' ? (
+                                        <div className="col-span-2 text-center pt-1">
+                                            <span className="text-[9px] text-slate-400 font-medium">Upgrade to unlock Word export</span>
+                                        </div>
+                                    ) : null}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+        </section>
+
         <div className="mt-12 border-t pt-8">
             <div className="max-w-xl">
                 <h3 className="text-lg font-bold text-gray-900 mb-2">Missing a plan?</h3>
                 <p className="text-gray-500 text-sm mb-4">
-                    If you generated a plan before signing up, enter the Plan ID (or the full link from your email) below to add it to your dashboard.
+                    If you generated a plan before signing up, enter the Plan ID below to add it to your dashboard.
                 </p>
                 <form onSubmit={handleImport} className="flex gap-3">
                     <div className="relative flex-1">
                         <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input 
                             type="text" 
-                            placeholder="Paste Plan ID or Link..." 
+                            placeholder="Paste Plan ID..." 
                             value={importId}
                             onChange={(e) => setImportId(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
@@ -390,14 +542,45 @@ function DashboardContent() {
                 </form>
             </div>
         </div>
+
+        {/* Import Confirmation Modal */}
+        {importConfirmation && (
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+                    <div className="flex items-center gap-3 mb-4 text-amber-600">
+                        <AlertTriangle className="w-8 h-8" />
+                        <h3 className="font-bold text-lg">Confirm Import</h3>
+                    </div>
+                    <p className="text-gray-600 mb-6">
+                        You are about to import HACCP plan ID <span className="font-mono bg-gray-100 px-2 py-0.5 rounded font-bold text-gray-800">{importConfirmation}</span>.
+                        <br/><br/>
+                        Ensure this is the correct ID before proceeding.
+                    </p>
+                    <div className="flex gap-3 justify-end">
+                        <button 
+                            onClick={() => setImportConfirmation(null)}
+                            className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={confirmImport}
+                            disabled={importing}
+                            className="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                        >
+                            {importing && <Loader2 className="w-4 h-4 animate-spin" />}
+                            {importing ? 'Importing...' : 'Yes, Import Plan'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
       </main>
     </div>
   );
 }
 
 export default function Dashboard() {
-  const dict = getDictionary('en').pdf; // Default to EN for dashboard
-  const [plans, setPlans] = useState<Plan[]>([]);
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-blue-600" /></div>}>
       <DashboardContent />

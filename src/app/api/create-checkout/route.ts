@@ -26,31 +26,48 @@ export async function POST(req: Request) {
 
     const { tier, planId, businessName } = await req.json();
 
-    const prices: Record<string, number> = {
-      starter: 7900, // €79.00
+    const prices: Record<string, { amount: number, name: string, desc: string }> = {
+      professional: { 
+          amount: 3900, 
+          name: `Export Unlock: ${businessName}`,
+          desc: "Includes Word & PDF export. Self-service document only. Regulatory approval not included."
+      },
+      expert: { 
+          amount: 7900, 
+          name: `Expert Review: ${businessName}`,
+          desc: "Advisory review by food safety professional. Does not replace official audits or approvals."
+      },
     };
 
     if (!prices[tier]) {
-      throw new Error('Invalid tier or custom pricing required');
+      throw new Error('Invalid tier selected');
     }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      customer_email: user.email, // Link to user email
+      customer_email: user.email,
       line_items: [
         {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `HACCP Starter Review: ${businessName}`,
-              description: 'AI Generated Plan + Standard Review',
+              name: prices[tier].name,
+              description: prices[tier].desc,
             },
-            unit_amount: prices[tier],
+            unit_amount: prices[tier].amount,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
+      custom_text: {
+        submit: {
+            message: "One-time payment. No subscription. No automatic renewal."
+        },
+        terms_of_service_acceptance: {
+            message: "This service provides document preparation and review support only. It does not constitute certification, approval, or regulatory authorization."
+        }
+      },
       success_url: `${new URL(req.url).origin}/dashboard?session_id={CHECKOUT_SESSION_ID}&plan_id=${planId}`,
       cancel_url: `${new URL(req.url).origin}/builder?id=${planId}`,
       allow_promotion_codes: true,

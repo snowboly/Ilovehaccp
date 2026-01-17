@@ -760,19 +760,22 @@ export default function HACCPMasterFlow() {
                                         <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                                             <ShieldAlert className="w-6 h-6" />
                                         </div>
-                                        <h3 className="text-xl font-black text-slate-900 mb-2">Detailed Report Locked</h3>
-                                        <p className="text-slate-500 font-medium mb-6">Upgrade to Professional to view full analysis, weaknesses, and recommendations.</p>
-                                        <button 
-                                            onClick={() => {
-                                                // Trigger Dashboard or redirect to pricing? 
-                                                // Ideally scroll to export controls where payment is handled.
-                                                // Or redirect to dashboard.
-                                                window.location.href = '/dashboard';
-                                            }}
-                                            className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors w-full"
-                                        >
-                                            View Options
-                                        </button>
+                                        <h3 className="text-xl font-black text-slate-900 mb-2">Upgrade to View Details</h3>
+                                        <p className="text-slate-500 font-medium mb-6">Detailed gap analysis and document export are available after upgrade.</p>
+                                        <div className="space-y-3">
+                                            <button 
+                                                onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
+                                                className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors w-full"
+                                            >
+                                                Unlock export (€39)
+                                            </button>
+                                            <button 
+                                                onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
+                                                className="bg-white text-slate-700 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors w-full"
+                                            >
+                                                Request expert review (€79)
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -827,46 +830,89 @@ export default function HACCPMasterFlow() {
                             </div>
                         ) : generatedPlan?.payment_status !== 'paid' ? (
                             // UNPAID STATE
-                            <div className="space-y-6">
-                                <p className="text-slate-400 font-medium">Your plan is ready. Download a watermarked preview or upgrade for the official files.</p>
-                                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                                    <a 
-                                        href={`/api/download-pdf?planId=${generatedPlan?.id || ''}`}
-                                        target="_blank"
-                                        className="bg-white text-slate-900 border border-slate-700 px-8 py-4 rounded-xl font-bold hover:bg-slate-800 hover:text-white transition-all flex items-center justify-center gap-2"
-                                    >
-                                        Download Preview (Watermarked)
-                                    </a>
+                            <div className="space-y-8 max-w-3xl mx-auto text-left">
+                                <div className="text-center">
+                                    <h2 className="text-3xl font-black text-white mb-2">Export your HACCP plan</h2>
+                                    <p className="text-slate-400 text-lg">Your HACCP plan draft is complete. To export it as a Word or PDF document, please unlock export.</p>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    {/* What's Included */}
+                                    <div className="bg-emerald-900/20 border border-emerald-500/30 p-6 rounded-2xl">
+                                        <h3 className="font-bold text-emerald-400 mb-4 uppercase tracking-widest text-xs">What's included</h3>
+                                        <ul className="space-y-3">
+                                            <li className="flex items-center gap-3 text-emerald-100 text-sm font-medium">
+                                                <div className="bg-emerald-500/20 p-1 rounded-full"><span className="text-emerald-400 text-xs">✓</span></div>
+                                                Word & PDF export
+                                            </li>
+                                            <li className="flex items-center gap-3 text-emerald-100 text-sm font-medium">
+                                                <div className="bg-emerald-500/20 p-1 rounded-full"><span className="text-emerald-400 text-xs">✓</span></div>
+                                                Watermark removed
+                                            </li>
+                                            <li className="flex items-center gap-3 text-emerald-100 text-sm font-medium">
+                                                <div className="bg-emerald-500/20 p-1 rounded-full"><span className="text-emerald-400 text-xs">✓</span></div>
+                                                Your completed HACCP content
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    {/* What's NOT Included */}
+                                    <div className="bg-slate-800/50 border border-slate-700 p-6 rounded-2xl">
+                                        <h3 className="font-bold text-slate-400 mb-4 uppercase tracking-widest text-xs">What's not included</h3>
+                                        <ul className="space-y-3">
+                                            <li className="flex items-center gap-3 text-slate-300 text-sm font-medium">
+                                                <div className="bg-slate-700 p-1 rounded-full"><span className="text-slate-500 text-xs">✕</span></div>
+                                                Regulatory approval
+                                            </li>
+                                            <li className="flex items-center gap-3 text-slate-300 text-sm font-medium">
+                                                <div className="bg-slate-700 p-1 rounded-full"><span className="text-slate-500 text-xs">✕</span></div>
+                                                Certification
+                                            </li>
+                                            <li className="flex items-center gap-3 text-slate-300 text-sm font-medium">
+                                                <div className="bg-slate-700 p-1 rounded-full"><span className="text-slate-500 text-xs">✕</span></div>
+                                                Expert review
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="text-center pt-4">
                                     <button 
-                                        onClick={() => window.location.href = '/dashboard'}
-                                        className="bg-blue-600 text-white px-8 py-4 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2"
+                                        onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
+                                        className="bg-blue-600 text-white w-full sm:w-auto px-12 py-4 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50 text-lg"
                                     >
-                                        Unlock Official Export (€39)
+                                        Unlock export — €39 (one-time)
                                     </button>
+                                    <p className="text-xs text-slate-500 mt-4">This is a self-service document export. Regulatory approval is not included.</p>
                                 </div>
                             </div>
                         ) : (
                             // PAID STATE
-                            <div className="flex justify-center gap-4">
-                                <button 
-                                    onClick={() => generateHACCPWordDoc({
-                                        businessName: allAnswers.product?.businessLegalName || "My Business",
-                                        full_plan: {
-                                            ...generatedPlan?.full_plan,
-                                            _original_inputs: { ...allAnswers, template: exportTemplate }
-                                        }
-                                    })}
-                                    className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50"
-                                >
-                                    Download Word (.docx)
-                                </button>
-                                <a 
-                                    href={`/api/download-pdf?planId=${generatedPlan?.id || ''}`}
-                                    target="_blank"
-                                    className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center gap-2"
-                                >
-                                    Download PDF (.pdf)
-                                </a>
+                            <div className="text-center space-y-6">
+                                <h2 className="text-3xl font-black text-white">Export unlocked</h2>
+                                <p className="text-slate-400">You can now download your HACCP plan as a Word or PDF document.</p>
+
+                                <div className="flex justify-center gap-4">
+                                    <button 
+                                        onClick={() => generateHACCPWordDoc({
+                                            businessName: allAnswers.product?.businessLegalName || "My Business",
+                                            full_plan: {
+                                                ...generatedPlan?.full_plan,
+                                                _original_inputs: { ...allAnswers, template: exportTemplate }
+                                            }
+                                        })}
+                                        className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50"
+                                    >
+                                        Download Word (.docx)
+                                    </button>
+                                    <a 
+                                        href={`/api/download-pdf?planId=${generatedPlan?.id || ''}`}
+                                        target="_blank"
+                                        className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center gap-2"
+                                    >
+                                        Download PDF (.pdf)
+                                    </a>
+                                </div>
                             </div>
                         )}
                     </div>

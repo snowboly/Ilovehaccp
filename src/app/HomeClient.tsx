@@ -332,9 +332,6 @@ export default function Home() {
                   <li className="flex items-center gap-3 text-sm text-white font-bold">
                     <CheckCircle2 className="w-5 h-5 text-blue-200" /> {t('landing.pricing.starter.f4')}
                   </li>
-                  <li className="flex items-center gap-3 text-sm text-white font-bold">
-                    <CheckCircle2 className="w-5 h-5 text-blue-200" /> {t('landing.pricing.starter.f5')}
-                  </li>
                 </ul>
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-black text-center transition-all shadow-xl">
                   {t('landing.pricing.starter.cta')}
@@ -368,6 +365,9 @@ export default function Home() {
                 <Link href="/contact?subject=Review" className="w-full py-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-center transition-all border border-slate-700">
                   {t('landing.pricing.review.cta')}
                 </Link>
+                <p className="text-center text-xs text-slate-500 mt-4 px-2 leading-tight">
+                  Reviews are advisory and do not replace official audits or approvals.
+                </p>
               </div>
             </div>
           </div>

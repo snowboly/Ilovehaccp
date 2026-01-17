@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
 import { generateWordDocument } from '@/lib/word-generator';
+import { isExportAllowed } from '@/lib/export/permissions';
 
 const ADMIN_EMAILS = [
     'admin@ilovehaccp.com', 
@@ -41,6 +42,12 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
     }
 
+    // 2.5 Validation Gate (Audit Safe - Single Source of Truth)
+    const permission = isExportAllowed(plan);
+    if (!permission.allowed) {
+        return NextResponse.json({ error: permission.reason }, { status: 422 });
+    }
+
     // 3. Permission Check
     const isOwner = plan.user_id === user.id;
     const isPaid = plan.payment_status === 'paid';
@@ -54,10 +61,23 @@ export async function GET(req: Request) {
          return NextResponse.json({ error: 'Forbidden: Payment required or Unauthorized' }, { status: 403 });
     }
 
+    // 3.5 Fetch Plan Version
+    const { data: latestVersion } = await supabaseService
+        .from('haccp_plan_versions')
+        .select('version_number')
+        .eq('plan_id', planId)
+        .order('version_number', { ascending: false })
+        .limit(1)
+        .single();
+
+    const planVersion = latestVersion?.version_number || 1;
+
     // 4. Generate Doc
     const buffer = await generateWordDocument({
         businessName: plan.business_name,
-        full_plan: plan.full_plan
+        full_plan: plan.full_plan,
+        planVersion,
+        template: plan.full_plan?._original_inputs?.template || plan.full_plan?.validation?.document_style
     });
 
     // 5. Return Stream

@@ -30,7 +30,7 @@ export async function POST(req: Request) {
           <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <strong style="color: #166534;">Next Steps:</strong>
             <ul style="color: #15803d;">
-              <li>Our certified expert has been notified and assigned to your plan.</li>
+              <li>Our food safety expert has been notified and assigned to your plan.</li>
               <li>We will review your documentation within the next 48 hours.</li>
               <li>We may contact you via this email if we need clarification on your processes.</li>
             </ul>
@@ -40,6 +40,10 @@ export async function POST(req: Request) {
           <p><a href="https://www.ilovehaccp.com/dashboard" style="background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Go to Dashboard</a></p>
           
           <p>If you have specific questions for the auditor, simply <strong>reply to this email</strong>.</p>
+          
+          <p style="font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 10px; margin-top: 20px;">
+            Disclaimer: This review is advisory and provided for guidance only. It does not replace official audits or regulatory approvals.
+          </p>
           
           <br/>
           <p>Best regards,<br/>The iLoveHACCP Team</p>

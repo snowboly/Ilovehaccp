@@ -22,13 +22,13 @@ export const translations = {
         check2: "Custom to your business",
         check3: "Free to start",
         cta: "Build Your Plan Free",
-        auditReady: "Audit Ready",
+        auditReady: "Audit Support",
         validated: "Validated Logic",
         compliance: { standard_1: "EC 852/2004", eu: "UK FSA Standards", codex: "Codex CXC 1-1969" }
       },
       audience: {
         title: "Is iLoveHACCP Right for You?",
-        subtitle: "We prioritize speed and practical compliance for small to medium food operations.",
+        subtitle: "We prioritize speed and practical alignment for small to medium food operations.",
         for_title: "Perfect For:",
         for_items: [
           "Small & medium food businesses",
@@ -44,7 +44,7 @@ export const translations = {
       },
       founder: {
         title: "A Note from the Founder",
-        text: "I built iLoveHACCP because traditional consulting is too slow and expensive for small businesses. We democratize access to the same high-standard safety systems used by major corporations.",
+        text: "I built iLoveHACCP because traditional consulting is too slow and expensive for small businesses. We democratize access to high-standard safety systems.",
         role: "Scientific Lead & Founder",
         name: "Dr. Joao"
       },
@@ -55,54 +55,55 @@ export const translations = {
         f1_desc: "Generate a full HACCP plan tailored to your exact process.",
         f2_title: "Simple & Accessible",
         f2_desc: "No food safety expertise required.",
-        f3_title: "Inspection Ready",
-        f3_desc: "Export-ready documents for inspections."
+        f3_title: "Inspection Support",
+        f3_desc: "Export documents organized for inspections."
       },
       howItWorks: {
         badge: "Simple Process",
         title: "How It Works",
-        subtitle: "Go from blank page to audit-ready in three simple steps.",
+        subtitle: "From blank page to document draft in three simple steps.",
         s1_title: "1. Answer questions",
         s1_desc: "Answer a few questions about your food business and processes.",
         s2_title: "2. Plan generated",
         s2_desc: "We generate your custom HACCP plan automatically using our technology.",
         s3_title: "3. Download & Edit",
-        s3_desc: "Download your inspection-ready documents and edit them anytime.",
+        s3_desc: "Download your documents and edit them anytime.",
         cta: "Start Your Plan Now"
       },
       pricing: {
-        title: "Choose Your Compliance Level",
-        subtitle: "From a free readiness check to fully validated professional files.",
-              free: {
-                title: "Free Draft",
-                price: "€0",
-                desc: "Build and validate your plan logic for free.",
-                f1: "Full HACCP Builder",
-                f2: "Draft Autosave",
-                f3: "Validation (View Results)",
-                f4: "Watermarked PDF Preview",
-                cta: "Start Building"
-              },        starter: {
-          badge: "Most Popular",
-          title: "Professional Export",
-          price: "€39",
-          desc: "Unlock everything you need for official submission.",
-          f1: "Clean PDF (No Watermark)",
-          f2: "Editable Word (.docx) Export",
-          f3: "Versioned Documents",
-          f4: "All Validation Results Visible",
-          cta: "Upgrade Plan"
+        title: "Choose Your Plan",
+        subtitle: "From a free preview to professional document export.",
+        free: {
+          title: "Free Draft",
+          price: "€0",
+          desc: "Build and preview your plan logic for free.",
+          f1: "Full HACCP Builder",
+          f2: "Draft Autosave",
+          f3: "Validation (View Results)",
+          f4: "Watermarked PDF Preview",
+          cta: "Start Building"
         },
-      review: {
-        title: "Expert Review",
-        price: "€79",
-        desc: "A human food safety expert reviews your plan.",
-        f1: "Everything in Tier 2",
-        f2: "Human Expert Review",
-        f3: "Written Recommendations Report",
-        f4: "Linked Guidance to Builder Sections",
-        cta: "Book Expert Review"
-      },
+        starter: {
+          badge: "Most Popular",
+          title: "Export your HACCP plan",
+          price: "€39",
+          desc: "Self-service document export. Regulatory approval not included.",
+          f1: "Word & PDF export",
+          f2: "Watermark removed",
+          f3: "Your completed HACCP content",
+          f4: "Instant Download",
+          cta: "Unlock export"
+        },
+        review: {
+          title: "Optional expert review",
+          price: "€79",
+          desc: "If you would like an experienced food safety professional to review your HACCP plan, you can request an expert review.",
+          f1: "Completeness check",
+          f2: "Gap identification",
+          f3: "Written feedback",
+          f4: "Guidance on critical limits",
+          cta: "Request expert review"
+        },
       },
       finalCta: {
         title: "Ready to start?",
