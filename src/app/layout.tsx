@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Merriweather } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import ConditionalFooter from "@/components/layout/ConditionalFooter";
 import { Providers } from "@/components/providers";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 import CookieConsent from "@/components/layout/CookieConsent";
@@ -78,7 +78,7 @@ export default function RootLayout({
           <main className="min-h-screen">
             {children}
           </main>
-          <Footer />
+          <ConditionalFooter />
           <Analytics />
         </Providers>
       </body>

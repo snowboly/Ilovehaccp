@@ -17,6 +17,7 @@
     "clsx": "^2.1.1",
     "docx": "^9.5.1",
     "dotenv": "^17.2.3",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.23.26",
     "groq-sdk": "^0.37.0",
     "lucide-react": "^0.562.0",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

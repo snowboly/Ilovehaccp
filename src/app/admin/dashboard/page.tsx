@@ -78,16 +78,20 @@ export default function AdminDashboard() {
             setTotalCount(data.pagination.total);
         }
         else if (view === 'users') {
-            const res = await fetch('/api/admin/users', { headers });
+            const res = await fetch(`/api/admin/users?page=${currentPage}&limit=20`, { headers });
             if (!res.ok) throw new Error('Failed to fetch users');
             const data = await res.json();
             setUsers(data.users || []);
+            setTotalPages(data.pagination.totalPages);
+            setTotalCount(data.pagination.total);
         }
         else if (view === 'audit') {
-            const res = await fetch('/api/admin/audit-logs', { headers });
+            const res = await fetch(`/api/admin/audit-logs?page=${currentPage}&limit=20`, { headers });
             if (!res.ok) throw new Error('Failed to fetch logs');
             const data = await res.json();
             setLogs(data.logs || []);
+            setTotalPages(data.pagination.totalPages);
+            setTotalCount(data.pagination.total);
         }
     } catch (err: any) {
         console.error(err);
@@ -497,6 +501,7 @@ export default function AdminDashboard() {
                       ))}
                   </tbody>
               </table>
+              {renderPagination()}
           </div>
       </div>
   );
@@ -525,6 +530,7 @@ export default function AdminDashboard() {
                       ))}
                   </tbody>
               </table>
+              {renderPagination()}
           </div>
       </div>
   );

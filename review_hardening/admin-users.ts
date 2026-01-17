@@ -26,30 +26,46 @@ export async function GET(req: Request) {
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const safeLimit = Math.min(Math.max(limit, 1), 100);
     const safePage = Math.max(page, 1);
-    
-    const from = (safePage - 1) * safeLimit;
-    const to = from + safeLimit - 1;
 
-    const { data: logs, count, error } = await supabaseService
-        .from('access_logs')
-        .select('*', { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .range(from, to);
+    // List users
+    const { data, error } = await supabaseService.auth.admin.listUsers({
+        page: safePage,
+        perPage: safeLimit
+    });
 
     if (error) throw error;
 
+    const users = data.users || [];
+    const total = (data as any).total || 0;
+
+    // Get plan counts for each user to enrich
+    const enrichedUsers = await Promise.all(users.map(async (u) => {
+        const { count } = await supabaseService
+            .from('plans')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', u.id);
+        
+        return {
+            id: u.id,
+            email: u.email,
+            created_at: u.created_at,
+            last_sign_in_at: u.last_sign_in_at,
+            plan_count: count || 0
+        };
+    }));
+
     return NextResponse.json({ 
-        logs,
+        users: enrichedUsers,
         pagination: {
             page: safePage,
             limit: safeLimit,
-            total: count || 0,
-            totalPages: Math.ceil((count || 0) / safeLimit)
+            total: total || 0,
+            totalPages: Math.ceil((total || 0) / safeLimit)
         }
     });
 
   } catch (error: any) {
-    console.error('Admin Audit Logs Error:', error);
+    console.error('Admin Users Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

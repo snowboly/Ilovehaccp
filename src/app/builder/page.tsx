@@ -1,4 +1,4 @@
-import HACCPBuilder from "@/components/builder/HACCPBuilder";
+import HACCPMasterFlow from "@/components/builder/HACCPMasterFlow";
 import { Suspense } from "react";
 
 export default function BuilderPage() {
@@ -10,7 +10,7 @@ export default function BuilderPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
           </div>
         }>
-          <HACCPBuilder />
+          <HACCPMasterFlow />
         </Suspense>
       </main>
     </div>

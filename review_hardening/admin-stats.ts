@@ -20,36 +20,30 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Pagination Params
-    const url = new URL(req.url);
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '50');
-    const safeLimit = Math.min(Math.max(limit, 1), 100);
-    const safePage = Math.max(page, 1);
-    
-    const from = (safePage - 1) * safeLimit;
-    const to = from + safeLimit - 1;
-
-    const { data: logs, count, error } = await supabaseService
-        .from('access_logs')
-        .select('*', { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .range(from, to);
-
-    if (error) throw error;
+    // Parallel Fetching
+    const [
+        { count: totalPlans },
+        { count: pendingReviews },
+        { count: completedReviews },
+        { count: paidPlans }
+    ] = await Promise.all([
+        supabaseService.from('plans').select('*', { count: 'exact', head: true }),
+        supabaseService.from('plans').select('*', { count: 'exact', head: true }).eq('review_requested', true).neq('review_status', 'completed'),
+        supabaseService.from('plans').select('*', { count: 'exact', head: true }).eq('review_status', 'completed'),
+        supabaseService.from('plans').select('*', { count: 'exact', head: true }).eq('payment_status', 'paid')
+    ]);
 
     return NextResponse.json({ 
-        logs,
-        pagination: {
-            page: safePage,
-            limit: safeLimit,
-            total: count || 0,
-            totalPages: Math.ceil((count || 0) / safeLimit)
+        stats: {
+            totalPlans: totalPlans || 0,
+            pendingReviews: pendingReviews || 0,
+            completedReviews: completedReviews || 0,
+            paidPlans: paidPlans || 0
         }
     });
 
   } catch (error: any) {
-    console.error('Admin Audit Logs Error:', error);
+    console.error('Admin Stats Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -6,8 +6,25 @@ const ADMIN_EMAILS = [
     'joao@scriptworkflow.com'
 ];
 
+// Lightweight selection for list views
+const LIST_COLUMNS = `
+  id, 
+  created_at, 
+  business_name, 
+  business_type, 
+  product_name, 
+  product_description,
+  payment_status, 
+  tier, 
+  status, 
+  review_requested, 
+  review_status, 
+  review_comments
+`;
+
 export async function GET(req: Request) {
   try {
+    // 1. Auth Check
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -20,26 +37,29 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Pagination Params
+    // 2. Pagination Params
     const url = new URL(req.url);
     const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '50');
-    const safeLimit = Math.min(Math.max(limit, 1), 100);
+    const limit = parseInt(url.searchParams.get('limit') || '20');
+    
+    // Validate
+    const safeLimit = Math.min(Math.max(limit, 1), 100); // Max 100 per page
     const safePage = Math.max(page, 1);
     
     const from = (safePage - 1) * safeLimit;
     const to = from + safeLimit - 1;
 
-    const { data: logs, count, error } = await supabaseService
-        .from('access_logs')
-        .select('*', { count: 'exact' })
+    // 3. Fetch Data
+    const { data: plans, count, error } = await supabaseService
+        .from('plans')
+        .select(LIST_COLUMNS, { count: 'exact' })
         .order('created_at', { ascending: false })
         .range(from, to);
 
     if (error) throw error;
 
     return NextResponse.json({ 
-        logs,
+        plans, 
         pagination: {
             page: safePage,
             limit: safeLimit,
@@ -49,7 +69,7 @@ export async function GET(req: Request) {
     });
 
   } catch (error: any) {
-    console.error('Admin Audit Logs Error:', error);
+    console.error('Admin Plans List Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -202,7 +202,8 @@ export default function HACCPBuilder() {
     traceabilitySystem: 'Yes, digital', // New field
     ccpsMonitored: 'No',
     logo: null as string | null,
-    template: 'Minimal',
+    template: 'Audit Classic',
+    product_name: '',
   });
 
   useEffect(() => {
@@ -350,7 +351,7 @@ export default function HACCPBuilder() {
 
     // 10. Customization
     { id: 'logo', section: 'Branding', question: "Upload your business logo", type: 'file', icon: <ImageIcon />, description: "It will appear on the cover of your PDF (Optional)." },
-    { id: 'template', section: 'Style', question: "Choose a document style", type: 'template_select', icon: <LayoutTemplate />, options: ['Minimal', 'Corporate', 'Modern'], required: true },
+    { id: 'template', section: 'Style', question: "Choose a document style", type: 'template_select', icon: <LayoutTemplate />, options: ['Audit Classic', 'Professional Modern'], required: true },
   ];
 
   const updateFormData = (id: string, value: any) => {
