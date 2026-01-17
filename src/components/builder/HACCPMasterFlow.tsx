@@ -80,6 +80,14 @@ export default function HACCPMasterFlow() {
                         if (data.draft.answers) {
                             setAllAnswers(data.draft.answers);
                         }
+                        if (data.draft.validation) {
+                            setValidationReport(data.draft.validation);
+                            setValidationStatus('completed');
+                            // If logged in, we might want to auto-save to plan?
+                            // For now, let user see "Complete" screen and click "Export" (which triggers save check if we add it)
+                            // or we rely on them being in 'complete' section.
+                            setCurrentSection('complete');
+                        }
                         // Update local storage
                         localStorage.setItem('haccp_draft_id', urlId);
                         return;
@@ -223,6 +231,7 @@ export default function HACCPMasterFlow() {
   const [validationReport, setValidationReport] = useState<any>(null);
   const [validationStatus, setValidationStatus] = useState<'idle' | 'running' | 'completed'>('idle');
   const [exportTemplate, setExportTemplate] = useState('Audit Classic');
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
 
   // Helper: Detect Generic Risk Pattern
   const checkGenericRiskPattern = () => {
@@ -470,7 +479,23 @@ export default function HACCPMasterFlow() {
           const data = await res.json();
           setValidationReport(data);
           setValidationStatus('completed');
-          await savePlan(plan, data);
+
+          // Save validation result to draft immediately
+          if (draftId) {
+              await fetch(`/api/drafts/${draftId}`, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ validation: data })
+              });
+          }
+
+          // Check Auth
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+              await savePlan(plan, data);
+          } else {
+              setShowAuthPrompt(true);
+          }
       } catch (e) {
           console.error(e);
           alert("Validation failed");
@@ -514,13 +539,56 @@ export default function HACCPMasterFlow() {
       }
   };
 
+  // 4. Auto-Promote Draft to Plan
+  useEffect(() => {
+      const promote = async () => {
+          if (currentSection === 'complete' && validationReport && !generatedPlan) {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (session) {
+                  console.log("Auto-promoting draft to plan...");
+                  try {
+                      // 1. Re-generate content (as draft only stored answers)
+                      const res = await fetch('/api/generate-plan', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ 
+                              ...allAnswers, 
+                              metadata: { framework_version: "1.0.0", question_set_versions: { product: "1.0.0" } } 
+                          })
+                      });
+                      const data = await res.json();
+                      
+                      // 2. Save permanently
+                      if (data.full_plan) {
+                          await savePlan(data.full_plan, validationReport);
+                      }
+                  } catch (e) {
+                      console.error("Promotion failed", e);
+                  }
+              }
+          }
+      };
+      promote();
+  }, [currentSection, validationReport, generatedPlan]);
+
   // --- Render Helpers ---
 
-  if (currentSection === 'product') {
-      return <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />;
-  }
-  
-  if (currentSection === 'process') {
+  const getProgress = (section: SectionKey) => {
+    const steps = ['product', 'process', 'prp', 'hazards', 'ccp_determination', 'ccp_management', 'validation', 'complete'];
+    const idx = steps.indexOf(section);
+    if (section === 'generating' || section === 'validating') return 90;
+    if (idx === -1) return 0;
+    return Math.min(Math.round((idx / 7) * 100), 100);
+  };
+
+  const progress = getProgress(currentSection);
+
+  const renderContent = () => {
+    if (currentSection === 'product') {
+        return <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />;
+    }
+    
+    if (currentSection === 'process') {
       return <HACCPQuestionnaire sectionData={getQuestions('process', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('process', d)} initialData={allAnswers.process} />;
   }
 
@@ -662,6 +730,27 @@ export default function HACCPMasterFlow() {
           <div className="min-h-screen flex items-center justify-center flex-col gap-4">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
               <p className="font-bold text-slate-500">{currentSection === 'generating' ? 'Writing Plan...' : 'Auditing Plan...'}</p>
+          </div>
+      );
+  }
+
+  if (showAuthPrompt) {
+      return (
+          <div className="max-w-4xl mx-auto p-10 text-center space-y-8">
+              <div className="bg-blue-50 p-10 rounded-3xl border border-blue-100">
+                  <ShieldAlert className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+                  <h1 className="text-3xl font-black text-slate-900 mb-2">Validation Complete!</h1>
+                  <p className="text-slate-600 text-lg mb-8">
+                      Your HACCP plan has been validated. Create a free account to save your progress and unlock exports.
+                  </p>
+                  <button 
+                      onClick={() => window.location.href = `/signup?next=/builder?id=${draftId}`}
+                      className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20"
+                  >
+                      Save & Continue
+                  </button>
+                  <p className="text-sm text-slate-400 mt-4">Already have an account? <a href={`/login?next=/builder?id=${draftId}`} className="text-blue-600 hover:underline">Log In</a></p>
+              </div>
           </div>
       );
   }
@@ -860,61 +949,23 @@ export default function HACCPMasterFlow() {
                             </div>
                         ) : generatedPlan?.payment_status !== 'paid' ? (
                             // UNPAID STATE
-                            <div className="space-y-8 max-w-3xl mx-auto text-left">
-                                <div className="text-center">
-                                    <h2 className="text-3xl font-black text-white mb-2">Export your HACCP plan</h2>
-                                    <p className="text-slate-400 text-lg">Your HACCP plan draft is complete. To export it as a Word or PDF document, please unlock export.</p>
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-8">
-                                    {/* What's Included */}
-                                    <div className="bg-emerald-900/20 border border-emerald-500/30 p-6 rounded-2xl">
-                                        <h3 className="font-bold text-emerald-400 mb-4 uppercase tracking-widest text-xs">What's included</h3>
-                                        <ul className="space-y-3">
-                                            <li className="flex items-center gap-3 text-emerald-100 text-sm font-medium">
-                                                <div className="bg-emerald-500/20 p-1 rounded-full"><span className="text-emerald-400 text-xs">✓</span></div>
-                                                Word & PDF export
-                                            </li>
-                                            <li className="flex items-center gap-3 text-emerald-100 text-sm font-medium">
-                                                <div className="bg-emerald-500/20 p-1 rounded-full"><span className="text-emerald-400 text-xs">✓</span></div>
-                                                Watermark removed
-                                            </li>
-                                            <li className="flex items-center gap-3 text-emerald-100 text-sm font-medium">
-                                                <div className="bg-emerald-500/20 p-1 rounded-full"><span className="text-emerald-400 text-xs">✓</span></div>
-                                                Your completed HACCP content
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    {/* What's NOT Included */}
-                                    <div className="bg-slate-800/50 border border-slate-700 p-6 rounded-2xl">
-                                        <h3 className="font-bold text-slate-400 mb-4 uppercase tracking-widest text-xs">What's not included</h3>
-                                        <ul className="space-y-3">
-                                            <li className="flex items-center gap-3 text-slate-300 text-sm font-medium">
-                                                <div className="bg-slate-700 p-1 rounded-full"><span className="text-slate-500 text-xs">✕</span></div>
-                                                Regulatory approval
-                                            </li>
-                                            <li className="flex items-center gap-3 text-slate-300 text-sm font-medium">
-                                                <div className="bg-slate-700 p-1 rounded-full"><span className="text-slate-500 text-xs">✕</span></div>
-                                                Certification
-                                            </li>
-                                            <li className="flex items-center gap-3 text-slate-300 text-sm font-medium">
-                                                <div className="bg-slate-700 p-1 rounded-full"><span className="text-slate-500 text-xs">✕</span></div>
-                                                Expert review
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div className="text-center pt-4">
+                            <div className="text-center pt-4 space-y-4">
+                                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                                    <a 
+                                        href={`/api/download-pdf?planId=${generatedPlan?.id || ''}`}
+                                        target="_blank"
+                                        className="bg-white text-slate-900 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        Download Preview (Watermarked)
+                                    </a>
                                     <button 
                                         onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
-                                        className="bg-blue-600 text-white w-full sm:w-auto px-12 py-4 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50 text-lg"
+                                        className="bg-blue-600 text-white px-6 py-3 rounded-xl font-black hover:bg-blue-700 transition-all shadow-lg"
                                     >
                                         Get Official Documents (€39)
                                     </button>
-                                    <p className="text-xs text-slate-500 mt-4">This is a self-service document export. Regulatory approval is not included.</p>
                                 </div>
+                                <p className="text-xs text-slate-500">This is a self-service document export. Regulatory approval is not included.</p>
                             </div>
                         ) : (
                             // PAID STATE
@@ -955,5 +1006,30 @@ export default function HACCPMasterFlow() {
       );
   }
 
-  return <div>Loading...</div>;
+    return <div>Loading...</div>;
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 pb-20">
+        {/* Progress Bar */}
+        <div className="bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div className="max-w-3xl mx-auto px-6 py-4">
+                <div className="flex justify-between text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    <span>Progress</span>
+                    <span>{progress}%</span>
+                </div>
+                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div 
+                        className="h-full bg-blue-600 transition-all duration-500 ease-out rounded-full"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div className="pt-10 px-6">
+            {renderContent()}
+        </div>
+    </div>
+  );
 }

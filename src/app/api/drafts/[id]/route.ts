@@ -25,14 +25,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   try {
     const { id } = await params;
     const body = await req.json();
-    const { answers } = body;
+    const { answers, validation } = body;
+
+    const updateData: any = { updated_at: new Date().toISOString() };
+    if (answers) updateData.answers = answers;
+    if (validation) updateData.validation = validation;
 
     const { error } = await supabaseService
         .from('drafts')
-        .update({ 
-            answers, 
-            updated_at: new Date().toISOString() 
-        })
+        .update(updateData)
         .eq('id', id);
 
     if (error) throw error;
