@@ -45,104 +45,30 @@ export default function HACCPMasterFlow() {
         // A. Priority: Start Fresh if explicitly requested
         if (isNew) {
             console.log("Starting fresh session (?new=true)");
-            // Clear local storage to avoid confusion later
             localStorage.removeItem('haccp_plan_id');
             localStorage.removeItem('haccp_draft_id');
-        } else if (urlId) {
-            // B. Priority: URL Parameter (Resume specific plan/draft)
-            // Try as PLAN first (Paid/Generated)
-            try {
-                const planRes = await fetch(`/api/plans/${urlId}`);
-                if (planRes.ok) {
-                    const data = await planRes.json();
-                    if (data.plan) {
-                        console.log("Restored PLAN from URL:", urlId);
-                        setGeneratedPlan(data.plan);
-                        setValidationReport(data.plan.full_plan?.validation);
-                        setAllAnswers(data.plan.full_plan?._original_inputs || {});
-                        setValidationStatus(data.plan.full_plan?.validation ? 'completed' : 'idle');
-                        setCurrentSection('complete');
-                        // Update local storage to match current focus
-                        localStorage.setItem('haccp_plan_id', urlId);
-                        return;
-                    }
-                }
-            } catch (e) { console.error("Not a plan, checking draft..."); }
-
-            // Try as DRAFT
-            try {
-                const draftRes = await fetch(`/api/drafts/${urlId}`);
-                if (draftRes.ok) {
-                    const data = await draftRes.json();
-                    if (data.draft) {
-                        console.log("Restored DRAFT from URL:", urlId);
-                        setDraftId(urlId);
-                        if (data.draft.answers) {
-                            setAllAnswers(data.draft.answers);
-                        }
-                        if (data.draft.validation) {
-                            setValidationReport(data.draft.validation);
-                            setValidationStatus('completed');
-                            // If logged in, we might want to auto-save to plan?
-                            // For now, let user see "Complete" screen and click "Export" (which triggers save check if we add it)
-                            // or we rely on them being in 'complete' section.
-                            setCurrentSection('complete');
-                        }
-                        // Update local storage
-                        localStorage.setItem('haccp_draft_id', urlId);
-                        return;
-                    }
-                }
-            } catch (e) { console.error("Failed to restore draft from URL"); }
+            await createNewDraft();
+            return;
+        } 
+        
+        // B. Priority: URL Parameter (Resume specific plan/draft)
+        if (urlId) {
+            await loadFromId(urlId);
+            return;
         }
 
-        // C. Fallback: LocalStorage (Resume last session) - Only if NOT starting new
-        const planId = !isNew ? localStorage.getItem('haccp_plan_id') : null;
-        if (planId) {
-            try {
-                const planRes = await fetch(`/api/plans/${planId}`);
-                if (planRes.ok) {
-                    const data = await planRes.json();
-                    if (data.plan) {
-                        setGeneratedPlan(data.plan);
-                        setValidationReport(data.plan.full_plan?.validation);
-                        setAllAnswers(data.plan.full_plan?._original_inputs || {});
-                        setValidationStatus(data.plan.full_plan?.validation ? 'completed' : 'idle');
-                        setCurrentSection('complete');
-                        return;
-                    }
-                }
-            } catch (e) { console.error("Failed to restore plan from storage"); }
-        }
+        // C. Fallback: LocalStorage -> PROMPT (Don't auto-load)
+        const storedPlanId = localStorage.getItem('haccp_plan_id');
+        const storedDraftId = localStorage.getItem('haccp_draft_id');
 
-        const storedId = !isNew ? localStorage.getItem('haccp_draft_id') : null;
-        if (storedId) {
-            try {
-                const res = await fetch(`/api/drafts/${storedId}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setDraftId(storedId);
-                    if (data.draft?.answers) {
-                        setAllAnswers(data.draft.answers);
-                    }
-                    return;
-                }
-            } catch (e) {
-                console.error("Failed to restore draft from storage");
-            }
+        if (storedPlanId || storedDraftId) {
+             setResumeIds({ planId: storedPlanId, draftId: storedDraftId });
+             setShowResumePrompt(true);
+             return;
         }
 
         // D. Fallback: Create New
-        try {
-            const res = await fetch('/api/drafts', { method: 'POST' });
-            if (res.ok) {
-                const data = await res.json();
-                setDraftId(data.draftId);
-                localStorage.setItem('haccp_draft_id', data.draftId);
-            }
-        } catch (e) {
-            console.error("Failed to create draft");
-        }
+        await createNewDraft();
     };
     
     initDraft();
@@ -232,6 +158,86 @@ export default function HACCPMasterFlow() {
   const [validationStatus, setValidationStatus] = useState<'idle' | 'running' | 'completed'>('idle');
   const [exportTemplate, setExportTemplate] = useState('Audit Classic');
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+
+  // Resume / Start New Logic
+  const [showResumePrompt, setShowResumePrompt] = useState(false);
+  const [resumeIds, setResumeIds] = useState<{planId: string | null, draftId: string | null}>({planId: null, draftId: null});
+
+  const loadFromId = async (id: string) => {
+    // Try as PLAN first (Paid/Generated)
+    try {
+        const planRes = await fetch(`/api/plans/${id}`);
+        if (planRes.ok) {
+            const data = await planRes.json();
+            if (data.plan) {
+                console.log("Restored PLAN from URL:", id);
+                setGeneratedPlan(data.plan);
+                setValidationReport(data.plan.full_plan?.validation);
+                setAllAnswers(data.plan.full_plan?._original_inputs || {});
+                setValidationStatus(data.plan.full_plan?.validation ? 'completed' : 'idle');
+                setCurrentSection('complete');
+                // Update local storage to match current focus
+                localStorage.setItem('haccp_plan_id', id);
+                return;
+            }
+        }
+    } catch (e) { console.error("Not a plan, checking draft..."); }
+
+    // Try as DRAFT
+    try {
+        const draftRes = await fetch(`/api/drafts/${id}`);
+        if (draftRes.ok) {
+            const data = await draftRes.json();
+            if (data.draft) {
+                console.log("Restored DRAFT from URL:", id);
+                setDraftId(id);
+                if (data.draft.answers) {
+                    setAllAnswers(data.draft.answers);
+                }
+                if (data.draft.validation) {
+                    setValidationReport(data.draft.validation);
+                    setValidationStatus('completed');
+                    setCurrentSection('complete');
+                }
+                // Update local storage
+                localStorage.setItem('haccp_draft_id', id);
+                return;
+            }
+        }
+    } catch (e) { console.error("Failed to restore draft from URL"); }
+  };
+
+  const createNewDraft = async () => {
+      try {
+          const res = await fetch('/api/drafts', { method: 'POST' });
+          if (res.ok) {
+              const data = await res.json();
+              setDraftId(data.draftId);
+              localStorage.setItem('haccp_draft_id', data.draftId);
+          }
+      } catch (e) {
+          console.error("Failed to create draft");
+      }
+  };
+
+  const handleResume = async () => {
+      setShowResumePrompt(false);
+      const idToLoad = resumeIds.planId || resumeIds.draftId;
+      if (idToLoad) {
+          await loadFromId(idToLoad);
+      } else {
+          await createNewDraft();
+      }
+  };
+
+  const handleStartNew = async () => {
+      setShowResumePrompt(false);
+      localStorage.removeItem('haccp_plan_id');
+      localStorage.removeItem('haccp_draft_id');
+      setAllAnswers({});
+      setCurrentSection('product');
+      await createNewDraft();
+  };
 
   // Helper: Detect Generic Risk Pattern
   const checkGenericRiskPattern = () => {
@@ -615,6 +621,31 @@ export default function HACCPMasterFlow() {
   const progress = getProgress(currentSection);
 
   const renderContent = () => {
+    if (showResumePrompt) {
+        return (
+            <div className="max-w-2xl mx-auto p-10 text-center space-y-8 mt-20">
+                <div className="bg-white p-10 rounded-3xl border border-slate-200 shadow-xl">
+                    <h2 className="text-2xl font-black text-slate-900 mb-4">Resume your previous session?</h2>
+                    <p className="text-slate-500 mb-8">We found an unfinished draft on this device.</p>
+                    <div className="flex justify-center gap-4">
+                        <button 
+                            onClick={handleResume} 
+                            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all"
+                        >
+                            Resume Draft
+                        </button>
+                        <button 
+                            onClick={handleStartNew} 
+                            className="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl font-bold hover:bg-slate-200 transition-all"
+                        >
+                            Start New Plan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (currentSection === 'product') {
         return <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />;
     }
