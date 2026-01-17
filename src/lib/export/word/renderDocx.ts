@@ -61,9 +61,6 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
               children: [new TextRun({ text: `${m.l}: ${m.v}`, font: theme.fonts.wordFont, size: theme.fonts.body * 2 })],
               alignment: AlignmentType.CENTER 
           })),
-
-          new Paragraph({ children: [new TextRun({ text: "Prepared By: ________________", font: theme.fonts.wordFont, size: theme.fonts.body * 2 })], spacing: { before: 800, after: 400 } }),
-          new Paragraph({ children: [new TextRun({ text: "Approved By: ________________", font: theme.fonts.wordFont, size: theme.fonts.body * 2 })] }),
           
           new Paragraph({ text: "", pageBreakBefore: true }),
 

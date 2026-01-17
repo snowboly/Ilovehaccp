@@ -118,6 +118,7 @@
         {
           "id": "applied_controls",
           "text": "What control measures apply to this hazard?",
+          "tooltip": "Control measures are actions or activities that can be used to prevent or eliminate a food safety hazard or reduce it to an acceptable level.",
           "type": "multi_select",
           "options": [
             "Prerequisite Program (PRP)",

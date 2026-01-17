@@ -41,6 +41,32 @@ export default function HACCPMasterFlow() {
   // 1. Initialize Draft on Mount
   useEffect(() => {
     const initDraft = async () => {
+        // Check for existing plan first (Persistence)
+        const planId = localStorage.getItem('haccp_plan_id');
+        if (planId) {
+            try {
+                const res = await fetch(`/api/admin/plans/${planId}`, { headers: { Authorization: '' } }); // Oops, need auth or public endpoint?
+                // api/admin/plans/[id] is protected.
+                // We should use /api/plans/[id] if available? Or verify if we can access it.
+                // Actually, the user might be anonymous.
+                // HACCPBuilder.tsx uses `/api/plans/${loadId}`.
+                // I should use that.
+                
+                const planRes = await fetch(`/api/plans/${planId}`);
+                if (planRes.ok) {
+                    const data = await planRes.json();
+                    if (data.plan) {
+                        setGeneratedPlan(data.plan);
+                        setValidationReport(data.plan.full_plan?.validation);
+                        setAllAnswers(data.plan.full_plan?._original_inputs || {});
+                        setValidationStatus(data.plan.full_plan?.validation ? 'completed' : 'idle');
+                        setCurrentSection('complete');
+                        return;
+                    }
+                }
+            } catch (e) { console.error("Failed to restore plan"); }
+        }
+
         const storedId = localStorage.getItem('haccp_draft_id');
         if (storedId) {
             try {
@@ -413,7 +439,7 @@ export default function HACCPMasterFlow() {
 
   const savePlan = async (fullPlan: any, validationReport: any) => {
       try {
-        await fetch('/api/save-plan', {
+        const res = await fetch('/api/save-plan', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -435,6 +461,11 @@ export default function HACCPMasterFlow() {
                 answers: allAnswers 
             })
         });
+        const data = await res.json();
+        if (data.plan?.id) {
+            localStorage.setItem('haccp_plan_id', data.plan.id);
+            setGeneratedPlan({ ...generatedPlan, id: data.plan.id, payment_status: data.plan.payment_status });
+        }
         localStorage.removeItem('haccp_draft_id');
         setDraftId(null);
       } catch (e) {
@@ -671,53 +702,81 @@ export default function HACCPMasterFlow() {
                             </div>
                         </div>
                         
-                        {/* Strengths */}
-                        <div>
-                            <h3 className="font-bold text-slate-900 mb-2">Strengths</h3>
-                            <ul className="list-disc list-inside text-slate-600 space-y-1">
-                                {validationReport?.section_2_strengths?.map((s: string, i: number) => <li key={i}>{s}</li>)}
-                            </ul>
-                        </div>
-                        
-                        {/* Weaknesses */}
-                        <div>
-                            <h3 className="font-bold text-slate-900 mb-2">Weaknesses</h3>
-                            <ul className="list-disc list-inside text-slate-600 space-y-1">
-                                {validationReport?.section_3_weaknesses_risks?.map((w: any, i: number) => <li key={i}>{w.weakness} ({w.section})</li>)}
-                            </ul>
-                        </div>
+                        {/* Detailed Report Gating */}
+                        <div className="relative">
+                            <div className={generatedPlan?.payment_status === 'paid' ? '' : 'blur-md select-none pointer-events-none opacity-40 max-h-96 overflow-hidden'}>
+                                {/* Strengths */}
+                                <div className="mt-6">
+                                    <h3 className="font-bold text-slate-900 mb-2">Strengths</h3>
+                                    <ul className="list-disc list-inside text-slate-600 space-y-1">
+                                        {validationReport?.section_2_strengths?.map((s: string, i: number) => <li key={i}>{s}</li>)}
+                                    </ul>
+                                </div>
+                                
+                                {/* Weaknesses */}
+                                <div className="mt-6">
+                                    <h3 className="font-bold text-slate-900 mb-2">Weaknesses</h3>
+                                    <ul className="list-disc list-inside text-slate-600 space-y-1">
+                                        {validationReport?.section_3_weaknesses_risks?.map((w: any, i: number) => <li key={i}>{w.weakness} ({w.section})</li>)}
+                                    </ul>
+                                </div>
 
-                        {/* Auditor Recommendations (Advisory) */}
-                        {validationReport?.advisory_recommendations && validationReport.advisory_recommendations.length > 0 && (
-                            <div className="pt-6 border-t border-slate-100">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <div className="bg-blue-100 p-2 rounded-lg">
-                                        <Info className="w-5 h-5 text-blue-600" />
-                                    </div>
-                                    <h3 className="text-xl font-black text-slate-900">Auditor Recommendations</h3>
-                                </div>
-                                <div className="space-y-4">
-                                    {validationReport.advisory_recommendations.map((rec: any, i: number) => (
-                                        <div key={i} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 hover:border-blue-200 transition-colors">
-                                            <div className="flex items-start justify-between gap-4 mb-2">
-                                                <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">{rec.issue_summary}</h4>
-                                                <span className={`text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest ${rec.gap_type === 'MAJOR' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
-                                                    {rec.gap_type}
-                                                </span>
+                                {/* Auditor Recommendations (Advisory) */}
+                                {validationReport?.advisory_recommendations && validationReport.advisory_recommendations.length > 0 && (
+                                    <div className="pt-6 border-t border-slate-100 mt-6">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="bg-blue-100 p-2 rounded-lg">
+                                                <Info className="w-5 h-5 text-blue-600" />
                                             </div>
-                                            <p className="text-slate-600 text-sm mb-3 italic">"{rec.why_it_matters}"</p>
-                                            <div className="bg-white p-3 rounded-xl border border-slate-100 mb-3">
-                                                <p className="text-blue-700 font-medium text-sm">💡 {rec.recommendation_text}</p>
-                                            </div>
-                                            <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
-                                                <span>{rec.related_haccp_principle}</span>
-                                                <span className="bg-slate-200 px-2 py-1 rounded text-slate-600">{rec.related_builder_section}</span>
-                                            </div>
+                                            <h3 className="text-xl font-black text-slate-900">Auditor Recommendations</h3>
                                         </div>
-                                    ))}
-                                </div>
+                                        <div className="space-y-4">
+                                            {validationReport.advisory_recommendations.map((rec: any, i: number) => (
+                                                <div key={i} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 hover:border-blue-200 transition-colors">
+                                                    <div className="flex items-start justify-between gap-4 mb-2">
+                                                        <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">{rec.issue_summary}</h4>
+                                                        <span className={`text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest ${rec.gap_type === 'MAJOR' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                                                            {rec.gap_type}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-slate-600 text-sm mb-3 italic">"{rec.why_it_matters}"</p>
+                                                    <div className="bg-white p-3 rounded-xl border border-slate-100 mb-3">
+                                                        <p className="text-blue-700 font-medium text-sm">💡 {rec.recommendation_text}</p>
+                                                    </div>
+                                                    <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+                                                        <span>{rec.related_haccp_principle}</span>
+                                                        <span className="bg-slate-200 px-2 py-1 rounded text-slate-600">{rec.related_builder_section}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
+                            
+                            {generatedPlan?.payment_status !== 'paid' && (
+                                <div className="absolute inset-0 flex items-center justify-center z-10">
+                                    <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-slate-200 text-center max-w-md mx-auto">
+                                        <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                            <ShieldAlert className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-xl font-black text-slate-900 mb-2">Detailed Report Locked</h3>
+                                        <p className="text-slate-500 font-medium mb-6">Upgrade to Professional to view full analysis, weaknesses, and recommendations.</p>
+                                        <button 
+                                            onClick={() => {
+                                                // Trigger Dashboard or redirect to pricing? 
+                                                // Ideally scroll to export controls where payment is handled.
+                                                // Or redirect to dashboard.
+                                                window.location.href = '/dashboard';
+                                            }}
+                                            className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors w-full"
+                                        >
+                                            View Options
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Export Controls - Only visible after validation */}
@@ -766,7 +825,21 @@ export default function HACCPMasterFlow() {
                                     </button>
                                 </div>
                             </div>
+                        ) : generatedPlan?.payment_status !== 'paid' ? (
+                            // UNPAID STATE
+                            <div className="space-y-6">
+                                <p className="text-slate-400 font-medium">Your plan is ready for export. Upgrade to download clean PDF & Word documents.</p>
+                                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                                    <button 
+                                        onClick={() => window.location.href = '/dashboard'}
+                                        className="bg-blue-600 text-white px-8 py-4 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2"
+                                    >
+                                        Unlock Export (€39)
+                                    </button>
+                                </div>
+                            </div>
                         ) : (
+                            // PAID STATE
                             <div className="flex justify-center gap-4">
                                 <button 
                                     onClick={() => generateHACCPWordDoc({
