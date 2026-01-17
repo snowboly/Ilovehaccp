@@ -312,7 +312,7 @@ function DashboardContent() {
             <p className="text-gray-500">Manage your food safety documentation</p>
           </div>
           <Link
-            href="/builder"
+            href="/builder?new=true"
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
             <Plus className="h-5 w-5" />

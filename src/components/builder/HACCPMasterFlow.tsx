@@ -40,9 +40,16 @@ export default function HACCPMasterFlow() {
   useEffect(() => {
     const initDraft = async () => {
         const urlId = searchParams.get('id');
+        const isNew = searchParams.get('new') === 'true';
         
-        // A. Priority: URL Parameter (Resume specific plan/draft)
-        if (urlId) {
+        // A. Priority: Start Fresh if explicitly requested
+        if (isNew) {
+            console.log("Starting fresh session (?new=true)");
+            // Clear local storage to avoid confusion later
+            localStorage.removeItem('haccp_plan_id');
+            localStorage.removeItem('haccp_draft_id');
+        } else if (urlId) {
+            // B. Priority: URL Parameter (Resume specific plan/draft)
             // Try as PLAN first (Paid/Generated)
             try {
                 const planRes = await fetch(`/api/plans/${urlId}`);
@@ -66,7 +73,7 @@ export default function HACCPMasterFlow() {
             try {
                 const draftRes = await fetch(`/api/drafts/${urlId}`);
                 if (draftRes.ok) {
-                    const data = await draftRes.json();
+                    const data = await res.json();
                     if (data.draft) {
                         console.log("Restored DRAFT from URL:", urlId);
                         setDraftId(urlId);
@@ -81,9 +88,9 @@ export default function HACCPMasterFlow() {
             } catch (e) { console.error("Failed to restore draft from URL"); }
         }
 
-        // B. Fallback: LocalStorage (Resume last session)
-        const planId = localStorage.getItem('haccp_plan_id');
-        if (planId && !urlId) {
+        // C. Fallback: LocalStorage (Resume last session) - Only if NOT starting new
+        const planId = !isNew ? localStorage.getItem('haccp_plan_id') : null;
+        if (planId) {
             try {
                 const planRes = await fetch(`/api/plans/${planId}`);
                 if (planRes.ok) {
@@ -100,8 +107,8 @@ export default function HACCPMasterFlow() {
             } catch (e) { console.error("Failed to restore plan from storage"); }
         }
 
-        const storedId = localStorage.getItem('haccp_draft_id');
-        if (storedId && !urlId) {
+        const storedId = !isNew ? localStorage.getItem('haccp_draft_id') : null;
+        if (storedId) {
             try {
                 const res = await fetch(`/api/drafts/${storedId}`);
                 if (res.ok) {
@@ -117,7 +124,7 @@ export default function HACCPMasterFlow() {
             }
         }
 
-        // C. Fallback: Create New
+        // D. Fallback: Create New
         try {
             const res = await fetch('/api/drafts', { method: 'POST' });
             if (res.ok) {
