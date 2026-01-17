@@ -76,6 +76,19 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
     }
   };
 
+  const getTitle = (section: string) => {
+    const map: Record<string, string> = {
+      'Product Description': 'Describe Your Product',
+      'Process Flow': 'Map Your Process',
+      'Prerequisite Programs': 'Establish Prerequisites',
+      'Hazard Analysis': 'Analyze Hazards',
+      'CCP Determination': 'Identify Critical Points',
+      'CCP Management': 'Manage Critical Points',
+      'Verification, Validation, Review & Records': 'Verify & Validate'
+    };
+    return map[section] || section;
+  };
+
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-20 animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="text-center space-y-2 mb-10">
@@ -83,7 +96,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
             {sectionData.section}
         </span>
         <h2 className="text-3xl font-black text-slate-900">
-            {sectionData.section === 'Hazard Analysis' ? 'Analyze Hazards' : sectionData.section}
+            {getTitle(sectionData.section)}
         </h2>
         <p className="text-slate-500 font-medium">Please answer accurately to ensure compliance.</p>
       </div>

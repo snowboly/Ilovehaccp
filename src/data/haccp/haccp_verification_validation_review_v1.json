@@ -37,7 +37,7 @@
         {
           "id": "review_frequency",
           "text": "How often is the HACCP plan reviewed?",
-          "type": "single_select",
+          "type": "multi_select",
           "options": [
             "Annually",
             "After process change",

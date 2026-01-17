@@ -35,18 +35,18 @@
         "text": "Revisão",
         "type": "group",
         "questions": [
-          {
-            "id": "review_frequency",
-            "text": "Com que frequência o plano HACCP é revisado?",
-            "type": "single_select",
-            "options": [
-              "Anualmente",
-              "Após mudança no processo",
-              "Após incidente ou recall",
-              "Após achados de auditoria"
-            ],
-            "required": true
-          },
+        {
+          "id": "review_frequency",
+          "text": "Com que frequência o plano HACCP é revisto?",
+          "type": "multi_select",
+          "options": [
+            "Anualmente",
+            "Após alteração de processo",
+            "Após incidente ou recolha",
+            "Após conclusões de auditoria"
+          ],
+          "required": true
+        },
           {
             "id": "review_triggers",
             "text": "Quais eventos desencadeiam uma revisão do plano HACCP?",

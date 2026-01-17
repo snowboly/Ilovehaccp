@@ -35,18 +35,18 @@
         "text": "Examen",
         "type": "group",
         "questions": [
-          {
-            "id": "review_frequency",
-            "text": "À quelle fréquence le plan HACCP est-il examiné?",
-            "type": "single_select",
-            "options": [
-              "Annuellement",
-              "Après un changement de processus",
-              "Après un incident ou un rappel",
-              "Après des constats d'audit"
-            ],
-            "required": true
-          },
+        {
+          "id": "review_frequency",
+          "text": "À quelle fréquence le plan HACCP est-il révisé ?",
+          "type": "multi_select",
+          "options": [
+            "Annuellement",
+            "Après changement de processus",
+            "Après incident ou rappel",
+            "Après résultats d'audit"
+          ],
+          "required": true
+        },
           {
             "id": "review_triggers",
             "text": "Quels événements déclenchent un examen du plan HACCP?",

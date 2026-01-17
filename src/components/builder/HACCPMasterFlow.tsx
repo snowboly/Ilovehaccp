@@ -532,19 +532,6 @@ export default function HACCPMasterFlow() {
 
       return (
         <div key={currentStepIndex} className="space-y-6"> 
-            {isGenericPattern && (
-                <div className="max-w-3xl mx-auto bg-amber-50 border-2 border-amber-200 p-6 rounded-3xl flex gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                    <div className="bg-amber-100 p-3 rounded-2xl h-fit">
-                        <AlertTriangle className="w-6 h-6 text-amber-600" />
-                    </div>
-                    <div className="space-y-1">
-                        <p className="font-black text-amber-900 leading-tight">Risk Assessment Quality Check</p>
-                        <p className="text-amber-800 text-sm font-medium">
-                            Multiple hazards have identical risk ratings. Ensure these reflect a site-specific risk assessment to meet auditor expectations.
-                        </p>
-                    </div>
-                </div>
-            )}
             <HACCPQuestionnaire 
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('hazards', d)} 

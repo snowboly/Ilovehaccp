@@ -110,9 +110,13 @@ function DashboardContent() {
         
       if (error) throw error;
       setPlans(plans.filter(p => p.id !== id));
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error deleting plan:', err);
-      alert('Failed to delete plan.');
+      if (err.code === '23503') { // Foreign Key Violation
+          alert('Cannot delete plan: It is linked to an active expert review request. Please contact support.');
+      } else {
+          alert('Failed to delete plan. Please try again.');
+      }
     }
   };
 
