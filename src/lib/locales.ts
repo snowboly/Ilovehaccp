@@ -23,7 +23,7 @@ export const translations = {
         check3: "Free to start",
         cta: "Build Your Plan Free",
         auditReady: "Audit Support",
-        validated: "Validated Logic",
+        validated: "Standard-Based Logic",
         compliance: { standard_1: "EC 852/2004", eu: "UK FSA Standards", codex: "Codex CXC 1-1969" }
       },
       audience: {
@@ -113,7 +113,7 @@ export const translations = {
     },
     hero: {
       title: "HACCP Plans in Minutes.",
-      subtitle: "Generate audit-ready HACCP plans in minutes using our free tool",
+      subtitle: "Generate professional HACCP plans in minutes using our free tool",
       cta: "Create Free Plan"
     },
     wizard: {
@@ -380,8 +380,8 @@ export const translations = {
         check2: "Personalizado para su negocio",
         check3: "Gratis para empezar",
         cta: "Cree su Plan Gratis",
-        auditReady: "Listo para Auditoría",
-        validated: "Lógica Validada",
+        auditReady: "Soporte de Auditoría",
+        validated: "Lógica Basada en Estándares",
         compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
@@ -469,7 +469,7 @@ export const translations = {
     },
     hero: {
       title: "Planes HACCP en Minutos.",
-      subtitle: "Genere planes HACCP listos para auditoría en minutos con nuestra herramienta gratuita.",
+      subtitle: "Genere planes HACCP profesionales en minutos con nuestra herramienta gratuita.",
       cta: "Cree su Plan Gratis"
     },
     wizard: {
@@ -736,8 +736,8 @@ export const translations = {
         check2: "Personnalisé pour votre entreprise",
         check3: "Gratuit pour commencer",
         cta: "Créer votre Plan Gratuit",
-        auditReady: "Prêt pour Audit",
-        validated: "Logique Validée",
+        auditReady: "Support d'Audit",
+        validated: "Logique Basée sur Normes",
         compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
@@ -835,7 +835,7 @@ export const translations = {
     },
     hero: {
       title: "Plans HACCP en quelques minutes.",
-      subtitle: "Générez des plans HACCP prêts pour l'audit en quelques minutes avec notre outil gratuit.",
+      subtitle: "Générez des plans HACCP professionnels en quelques minutes avec notre outil gratuit.",
       cta: "Créer un plan gratuit"
     },
     wizard: {
@@ -1102,8 +1102,8 @@ export const translations = {
         check2: "Personalizado para o seu negócio",
         check3: "Grátis para começar",
         cta: "Criar Plano Grátis",
-        auditReady: "Pronto para Auditoria",
-        validated: "Lógica Validada",
+        auditReady: "Suporte de Auditoria",
+        validated: "Lógica Baseada em Padrões",
         compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
@@ -1201,7 +1201,7 @@ export const translations = {
     },
     hero: {
       title: "Planos HACCP em Minutos.",
-      subtitle: "Gere planos HACCP prontos para auditoria em minutos com a nossa ferramenta gratuita.",
+      subtitle: "Gere planos HACCP profissionais em minutos com a nossa ferramenta gratuita.",
       cta: "Criar Plano Grátis"
     },
     wizard: {

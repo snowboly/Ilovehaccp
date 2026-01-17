@@ -17,7 +17,7 @@ export default function Footer() {
             <span className="text-2xl font-black text-white tracking-tight">HACCP</span>
           </Link>
           <p className="text-sm leading-relaxed">
-            The world&apos;s most advanced food safety platform. Helping businesses achieve compliance effortlessly.
+            The world&apos;s most advanced food safety documentation platform. Helping businesses simplify their paperwork.
           </p>
         </div>
         <div>
@@ -54,7 +54,7 @@ export default function Footer() {
       <div className="container px-4 mx-auto text-center text-xs border-t border-slate-900 pt-8 space-y-2">
         <p className="text-slate-500">&copy; {new Date().getFullYear()} iLoveHACCP.com. All rights reserved.</p>
         <p className="text-slate-600 max-w-2xl mx-auto leading-relaxed opacity-60">
-          Disclaimer: iLoveHACCP provides software tools for documentation. While our templates are based on EC Regulation 852/2004 principles, we are not a law firm or official regulatory body. This platform is not intended for compliance with United States FDA or FSMA requirements. Always verify your final plan with your local health authority or an Environmental Health Officer.
+          Disclaimer: iLoveHACCP provides software tools for documentation purposes only. While our templates are guided by EC Regulation 852/2004 principles, we are not a law firm, regulatory body, or certification agency. Use of this platform does not guarantee inspection approval. Always verify your final plan with your local health authority or an Environmental Health Officer.
         </p>
       </div>
     </footer>

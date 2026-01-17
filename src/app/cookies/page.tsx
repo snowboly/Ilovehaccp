@@ -62,19 +62,19 @@ export default function CookiesPage() {
 
              <Section 
               number="3"
-              title="Performance & Analytics"
+              title="Performance & Analytics (Optional)"
               content={
                 <p>
-                  We use privacy-focused analytics (like PostHog or simple server logs) to measure how our site is performing. We track metrics like:
+                  With your consent, we use privacy-focused analytics tools (such as PostHog) to understand how our website is used. We track metrics like:
                   <ul className="list-disc pl-5 space-y-2 mt-2">
                     <li>Which articles are most read?</li>
                     <li>How long does it take to complete the wizard?</li>
                     <li>Are users encountering errors on mobile devices?</li>
                   </ul>
-                  <strong>This data is aggregated and anonymized.</strong> It does not identify you personally.
+                  <strong>This data is aggregated and anonymized.</strong> These cookies are not set unless you accept them via our cookie banner.
                 </p>
               }
-              summary="We check broad trends to fix bugs and improve the site, but we don't track *you* individually."
+              summary="We check broad trends to fix bugs, but only if you say yes."
             />
 
             <Section 
