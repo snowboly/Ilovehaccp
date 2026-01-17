@@ -35,8 +35,8 @@ const Watermark = ({ isPaid }: { isPaid: boolean }) => {
 };
 
 export const HACCPDocumentModular = ({ data, dict, logo, theme }: any) => {
-  const { fullPlan, planVersion = 1, isPaid = false } = data;
-  const today = new Date().toLocaleDateString();
+  const { fullPlan, planVersion = 1, isPaid = false, lang = 'en' } = data;
+  const today = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : lang);
   const processSteps = fullPlan?._original_inputs?.process?.process_steps || [];
   const analysis = fullPlan?.hazard_analysis || [];
   const ccps = fullPlan?.ccp_summary || [];
@@ -201,11 +201,11 @@ export const HACCPDocumentModular = ({ data, dict, logo, theme }: any) => {
         <Text style={styles.text}>{fullPlan?.record_keeping || "Records maintained."}</Text>
 
         <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ width: '45%', borderTopWidth: 1, borderTopColor: theme.colors.text, paddingTop: 5 }}><Text>Prepared by: ________________</Text></View>
-            <View style={{ width: '45%', borderTopWidth: 1, borderTopColor: theme.colors.text, paddingTop: 5 }}><Text>Reviewed by (if applicable): ________________</Text></View>
+            <View style={{ width: '45%', borderTopWidth: 1, borderTopColor: theme.colors.text, paddingTop: 5 }}><Text>{dict.sign_prepared}: ________________</Text></View>
+            <View style={{ width: '45%', borderTopWidth: 1, borderTopColor: theme.colors.text, paddingTop: 5 }}><Text>{dict.sign_approved}: ________________</Text></View>
         </View>
 
-        {renderFooter(theme, planVersion)}
+        {renderFooter(theme, planVersion, lang)}
       </Page>
     </Document>
   );

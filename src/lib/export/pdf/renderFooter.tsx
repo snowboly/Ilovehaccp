@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from '@react-pdf/renderer';
 
-export const renderFooter = (theme: any, planVersion: number = 1) => {
+export const renderFooter = (theme: any, planVersion: number = 1, lang: string = 'en') => {
   const styles = StyleSheet.create({
     footer: {
       position: 'absolute',
@@ -22,7 +22,7 @@ export const renderFooter = (theme: any, planVersion: number = 1) => {
 
   return (
     <View style={styles.footer} fixed>
-      <Text style={styles.text}>HACCP_CODEX v1.0.0 | Plan v{planVersion} | </Text>
+      <Text style={styles.text}>HACCP_CODEX v1.0.0 | Plan v{planVersion} | Lang: {lang.toUpperCase()} | </Text>
       <Text style={styles.text} render={({ pageNumber, totalPages }) => ` Page ${pageNumber} of ${totalPages}`} />
     </View>
   );

@@ -1,8 +1,9 @@
 import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, HeadingLevel, AlignmentType, Header, Footer, PageNumber } from "docx";
 import { getWordStyles } from "./styles";
 import { renderWordTable } from "./renderTable";
+import { getDictionary } from "@/lib/locales";
 
-export async function generateModularWordDocument(data: any, theme: any): Promise<Document> {
+export async function generateModularWordDocument(data: any, theme: any, lang: string = 'en'): Promise<Document> {
   const { businessName, full_plan, planVersion = 1 } = data;
   const analysis = full_plan.hazard_analysis || [];
   const ccps = full_plan.ccp_summary || [];
@@ -10,6 +11,7 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
   const processSteps = originalInputs.process?.process_steps || [];
   
   const styles = getWordStyles(theme);
+  const dict = getDictionary(lang as any).pdf;
 
   const createSectionHeader = (text: string) => new Paragraph({
       children: [new TextRun({ text, ...styles.heading1.run })],
@@ -34,7 +36,8 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
                         children: [
                             new TextRun({ text: `HACCP_CODEX v1.0.0 | Plan v${planVersion} | Page `, size: theme.fonts.footer * 2 }),
                             new TextRun({ children: [PageNumber.CURRENT], size: theme.fonts.footer * 2 }),
-                            new TextRun({ children: [" of ", PageNumber.TOTAL_PAGES], size: theme.fonts.footer * 2 })
+                            new TextRun({ children: [" of ", PageNumber.TOTAL_PAGES], size: theme.fonts.footer * 2 }),
+                            new TextRun({ text: ` | Lang: ${lang.toUpperCase()}`, size: theme.fonts.footer * 2 })
                         ],
                     })
                 ]
@@ -43,9 +46,14 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
         children: [
           // COVER
           new Paragraph({
-            children: [new TextRun({ text: "HACCP PLAN", font: theme.fonts.wordFont, size: theme.fonts.title * 2, bold: true, color: theme.colors.primary.replace('#', '') })],
+            children: [new TextRun({ text: dict.title, font: theme.fonts.wordFont, size: theme.fonts.title * 2, bold: true, color: theme.colors.primary.replace('#', '') })],
             alignment: AlignmentType.CENTER,
             spacing: { before: 2000, after: 600 }
+          }),
+          new Paragraph({
+            children: [new TextRun({ text: dict.subtitle, font: theme.fonts.wordFont, size: theme.fonts.subtitle * 2 })],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 600 }
           }),
           new Paragraph({
             children: [new TextRun({ text: businessName, font: theme.fonts.wordFont, size: 28, bold: true })],
@@ -54,8 +62,8 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
           }),
           
           ...[
-            { l: "Framework", v: "HACCP_CODEX v1.0.0" },
-            { l: "Date Generated", v: new Date().toLocaleDateString() },
+            { l: dict.standard, v: "HACCP_CODEX v1.0.0" },
+            { l: dict.date_issue, v: new Date().toLocaleDateString(lang === 'en' ? 'en-US' : lang) },
             { l: "Plan Version", v: `v${planVersion}` },
           ].map(m => new Paragraph({ 
               children: [new TextRun({ text: `${m.l}: ${m.v}`, font: theme.fonts.wordFont, size: theme.fonts.body * 2 })],
@@ -65,18 +73,18 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
           new Paragraph({ text: "", pageBreakBefore: true }),
 
           // SECTIONS
-          createSectionHeader("SECTION 1 — HACCP TEAM & SCOPE"),
+          createSectionHeader(dict.s1_title),
           new Paragraph({ children: [new TextRun({ text: full_plan.team_scope || full_plan.executive_summary || "Defined by operator.", ...styles.paragraph.run })] }),
 
-          createSectionHeader("SECTION 2 — PRODUCT DESCRIPTION"),
+          createSectionHeader(dict.s2_title),
           renderWordTable(
               ["Field", "Description"],
               [
-                  ["Product Name", data.productName],
-                  ["Description", data.productDescription],
-                  ["Ingredients", data.mainIngredients || "Standard"],
-                  ["Storage", data.storageType],
-                  ["Shelf Life", data.shelfLife || "As per label"]
+                  [dict.lbl_product_name, data.productName],
+                  [dict.lbl_description, data.productDescription],
+                  [dict.lbl_ingredients, data.mainIngredients || "Standard"],
+                  [dict.lbl_storage, data.storageType],
+                  [dict.lbl_shelf_life, data.shelfLife || "As per label"]
               ],
               [35, 65],
               theme
@@ -96,12 +104,12 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
               spacing: { before: 120, after: 200 }
           }) || new Paragraph({ text: "" }), // Fallback to avoid null
 
-          createSectionHeader("SECTION 3 — INTENDED USE"),
+          createSectionHeader(dict.s3_title),
           new Paragraph({ children: [new TextRun({ text: full_plan.intended_use || data.intendedUse || "General public.", ...styles.paragraph.run })] }),
 
-          createSectionHeader("SECTION 4 — PROCESS FLOW DIAGRAM"),
+          createSectionHeader(dict.s4_title),
           processSteps.length > 0 ? renderWordTable(
-              ["No.", "Step Name", "Description"],
+              ["No.", dict.col_step, dict.lbl_description],
               processSteps.map((s: any, i: number) => [`${i+1}`, s.step_name, s.step_description || "-"]),
               [10, 30, 60],
               theme
@@ -119,17 +127,17 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
               spacing: { before: 120, after: 200 }
           }),
 
-          createSectionHeader("SECTION 5 — PREREQUISITE PROGRAMS (PRPS)"),
+          createSectionHeader(dict.s5_title),
           renderWordTable(
-              ["Program", "Control Details"],
+              [dict.col_program, dict.col_details],
               (full_plan.prerequisite_programs || []).map((p: any) => [p.program, p.details]),
               [30, 70],
               theme
           ),
 
-          createSectionHeader("SECTION 6 — HAZARD ANALYSIS"),
+          createSectionHeader(dict.s6_title),
           renderWordTable(
-              ["Step", "Hazard", "Sev", "Lik", "Sig?", "Control"],
+              [dict.col_step, dict.lbl_hazard, "Sev", "Lik", "Sig?", dict.col_control],
               analysis.map((hazard: any) => [
                   hazard.step_name, 
                   hazard.hazards, 
@@ -142,38 +150,38 @@ export async function generateModularWordDocument(data: any, theme: any): Promis
               theme
           ),
 
-          createSectionHeader("SECTION 7 — CCP DETERMINATION"),
-          new Paragraph({ children: [new TextRun({ text: "Determined using Codex Decision Tree.", ...styles.paragraph.run })] }),
+          createSectionHeader(dict.s7_title),
+          new Paragraph({ children: [new TextRun({ text: dict.s7_desc, ...styles.paragraph.run })] }),
 
-          createSectionHeader("SECTION 8 — CCP MANAGEMENT"),
+          createSectionHeader(dict.s8_title),
           ...(ccps.length > 0 ? [
               new Paragraph({ children: [new TextRun({ text: "CCP Summary", bold: true, size: theme.fonts.subsection * 2, color: theme.colors.primary.replace('#', '') })] }),
               renderWordTable(
-                  ["ID", "Step", "Hazard", "Critical Limit"],
+                  ["ID", dict.col_step, dict.col_hazards, dict.lbl_critical_limit],
                   ccps.map((c: any, i: number) => [`CCP ${i+1}`, c.ccp_step, c.hazard, c.critical_limit]),
                   [10, 25, 25, 40],
                   theme
               ),
-              new Paragraph({ children: [new TextRun({ text: "Monitoring & Corrective Actions", bold: true, size: theme.fonts.subsection * 2, color: theme.colors.primary.replace('#', '') })], spacing: { before: 200 } }),
+              new Paragraph({ children: [new TextRun({ text: `${dict.lbl_monitoring} & ${dict.lbl_corrective}`, bold: true, size: theme.fonts.subsection * 2, color: theme.colors.primary.replace('#', '') })], spacing: { before: 200 } }),
               renderWordTable(
-                  ["ID", "Monitoring", "Freq", "Corrective Action"],
+                  ["ID", dict.lbl_monitoring, "Freq", dict.lbl_corrective],
                   ccps.map((c: any, i: number) => [`CCP ${i+1}`, c.monitoring, c.frequency || "Per Batch", c.corrective_action]),
                   [10, 30, 15, 45],
                   theme
               )
           ] : [
-              new Paragraph({ children: [new TextRun({ text: "No Critical Control Points (CCPs) identified for this process scope. Hazards are controlled via Prerequisite Programs (PRPs).", ...styles.paragraph.run })] })
+              new Paragraph({ children: [new TextRun({ text: dict.msg_no_ccps, ...styles.paragraph.run })] })
           ]),
 
-          createSectionHeader("SECTION 9 — VERIFICATION & VALIDATION"),
+          createSectionHeader(dict.s9_title),
           new Paragraph({ children: [new TextRun({ text: full_plan.verification_validation || "Procedures established.", ...styles.paragraph.run })] }),
 
-          createSectionHeader("SECTION 10 — RECORDS & REVIEW"),
+          createSectionHeader(dict.s10_title),
           new Paragraph({ children: [new TextRun({ text: full_plan.record_keeping || "Records maintained.", ...styles.paragraph.run })] }),
 
           new Paragraph({ text: "", pageBreakBefore: true }),
-          new Paragraph({ children: [new TextRun({ text: "Prepared by: ____________________ Date: _______", ...styles.paragraph.run })], spacing: { before: 400, after: 400 } }),
-          new Paragraph({ children: [new TextRun({ text: "Reviewed by (if applicable): ____________________ Date: _______", ...styles.paragraph.run })] }),
+          new Paragraph({ children: [new TextRun({ text: `${dict.sign_prepared}: ____________________ Date: _______`, ...styles.paragraph.run })], spacing: { before: 400, after: 400 } }),
+          new Paragraph({ children: [new TextRun({ text: `${dict.sign_approved}: ____________________ Date: _______`, ...styles.paragraph.run })] }),
         ],
       },
     ],

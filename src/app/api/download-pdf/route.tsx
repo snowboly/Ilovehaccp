@@ -11,6 +11,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const planId = searchParams.get('planId');
+    const lang = (searchParams.get('lang') || 'en') as 'en' | 'es' | 'fr' | 'pt';
 
     if (!planId) return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
 
@@ -57,7 +58,7 @@ export async function GET(req: Request) {
     const planVersion = latestVersion?.version_number || 1;
 
     // 5. Generate PDF
-    const dict = getDictionary('en').pdf;
+    const dict = getDictionary(lang).pdf;
     const fullPlan = plan.full_plan || {};
     const originalInputs = fullPlan._original_inputs || {};
     
@@ -70,6 +71,7 @@ export async function GET(req: Request) {
         analysis: plan.hazard_analysis || [],
         fullPlan: fullPlan,
         planVersion,
+        lang,
         isPaid: plan.payment_status === 'paid' || isAdmin // Admin gets clean copy
     };
 

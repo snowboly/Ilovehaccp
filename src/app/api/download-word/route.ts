@@ -12,6 +12,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const planId = searchParams.get('planId');
+    const lang = (searchParams.get('lang') || 'en') as 'en' | 'es' | 'fr' | 'pt';
 
     if (!planId) {
       return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
@@ -78,7 +79,7 @@ export async function GET(req: Request) {
         full_plan: plan.full_plan,
         planVersion,
         template: plan.full_plan?._original_inputs?.template || plan.full_plan?.validation?.document_style
-    });
+    }, lang);
 
     // 5. Return Stream
     return new NextResponse(buffer as any, {
