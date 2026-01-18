@@ -14,8 +14,8 @@
     },
     {
       "id": "q2_step_designed_to_eliminate",
-      "text": "Is this step specifically designed to eliminate or reduce the hazard to an acceptable level?",
-      "tooltip": "Examples: Pasteurization, Cooking, Metal Detection (if final), Filtration. If this step is THE step meant to kill/remove the hazard, answer Yes (it is likely a CCP).",
+      "text": "Is this step specifically designed to KILL or REMOVE the hazard?",
+      "tooltip": "Answer YES for: Cooking (>75°C), Pasteurization, Disinfection, Metal Detection. Answer NO for: Refrigeration, Freezing, Washing (without sanitizer) or Supplier Checks. (Why? Because cooling only SLOWS growth, it doesn't kill bacteria).",
       "type": "boolean",
       "required": true
     },

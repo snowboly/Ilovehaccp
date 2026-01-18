@@ -13,12 +13,13 @@
         "type": "boolean",
         "required": true
       },
-      {
-        "id": "q2_step_designed_to_eliminate",
-        "text": "Cette étape est-elle spécifiquement conçue pour éliminer ou réduire le danger à un niveau acceptable ?",
-        "type": "boolean",
-        "required": true
-      },
+    {
+      "id": "q2_step_designed_to_eliminate",
+      "text": "Cette étape est-elle conçue spécifiquement pour TUER ou ÉLIMINER le danger ?",
+      "tooltip": "Répondre OUI pour : Cuisson (>75°C), Pasteurisation, Désinfection, Détection de métaux. Répondre NON pour : Réfrigération, Congélation ou Contrôle fournisseurs. (Pourquoi ? Le froid ralentit seulement la croissance, il ne tue pas les bactéries).",
+      "type": "boolean",
+      "required": true
+    },,
       {
         "id": "q3_contamination_possible",
         "text": "La contamination par le danger peut-elle se produire à cette étape, ou pourrait-elle augmenter à des niveaux inacceptables ?",

@@ -318,6 +318,7 @@ export default function HACCPMasterFlow() {
                   flattened.push({
                       step_name: stepData.step_id,
                       hazards: hazardMap[key],
+                      hazard_type: key,
                       severity: evalData.severity,
                       likelihood: evalData.likelihood,
                       control_measure: controls[key]?.applied_controls // Get controls for this specific hazard
@@ -852,12 +853,31 @@ export default function HACCPMasterFlow() {
       const dynamicSchema = { 
           ...questionsData, 
           section: `CCP Determination: ${currentHazard.step_name}`,
-          questions: questionsData.questions.map((q: any) => ({
-              ...q,
-              description: q.id === 'q1_control_measure' 
-                ? `For hazard: "${currentHazard.hazards}" at step "${currentHazard.step_name}"`
-                : q.description
-          }))
+          questions: questionsData.questions.map((q: any) => {
+              let text = q.text;
+              let tooltip = q.tooltip;
+
+              // Allergen-specific override
+              if (currentHazard.hazard_type === 'allergen') {
+                  if (q.id === 'q2_step_designed_to_eliminate') {
+                      text = "Is this step specifically designed to REMOVE the allergen or ENSURE correct labeling?";
+                      tooltip = "Note: Allergens cannot be 'killed' by cooking. Answer YES only if this step is validated cleaning (to remove traces) or a label check (to ensure correct info).";
+                  }
+                  if (q.id === 'q4_subsequent_step') {
+                      text = "Will a subsequent step manage this allergen (e.g. final labeling)?";
+                      tooltip = "If a later step (like final packaging/labeling) ensures the allergen is declared, then THIS step might not be a CCP.";
+                  }
+              }
+
+              return {
+                ...q,
+                text,
+                tooltip,
+                description: q.id === 'q1_control_measure' 
+                    ? `For hazard: "${currentHazard.hazards}" at step "${currentHazard.step_name}"`
+                    : q.description
+              };
+          })
       } as unknown as HACCPSectionData;
 
        return (

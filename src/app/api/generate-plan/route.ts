@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { groq } from '@/lib/groq';
 import { supabaseService } from '@/lib/supabase';
+import { HACCP_STANDARDS } from '@/data/haccp/standards';
 
 const RATE_LIMIT_COUNT = 3;
 const RATE_LIMIT_WINDOW_HOURS = 1;
@@ -116,6 +117,15 @@ export async function POST(req: Request) {
     SECTION 10 — Records & Review
 
     You MUST NOT add, rename, merge, or remove sections.
+
+    ────────────────────────
+    SCIENTIFIC STANDARDS DATABASE (MANDATORY REFERENCE)
+    ────────────────────────
+    You MUST cross-reference the process steps with this database. 
+    If a step matches (e.g. Cooking, Cooling, Storage), you MUST use the specific Critical Limits and Corrective Actions provided below as your baseline. 
+    Do NOT invent generic limits like "Cook well". Use the precise temperatures and times.
+
+    ${JSON.stringify(HACCP_STANDARDS, null, 2)}
 
     ────────────────────────
     CONTROLLED INPUT DATA

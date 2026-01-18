@@ -13,12 +13,13 @@
         "type": "boolean",
         "required": true
       },
-      {
-        "id": "q2_step_designed_to_eliminate",
-        "text": "¿Está este paso diseñado específicamente para eliminar o reducir el peligro a un nivel aceptable?",
-        "type": "boolean",
-        "required": true
-      },
+    {
+      "id": "q2_step_designed_to_eliminate",
+      "text": "¿Este paso está diseñado específicamente para MATAR o ELIMINAR el peligro?",
+      "tooltip": "Responda SÍ para: Cocción (>75°C), Pasteurización, Desinfección, Detección de Metales. Responda NO para: Refrigeración, Congelación o Control de Proveedores. (¿Por qué? El frío solo ralentiza el crecimiento, no mata las bacterias).",
+      "type": "boolean",
+      "required": true
+    },
       {
         "id": "q3_contamination_possible",
         "text": "¿Puede ocurrir contaminación con el peligro en este paso, o podría aumentar a niveles inaceptables?",

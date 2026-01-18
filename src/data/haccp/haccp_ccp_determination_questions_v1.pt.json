@@ -13,12 +13,8 @@
         "type": "boolean",
         "required": true
       },
-      {
-        "id": "q2_step_designed_to_eliminate",
-        "text": "Esta etapa foi projetada especificamente para eliminar ou reduzir o perigo a um nível aceitável?",
-        "type": "boolean",
-        "required": true
-      },
+    {
+      
       {
         "id": "q3_contamination_possible",
         "text": "Pode ocorrer contaminação com o perigo nesta etapa, ou pode aumentar a níveis inaceitáveis?",
