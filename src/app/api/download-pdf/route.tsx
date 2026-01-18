@@ -82,7 +82,7 @@ export async function GET(req: Request) {
         <HACCPDocument 
             data={pdfData}
             dict={dict}
-            logo={originalInputs.logo || null}
+            logo={originalInputs.product?.logo_url || null}
             template={originalInputs.template || 'audit-classic'}
         />
     );

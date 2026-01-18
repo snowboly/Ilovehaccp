@@ -78,6 +78,19 @@ export async function GET(req: Request) {
     const originalInputs = fullPlan._original_inputs || {};
     const productInputs = originalInputs.product || {};
 
+    let logoBuffer = null;
+    if (productInputs.logo_url) {
+        try {
+            const res = await fetch(productInputs.logo_url);
+            if (res.ok) {
+                const arrayBuffer = await res.arrayBuffer();
+                logoBuffer = Buffer.from(arrayBuffer);
+            }
+        } catch (e) {
+            console.warn("Failed to fetch logo for Word doc", e);
+        }
+    }
+
     const buffer = await generateWordDocument({
         businessName: plan.business_name,
         full_plan: fullPlan,
@@ -88,7 +101,8 @@ export async function GET(req: Request) {
         mainIngredients: productInputs.key_ingredients || "Standard",
         intendedUse: productInputs.intended_use || plan.intended_use || "General",
         storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
-        shelfLife: productInputs.shelf_life || "As per label"
+        shelfLife: productInputs.shelf_life || "As per label",
+        logoBuffer
     }, lang);
 
     // 5. Return Stream

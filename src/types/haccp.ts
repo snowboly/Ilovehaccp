@@ -8,7 +8,8 @@ export type QuestionType =
   | 'hidden_auto_id'
   | 'group'
   | 'group_per_hazard'
-  | 'prp_group';
+  | 'prp_group'
+  | 'file_upload';
 
 export interface ConditionalQuestion {
   id: string;

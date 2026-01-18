@@ -1,4 +1,4 @@
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, HeadingLevel, AlignmentType, Header, Footer, PageNumber } from "docx";
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, HeadingLevel, AlignmentType, Header, Footer, PageNumber, ImageRun } from "docx";
 import { getWordStyles } from "./styles";
 import { renderWordTable } from "./renderTable";
 import { getDictionary } from "@/lib/locales";
@@ -45,10 +45,23 @@ export async function generateModularWordDocument(data: any, theme: any, lang: s
         },
         children: [
           // COVER
+          ...(data.logoBuffer ? [
+              new Paragraph({
+                  children: [
+                      new ImageRun({
+                          data: data.logoBuffer,
+                          transformation: { width: 100, height: 100 },
+                      } as any),
+                  ],
+                  alignment: AlignmentType.CENTER,
+                  spacing: { before: 1000, after: 600 }
+              })
+          ] : []),
+
           new Paragraph({
             children: [new TextRun({ text: dict.title, font: theme.fonts.wordFont, size: theme.fonts.title * 2, bold: true, color: theme.colors.primary.replace('#', '') })],
             alignment: AlignmentType.CENTER,
-            spacing: { before: 2000, after: 600 }
+            spacing: { before: data.logoBuffer ? 0 : 2000, after: 600 }
           }),
           new Paragraph({
             children: [new TextRun({ text: dict.subtitle, font: theme.fonts.wordFont, size: theme.fonts.subtitle * 2 })],

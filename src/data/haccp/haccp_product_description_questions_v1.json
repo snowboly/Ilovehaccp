@@ -10,6 +10,13 @@
       "required": true
     },
     {
+      "id": "logo_url",
+      "text": "Company Logo (Optional)",
+      "description": "Upload your logo to include it on the cover page of your HACCP plan.",
+      "type": "file_upload",
+      "required": false
+    },
+    {
       "id": "business_address",
       "text": "Business Address (Optional)",
       "type": "text",
