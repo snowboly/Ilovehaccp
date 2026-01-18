@@ -35,8 +35,6 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
                   },
                   body: JSON.stringify({ draftId })
              });
-             // Clear after attach so we don't try again
-             localStorage.removeItem('haccp_draft_id');
           } catch (e) {
               console.error("Failed to attach draft", e);
           }

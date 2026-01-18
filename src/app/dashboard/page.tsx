@@ -85,14 +85,45 @@ function DashboardContent() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      // 1. Fetch Permanent Plans
+      const { data: plansData, error: plansError } = await supabase
         .from('plans')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      setPlans(data || []);
+      if (plansError) throw plansError;
+
+      // 2. Fetch Active Drafts
+      const { data: draftsData, error: draftsError } = await supabase
+        .from('drafts')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .order('updated_at', { ascending: false });
+
+      if (draftsError) throw draftsError;
+
+      // Map drafts to Plan interface for unified display if needed, 
+      // but we filter them separately anyway.
+      const unifiedPlans = [
+          ...(plansData || []),
+          ...(draftsData || []).map(d => ({
+              id: d.id,
+              product_name: d.answers?.product?.product_name || 'Unfinished Draft',
+              business_name: d.answers?.product?.businessLegalName || 'Draft',
+              created_at: d.updated_at,
+              status: 'draft',
+              payment_status: 'unpaid',
+              hazard_analysis: d.answers?.hazard_analysis || [],
+              full_plan: d.plan_data,
+              intended_use: d.answers?.product?.intended_use || '',
+              storage_type: d.answers?.product?.storage_conditions || '',
+              business_type: d.answers?.product?.product_category || '',
+          }))
+      ];
+
+      setPlans(unifiedPlans as any);
     } catch (err) {
       console.error('Error fetching plans:', err);
     } finally {
@@ -101,22 +132,25 @@ function DashboardContent() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this plan? This cannot be undone.')) return;
+    if (!confirm('Are you sure you want to delete this? This cannot be undone.')) return;
     
+    const planToDelete = plans.find(p => p.id === id);
+    const table = planToDelete?.status === 'draft' ? 'drafts' : 'plans';
+
     try {
       const { error } = await supabase
-        .from('plans')
+        .from(table)
         .delete()
         .eq('id', id);
         
       if (error) throw error;
       setPlans(plans.filter(p => p.id !== id));
     } catch (err: any) {
-      console.error('Error deleting plan:', err);
-      if (err.code === '23503') { // Foreign Key Violation
-          alert('Cannot delete plan: It has active dependencies (like expert review requests or audit logs). Please run the latest database migration to enable cascading deletes.');
+      console.error('Error deleting:', err);
+      if (err.code === '23503') { 
+          alert('Cannot delete: It has active dependencies. Please contact support.');
       } else {
-          alert('Failed to delete plan. Please try again.');
+          alert('Failed to delete. Please try again.');
       }
     }
   };

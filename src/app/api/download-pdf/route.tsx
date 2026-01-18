@@ -34,7 +34,7 @@ export async function GET(req: Request) {
     if (error || !plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
 
     // 3. Ownership & Permission Check
-    const isAdmin = user.email && ADMIN_EMAILS.includes(user.email);
+    const isAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
     if (plan.user_id !== user.id && !isAdmin) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }

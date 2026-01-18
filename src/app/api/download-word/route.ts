@@ -49,7 +49,7 @@ export async function GET(req: Request) {
     // 3. Permission Check
     const isOwner = plan.user_id === user.id;
     const isPaid = plan.payment_status === 'paid';
-    const isAdmin = user.email && ADMIN_EMAILS.includes(user.email);
+    const isAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
 
     if (isAdmin) {
         // Admin Access Granted

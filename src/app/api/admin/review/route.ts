@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
     if (authError || !user || !user.email) return NextResponse.json({ error: 'Invalid Session' }, { status: 401 });
 
-    if (!ADMIN_EMAILS.includes(user.email)) {
+    if (!ADMIN_EMAILS.includes(user.email.toLowerCase())) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

@@ -218,6 +218,9 @@ export default function HACCPMasterFlow() {
                 if (data.draft.answers) {
                     setAllAnswers(data.draft.answers);
                 }
+                if (data.draft.plan_data) {
+                    setGeneratedPlan(data.draft.plan_data);
+                }
                 if (data.draft.validation) {
                     setValidationReport(data.draft.validation);
                     setValidationStatus('completed');
@@ -511,6 +514,15 @@ export default function HACCPMasterFlow() {
         setGeneratedPlan(data);
         setCurrentSection('complete'); 
         setValidationStatus('idle');
+
+        // Persist generated content to draft
+        if (draftId) {
+            await fetch(`/api/drafts/${draftId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plan_data: data })
+            });
+        }
     } catch (e) {
         console.error(e);
         alert("Generation failed");
