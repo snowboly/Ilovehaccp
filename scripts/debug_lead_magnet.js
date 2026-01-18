@@ -11,7 +11,7 @@ async function triggerLeadMagnet() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                email: 'info@scriptworkflow.com' // Testing with your email
+                email: 'info@ilovehaccp.com' // Testing with your email
             })
         });
 

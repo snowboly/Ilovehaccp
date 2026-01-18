@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
-
-const ADMIN_EMAILS = [
-    'admin@ilovehaccp.com', 
-    'joao@scriptworkflow.com'
-];
+import { ADMIN_EMAILS } from '@/lib/constants';
 
 async function logAdminAction(adminEmail: string, entityId: string, action: string, details: any = {}) {
     await supabaseService.from('access_logs').insert({

@@ -14,7 +14,7 @@ async function triggerEmail() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                email: 'info@scriptworkflow.com', // Using a controlled email
+                email: 'info@ilovehaccp.com', // Using a controlled email
                 businessName: 'docapesca',
                 planId: planId
             })

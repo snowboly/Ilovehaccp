@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
+import { supabaseService } from '@/lib/supabase';
 import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
-import { supabaseService } from '@/lib/supabase';
+import { ADMIN_EMAILS } from '@/lib/constants';
 import { getDictionary } from '@/lib/locales';
 import { isExportAllowed } from '@/lib/export/permissions';
-
-const ADMIN_EMAILS = ['admin@ilovehaccp.com', 'joao@scriptworkflow.com'];
 
 export async function GET(req: Request) {
   try {

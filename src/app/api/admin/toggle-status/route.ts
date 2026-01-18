@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
-
-const ADMIN_EMAILS = [
-    'admin@ilovehaccp.com', 
-    'joao@scriptworkflow.com'
-];
+import { ADMIN_EMAILS } from '@/lib/constants';
 
 export async function POST(req: Request) {
   try {

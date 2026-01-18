@@ -3,10 +3,7 @@ import { supabaseService } from '@/lib/supabase';
 import { generateWordDocument } from '@/lib/word-generator';
 import { isExportAllowed } from '@/lib/export/permissions';
 
-const ADMIN_EMAILS = [
-    'admin@ilovehaccp.com', 
-    'joao@scriptworkflow.com'
-];
+const ADMIN_EMAILS = ['admin@ilovehaccp.com', 'joao@ilovehaccp.com'];
 
 export async function GET(req: Request) {
   try {

@@ -6,7 +6,9 @@ export async function verifyAdminAccess() {
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();
 
-  if (error || !user || !user.email || !ADMIN_EMAILS.includes(user.email)) {
+  const userEmail = user?.email?.toLowerCase();
+  
+  if (error || !user || !userEmail || !ADMIN_EMAILS.includes(userEmail)) {
     redirect('/dashboard');
   }
 

@@ -1,12 +1,9 @@
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, BorderStyle, WidthType, PageBreak, ImageRun, AlignmentType, Header, Footer } from 'docx';
+import { ADMIN_EMAILS } from '@/lib/constants';
 import { generateWordDocument } from '@/lib/word-generator';
 import { isExportAllowed } from '@/lib/export/permissions';
-
-const ADMIN_EMAILS = [
-    'admin@ilovehaccp.com', 
-    'joao@scriptworkflow.com'
-];
 
 export async function GET(req: Request) {
   try {
