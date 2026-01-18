@@ -29,15 +29,35 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 2. Fetch Plan
-    const { data: plan, error } = await supabaseService
+    // 2. Fetch Plan (with fallback to Drafts)
+    let { data: plan, error } = await supabaseService
         .from('plans')
         .select('*')
         .eq('id', planId)
         .single();
 
-    if (error || !plan) {
-        return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+    // Fallback to Drafts if not found in Plans
+    if (!plan || error) {
+        const { data: draft, error: draftError } = await supabaseService
+            .from('drafts')
+            .select('*')
+            .eq('id', planId)
+            .single();
+
+        if (draft && !draftError) {
+            // Construct a virtual plan from draft data
+            plan = {
+                id: draft.id,
+                user_id: draft.user_id,
+                business_name: draft.answers?.product?.businessLegalName || 'Draft',
+                product_name: draft.answers?.product?.product_name || 'Draft Plan',
+                payment_status: 'unpaid', // Drafts are always unpaid
+                full_plan: draft.plan_data,
+                hazard_analysis: draft.answers?.hazard_analysis || []
+            };
+        } else {
+            return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+        }
     }
 
     // 2.5 Validation Gate (Audit Safe - Single Source of Truth)
