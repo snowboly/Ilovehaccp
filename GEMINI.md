@@ -2,6 +2,18 @@
 
 ## Implementation Status
 
+### v3.30 Draft Persistence & Admin Access Fixes (Jan 18, 2026)
+- **Draft Persistence:** Implemented robust draft persistence for anonymous users and login handovers.
+    - **Database Schema:** Added `plan_data` (JSONB) column to the `drafts` table via `src/db/migration_drafts_plan_data.sql`.
+    - **Dashboard Visibility:** Dashboard now fetches and displays active drafts ("In Progress") alongside completed plans.
+    - **Handover Logic:** Prevents session loss by ensuring draft data is saved to the database immediately after generation and linking it to the user upon login.
+- **Admin Access Hardening:**
+    - **Centralized Config:** Moved admin email list to `src/lib/constants.ts` as the single source of truth.
+    - **Case-Insensitivity:** Updated all 9 admin API routes (`admin/*`, `download-pdf`, `download-word`) to normalize email checks (`toLowerCase()`), preventing lockouts due to capitalization mismatches.
+- **Download Availability:**
+    - **Draft Downloads:** Updated PDF and Word export APIs to support "Free Drafts" by falling back to the `drafts` table if a plan ID is not found in the `plans` table.
+    - **Permission Logic:** Drafts are correctly treated as "Unpaid" (Watermarked PDF only, Word blocked/upgrade prompt).
+
 ### v3.29 Final Gating & Persistence Fixes (Jan 15, 2026)
 - **Monetization Enforcement:** Implemented strict UI gating for validation reports, blurring detailed findings for unpaid users with a clear "Unlock" call-to-action.
 - **Session Persistence:** Added logic to restore the generated plan and validation report from `localStorage` (`haccp_plan_id`) upon reload, preventing data loss.
