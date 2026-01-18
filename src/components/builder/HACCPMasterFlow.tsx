@@ -606,25 +606,32 @@ export default function HACCPMasterFlow() {
   // 4. Auto-Promote Draft to Plan
   useEffect(() => {
       const promote = async () => {
-          if (currentSection === 'complete' && validationReport && !generatedPlan) {
+          // FIX: Check if we have a plan but NO ID (meaning it's not saved to DB yet)
+          if (currentSection === 'complete' && validationReport && (!generatedPlan || !generatedPlan.id)) {
               const { data: { session } } = await supabase.auth.getSession();
               if (session) {
                   console.log("Auto-promoting draft to plan...");
                   try {
-                      // 1. Re-generate content (as draft only stored answers)
-                      const res = await fetch('/api/generate-plan', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ 
-                              ...allAnswers, 
-                              metadata: { framework_version: "1.0.0", question_set_versions: { product: "1.0.0" } } 
-                          })
-                      });
-                      const data = await res.json();
-                      
-                      // 2. Save permanently
-                      if (data.full_plan) {
-                          await savePlan(data.full_plan, validationReport);
+                      // If we already have generated content, use it. Otherwise generate.
+                      // We need to save what we have.
+                      if (generatedPlan && !generatedPlan.id) {
+                           await savePlan(generatedPlan.full_plan, validationReport);
+                      } else {
+                          // 1. Re-generate content (as draft only stored answers)
+                          const res = await fetch('/api/generate-plan', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ 
+                                  ...allAnswers, 
+                                  metadata: { framework_version: "1.0.0", question_set_versions: { product: "1.0.0" } } 
+                              })
+                          });
+                          const data = await res.json();
+                          
+                          // 2. Save permanently
+                          if (data.full_plan) {
+                              await savePlan(data.full_plan, validationReport);
+                          }
                       }
                   } catch (e) {
                       console.error("Promotion failed", e);
@@ -634,6 +641,46 @@ export default function HACCPMasterFlow() {
       };
       promote();
   }, [currentSection, validationReport, generatedPlan]);
+
+  const handleCheckout = async (tier: 'professional' | 'expert') => {
+      try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) {
+              // Redirect to login with return URL
+              const nextUrl = encodeURIComponent(`/builder?id=${draftId || generatedPlan?.id || ''}`);
+              window.location.href = `/login?next=${nextUrl}`;
+              return;
+          }
+
+          if (!generatedPlan?.id) {
+              alert("Please wait for the plan to finish saving...");
+              return;
+          }
+
+          const res = await fetch('/api/create-checkout', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${session.access_token}`
+              },
+              body: JSON.stringify({ 
+                  tier, 
+                  planId: generatedPlan.id, 
+                  businessName: allAnswers.product?.businessLegalName || "My Business" 
+              })
+          });
+
+          const data = await res.json();
+          if (data.url) {
+              window.location.href = data.url;
+          } else {
+              alert(data.error || "Failed to start checkout");
+          }
+      } catch (e) {
+          console.error(e);
+          alert("System error starting checkout.");
+      }
+  };
 
   // --- Render Helpers ---
 
@@ -1000,7 +1047,7 @@ export default function HACCPMasterFlow() {
 
                                         <div className="grid md:grid-cols-2 gap-6">
                                             {/* Tier 39 */}
-                                            <div className="bg-white border-2 border-slate-100 p-6 rounded-2xl hover:border-blue-100 transition-colors shadow-xl shadow-slate-200/50">
+                                            <div className="bg-white border-2 border-slate-100 p-6 rounded-2xl hover:border-blue-100 transition-colors shadow-xl shadow-slate-200/50 cursor-pointer" onClick={() => handleCheckout('professional')}>
                                                 <div className="mb-4">
                                                     <h4 className="font-black text-slate-900 text-lg">Self-Service Export</h4>
                                                     <p className="text-3xl font-black text-slate-900 mt-2">€39 <span className="text-sm text-slate-400 font-medium text-base">+ VAT</span></p>
@@ -1019,15 +1066,15 @@ export default function HACCPMasterFlow() {
                                                     ))}
                                                 </ul>
                                                 <button 
-                                                    onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
-                                                    className="bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-colors w-full flex items-center justify-center gap-2"
+                                                    onClick={(e) => { e.stopPropagation(); handleCheckout('professional'); }}
+                                                    className="bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-colors w-full flex items-center justify-center gap-2 cursor-pointer"
                                                 >
                                                     Export Documents
                                                 </button>
                                             </div>
 
                                             {/* Tier 79 */}
-                                            <div className="bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-xl shadow-blue-900/10">
+                                            <div className="bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-xl shadow-blue-900/10 cursor-pointer" onClick={() => handleCheckout('expert')}>
                                                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                                     Recommended
                                                 </div>
@@ -1049,8 +1096,8 @@ export default function HACCPMasterFlow() {
                                                     ))}
                                                 </ul>
                                                 <button 
-                                                    onClick={() => window.location.href = '/dashboard?plan_id=' + generatedPlan?.id}
-                                                    className="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20"
+                                                    onClick={(e) => { e.stopPropagation(); handleCheckout('expert'); }}
+                                                    className="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 cursor-pointer"
                                                 >
                                                     Request Expert Review
                                                 </button>
@@ -1072,7 +1119,7 @@ export default function HACCPMasterFlow() {
                                 <button
                                     key={style}
                                     onClick={() => setExportTemplate(style)}
-                                    className={`px-4 py-2 rounded-xl font-bold text-sm transition-all border-2 ${
+                                    className={`px-4 py-2 rounded-xl font-bold text-sm transition-all border-2 cursor-pointer ${
                                         exportTemplate === style 
                                         ? 'bg-blue-600 border-blue-600 text-white' 
                                         : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
@@ -1094,7 +1141,7 @@ export default function HACCPMasterFlow() {
                                             setCurrentSection('product');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
+                                        className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center justify-center gap-2 cursor-pointer"
                                     >
                                         <Edit className="w-4 h-4" /> Go back to Builder
                                     </button>
@@ -1102,7 +1149,7 @@ export default function HACCPMasterFlow() {
                                         onClick={() => {
                                             document.getElementById('audit-report')?.scrollIntoView({ behavior: 'smooth' });
                                         }}
-                                        className="bg-slate-800 text-slate-300 border border-slate-700 px-8 py-3 rounded-xl font-bold hover:text-white hover:bg-slate-700 transition-all"
+                                        className="bg-slate-800 text-slate-300 border border-slate-700 px-8 py-3 rounded-xl font-bold hover:text-white hover:bg-slate-700 transition-all cursor-pointer"
                                     >
                                         View Validation Report
                                     </button>
@@ -1114,7 +1161,7 @@ export default function HACCPMasterFlow() {
                                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                                     <button 
                                         onClick={handleDownloadPdf}
-                                        className="bg-white text-slate-900 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                                        className="bg-white text-slate-900 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
                                     >
                                         Download Preview (Watermarked PDF)
                                     </button>
@@ -1139,13 +1186,13 @@ export default function HACCPMasterFlow() {
                                                 _original_inputs: { ...allAnswers, template: exportTemplate }
                                             }
                                         })}
-                                        className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50"
+                                        className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50 cursor-pointer"
                                     >
                                         Download Word (.docx)
                                     </button>
                                     <button 
                                         onClick={handleDownloadPdf}
-                                        className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center gap-2"
+                                        className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center gap-2 cursor-pointer"
                                     >
                                         Download PDF (.pdf)
                                     </button>

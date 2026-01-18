@@ -21,10 +21,33 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
   const searchParams = useSearchParams();
   const next = searchParams.get('next');
 
+  // Helper: Attach Draft if exists
+  const attachDraft = async (session: any) => {
+      const draftId = localStorage.getItem('haccp_draft_id');
+      if (draftId && session) {
+          try {
+             console.log("Attaching anonymous draft:", draftId);
+             await fetch('/api/drafts/attach', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${session.access_token}`
+                  },
+                  body: JSON.stringify({ draftId })
+             });
+             // Clear after attach so we don't try again
+             localStorage.removeItem('haccp_draft_id');
+          } catch (e) {
+              console.error("Failed to attach draft", e);
+          }
+      }
+  };
+
   // Auto-redirect if email confirmation link logs the user in automatically
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
+        await attachDraft(session);
         router.push(next || '/dashboard');
       }
     });
@@ -50,11 +73,17 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
         if (error) throw error;
         setSuccessMessage(`We've sent a confirmation link to ${email}. Please check your inbox.`);
       } else if (view === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
+        
+        // Attach draft before redirecting
+        if (data.session) {
+            await attachDraft(data.session);
+        }
+
         router.push(next || '/dashboard');
       } else if (view === 'forgot_password') {
         const origin = window.location.origin;
