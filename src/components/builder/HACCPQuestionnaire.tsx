@@ -9,9 +9,10 @@ interface QuestionnaireProps {
   sectionData: HACCPSectionData;
   onComplete: (data: any) => void;
   initialData?: any;
+  additionalContext?: any;
 }
 
-export default function HACCPQuestionnaire({ sectionData, onComplete, initialData }: QuestionnaireProps) {
+export default function HACCPQuestionnaire({ sectionData, onComplete, initialData, additionalContext }: QuestionnaireProps) {
   const [answers, setAnswers] = useState<any>(initialData || {});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -89,6 +90,8 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
     return map[section] || section;
   };
 
+  const fullContext = { ...answers, ...additionalContext };
+
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-20 animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="text-center space-y-2 mb-10">
@@ -109,7 +112,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
             value={answers[q.id]}
             onChange={handleAnswerChange}
             error={errors[q.id]}
-            context={answers} // Pass full section context for smart suggestions
+            context={fullContext} // Pass full section context for smart suggestions
           />
         ))}
       </div>

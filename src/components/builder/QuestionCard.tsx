@@ -30,7 +30,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
             value={value || ''}
             onChange={(e) => onChange(question.id, e.target.value)}
             className="w-full p-4 rounded-xl border-2 border-slate-200 focus:border-blue-600 outline-none font-bold text-slate-700 transition-colors"
-            placeholder="Type your answer here..."
+            placeholder={question.placeholder || "Type your answer here..."}
           />
         );
       
@@ -58,7 +58,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                 value={value || ''}
                 onChange={(e) => onChange(question.id, e.target.value)}
                 className="w-full p-4 rounded-xl border-2 border-slate-200 focus:border-blue-600 outline-none font-bold text-slate-700 min-h-[120px] transition-colors resize-y"
-                placeholder="Enter details..."
+                placeholder={question.placeholder || "Enter details..."}
             />
             {question.id === 'key_ingredients' && (
                 <div className="animate-in fade-in slide-in-from-top-2 duration-300">
@@ -323,9 +323,16 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                 haz.id === 'chem' ? 'bg-yellow-500' : 
                                 haz.id === 'phys' ? 'bg-blue-500' : 'bg-purple-500'
                             }`}></span>
-                            <h4 className="font-black text-slate-700 uppercase tracking-widest text-sm">
-                                {haz.name} Evaluation
-                            </h4>
+                            <div className="flex flex-col">
+                                <h4 className="font-black text-slate-700 uppercase tracking-widest text-sm">
+                                    {haz.name} Evaluation
+                                </h4>
+                                {context?.step_name && (
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
+                                        at {context.step_name}
+                                    </span>
+                                )}
+                            </div>
                         </div>
                         <div className="space-y-6">
                             {question.questions?.map(subQ => (

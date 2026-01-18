@@ -245,10 +245,16 @@ export default function HACCPMasterFlow() {
     if (hazards.length < 3) return false;
 
     // Extract all evaluations
-    const evaluations = hazards.map((h: any) => ({
-        s: h.data?.hazard_evaluation?.severity,
-        l: h.data?.hazard_evaluation?.likelihood
-    })).filter((e: any) => e.s && e.l);
+    const evaluations: any[] = [];
+    hazards.forEach((h: any) => {
+        const evalGroup = h.data?.hazard_evaluation || {};
+        ['bio', 'chem', 'phys', 'allergen'].forEach(key => {
+            const data = evalGroup[key];
+            if (data?.severity && data?.likelihood) {
+                evaluations.push({ s: data.severity, l: data.likelihood });
+            }
+        });
+    });
 
     if (evaluations.length < 3) return false;
 
@@ -672,6 +678,7 @@ export default function HACCPMasterFlow() {
             <HACCPQuestionnaire 
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('hazards', d)} 
+                additionalContext={{ step_name: step?.step_name }}
             />
         </div>
       );
@@ -784,7 +791,28 @@ export default function HACCPMasterFlow() {
   }
 
   if (currentSection === 'validation') {
-       return <HACCPQuestionnaire sectionData={getQuestions('validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('validation', d)} />;
+       const isGeneric = checkGenericRiskPattern();
+       
+       return (
+        <div className="space-y-6">
+            {isGeneric && (
+                <div className="bg-amber-50 border-l-4 border-amber-500 p-6 rounded-r-xl max-w-3xl mx-auto shadow-sm animate-in fade-in slide-in-from-top-4">
+                    <div className="flex items-start gap-3">
+                        <AlertTriangle className="w-6 h-6 text-amber-500 mt-1" />
+                        <div>
+                            <h3 className="font-black text-amber-900 text-lg mb-1">Risk Assessment Pattern Detected</h3>
+                            <p className="text-amber-800 font-medium text-sm">
+                                Several hazards share identical risk ratings. 
+                                Consider reviewing whether these reflect site-specific risks or if they have been copied. 
+                                Auditors often look for variation in risk scoring.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+            <HACCPQuestionnaire sectionData={getQuestions('validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('validation', d)} />
+        </div>
+       );
   }
 
   if (currentSection === 'generating' || currentSection === 'validating') {

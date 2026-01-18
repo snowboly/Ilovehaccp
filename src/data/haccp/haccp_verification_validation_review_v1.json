@@ -4,6 +4,38 @@
   "section": "Verification, Validation, Review & Records",
   "questions": [
     {
+      "id": "validation_group",
+      "text": "Plan Validation Status",
+      "type": "group",
+      "questions": [
+        {
+          "id": "is_validated",
+          "text": "Has this HACCP plan been previously validated?",
+          "tooltip": "Validation uses scientific evidence to prove your control measures actually work. New plans are typically 'Not yet validated'.",
+          "type": "boolean",
+          "required": true,
+          "conditional_questions": [
+            {
+              "id": "validation_date",
+              "text": "Date of last validation",
+              "type": "text",
+              "required": true,
+              "placeholder": "DD/MM/YYYY",
+              "show_if": true
+            },
+            {
+              "id": "validated_by",
+              "text": "Who validated the plan?",
+              "type": "text",
+              "required": true,
+              "placeholder": "Name or Role (e.g. Food Safety Consultant)",
+              "show_if": true
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "verification_group",
       "text": "Verification",
       "type": "group",
@@ -11,21 +43,24 @@
         {
           "id": "system_verification_activities",
           "text": "What verification activities are performed to confirm the HACCP system is working?",
-          "tooltip": "Verification activities confirm that the HACCP system is working as intended, such as record reviews or checks of monitoring procedures.",
+          "tooltip": "Verification = Checking if you are following the plan (e.g., reviewing records, internal audits). Validation = Proving the plan works.",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Weekly record review, Annual internal audit, microbiological testing"
         },
         {
           "id": "system_verification_frequency",
           "text": "Verification frequency",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Weekly, Monthly, Annually"
         },
         {
           "id": "system_verification_responsibility",
           "text": "Who is responsible for verification?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., QA Manager, Head Chef"
         }
       ]
     },
@@ -69,19 +104,22 @@
           "id": "record_storage_location",
           "text": "Where are HACCP records stored?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Manager's Office, Cloud Drive, Kitchen Binder"
         },
         {
           "id": "record_retention_period",
           "text": "Record retention period",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., 12 months, 3 years"
         },
         {
           "id": "document_control_method",
           "text": "How are documents controlled and updated?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Version numbers, Date markings, Old copies destroyed"
         }
       ]
     }

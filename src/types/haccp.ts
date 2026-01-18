@@ -16,6 +16,7 @@ export interface ConditionalQuestion {
   type: QuestionType;
   required: boolean | string;
   show_if?: boolean;
+  placeholder?: string;
 }
 
 export interface QuestionField {
@@ -24,6 +25,7 @@ export interface QuestionField {
   type: QuestionType;
   required: boolean;
   options?: string[];
+  placeholder?: string;
 }
 
 export interface RepeatableItemSchema {
@@ -37,6 +39,7 @@ export interface HACCPQuestion {
   required: boolean | string; // 'when_all_hazards_false' string type support
   description?: string;
   tooltip?: string;
+  placeholder?: string;
   options?: string[]; // For select types
   validation?: {
     prevent_proceed_on?: boolean;

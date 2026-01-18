@@ -16,7 +16,7 @@
     {
       "id": "process_steps",
       "text": "List all process steps in the order they occur.",
-      "tooltip": "Process steps describe the main stages of your operation from receiving to dispatch and should reflect how the process actually works.",
+      "tooltip": "Distinct steps help identify hazards accurately. Examples: 'Goods In', 'Dry Storage', 'Chilled Storage', 'Preparation', 'Cooking', 'Cooling', 'Reheating', 'Plating/Service'.",
       "type": "repeatable_list",
       "required": true,
       "min_items": 1,
@@ -60,6 +60,7 @@
     {
       "id": "diagram_verified",
       "text": "Has the process flow diagram been verified on-site?",
+      "tooltip": "On-site verification involves walking through the process to ensure the diagram accurately reflects reality.",
       "type": "boolean",
       "required": true
     }

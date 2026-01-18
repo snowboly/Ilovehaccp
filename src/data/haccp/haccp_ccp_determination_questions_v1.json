@@ -8,25 +8,28 @@
     {
       "id": "q1_control_measure",
       "text": "Is there a control measure for the identified hazard at this step?",
-      "tooltip": "A Critical Control Point (CCP) is a step where control is essential to prevent, eliminate, or reduce a food safety hazard to an acceptable level.",
+      "tooltip": "A Control Measure is any action and activity that can be used to prevent or eliminate a food safety hazard or reduce it to an acceptable level. If none exists here, you may need to modify the process.",
       "type": "boolean",
       "required": true
     },
     {
       "id": "q2_step_designed_to_eliminate",
       "text": "Is this step specifically designed to eliminate or reduce the hazard to an acceptable level?",
+      "tooltip": "Examples: Pasteurization, Cooking, Metal Detection (if final), Filtration. If this step is THE step meant to kill/remove the hazard, answer Yes (it is likely a CCP).",
       "type": "boolean",
       "required": true
     },
     {
       "id": "q3_contamination_possible",
       "text": "Could contamination with the hazard occur at this step, or could it increase to unacceptable levels?",
+      "tooltip": "If the hazard is not likely to increase or occur here, this might not be a CCP.",
       "type": "boolean",
       "required": true
     },
     {
       "id": "q4_subsequent_step",
       "text": "Will a subsequent step eliminate or reduce the hazard to an acceptable level?",
+      "tooltip": "If a later step (e.g. cooking later on) will kill the bacteria, then THIS step is likely not a CCP for that hazard.",
       "type": "boolean",
       "required": true
     }
