@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HACCPQuestion, QuestionType } from '@/types/haccp';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { supabase } from '@/lib/supabase';
 import { 
   AlertCircle, 
   CheckCircle2, 
@@ -8,7 +9,9 @@ import {
   ChevronUp, 
   Plus, 
   Trash2, 
-  X 
+  X,
+  UploadCloud,
+  Loader2
 } from 'lucide-react';
 
 interface QuestionCardProps {
@@ -20,9 +23,78 @@ interface QuestionCardProps {
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onChange, error, context }) => {
+  const [isUploading, setIsUploading] = useState(false);
   
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    setIsUploading(true);
+    const file = e.target.files[0];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    try {
+        const { error: uploadError } = await supabase.storage
+            .from('logos')
+            .upload(filePath, file);
+
+        if (uploadError) {
+            console.error(uploadError);
+            alert("Upload failed. Please ensure the image is < 2MB.");
+            return;
+        }
+
+        const { data } = supabase.storage.from('logos').getPublicUrl(filePath);
+        onChange(question.id, data.publicUrl);
+    } catch (err) {
+        console.error(err);
+        alert("An unexpected error occurred during upload.");
+    } finally {
+        setIsUploading(false);
+    }
+  };
+
   const renderInput = () => {
     switch (question.type) {
+      case 'file_upload':
+        return (
+            <div className="space-y-4">
+                {value ? (
+                    <div className="relative w-full max-w-xs aspect-square rounded-xl overflow-hidden border-2 border-slate-200 bg-slate-50 group">
+                        <img src={value} alt="Uploaded logo" className="w-full h-full object-contain p-4" />
+                        <button
+                            onClick={() => onChange(question.id, null)}
+                            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                    </div>
+                ) : (
+                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:bg-slate-50 transition-colors relative">
+                        <input 
+                            type="file" 
+                            accept="image/png, image/jpeg" 
+                            onChange={handleFileUpload} 
+                            disabled={isUploading}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                        />
+                        <div className="flex flex-col items-center gap-2 text-slate-500">
+                            {isUploading ? (
+                                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                            ) : (
+                                <UploadCloud className="w-8 h-8 text-slate-400" />
+                            )}
+                            <span className="font-bold text-sm">
+                                {isUploading ? "Uploading..." : "Click to upload logo (PNG/JPG)"}
+                            </span>
+                            <span className="text-xs text-slate-400">Max 2MB. Optional.</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+
       case 'text':
         return (
           <input
