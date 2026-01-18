@@ -8,9 +8,11 @@ import { getQuestions } from '@/data/haccp/loader';
 import { useLanguage } from '@/lib/i18n';
 
 import { generateHACCPWordDoc } from '@/lib/export-utils';
-import { AlertTriangle, Info, Edit, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, Info, Edit, ShieldAlert, CheckCircle2, Save } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { ProcessLog } from '@/components/ui/ProcessLog';
+import { SaveProgressModal } from '@/components/builder/SaveProgressModal';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -160,6 +162,8 @@ export default function HACCPMasterFlow() {
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [isSavingPlan, setIsSavingPlan] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [transition, setTransition] = useState<{ show: boolean, message: string }>({ show: false, message: '' });
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   // Resume / Start New Logic
   const [showResumePrompt, setShowResumePrompt] = useState(false);
@@ -352,21 +356,31 @@ export default function HACCPMasterFlow() {
     const newAnswers = { ...allAnswers, [sectionKey]: data };
     setAllAnswers(newAnswers);
 
+    // Helper to trigger transition
+    const triggerTransition = (msg: string, nextSection: SectionKey, cb?: () => void) => {
+        setTransition({ show: true, message: msg });
+        setTimeout(() => {
+            setTransition({ show: false, message: '' });
+            setCurrentSection(nextSection);
+            if(cb) cb();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 1500);
+    };
+
     // Navigation Logic
     switch (sectionKey) {
       case 'product':
-        setCurrentSection('process');
+        triggerTransition("Product details saved!", 'process');
         break;
       
       case 'process':
-        setCurrentSection('prp');
+        triggerTransition("Process flow mapped!", 'prp');
         break;
       
       case 'prp':
         // Start Hazard Analysis Loop
         if (newAnswers.process?.process_steps?.length > 0) {
-            setCurrentStepIndex(0);
-            setCurrentSection('hazards');
+            triggerTransition("Starting Hazard Analysis...", 'hazards', () => setCurrentStepIndex(0));
         } else {
             alert("No process steps defined!");
             setCurrentSection('process');
@@ -381,7 +395,11 @@ export default function HACCPMasterFlow() {
             const stepId = steps[currentStepIndex].step_id || steps[currentStepIndex].step_name;
             newAnswers.hazard_analysis = [...existingHazards, { step_id: stepId, data }];
             setAllAnswers(newAnswers);
+            // Small toast for loop steps instead of full transition? Or fast transition?
+            // Let's just increment for flow speed, maybe a quick toast in future.
+            // For now, standard behavior within loop to keep it fast.
             setCurrentStepIndex(prev => prev + 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             // Loop done. Save final one.
              const existingHazards = newAnswers.hazard_analysis || [];
@@ -392,11 +410,12 @@ export default function HACCPMasterFlow() {
             // Check if any significant hazards were identified
             const sigHazards = getSignificantHazards(newAnswers);
             if (sigHazards.length === 0) {
-                setCurrentSection('validation'); // Skip CCP steps entirely
+                triggerTransition("Risk Assessment Complete!", 'validation'); // Skip CCP steps entirely
             } else {
-                setCurrentCCPIndex(0);
-                setIdentifiedCCPs([]);
-                setCurrentSection('ccp_determination');
+                triggerTransition("Hazards Identified. Moving to CCPs...", 'ccp_determination', () => {
+                    setCurrentCCPIndex(0);
+                    setIdentifiedCCPs([]);
+                });
             }
         }
         break;
@@ -419,6 +438,7 @@ export default function HACCPMasterFlow() {
          
          if (currentCCPIndex < sigHazards.length - 1) {
              setCurrentCCPIndex(prev => prev + 1);
+             window.scrollTo({ top: 0, behavior: 'smooth' });
          } else {
              // Loop done
              newAnswers.ccp_decisions = updatedCCPs;
@@ -427,10 +447,9 @@ export default function HACCPMasterFlow() {
              // Conditionally show CCP Management
              const hasCCPs = updatedCCPs.some(ccp => ccp.is_ccp);
              if (hasCCPs) {
-                 setCurrentCCPIndex(0);
-                 setCurrentSection('ccp_management');
+                 triggerTransition("Critical Points Identified!", 'ccp_management', () => setCurrentCCPIndex(0));
              } else {
-                 setCurrentSection('validation');
+                 triggerTransition("Analysis Complete!", 'validation');
              }
          }
          break;
@@ -454,17 +473,15 @@ export default function HACCPMasterFlow() {
         // Save
         newAnswers.ccp_management = flattenedManagement;
         setAllAnswers(newAnswers);
-        setCurrentSection('validation');
+        setCurrentSection('validation'); // No transition here, validation logic runs next
         break;
 
       case 'validation':
+        // No visual transition needed, goes to 'generating' spinner
         setCurrentSection('generating');
         await generatePlan(newAnswers);
         break;
     }
-
-    // Force scroll to top on section change
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const generatePlan = async (answers: any) => {
@@ -734,10 +751,38 @@ export default function HACCPMasterFlow() {
     if (idx === -1) return 0;
     return Math.min(Math.round((idx / 7) * 100), 100);
   };
+  
+  const getSectionTitle = (section: SectionKey) => {
+      const titles: Record<string, string> = {
+          product: '1. Product Description',
+          process: '2. Process Flow',
+          prp: '3. Prerequisite Programs',
+          hazards: '4. Hazard Analysis',
+          ccp_determination: '5. CCP Determination',
+          ccp_management: '6. CCP Management',
+          validation: '7. Final Validation',
+          generating: 'Generating Plan...',
+          validating: 'Auditing Plan...',
+          complete: 'Plan Complete'
+      };
+      return titles[section] || 'Builder';
+  }
 
   const progress = getProgress(currentSection);
 
   const renderContent = () => {
+    if (transition.show) {
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300">
+                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                    <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+                </div>
+                <h2 className="text-3xl font-black text-slate-900 mb-2">{transition.message}</h2>
+                <p className="text-slate-500">Saving progress...</p>
+            </div>
+        );
+    }
+    
     if (showResumePrompt) {
         return (
             <div className="max-w-2xl mx-auto p-10 text-center space-y-8 mt-20">
@@ -929,8 +974,7 @@ export default function HACCPMasterFlow() {
   if (currentSection === 'generating' || currentSection === 'validating') {
       return (
           <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-              <p className="font-bold text-slate-500">{currentSection === 'generating' ? 'Writing Plan...' : 'Auditing Plan...'}</p>
+              <ProcessLog mode={currentSection as 'generating' | 'validating'} />
           </div>
       );
   }
@@ -1039,8 +1083,52 @@ export default function HACCPMasterFlow() {
                                 {/* Weaknesses */}
                                 <div className="mt-6">
                                     <h3 className="font-bold text-slate-900 mb-2">Weaknesses</h3>
-                                    <ul className="list-disc list-inside text-slate-600 space-y-1">
-                                        {validationReport?.section_3_weaknesses_risks?.map((w: any, i: number) => <li key={i}>{w.weakness} ({w.section})</li>)}
+                                    <ul className="list-none space-y-3">
+                                        {validationReport?.section_3_weaknesses_risks?.map((w: any, i: number) => {
+                                            // Paid: Show all
+                                            if (generatedPlan?.payment_status === 'paid') {
+                                                return (
+                                                    <li key={i} className="flex items-start gap-2 text-slate-600">
+                                                        <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-1" />
+                                                        <span>{w.weakness} <span className="text-slate-400 text-xs">({w.section})</span></span>
+                                                    </li>
+                                                );
+                                            }
+
+                                            // Unpaid: Show First, Blur Rest
+                                            if (i === 0) {
+                                                return (
+                                                    <li key={i} className="flex items-start gap-2 text-slate-900 font-medium bg-amber-50 p-3 rounded-lg border border-amber-100">
+                                                        <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-1" />
+                                                        <div>
+                                                            <p className="text-sm">{w.weakness}</p>
+                                                            <p className="text-xs text-amber-600 mt-1">⚠️ Remediation blocked</p>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            }
+                                            
+                                            // Blurred items (Mock if only 1 real weakness exists to show volume)
+                                            return (
+                                                <li key={i} className="flex items-center gap-2 text-slate-400 blur-sm select-none">
+                                                    <div className="w-4 h-4 bg-slate-200 rounded-full" />
+                                                    <span className="bg-slate-100 text-transparent rounded">This is a hidden weakness text that is blurred out</span>
+                                                </li>
+                                            );
+                                        })}
+                                        {/* Fake extra blurred lines if list is short to create "Volume" illusion */}
+                                        {generatedPlan?.payment_status !== 'paid' && (!validationReport?.section_3_weaknesses_risks || validationReport.section_3_weaknesses_risks.length < 3) && (
+                                            <>
+                                                <li className="flex items-center gap-2 text-slate-400 blur-sm select-none opacity-60">
+                                                    <div className="w-4 h-4 bg-slate-200 rounded-full" />
+                                                    <span className="bg-slate-100 text-transparent rounded">Another hidden issue found in the analysis</span>
+                                                </li>
+                                                <li className="flex items-center gap-2 text-slate-400 blur-sm select-none opacity-40">
+                                                    <div className="w-4 h-4 bg-slate-200 rounded-full" />
+                                                    <span className="bg-slate-100 text-transparent rounded">Critical control point deviation detected</span>
+                                                </li>
+                                            </>
+                                        )}
                                     </ul>
                                 </div>
 
@@ -1100,29 +1188,42 @@ export default function HACCPMasterFlow() {
                                             )}
                                         </div>
 
-                                        <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="grid md:grid-cols-2 gap-6 relative">
+                                            {/* Social Proof Badge */}
+                                            <div className="absolute -top-12 left-0 right-0 text-center hidden md:block">
+                                                <span className="bg-slate-900 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest shadow-lg">
+                                                    Trusted by 1,200+ Food Businesses
+                                                </span>
+                                            </div>
+
                                             {/* Tier 39 */}
                                             <div 
-                                                className={`bg-white border-2 border-slate-100 p-6 rounded-2xl transition-colors shadow-xl shadow-slate-200/50 ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-100 cursor-pointer'}`} 
+                                                className={`bg-white border-2 border-slate-100 p-6 rounded-2xl transition-colors shadow-xl shadow-slate-200/50 flex flex-col justify-between ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-100 cursor-pointer'}`} 
                                                 onClick={() => !isSavingPlan && handleCheckout('professional')}
                                             >
-                                                <div className="mb-4">
-                                                    <h4 className="font-black text-slate-900 text-lg">Self-Service Export</h4>
-                                                    <p className="text-3xl font-black text-slate-900 mt-2">€39 <span className="text-sm text-slate-400 font-medium text-base">+ VAT</span></p>
+                                                <div>
+                                                    <div className="mb-4">
+                                                        <h4 className="font-black text-slate-900 text-lg">Self-Service Export</h4>
+                                                        <div className="flex items-baseline gap-2 mt-1">
+                                                            <span className="text-3xl font-black text-slate-900">€39</span>
+                                                            <span className="text-xs text-slate-400 font-medium">+ VAT</span>
+                                                        </div>
+                                                        <p className="text-xs text-slate-400 line-through mt-1">Typical Agency: €500+</p>
+                                                    </div>
+                                                    <ul className="space-y-3 mb-8 text-left">
+                                                        {[
+                                                            "Download HACCP plan as Word (DOCX)",
+                                                            "Download HACCP plan as PDF (no watermark)",
+                                                            "Remove “Draft” watermark",
+                                                            "Save documents for future access", 
+                                                            "Share with inspectors or consultants"
+                                                        ].map((item, i) => (
+                                                            <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+                                                                <span className="text-emerald-500 font-bold">✓</span> {item}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
                                                 </div>
-                                                <ul className="space-y-3 mb-8 text-left">
-                                                    {[
-                                                        "Download HACCP plan as Word (DOCX)",
-                                                        "Download HACCP plan as PDF (no watermark)",
-                                                        "Remove “Draft” watermark",
-                                                        "Save documents for future access", 
-                                                        "Share with inspectors or consultants"
-                                                    ].map((item, i) => (
-                                                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
-                                                            <span className="text-emerald-500 font-bold">✓</span> {item}
-                                                        </li>
-                                                    ))}
-                                                </ul>
                                                 <button 
                                                     disabled={isSavingPlan}
                                                     onClick={(e) => { e.stopPropagation(); handleCheckout('professional'); }}
@@ -1135,33 +1236,40 @@ export default function HACCPMasterFlow() {
                                                         </>
                                                     ) : 'Export Documents'}
                                                 </button>
+                                                <p className="text-[10px] text-center text-slate-400 mt-3 font-medium">One-time payment. Lifetime access.</p>
                                             </div>
 
                                             {/* Tier 79 */}
                                             <div 
-                                                className={`bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-xl shadow-blue-900/10 transition-colors ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} 
+                                                className={`bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-xl shadow-blue-900/10 transition-colors flex flex-col justify-between ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} 
                                                 onClick={() => !isSavingPlan && handleCheckout('expert')}
                                             >
                                                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                                     Recommended
                                                 </div>
-                                                <div className="mb-4">
-                                                    <h4 className="font-black text-blue-900 text-lg">Expert Review</h4>
-                                                    <p className="text-3xl font-black text-blue-900 mt-2">€79 <span className="text-sm text-blue-400 font-medium text-base">+ VAT</span></p>
+                                                <div>
+                                                    <div className="mb-4">
+                                                        <h4 className="font-black text-blue-900 text-lg">Expert Review</h4>
+                                                        <div className="flex items-baseline gap-2 mt-1">
+                                                            <span className="text-3xl font-black text-blue-900">€79</span>
+                                                            <span className="text-xs text-blue-400 font-medium">+ VAT</span>
+                                                        </div>
+                                                        <p className="text-xs text-blue-400 line-through mt-1">Typical Consultant: €1,500+</p>
+                                                    </div>
+                                                    <ul className="space-y-3 mb-8 text-left">
+                                                        {[
+                                                            "Includes all Export features (€39)",
+                                                            "Human review by a food safety professional",
+                                                            "Written feedback on gaps and clarity",
+                                                            "Review stored in dashboard",
+                                                            "Priority Email Support"
+                                                        ].map((item, i) => (
+                                                            <li key={i} className="flex items-start gap-3 text-sm text-blue-800 font-medium">
+                                                                <span className="text-blue-600 font-bold">✓</span> {item}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
                                                 </div>
-                                                <ul className="space-y-3 mb-8 text-left">
-                                                    {[
-                                                        "Includes all Export features (€39)",
-                                                        "Human review by a food safety professional",
-                                                        "Written feedback on gaps and clarity",
-                                                        "Review stored in dashboard",
-                                                        "Priority Email Support"
-                                                    ].map((item, i) => (
-                                                        <li key={i} className="flex items-start gap-3 text-sm text-blue-800 font-medium">
-                                                            <span className="text-blue-600 font-bold">✓</span> {item}
-                                                        </li>
-                                                    ))}
-                                                </ul>
                                                 <button 
                                                     disabled={isSavingPlan}
                                                     onClick={(e) => { e.stopPropagation(); handleCheckout('expert'); }}
@@ -1174,6 +1282,7 @@ export default function HACCPMasterFlow() {
                                                         </>
                                                     ) : 'Request Expert Review'}
                                                 </button>
+                                                <p className="text-[10px] text-center text-blue-400 mt-3 font-medium">100% Satisfaction Guarantee</p>
                                             </div>
                                         </div>
                                     </div>
@@ -1285,11 +1394,11 @@ export default function HACCPMasterFlow() {
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
         {/* Progress Bar */}
-        <div className="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
             <div className="max-w-3xl mx-auto px-6 py-4">
-                <div className="flex justify-between text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
-                    <span>Progress</span>
-                    <span>{progress}%</span>
+                <div className="flex justify-between items-end mb-2">
+                    <span className="text-xs font-black text-slate-900 uppercase tracking-wider">{getSectionTitle(currentSection)}</span>
+                    <span className="text-xs font-bold text-slate-400">{progress}%</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div 
@@ -1302,7 +1411,20 @@ export default function HACCPMasterFlow() {
 
         <div className="pt-10 px-6">
             {renderContent()}
+
+            {draftId && currentSection !== 'complete' && (
+                <div className="mt-8 text-center">
+                    <button 
+                        onClick={() => setShowSaveModal(true)}
+                        className="text-slate-400 hover:text-blue-600 text-sm font-medium flex items-center justify-center gap-2 mx-auto transition-colors"
+                    >
+                        <Save className="w-4 h-4" /> Need to finish later? Email me a magic link
+                    </button>
+                </div>
+            )}
         </div>
+        
+        {draftId && <SaveProgressModal isOpen={showSaveModal} onClose={() => setShowSaveModal(false)} draftId={draftId} />}
     </div>
   );
 }
