@@ -158,6 +158,8 @@ export default function HACCPMasterFlow() {
   const [validationStatus, setValidationStatus] = useState<'idle' | 'running' | 'completed'>('idle');
   const [exportTemplate, setExportTemplate] = useState('Audit Classic');
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [isSavingPlan, setIsSavingPlan] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Resume / Start New Logic
   const [showResumePrompt, setShowResumePrompt] = useState(false);
@@ -243,7 +245,8 @@ export default function HACCPMasterFlow() {
 
   const handleResume = async () => {
       setShowResumePrompt(false);
-      const idToLoad = resumeIds.planId || resumeIds.draftId;
+      // Prioritize DRAFT over Plan (Work in Progress > Finished Work)
+      const idToLoad = resumeIds.draftId || resumeIds.planId;
       if (idToLoad) {
           await loadFromId(idToLoad);
       } else {
@@ -568,6 +571,15 @@ export default function HACCPMasterFlow() {
   };
 
   const savePlan = async (fullPlan: any, validationReport: any) => {
+      setIsSavingPlan(true);
+      setSaveError(null);
+      
+      // Clear any pending autosave to prevent race conditions
+      if (saveTimeoutRef.current) {
+          clearTimeout(saveTimeoutRef.current);
+          saveTimeoutRef.current = null;
+      }
+
       try {
         const res = await fetch('/api/save-plan', {
             method: 'POST',
@@ -591,6 +603,9 @@ export default function HACCPMasterFlow() {
                 answers: allAnswers 
             })
         });
+        
+        if (!res.ok) throw new Error("Failed to save plan to database");
+
         const data = await res.json();
         if (data.plan?.id) {
             localStorage.setItem('haccp_plan_id', data.plan.id);
@@ -598,8 +613,11 @@ export default function HACCPMasterFlow() {
         }
         localStorage.removeItem('haccp_draft_id');
         setDraftId(null);
-      } catch (e) {
+      } catch (e: any) {
           console.error("Auto-save failed", e);
+          setSaveError(e.message || "Connection error. Failed to save your progress.");
+      } finally {
+          setIsSavingPlan(false);
       }
   };
 
@@ -641,6 +659,31 @@ export default function HACCPMasterFlow() {
       };
       promote();
   }, [currentSection, validationReport, generatedPlan]);
+
+  // 5. Navigation Sync (URL <-> Section)
+  const updateStepInUrl = (section: string) => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('step') === section) return;
+      params.set('step', section);
+      window.history.pushState({ section }, '', `?${params.toString()}`);
+  };
+
+  useEffect(() => {
+      const urlStep = searchParams.get('step') as SectionKey;
+      if (urlStep && urlStep !== currentSection) {
+          // Verify we have data to support this jump (pessimistic)
+          if (urlStep === 'process' && !allAnswers.product) return;
+          if (urlStep === 'hazards' && !allAnswers.process) return;
+          
+          setCurrentSection(urlStep);
+      }
+  }, [searchParams]);
+
+  useEffect(() => {
+      if (currentSection !== 'complete') {
+        updateStepInUrl(currentSection);
+      }
+  }, [currentSection]);
 
   const handleCheckout = async (tier: 'professional' | 'expert') => {
       try {
@@ -704,13 +747,13 @@ export default function HACCPMasterFlow() {
                     <div className="flex justify-center gap-4">
                         <button 
                             onClick={handleResume} 
-                            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all"
+                            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all cursor-pointer"
                         >
                             Resume Draft
                         </button>
                         <button 
                             onClick={handleStartNew} 
-                            className="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl font-bold hover:bg-slate-200 transition-all"
+                            className="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl font-bold hover:bg-slate-200 transition-all cursor-pointer"
                         >
                             Start New Plan
                         </button>
@@ -1043,11 +1086,26 @@ export default function HACCPMasterFlow() {
                                             </div>
                                             <h3 className="text-2xl font-black text-slate-900 mb-2">Upgrade to View Details</h3>
                                             <p className="text-slate-500 font-medium">Unlock your full HACCP plan and remove watermarks.</p>
+                                            
+                                            {saveError && (
+                                                <div className="mt-4 bg-red-50 border border-red-100 p-4 rounded-2xl flex flex-col items-center gap-3 animate-in fade-in zoom-in">
+                                                    <p className="text-red-600 font-bold text-sm">⚠️ {saveError}</p>
+                                                    <button 
+                                                        onClick={() => savePlan(generatedPlan.full_plan, validationReport)}
+                                                        className="bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
+                                                    >
+                                                        Retry Saving Progress
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="grid md:grid-cols-2 gap-6">
                                             {/* Tier 39 */}
-                                            <div className="bg-white border-2 border-slate-100 p-6 rounded-2xl hover:border-blue-100 transition-colors shadow-xl shadow-slate-200/50 cursor-pointer" onClick={() => handleCheckout('professional')}>
+                                            <div 
+                                                className={`bg-white border-2 border-slate-100 p-6 rounded-2xl transition-colors shadow-xl shadow-slate-200/50 ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-100 cursor-pointer'}`} 
+                                                onClick={() => !isSavingPlan && handleCheckout('professional')}
+                                            >
                                                 <div className="mb-4">
                                                     <h4 className="font-black text-slate-900 text-lg">Self-Service Export</h4>
                                                     <p className="text-3xl font-black text-slate-900 mt-2">€39 <span className="text-sm text-slate-400 font-medium text-base">+ VAT</span></p>
@@ -1066,15 +1124,24 @@ export default function HACCPMasterFlow() {
                                                     ))}
                                                 </ul>
                                                 <button 
+                                                    disabled={isSavingPlan}
                                                     onClick={(e) => { e.stopPropagation(); handleCheckout('professional'); }}
-                                                    className="bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-colors w-full flex items-center justify-center gap-2 cursor-pointer"
+                                                    className="bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-colors w-full flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
                                                 >
-                                                    Export Documents
+                                                    {isSavingPlan ? (
+                                                        <>
+                                                            <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                                            Saving...
+                                                        </>
+                                                    ) : 'Export Documents'}
                                                 </button>
                                             </div>
 
                                             {/* Tier 79 */}
-                                            <div className="bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-xl shadow-blue-900/10 cursor-pointer" onClick={() => handleCheckout('expert')}>
+                                            <div 
+                                                className={`bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-xl shadow-blue-900/10 transition-colors ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} 
+                                                onClick={() => !isSavingPlan && handleCheckout('expert')}
+                                            >
                                                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                                     Recommended
                                                 </div>
@@ -1096,10 +1163,16 @@ export default function HACCPMasterFlow() {
                                                     ))}
                                                 </ul>
                                                 <button 
+                                                    disabled={isSavingPlan}
                                                     onClick={(e) => { e.stopPropagation(); handleCheckout('expert'); }}
-                                                    className="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 cursor-pointer"
+                                                    className="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 cursor-pointer disabled:cursor-not-allowed"
                                                 >
-                                                    Request Expert Review
+                                                    {isSavingPlan ? (
+                                                        <>
+                                                            <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                                            Saving...
+                                                        </>
+                                                    ) : 'Request Expert Review'}
                                                 </button>
                                             </div>
                                         </div>

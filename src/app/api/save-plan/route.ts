@@ -95,10 +95,25 @@ export async function POST(req: Request) {
 
     // 2.5 Mark Draft as Generated
     if (draftId) {
-        await supabaseAdmin
+        // Security Check: Ensure user owns this draft before closing it
+        const { data: draft, error: draftError } = await supabaseAdmin
             .from('drafts')
-            .update({ status: 'generated' })
-            .eq('id', draftId);
+            .select('user_id')
+            .eq('id', draftId)
+            .single();
+
+        if (!draftError && draft) {
+             // Only allow if draft belongs to user OR is anonymous (unclaimed)
+             if (draft.user_id && draft.user_id !== authUserId) {
+                 console.warn(`User ${authUserId} attempted to close draft ${draftId} owned by ${draft.user_id}`);
+                 // We don't block the PLAN save, but we don't close the other user's draft.
+             } else {
+                 await supabaseAdmin
+                    .from('drafts')
+                    .update({ status: 'generated' })
+                    .eq('id', draftId);
+             }
+        }
     }
 
     // 3. Save Version Snapshot (With Auto-Increment)
