@@ -61,6 +61,37 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
             }
         }
       }
+
+      // Check for conditional requirement: "when_all_hazards_false"
+      if (q.id === 'hazard_identification' && answers[q.id]) {
+          const groupAnswers = answers[q.id];
+          const hazGroup = q.questions?.find(sq => sq.id === 'no_hazards_justification');
+          
+          if (hazGroup && hazGroup.required === 'when_all_hazards_false' && hazGroup.show_if_all_false) {
+              const allFalse = hazGroup.show_if_all_false.every(key => groupAnswers[key] === false);
+              if (allFalse) {
+                  const val = groupAnswers[hazGroup.id];
+                  if (!val || val === '') {
+                      // We need to set error on the group or specific field? 
+                      // HACCPQuestionnaire handles top-level errors. 
+                      // But hazard_identification is a group. 
+                      // The error needs to be propagated or handled in QuestionCard.
+                      // Current architecture doesn't easily support deep validation errors from top level
+                      // UNLESS we flatten keys or QuestionCard handles validation.
+                      // For now, let's mark the group as invalid or handle it specially.
+                      // Actually, QuestionCard takes `error`.
+                      // But the error key matches the top question ID.
+                      // I'll stick to top-level validation if possible, but here it's nested.
+                      
+                      // WORKAROUND: Pass error to the group ID, but formatted?
+                      // Or rely on QuestionCard to show it.
+                      // Let's set it on the group ID for now.
+                      newErrors[q.id] = "Please provide justification for no hazards.";
+                      isValid = false;
+                  }
+              }
+          }
+      }
     });
 
     setErrors(newErrors);

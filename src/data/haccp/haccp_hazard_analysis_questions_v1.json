@@ -20,7 +20,8 @@
               "text": "Description of Biological hazards",
               "type": "text",
               "required": true,
-              "show_if": true
+              "show_if": true,
+              "placeholder": "e.g., Salmonella from raw chicken, Listeria in drains"
             }
           ]
         },
@@ -35,7 +36,8 @@
               "text": "Description of Chemical hazards",
               "type": "text",
               "required": true,
-              "show_if": true
+              "show_if": true,
+              "placeholder": "e.g., Cleaning chemical residues, allergens (if treated as chemical)"
             }
           ]
         },
@@ -50,7 +52,8 @@
               "text": "Description of Physical hazards",
               "type": "text",
               "required": true,
-              "show_if": true
+              "show_if": true,
+              "placeholder": "e.g., Metal fragments, glass shards, hard plastic"
             }
           ]
         },
@@ -65,16 +68,18 @@
               "text": "Description of Allergen hazards",
               "type": "text",
               "required": true,
-              "show_if": true
+              "show_if": true,
+              "placeholder": "e.g., Peanuts, Gluten (cross-contamination risk)"
             }
           ]
         },
         {
           "id": "no_hazards_justification",
-          "text": "Justification for no hazards identified",
+          "text": "Why are there no hazards at this step?",
           "type": "text",
           "required": "when_all_hazards_false",
-          "show_if_all_false": ["bio_hazards", "chem_hazards", "phys_hazards", "allergen_hazards"]
+          "show_if_all_false": ["bio_hazards", "chem_hazards", "phys_hazards", "allergen_hazards"],
+          "placeholder": "e.g., This is a low-risk ambient storage step for sealed packaging."
         }
       ]
     },
@@ -117,8 +122,8 @@
       "questions": [
         {
           "id": "applied_controls",
-          "text": "What control measures apply to this hazard?",
-          "tooltip": "Control measures are actions or activities that can be used to prevent or eliminate a food safety hazard or reduce it to an acceptable level.",
+          "text": "Select applicable control categories",
+          "tooltip": "PRP (Prerequisite Program) = General hygiene rules (e.g. cleaning, training). Process Control = Specific checks at this step (e.g. temperature check).",
           "type": "multi_select",
           "options": [
             "Prerequisite Program (PRP)",
@@ -126,6 +131,14 @@
             "None"
           ],
           "required": true
+        },
+        {
+          "id": "control_measure_description",
+          "text": "Describe the control measure (Optional)",
+          "tooltip": "Briefly describe how this hazard is controlled. Examples: 'Daily temperature checks', 'Supplier approval procedure', 'Metal detection'.",
+          "type": "text",
+          "required": false,
+          "placeholder": "e.g., Temperature monitoring every 4 hours, Visual inspection of incoming goods"
         }
       ]
     }

@@ -15,14 +15,16 @@
           "text": "What is the critical limit for this CCP?",
           "tooltip": "A precise value (e.g. >75°C, <5°C, pH <4.6) that separates safe from unsafe. It must be measurable in real-time.",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Core temperature >75°C for 30s, pH < 4.5"
         },
         {
           "id": "critical_limit_basis",
           "text": "Scientific or regulatory basis (Optional)",
           "tooltip": "Cite the source of your limit (e.g. FSA Guidelines, Regulation 852/2004) if known.",
           "type": "text",
-          "required": false
+          "required": false,
+          "placeholder": "e.g., FSA Safe Catering Pack, Codex Alimentarius"
         }
       ]
     },
@@ -36,13 +38,15 @@
           "id": "monitoring_parameter",
           "text": "What parameter is monitored?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Temperature, Time, pH, Visual check"
         },
         {
           "id": "monitoring_method",
           "text": "How is monitoring performed?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Probe thermometer check, visual inspection"
         },
         {
           "id": "monitoring_frequency",
@@ -61,7 +65,8 @@
           "id": "monitoring_responsibility",
           "text": "Who is responsible for monitoring?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Head Chef, Line Supervisor"
         }
       ]
     },
@@ -76,20 +81,23 @@
           "text": "What action is taken if the critical limit is exceeded?",
           "tooltip": "Immediate action to bring the process back under control (e.g. continue cooking, discard product).",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Continue cooking until temp reached, Discard product"
         },
         {
           "id": "product_handling",
           "text": "How is affected product handled?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Segregated and discarded, Reprocessed"
         },
         {
           "id": "root_cause_correction",
           "text": "How is the cause of deviation corrected?",
           "tooltip": "Explain how you fix the underlying issue (e.g. repair fridge, retrain staff) to prevent recurrence.",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Call engineer to repair oven, Retrain staff on procedure"
         }
       ]
     },
@@ -103,13 +111,15 @@
           "id": "verification_activities",
           "text": "What verification activities are performed?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Review of temperature records, Calibration of probe"
         },
         {
           "id": "verification_frequency",
           "text": "Verification frequency",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Weekly, Monthly"
         }
       ]
     },
@@ -122,7 +132,8 @@
           "id": "ccp_records",
           "text": "What records are maintained for this CCP?",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "e.g., Temperature Log Sheet, Corrective Action Log"
         }
       ]
     }

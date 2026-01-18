@@ -163,6 +163,24 @@ export default function HACCPMasterFlow() {
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [resumeIds, setResumeIds] = useState<{planId: string | null, draftId: string | null}>({planId: null, draftId: null});
 
+  const claimDraft = async (id: string) => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+           try {
+              await fetch('/api/drafts/attach', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${session.access_token}`
+                  },
+                  body: JSON.stringify({ draftId: id })
+              });
+          } catch (e) {
+              console.error("Failed to attach draft to user", e);
+          }
+      }
+  };
+
   const loadFromId = async (id: string) => {
     // Try as PLAN first (Paid/Generated)
     try {
@@ -201,6 +219,9 @@ export default function HACCPMasterFlow() {
                 }
                 // Update local storage
                 localStorage.setItem('haccp_draft_id', id);
+                
+                // Attempt to claim if logged in
+                claimDraft(id);
                 return;
             }
         }
@@ -834,12 +855,15 @@ export default function HACCPMasterFlow() {
                       Your HACCP plan has been validated. Create a free account to save your progress and unlock exports.
                   </p>
                   <button 
-                      onClick={() => window.location.href = `/signup?next=/builder?id=${draftId}`}
+                      onClick={() => {
+                          const nextUrl = encodeURIComponent(`/builder?id=${draftId}`);
+                          window.location.href = `/signup?next=${nextUrl}`;
+                      }}
                       className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20"
                   >
                       Save & Continue
                   </button>
-                  <p className="text-sm text-slate-400 mt-4">Already have an account? <a href={`/login?next=/builder?id=${draftId}`} className="text-blue-600 hover:underline">Log In</a></p>
+                  <p className="text-sm text-slate-400 mt-4">Already have an account? <a href={`/login?next=${encodeURIComponent(`/builder?id=${draftId}`)}`} className="text-blue-600 hover:underline">Log In</a></p>
               </div>
           </div>
       );

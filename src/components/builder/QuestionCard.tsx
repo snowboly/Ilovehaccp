@@ -290,15 +290,23 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
       case 'group':
         return (
             <div className="space-y-6">
-                {question.questions?.map(subQ => (
-                    <div key={subQ.id} className="border-t border-slate-100 pt-4 first:border-0 first:pt-0">
-                        <QuestionCard 
-                            question={subQ} 
-                            value={value?.[subQ.id]} 
-                            onChange={(id, val) => onChange(question.id, { ...value, [id]: val })}
-                        />
-                    </div>
-                ))}
+                {question.questions?.map(subQ => {
+                    // Logic to hide "No Hazards Justification" if hazards are present
+                    if (subQ.show_if_all_false) {
+                         const allFalse = subQ.show_if_all_false.every(key => value?.[key] === false);
+                         if (!allFalse) return null;
+                    }
+
+                    return (
+                        <div key={subQ.id} className="border-t border-slate-100 pt-4 first:border-0 first:pt-0">
+                            <QuestionCard 
+                                question={subQ} 
+                                value={value?.[subQ.id]} 
+                                onChange={(id, val) => onChange(question.id, { ...value, [id]: val })}
+                            />
+                        </div>
+                    );
+                })}
             </div>
         );
 
