@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { 
   CreditCard, 
@@ -16,6 +16,7 @@ import {
 import Link from 'next/link';
 
 export default function SettingsPage() {
+  const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 

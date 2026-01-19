@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { HACCPQuestion, QuestionType } from '@/types/haccp';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { 
   AlertCircle, 
   CheckCircle2, 
@@ -23,6 +23,7 @@ interface QuestionCardProps {
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onChange, error, context }) => {
+  const supabase = createClient();
   const [isUploading, setIsUploading] = useState(false);
   
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

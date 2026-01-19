@@ -9,7 +9,7 @@ import { useLanguage } from '@/lib/i18n';
 
 import { generateHACCPWordDoc } from '@/lib/export-utils';
 import { AlertTriangle, Info, Edit, ShieldAlert, CheckCircle2, Save } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
 import { SaveProgressModal } from '@/components/builder/SaveProgressModal';
@@ -29,6 +29,7 @@ type SectionKey =
   | 'complete';
 
 export default function HACCPMasterFlow() {
+  const supabase = createClient();
   const { language } = useLanguage();
   const searchParams = useSearchParams();
   const [currentSection, setCurrentSection] = useState<SectionKey>('product');

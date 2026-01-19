@@ -3,9 +3,10 @@
 import { Mail, Send, Loader2, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 
 function ContactForm() {
+  const supabase = createClient();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);

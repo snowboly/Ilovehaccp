@@ -72,7 +72,7 @@ import {
   Edit
 } from 'lucide-react';
 
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import HACCPDocument from '../pdf/HACCPDocument';
 import { useLanguage } from '@/lib/i18n';
@@ -140,6 +140,7 @@ const GENERATION_LOG_MESSAGES = [
 ];
 
 export default function HACCPBuilder() {
+  const supabase = createClient();
   const { t, language } = useLanguage();
   const dict = getDictionary(language).pdf;
   const searchParams = useSearchParams();
@@ -1148,6 +1149,7 @@ export default function HACCPBuilder() {
 }
 
 function LeadCapture({ planId, businessName, children, onSuccess }: { planId: string | null, businessName: string, children: React.ReactNode, onSuccess: () => void }) {
+    const supabase = createClient();
     const [email, setEmail] = useState('');
     const [captured, setCaptured] = useState(false);
     const [loading, setLoading] = useState(false);

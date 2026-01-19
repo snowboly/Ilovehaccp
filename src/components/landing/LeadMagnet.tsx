@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { Download, CheckCircle2, Loader2, FileText } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 
 export default function LeadMagnet() {
+  const supabase = createClient();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

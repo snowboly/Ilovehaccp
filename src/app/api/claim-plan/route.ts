@@ -1,25 +1,12 @@
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
-import { supabase } from '@/lib/supabase'; // Client for auth check
+import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: Request) {
   try {
-    // 1. Check if user is authenticated
-    // We use the standard client to verify the session from the request cookies/headers if possible,
-    // but in an API route, it's often easier to rely on the service client IF we trust the sender.
-    // However, best practice is to get the user from the session.
-    
-    // Create a Supabase client for the request context (if using cookies)
-    // or just rely on the fact that we are in a protected route? 
-    // We'll use the server-side auth helper pattern if we had it, but here we can just check the header.
-    
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    // 1. Check if user is authenticated using SSR client (cookies)
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

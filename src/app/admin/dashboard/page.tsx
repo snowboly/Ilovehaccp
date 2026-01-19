@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { 
     Loader2, FileText, Download, ShieldAlert, CheckCircle2, XCircle, 
@@ -13,6 +13,7 @@ import {
 type ViewState = 'overview' | 'reviews' | 'plans' | 'users' | 'audit';
 
 export default function AdminDashboard() {
+  const supabase = createClient();
   // State
   const [activeView, setActiveView] = useState<ViewState>('overview');
   const [loading, setLoading] = useState(true);

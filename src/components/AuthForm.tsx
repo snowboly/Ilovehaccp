@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, ShieldCheck, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ interface AuthFormProps {
 }
 
 export default function AuthForm({ type: initialType }: AuthFormProps) {
+  const supabase = createClient();
   const [view, setView] = useState<'login' | 'signup' | 'forgot_password'>(initialType);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

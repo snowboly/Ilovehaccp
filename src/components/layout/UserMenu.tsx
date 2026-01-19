@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { User, LogOut, LayoutDashboard, Settings, ChevronDown } from 'lucide-react';
 
 export default function UserMenu({ mobile = false }: { mobile?: boolean }) {
+  const supabase = createClient();
   const [user, setUser] = useState<any>(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

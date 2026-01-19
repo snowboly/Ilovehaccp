@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { Send, Loader2, CheckCircle2 } from 'lucide-react';
 
 export default function Newsletter() {
+  const supabase = createClient();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
