@@ -34,7 +34,7 @@ export async function POST(req: Request) {
             .eq('id', planId);
 
         if (error) throw error;
-        await logAdminAction(user.email, planId, 'ADD_COMMENT', { comment_length: comment.length });
+        await logAdminAction(user.email!, planId, 'ADD_COMMENT', { comment_length: comment.length });
 
     } else if (action === 'COMPLETE_REVIEW') {
         const { error } = await supabaseService
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
             .eq('id', planId);
 
         if (error) throw error;
-        await logAdminAction(user.email, planId, 'COMPLETE_REVIEW');
+        await logAdminAction(user.email!, planId, 'COMPLETE_REVIEW');
 
     } else {
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

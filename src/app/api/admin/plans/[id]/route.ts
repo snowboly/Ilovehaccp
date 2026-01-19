@@ -36,7 +36,7 @@ export async function GET(
     // 3. Log the View Action (Audit Trail)
     // We execute this asynchronously so it doesn't block the read, 
     // or await it if strict audit is required. Awaiting for safety.
-    await logAdminAction(user.email, id, 'VIEW_PLAN', { source: 'admin_dashboard_detail' });
+    await logAdminAction(user.email!, id, 'VIEW_PLAN', { source: 'admin_dashboard_detail' });
 
     return NextResponse.json({ plan });
 
