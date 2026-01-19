@@ -37,10 +37,14 @@ export default function HACCPMasterFlow() {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isSavingRef = useRef(false);
   const pendingSaveRef = useRef<any>(null);
+  const hasInitialized = useRef(false);
 
   // 1. Initialize Draft on Mount
   useEffect(() => {
     const initDraft = async () => {
+        if (hasInitialized.current) return;
+        hasInitialized.current = true;
+
         const urlId = searchParams.get('id');
         const isNew = searchParams.get('new') === 'true';
         

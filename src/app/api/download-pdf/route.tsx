@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
 import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
-import { ADMIN_EMAILS } from '@/lib/constants';
+import { checkAdminRole } from '@/lib/admin-auth';
 import { getDictionary } from '@/lib/locales';
 import { isExportAllowed } from '@/lib/export/permissions';
 
@@ -56,7 +56,7 @@ export async function GET(req: Request) {
     }
 
     // 3. Ownership & Permission Check
-    const isAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const isAdmin = await checkAdminRole(user.id);
     if (plan.user_id !== user.id && !isAdmin) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }

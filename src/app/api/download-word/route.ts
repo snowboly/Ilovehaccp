@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, BorderStyle, WidthType, PageBreak, ImageRun, AlignmentType, Header, Footer } from 'docx';
-import { ADMIN_EMAILS } from '@/lib/constants';
+import { checkAdminRole } from '@/lib/admin-auth';
 import { generateWordDocument } from '@/lib/word-generator';
 import { isExportAllowed } from '@/lib/export/permissions';
 
@@ -69,7 +69,7 @@ export async function GET(req: Request) {
     // 3. Permission Check
     const isOwner = plan.user_id === user.id;
     const isPaid = plan.payment_status === 'paid';
-    const isAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const isAdmin = await checkAdminRole(user.id);
 
     if (isAdmin) {
         // Admin Access Granted

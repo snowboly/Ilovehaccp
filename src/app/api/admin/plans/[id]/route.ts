@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
-import { ADMIN_EMAILS } from '@/lib/constants';
+import { validateAdminRequest } from '@/lib/admin-auth';
 
 async function logAdminAction(adminEmail: string, entityId: string, action: string, details: any = {}) {
     await supabaseService.from('access_logs').insert({
@@ -19,17 +19,8 @@ export async function GET(
 ) {
   try {
     // 1. Auth Check
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabaseService.auth.getUser(token);
-
-    if (authError || !user || !user.email) return NextResponse.json({ error: 'Invalid Session' }, { status: 401 });
-
-    if (!ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    const { user, error: authError, status } = await validateAdminRequest(req);
+    if (authError || !user) return NextResponse.json({ error: authError }, { status: status || 401 });
 
     const { id } = await params;
 
