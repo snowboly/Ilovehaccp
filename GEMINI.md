@@ -33,6 +33,8 @@
     4. **UX/UI:**
         - Added `cursor-pointer` to all interactive builder elements.
         - Improved button affordance and layout for the review page.
+    5. **Cleanup:**
+        - Removed "Magic Link" feature ("Need to finish later?") to streamline the auth-first persistence model.
 
 ### v3.30 Admin Auth & Browser Client Fixes (Jan 19, 2026)
 - **Browser Client:** Standardized `src/utils/supabase/client.ts` to use `@supabase/ssr` `createBrowserClient`.
