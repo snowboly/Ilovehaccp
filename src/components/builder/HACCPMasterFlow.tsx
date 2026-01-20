@@ -1395,21 +1395,145 @@ export default function HACCPMasterFlow() {
   if (currentSection === 'complete') {
       return (
           <div className="max-w-4xl mx-auto p-10 space-y-8">
-              <div className="bg-emerald-50 border border-emerald-100 p-8 rounded-3xl text-center space-y-4">
-                  <h1 className="text-4xl font-black text-emerald-900">Draft Created</h1>
-                  <p className="text-emerald-700">Validation is required for final export. Run the check below to proceed.</p>
+              <div className="bg-slate-50 border border-slate-200 p-8 rounded-3xl text-center space-y-4">
+                  <h1 className="text-4xl font-black text-slate-900">Draft Review Required</h1>
+                  <p className="text-slate-600">
+                      This document is an assisted draft based on user-provided data and has not undergone professional validation or verification. 
+                      A comprehensive review by a competent food safety professional is required before implementation.
+                  </p>
               </div>
 
-              {/* 1. Idle State: Not yet validated */}
+              {/* SECTION 2 — AUTOMATED CHECKS & LIMITATIONS */}
+              <div className="grid md:grid-cols-2 gap-8">
+                  <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm">
+                      <h2 className="text-xl font-black text-slate-900 mb-4 flex items-center gap-2">
+                          <CheckCircle2 className="w-5 h-5 text-blue-600" />
+                          Automated Draft Checks Completed
+                      </h2>
+                      <ul className="space-y-3 text-sm text-slate-600">
+                          <li className="flex items-start gap-2">
+                              <span className="text-blue-600 font-bold">•</span>
+                              <span><strong>Logical Consistency:</strong> Verified that process steps align with common hazard patterns.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                              <span className="text-blue-600 font-bold">•</span>
+                              <span><strong>Mandatory Completion:</strong> Confirmed all essential sections have user entries.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                              <span className="text-blue-600 font-bold">•</span>
+                              <span><strong>Hazard Categorization:</strong> Sorted risks into biological, chemical, and physical groups.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                              <span className="text-blue-600 font-bold">•</span>
+                              <span><strong>Rule-Based CCP Mapping:</strong> Applied standard decision logic to your provided inputs.</span>
+                          </li>
+                      </ul>
+                  </div>
+                  
+                  <div className="bg-amber-50 border border-amber-100 p-8 rounded-3xl shadow-sm">
+                      <h2 className="text-xl font-black text-amber-900 mb-4 flex items-center gap-2">
+                          <AlertTriangle className="w-5 h-5 text-amber-600" />
+                          System Limitations
+                      </h2>
+                      <ul className="space-y-3 text-sm text-amber-800">
+                          <li className="flex items-start gap-2 italic">
+                              <span className="font-bold">•</span>
+                              <span>No verification of technical data accuracy.</span>
+                          </li>
+                          <li className="flex items-start gap-2 italic">
+                              <span className="font-bold">•</span>
+                              <span>No assessment of control measure effectiveness.</span>
+                          </li>
+                          <li className="flex items-start gap-2 italic">
+                              <span className="font-bold">•</span>
+                              <span>No check of actual site-specific practices or environment.</span>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+
+              {/* SECTION 3 — KEY ASSUMPTIONS & GAPS */}
+              {(riskFlags.HAS_WARNINGS || riskFlags.SCOPE_GROUPED) && (
+                  <div className="bg-slate-50 border-l-4 border-amber-500 p-8 rounded-r-3xl shadow-sm">
+                      <h2 className="text-xl font-black text-slate-900 mb-4">Key Assumptions & Potential Gaps</h2>
+                      <p className="text-sm text-slate-600 mb-4">Based on your inputs, the following areas carry increased risk and require verification:</p>
+                      <ul className="space-y-3 mb-6">
+                          {riskFlags.SCOPE_GROUPED && (
+                              <li className="flex items-start gap-3">
+                                  <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                                  <span className="text-slate-700 text-sm"><strong>Grouped Scope:</strong> The draft assumes hazards are identical across all grouped products. Differences may introduce unassessed risks.</span>
+                              </li>
+                          )}
+                          {riskFlags.INGREDIENT_DETAIL_LOW && (
+                              <li className="flex items-start gap-3">
+                                  <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                                  <span className="text-slate-700 text-sm"><strong>Generic Ingredient Detail:</strong> Low-specificity lists ("various", "etc") may obscure specific chemical or allergen hazards.</span>
+                              </li>
+                          )}
+                          {riskFlags.SHELF_LIFE_UNVALIDATED && (
+                              <li className="flex items-start gap-3">
+                                  <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                                  <span className="text-slate-700 text-sm"><strong>Unvalidated Shelf Life:</strong> Shelf life is based on assumption rather than stability data. This is a critical safety gap.</span>
+                              </li>
+                          )}
+                          {riskFlags.HIGH_RISK_RTE && (
+                              <li className="flex items-start gap-3">
+                                  <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                                  <span className="text-slate-700 text-sm"><strong>High-Risk Combination:</strong> RTE products with cold storage require rigorous Listeria management which this automated draft cannot verify.</span>
+                              </li>
+                          )}
+                          {riskFlags.VULNERABLE_CONSUMER && (
+                              <li className="flex items-start gap-3">
+                                  <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                                  <span className="text-slate-700 text-sm"><strong>Vulnerable Consumers:</strong> Serving vulnerable groups requires stricter controls than this standard draft may provide.</span>
+                              </li>
+                          )}
+                      </ul>
+                      <p className="text-xs font-bold text-amber-800 uppercase tracking-wide">
+                          Caution: Failure to professionally verify these assumptions may result in an ineffective food safety system.
+                      </p>
+                  </div>
+              )}
+
+              <div className="bg-red-50 border border-red-100 p-8 rounded-3xl shadow-sm">
+                  <h2 className="text-xl font-black text-red-900 mb-4 flex items-center gap-2">
+                      <ShieldAlert className="w-5 h-5 text-red-600" />
+                      What This Draft Does Not Provide
+                  </h2>
+                  <ul className="space-y-3 text-sm text-red-800">
+                      <li className="flex items-start gap-2">
+                          <span className="font-bold">•</span>
+                          <span><strong>No Professional Assessment:</strong> This document has not been assessed for effectiveness by a professional.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                          <span className="font-bold">•</span>
+                          <span><strong>No Technical Confirmation:</strong> The system does not confirm that your CCPs or Critical Limits are scientifically sufficient.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                          <span className="font-bold">•</span>
+                          <span><strong>No Regulatory Authorization:</strong> This draft does not constitute authorization by any food safety authority.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                          <span className="font-bold">•</span>
+                          <span><strong>No Data Verification:</strong> The system does not check the accuracy of technical inputs or shelf-life declarations.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                          <span className="font-bold">•</span>
+                          <span><strong>No Assurance of Compliance:</strong> Implementing this draft alone does not ensure compliance with food law.</span>
+                      </li>
+                  </ul>
+              </div>
+
+              {/* 1. Idle State: Not yet checked */}
               {validationStatus === 'idle' && (
                   <div className="bg-white border border-slate-200 p-12 rounded-3xl shadow-sm text-center space-y-8">
                       <div className="space-y-2">
                           <div className="flex items-center justify-center gap-2">
-                              <h2 className="text-2xl font-black text-slate-900">Validation Status</h2>
-                              <Tooltip text="Validation checks whether the HACCP plan logic is complete and internally consistent. It does not represent regulatory or audit approval." />
+                              <h2 className="text-2xl font-black text-slate-900">Draft Check Status</h2>
+                              <Tooltip text="This check analyzes the internal logic of your draft for completeness and standard patterns. It is not an approval." />
                           </div>
                           <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-500 px-4 py-2 rounded-full font-bold uppercase tracking-widest text-sm">
-                              <Info className="w-4 h-4" /> Not yet validated
+                              <Info className="w-4 h-4" /> Check Pending
                           </div>
                       </div>
                       
@@ -1417,7 +1541,7 @@ export default function HACCPMasterFlow() {
                           onClick={handleRunValidation}
                           className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 transform hover:scale-105 active:scale-95 cursor-pointer"
                       >
-                          Run Validation
+                          Run System Check
                       </button>
                   </div>
               )}
@@ -1578,100 +1702,98 @@ export default function HACCPMasterFlow() {
                                         </div>
 
                                         <div className="grid md:grid-cols-2 gap-6 relative">
-                                            {/* Social Proof Badge */}
-                                            <div className="absolute -top-12 left-0 right-0 text-center hidden md:block">
-                                                <span className="bg-slate-900 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest shadow-lg">
-                                                    Trusted by 1,200+ Food Businesses
-                                                </span>
-                                            </div>
-
-                                            {/* Tier 39 */}
+                                            {/* Tier 39: Self-Service Export */}
                                             <div 
-                                                className={`bg-white border-2 border-slate-100 p-6 rounded-2xl transition-colors shadow-xl shadow-slate-200/50 flex flex-col justify-between ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-100 cursor-pointer'}`} 
+                                                className={`bg-white border-2 border-slate-200 p-6 rounded-2xl transition-colors shadow-sm flex flex-col justify-between ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'hover:border-slate-300 cursor-pointer'}`} 
                                                 onClick={() => !isSavingPlan && handleCheckout('professional')}
                                             >
                                                 <div>
                                                     <div className="mb-4">
-                                                        <h4 className="font-black text-slate-900 text-lg">Self-Service Export</h4>
+                                                        <h4 className="font-black text-slate-900 text-lg">Self-Service Export (Document Only)</h4>
                                                         <div className="flex items-baseline gap-2 mt-1">
                                                             <span className="text-3xl font-black text-slate-900">€39</span>
                                                             <span className="text-xs text-slate-400 font-medium">+ VAT</span>
                                                         </div>
-                                                        <p className="text-xs text-slate-400 line-through mt-1">Typical Agency: €500+</p>
                                                     </div>
-                                                    <ul className="space-y-3 mb-8 text-left">
-                                                        {[
-                                                            "Download HACCP plan as Word (DOCX)",
-                                                            "Download HACCP plan as PDF (no watermark)",
-                                                            "Remove “Draft” watermark",
-                                                            "Save documents for future access", 
-                                                            "Share with inspectors or consultants"
-                                                        ].map((item, i) => (
-                                                            <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
-                                                                <span className="text-emerald-500 font-bold">✓</span> {item}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                                                    <div className="space-y-4 text-left">
+                                                        <div>
+                                                            <p className="text-xs font-bold text-slate-400 uppercase mb-2">Includes</p>
+                                                            <ul className="space-y-2 text-sm text-slate-600">
+                                                                <li>• Removal of "Draft" watermark</li>
+                                                                <li>• Download in Word (DOCX) & PDF</li>
+                                                                <li>• Automated Gap List (Major/Minor)</li>
+                                                                <li>• Document Storage</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                                            <p className="text-xs font-bold text-slate-500 uppercase mb-2">Exclusions</p>
+                                                            <ul className="space-y-1 text-xs text-slate-500">
+                                                                <li>× No human review</li>
+                                                                <li>× No confirmation of hazards/CCPs</li>
+                                                                <li>× No scientific assessment</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <button 
-                                                    disabled={isSavingPlan}
-                                                    onClick={(e) => { e.stopPropagation(); handleCheckout('professional'); }}
-                                                    className="bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-colors w-full flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
-                                                >
-                                                    {isSavingPlan ? (
-                                                        <>
-                                                            <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                                                            Saving...
-                                                        </>
-                                                    ) : 'Export Documents'}
-                                                </button>
-                                                <p className="text-[10px] text-center text-slate-400 mt-3 font-medium">One-time payment. Lifetime access.</p>
+                                                <div className="mt-6">
+                                                    <p className="text-[10px] text-slate-400 italic mb-3 border-t border-slate-100 pt-2">
+                                                        Limitation: This option provides document export and automated gap listing only. No professional review is included. <strong>Use of exported documents without professional review may result in unmanaged food safety risks.</strong>
+                                                    </p>
+                                                    <button 
+                                                        disabled={isSavingPlan}
+                                                        onClick={(e) => { e.stopPropagation(); handleCheckout('professional'); }}
+                                                        className="bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-colors w-full flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+                                                    >
+                                                        {isSavingPlan ? 'Saving...' : 'Select Self-Service Export'}
+                                                    </button>
+                                                </div>
                                             </div>
 
-                                            {/* Tier 79 */}
+                                            {/* Tier 79: Professional Review */}
                                             <div 
-                                                className={`bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-xl shadow-blue-900/10 transition-colors flex flex-col justify-between ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} 
+                                                className={`bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-md transition-colors flex flex-col justify-between ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} 
                                                 onClick={() => !isSavingPlan && handleCheckout('expert')}
                                             >
-                                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                                                    Recommended
-                                                </div>
                                                 <div>
                                                     <div className="mb-4">
-                                                        <h4 className="font-black text-blue-900 text-lg">Expert Review</h4>
+                                                        <h4 className="font-black text-blue-900 text-lg">Professional Review (Expert Feedback)</h4>
                                                         <div className="flex items-baseline gap-2 mt-1">
                                                             <span className="text-3xl font-black text-blue-900">€79</span>
                                                             <span className="text-xs text-blue-400 font-medium">+ VAT</span>
                                                         </div>
-                                                        <p className="text-xs text-blue-400 line-through mt-1">Typical Consultant: €1,500+</p>
                                                     </div>
-                                                    <ul className="space-y-3 mb-8 text-left">
-                                                        {[
-                                                            "Includes all Export features (€39)",
-                                                            "Human review by a food safety professional",
-                                                            "Written feedback on gaps and clarity",
-                                                            "Review stored in dashboard",
-                                                            "Priority Email Support"
-                                                        ].map((item, i) => (
-                                                            <li key={i} className="flex items-start gap-3 text-sm text-blue-800 font-medium">
-                                                                <span className="text-blue-600 font-bold">✓</span> {item}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                                                    <div className="space-y-4 text-left">
+                                                        <div>
+                                                            <p className="text-xs font-bold text-blue-400 uppercase mb-2">Includes</p>
+                                                            <ul className="space-y-2 text-sm text-blue-800">
+                                                                <li>• All Self-Service features</li>
+                                                                <li>• Human review by qualified professional</li>
+                                                                <li>• Written feedback on gaps & clarity</li>
+                                                                <li>• Review notes in dashboard</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div className="bg-white/50 p-3 rounded-lg border border-blue-100">
+                                                            <p className="text-xs font-bold text-blue-500 uppercase mb-2">Boundaries</p>
+                                                            <ul className="space-y-1 text-xs text-blue-600">
+                                                                <li>! Feedback & recommendations only</li>
+                                                                <li>! No approval/certification implied</li>
+                                                                <li>! Legal responsibility remains yours</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <button 
-                                                    disabled={isSavingPlan}
-                                                    onClick={(e) => { e.stopPropagation(); handleCheckout('expert'); }}
-                                                    className="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 cursor-pointer disabled:cursor-not-allowed"
-                                                >
-                                                    {isSavingPlan ? (
-                                                        <>
-                                                            <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                                                            Saving...
-                                                        </>
-                                                    ) : 'Request Expert Review'}
-                                                </button>
-                                                <p className="text-[10px] text-center text-blue-400 mt-3 font-medium">100% Satisfaction Guarantee</p>
+                                                <div className="mt-6">
+                                                    <p className="text-[10px] text-blue-500 italic mb-3 border-t border-blue-200 pt-2">
+                                                        Responsibility: Professional review provides expert feedback but does not replace the food business's responsibility for compliance. <strong>Use of exported documents without professional review may result in unmanaged food safety risks.</strong>
+                                                    </p>
+                                                    <button 
+                                                        disabled={isSavingPlan}
+                                                        onClick={(e) => { e.stopPropagation(); handleCheckout('expert'); }}
+                                                        className="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 cursor-pointer disabled:cursor-not-allowed"
+                                                    >
+                                                        {isSavingPlan ? 'Saving...' : 'Select Professional Review'}
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1734,10 +1856,12 @@ export default function HACCPMasterFlow() {
                                         onClick={handleDownloadPdf}
                                         className="bg-white text-slate-900 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
                                     >
-                                        Download Preview (Watermarked PDF)
+                                        Download Watermarked Preview (PDF)
                                     </button>
                                 </div>
-                                <p className="text-xs text-slate-500">Full exports are available after upgrade above.</p>
+                                <p className="text-xs text-slate-500 max-w-lg mx-auto">
+                                    This document is for internal review only, contains protective watermarks, and is not intended for operational implementation or regulatory submission.
+                                </p>
                             </div>
                         ) : (
                             // PAID STATE
@@ -1770,6 +1894,13 @@ export default function HACCPMasterFlow() {
                                 </div>
                             </div>
                         )}
+                    </div>
+
+                    <div className="pt-8 border-t border-slate-200">
+                        <p className="text-[10px] text-slate-400 text-center leading-relaxed max-w-2xl mx-auto">
+                            This document is an assisted draft generated based on user-provided information and has not undergone professional validation or verification. 
+                            A comprehensive review by a competent food safety professional is required to ensure accuracy and regulatory compliance before implementation.
+                        </p>
                     </div>
                   </>
               )}
