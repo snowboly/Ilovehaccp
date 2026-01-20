@@ -40,55 +40,79 @@ export default function HACCPMasterFlow() {
   const pendingSaveRef = useRef<any>(null);
   const hasInitialized = useRef(false);
 
-  // 1. Initialize Draft on Mount
+  // 1. Initialize Draft on Mount (AUDITOR-COMPLIANT)
   useEffect(() => {
-    const initDraft = async () => {
+    const initSession = async () => {
         if (hasInitialized.current) return;
         hasInitialized.current = true;
 
         const urlId = searchParams.get('id');
         const isNew = searchParams.get('new') === 'true';
-        
-        // A. Priority: Start Fresh if explicitly requested
+
+        // 1. Check Authentication State
+        const { data: { session } } = await supabase.auth.getSession();
+
+        // SCENARIO A: Explicit New Session (Reset everything)
         if (isNew) {
-            console.log("Starting fresh session (?new=true)");
-            localStorage.removeItem('haccp_plan_id');
-            localStorage.removeItem('haccp_draft_id');
-            localStorage.removeItem('haccp_last_active');
-            await createNewDraft();
+            console.log("Auditor Rule: Explicit 'New Plan' requested -> Zero State");
+            await handleStartNew(); // Reuse the cleanup logic
             return;
-        } 
-        
-        // B. Priority: URL Parameter (Resume specific plan/draft)
+        }
+
+        // SCENARIO B: URL Parameter (Explicit Intent to specific document)
         if (urlId) {
+            console.log("Auditor Rule: Explicit URL load -> Bypassing resume logic");
             await loadFromId(urlId);
             return;
         }
 
-        // C. Fallback: LocalStorage -> PROMPT (Conditional)
-        const storedDraftId = localStorage.getItem('haccp_draft_id');
-        const lastActive = localStorage.getItem('haccp_last_active');
-        const MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 Days
-
-        if (storedDraftId) {
-             const isRecent = lastActive ? (Date.now() - new Date(lastActive).getTime() < MAX_AGE) : true; // Default to true if missing (legacy support)
-             
-             if (isRecent) {
-                 setResumeIds({ planId: null, draftId: storedDraftId });
-                 setShowResumePrompt(true);
-                 return;
-             } else {
-                 // Expired draft -> Clean up
-                 localStorage.removeItem('haccp_draft_id');
-                 localStorage.removeItem('haccp_last_active');
-             }
+        // SCENARIO C: Anonymous User (Strict Zero State)
+        if (!session) {
+            console.log("Auditor Rule: Anonymous User -> Force Clean Slate (No Resume)");
+            // Clear any lingering local state to prevent "Shadow IT"
+            localStorage.removeItem('haccp_plan_id');
+            localStorage.removeItem('haccp_draft_id');
+            localStorage.removeItem('haccp_last_active');
+            
+            // Start fresh ephemeral session
+            await createNewDraft();
+            return;
         }
 
-        // D. Fallback: Create New
-        await createNewDraft();
+        // SCENARIO D: Authenticated User (Managed Continuity)
+        console.log("Auditor Rule: Authenticated User -> Checking Server-Side State");
+        
+        // Query server for latest unfinished draft
+        // Note: We use the 'drafts' table. Assuming 'updated_at' exists.
+        // We filter for drafts that are NOT converted to plans yet? 
+        // Or just the latest one. Let's look for the latest.
+        try {
+            const { data: drafts, error } = await supabase
+                .from('drafts')
+                .select('id, updated_at, plan_data')
+                .eq('user_id', session.user.id)
+                .order('updated_at', { ascending: false })
+                .limit(1);
+
+            if (drafts && drafts.length > 0) {
+                const latest = drafts[0];
+                // Check if it's already a completed plan? 
+                // Usually drafts are WIP.
+                // We prompt to resume.
+                setResumeIds({ planId: null, draftId: latest.id });
+                setShowResumePrompt(true);
+            } else {
+                // No drafts found for user -> Start New
+                console.log("No server-side drafts found -> Starting New");
+                await createNewDraft();
+            }
+        } catch (err) {
+            console.error("Failed to check server drafts", err);
+            await createNewDraft(); // Fallback to safe state
+        }
     };
     
-    initDraft();
+    initSession();
   }, [searchParams]);
 
   // 2. Autosave with Debounce & Serial Queue
@@ -1358,7 +1382,7 @@ export default function HACCPMasterFlow() {
                           const nextUrl = encodeURIComponent(`/builder?id=${draftId}`);
                           window.location.href = `/signup?next=${nextUrl}`;
                       }}
-                      className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20"
+                      className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 cursor-pointer"
                   >
                       Save & Continue
                   </button>
@@ -1391,7 +1415,7 @@ export default function HACCPMasterFlow() {
                       
                       <button 
                           onClick={handleRunValidation}
-                          className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 transform hover:scale-105 active:scale-95"
+                          className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 transform hover:scale-105 active:scale-95 cursor-pointer"
                       >
                           Run Validation
                       </button>
@@ -1787,7 +1811,7 @@ export default function HACCPMasterFlow() {
                 <div className="mt-8 text-center">
                     <button 
                         onClick={() => setShowSaveModal(true)}
-                        className="text-slate-400 hover:text-blue-600 text-sm font-medium flex items-center justify-center gap-2 mx-auto transition-colors"
+                        className="text-slate-400 hover:text-blue-600 text-sm font-medium flex items-center justify-center gap-2 mx-auto transition-colors cursor-pointer"
                     >
                         <Save className="w-4 h-4" /> Need to finish later? Email me a magic link
                     </button>
