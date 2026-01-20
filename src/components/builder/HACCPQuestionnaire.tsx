@@ -121,7 +121,98 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
     return map[section] || section;
   };
 
+  const checkIngredientVagueness = (val: string) => {
+      if (!val || val.length < 3) return null; // Too short to judge or empty
+      if (val.length < 20) return "limited";
+      if (val.match(/\b(various|mixed|etc|misc|assorted|generic)\b/i)) return "generic";
+      return null;
+  };
+
+  const getDynamicWarning = (qId: string, val: any) => {
+      if (qId === 'key_ingredients' && typeof val === 'string') {
+          const issue = checkIngredientVagueness(val);
+          if (issue) {
+              return {
+                  level: 'assumption' as const,
+                  text: "Hazard identification relies on the ingredients declared. Limited detail may result in missing hazards."
+              };
+          }
+      }
+      if (qId === 'shelf_life_basis' && (val === 'Assumption (not validated)' || val === 'Suposição (não validada)' || val === 'Suposición (no validada)' || val === 'Hypothèse (non validée)')) {
+          return {
+              level: 'risk' as const,
+              text: "Shelf life has not been validated. Use of this HACCP draft without validation may result in unsafe food."
+          };
+      }
+
+      // High Risk RTE Check
+      if (qId === 'cooking_required' || qId === 'storage_conditions') {
+          const cooking = qId === 'cooking_required' ? val : answers['cooking_required'];
+          const storage = qId === 'storage_conditions' ? val : answers['storage_conditions'];
+          
+          const isRTE = cooking && (
+              cooking.includes('Ready-to-eat') || 
+              cooking.includes('Pronto a comer') || 
+              cooking.includes('Listo para comer') || 
+              cooking.includes('Prêt à consommer')
+          );
+          
+          const isCold = storage && (
+              storage.includes('Refrigerated') || storage.includes('Frozen') ||
+              storage.includes('Refrigerado') || storage.includes('Congelado') ||
+              storage.includes('Réfrigéré') || storage.includes('Congelé')
+          );
+
+          if (isRTE && isCold) {
+              return {
+                  level: 'risk' as const,
+                  text: "High Risk — Chilled / Frozen Ready-to-Eat Product. These products are commonly associated with serious microbiological hazards (e.g. Listeria). Enhanced controls and validation are typically required."
+              };
+          }
+      }
+
+      if (qId === 'intended_consumer_group' && (
+          val === 'Vulnerable consumers (e.g. infants, elderly, immunocompromised)' ||
+          val === 'Mixed consumer groups' ||
+          val === 'Consumidores vulneráveis (ex: bebés, idosos, imunocomprometidos)' ||
+          val === 'Grupos de consumidores mistos' ||
+          val === 'Consumidores vulnerables (ej: lactantes, ancianos, inmunodeprimidos)' ||
+          val === 'Consommateurs vulnérables (ex: nourrissons, personnes âgées, immunodéprimés)'
+      )) {
+          return {
+              level: 'risk' as const,
+              text: "Products intended for vulnerable consumers may require additional controls, validation, and regulatory oversight."
+          };
+      }
+
+      if (qId === 'foreseeable_misuse' && val && (
+          val.includes('Possible misuse') ||
+          val.includes('Possível mau uso') ||
+          val.includes('Posible mal uso') ||
+          val.includes('Mauvais usage possible')
+      )) {
+          return {
+              level: 'assumption' as const,
+              text: "Increased Risk — Foreseeable Misuse. Misuse scenarios must be considered during hazard analysis."
+          };
+      }
+
+      return undefined;
+  };
+
   const fullContext = { ...answers, ...additionalContext };
+
+  const visibleQuestions = sectionData.questions.filter(q => {
+      if (q.show_if) {
+          const parentVal = answers[q.show_if.questionId];
+          const requiredVal = q.show_if.value;
+          if (Array.isArray(requiredVal)) {
+              return requiredVal.includes(parentVal);
+          }
+          return parentVal === requiredVal;
+      }
+      return true;
+  });
 
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-20 animate-in fade-in slide-in-from-right-4 duration-500">
@@ -136,7 +227,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
       </div>
 
       <div className="space-y-6">
-        {sectionData.questions.map((q) => (
+        {visibleQuestions.map((q) => (
           <QuestionCard
             key={q.id}
             question={q}
@@ -144,6 +235,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
             onChange={handleAnswerChange}
             error={errors[q.id]}
             context={fullContext} // Pass full section context for smart suggestions
+            customWarning={getDynamicWarning(q.id, answers[q.id])}
           />
         ))}
       </div>

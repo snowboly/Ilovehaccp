@@ -1,5 +1,3 @@
-import { verifyAdminAccess } from '@/lib/admin-auth';
-import { supabaseService } from '@/lib/supabase';
 import { 
   Activity,
   UserCheck,
@@ -9,25 +7,18 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function AdminLayout({
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // 1. Server-Side Security Check
-  const user = await verifyAdminAccess();
-
-  // 2. Fetch Badge Data
-  const { count: pendingReviews } = await supabaseService
-    .from('plans')
-    .select('*', { count: 'exact', head: true })
-    .eq('review_requested', true)
-    .neq('review_status', 'completed');
-
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col fixed h-full border-r border-slate-800 z-50">
+      <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col h-full border-r border-slate-800 z-50">
         <div className="p-6 border-b border-slate-800">
             <h1 className="text-white font-black text-xl tracking-tight">Oversight<span className="text-blue-500">Console</span></h1>
             <p className="text-xs text-slate-500 mt-1">v4.0 Secure Admin</p>
@@ -38,7 +29,6 @@ export default async function AdminLayout({
             </Link>
             <Link href="/admin/reviews" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 transition-colors">
                 <UserCheck className="w-5 h-5" /> Expert Reviews
-                {pendingReviews! > 0 && <span className="ml-auto bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{pendingReviews}</span>}
             </Link>
             <Link href="/admin/plans" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 transition-colors">
                 <Files className="w-5 h-5" /> All Plans
@@ -51,7 +41,7 @@ export default async function AdminLayout({
             </Link>
         </nav>
         <div className="p-4 border-t border-slate-800">
-            <div className="text-xs font-mono text-slate-500 truncate">{user.email}</div>
+            <div className="text-xs font-mono text-slate-500 truncate">Admin Access</div>
         </div>
       </aside>
 

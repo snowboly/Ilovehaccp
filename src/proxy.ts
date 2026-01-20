@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next()
 
   const supabase = createServerClient(
@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // 🔑 THIS refreshes the session
+  // REQUIRED: refresh session + bind cookies
   await supabase.auth.getSession()
 
   return response

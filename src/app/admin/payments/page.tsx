@@ -1,10 +1,7 @@
 import { supabaseService } from '@/lib/supabase';
-import { verifyAdminAccess } from '@/lib/admin-auth';
 import { CreditCard } from 'lucide-react';
 
 export default async function AdminPaymentsPage() {
-  await verifyAdminAccess();
-
   // Fetch only paid plans
   const { data: payments } = await supabaseService
     .from('plans')

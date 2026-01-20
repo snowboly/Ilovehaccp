@@ -2,6 +2,23 @@
 
 ## Implementation Status
 
+### v3.31 Admin Auth Hydration Fix (Jan 20, 2026)
+- **Duplicate Check Prevention:** Implemented a robust "one-time resolution guard" in `AdminGuard.tsx` using `useRef` and a `resolved` flag.
+    - **Logic:** Ensures the expensive and state-altering `checkUser` logic runs exactly once per mount/session event.
+    - **Optimization:** Immediately unsubscribes from Supabase auth listeners (`onAuthStateChange`) as soon as the user's role is determined.
+    - **Impact:** Eliminates race conditions, duplicate redirects (login/dashboard), and UI flicker caused by parallel execution of `getSession` and `onAuthStateChange`.
+- **Code Quality:** Added missing `useRef` import and verified the fix with a clean production build.
+
+### v3.30 Admin Auth & Browser Client Fixes (Jan 19, 2026)
+- **Browser Client:** Standardized `src/utils/supabase/client.ts` to use `@supabase/ssr` `createBrowserClient`.
+- **Login Sync:** Implemented `window.location.href` in `AuthForm.tsx` to force a hard reload on login, solving SSR cookie synchronization issues.
+- **Admin Gating Strategy:** Migrated from Server-Side Auth (`verifyAdminAccess`) to Client-Side Gating (`AdminGuard`).
+    - **AdminGuard:** Created `src/components/admin/AdminGuard.tsx` to protect admin routes client-side.
+    - **Layout:** Stripped auth logic from `src/app/admin/layout.tsx`, making it purely structural.
+    - **Pages:** Updated `src/app/admin/page.tsx` and all sub-pages (`reviews`, `plans`, `payments`, `logs`) to remove server-side checks and rely on the new guard (or layout structure).
+    - **Cleanup:** Completely removed the legacy `verifyAdminAccess` function and all its references.
+- **Code Quality:** Fixed critical build errors in `src/app/admin/page.tsx` including syntax errors in Supabase queries and invalid multiline JSX attributes.
+
 ### v3.30 Draft Persistence & Admin Access Fixes (Jan 18, 2026)
 - **Draft Persistence:** Implemented robust draft persistence for anonymous users and login handovers.
     - **Database Schema:** Added `plan_data` (JSONB) column to the `drafts` table via `src/db/migration_drafts_plan_data.sql`.

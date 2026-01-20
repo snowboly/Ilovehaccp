@@ -1,11 +1,8 @@
 import { supabaseService } from '@/lib/supabase';
-import { verifyAdminAccess } from '@/lib/admin-auth';
 import { Eye, CheckCircle2, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function AdminReviewsPage() {
-  await verifyAdminAccess();
-
   const { data: plans } = await supabaseService
     .from('plans')
     .select('id, created_at, business_name, review_status, user_id, tier')

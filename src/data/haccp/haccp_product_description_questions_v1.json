@@ -5,7 +5,8 @@
   "questions": [
     {
       "id": "businessLegalName",
-      "text": "Business Legal Name",
+      "text": "Legal name of the food business operator",
+      "description": "Enter the registered legal name of the business responsible for food safety at this site. This HACCP draft will be generated specifically for this business.",
       "type": "text",
       "required": true
     },
@@ -18,52 +19,63 @@
     },
     {
       "id": "business_address",
-      "text": "Business Address (Optional)",
+      "text": "Food production site address (if different from registered office)",
+      "description": "HACCP plans are site-specific. If this plan applies to a specific production site, enter the address here.",
       "type": "text",
       "required": false
     },
     {
       "id": "plan_scope",
-      "text": "Does this HACCP plan apply to:",
+      "text": "This HACCP draft applies to:",
       "type": "single_select",
       "required": true,
       "options": [
-        "A Single Product",
-        "A Product Family / Category",
-        "A Process Line / Technology"
+        "A single specific product",
+        "A defined group of similar products",
+        "A defined process or production line"
       ]
     },
     {
+      "id": "scope_description",
+      "text": "Describe the scope covered by this HACCP draft",
+      "description": "This HACCP draft assumes similar hazards across the defined scope. Differences in ingredients, allergens, or processing may introduce unassessed hazards.",
+      "warningLevel": "assumption",
+      "type": "multiline_text",
+      "required": true
+    },
+    {
       "id": "product_name",
-      "text": "Name of Product / Family / Line",
-      "description": "If covering a family, use a representative name (e.g., 'Frozen Ready Meals').",
+      "text": "Name of product, product group, or process covered",
+      "description": "Use a clear, descriptive name (e.g. “Chilled ready-to-eat sandwiches” or “Cooked chicken products”).",
       "type": "text",
       "required": true
     },
     {
       "id": "product_category",
-      "text": "Product category",
+      "text": "Primary product category",
+      "description": "Select the option that best describes the product at the point of consumer sale. Categories are indicative and used to assist hazard identification. They may not capture all product-specific risks.",
       "type": "single_select",
       "required": true,
       "options": [
-        "Raw",
-        "Ready-to-eat (RTE)",
-        "Heat-treated",
+        "Raw / Unprocessed",
+        "Ready-to-eat (no further cooking)",
+        "Heat-treated (requires further cooking)",
         "Shelf-stable",
-        "Frozen",
-        "Refrigerated"
+        "Refrigerated",
+        "Frozen"
       ]
     },
     {
       "id": "key_ingredients",
-      "text": "Key ingredients / Formulation",
-      "description": "For families, list typical ingredients. Detailed recipes can be managed separately.",
+      "text": "Key ingredients and formulation characteristics",
+      "description": "List all major ingredients and components. Hazard identification will rely on the information entered here.",
       "type": "multiline_text",
       "required": true
     },
     {
       "id": "allergens_present",
-      "text": "Allergens present",
+      "text": "Allergens intentionally present in the product",
+      "description": "This does not replace allergen risk assessment or cross-contact controls. Verification by a competent person is required.",
       "type": "multi_select",
       "required": true,
       "options": [
@@ -83,19 +95,43 @@
     },
     {
       "id": "packaging_type",
-      "text": "Packaging type",
+      "text": "Primary packaging type",
+      "description": "Example: plastic film, vacuum pack, glass jar, cardboard box.",
       "type": "text",
       "required": false
     },
     {
       "id": "shelf_life",
-      "text": "Shelf life",
+      "text": "Declared shelf life",
       "type": "text",
-      "required": false
+      "required": true
+    },
+    {
+      "id": "shelf_life_basis",
+      "text": "Basis for shelf life",
+      "description": "If 'Assumption' is selected: Shelf life has not been validated. This HACCP draft must be reviewed and approved by a competent person.",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        "Supplier specification",
+        "Industry guidance",
+        "Internal testing",
+        "Assumption (not validated)"
+      ]
+    },
+    {
+      "id": "shelf_life_unvalidated_ack",
+      "text": "I understand this shelf life is not validated.",
+      "type": "boolean",
+      "required": true,
+      "show_if": {
+        "questionId": "shelf_life_basis",
+        "value": "Assumption (not validated)"
+      }
     },
     {
       "id": "storage_conditions",
-      "text": "Storage conditions",
+      "text": "Intended storage conditions",
       "type": "single_select",
       "required": false,
       "options": [
@@ -106,10 +142,58 @@
     },
     {
       "id": "intended_use",
-      "text": "Intended use",
+      "text": "Intended use of the product",
       "tooltip": "Intended use describes how the product is expected to be used by the consumer, including whether it is ready-to-eat or requires further preparation.",
       "type": "text",
       "required": true
+    },
+    {
+      "id": "intended_consumer_group",
+      "text": "Intended consumer group",
+      "description": "Products intended for vulnerable consumers may require additional control measures and validation.",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        "General population",
+        "Vulnerable consumers (e.g. infants, elderly, immunocompromised)",
+        "Mixed consumer groups"
+      ]
+    },
+    {
+      "id": "vulnerable_group_ack",
+      "text": "I understand that products for vulnerable groups require stricter controls.",
+      "type": "boolean",
+      "required": true,
+      "show_if": {
+        "questionId": "intended_consumer_group",
+        "value": [
+          "Vulnerable consumers (e.g. infants, elderly, immunocompromised)",
+          "Mixed consumer groups"
+        ]
+      }
+    },
+    {
+      "id": "cooking_required",
+      "text": "Product preparation before consumption",
+      "description": "Products that rely on consumer cooking may still present risks if instructions are not followed.",
+      "type": "single_select",
+      "required": true,
+      "options": [
+        "Ready-to-eat (no further cooking required)",
+        "Requires cooking before consumption",
+        "Consumer preparation unclear or variable"
+      ]
+    },
+    {
+      "id": "foreseeable_misuse",
+      "text": "Foreseeable misuse of the product",
+      "description": "Reasonably foreseeable misuse must be considered in hazard analysis.",
+      "type": "single_select",
+      "required": false,
+      "options": [
+        "No foreseeable misuse identified",
+        "Possible misuse (e.g. temperature abuse, undercooking)"
+      ]
     }
   ]
 }

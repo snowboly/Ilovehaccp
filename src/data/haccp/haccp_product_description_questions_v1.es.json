@@ -6,58 +6,70 @@
     "translations": [
       {
         "id": "businessLegalName",
-        "text": "Nombre Legal del Negocio",
+        "text": "Nombre legal del operador de la empresa alimentaria",
+        "description": "Ingrese el nombre legal registrado de la empresa responsable de la seguridad alimentaria en este sitio. Este borrador de HACCP se generará específicamente para esta empresa.",
         "type": "text",
         "required": true
       },
       {
         "id": "business_address",
-        "text": "Dirección del Negocio (Opcional)",
+        "text": "Dirección del sitio de producción de alimentos (si es diferente de la oficina registrada)",
+        "description": "Los planes HACCP son específicos del sitio. Si este plan se aplica a un sitio de producción específico, ingrese la dirección aquí.",
         "type": "text",
         "required": false
       },
       {
         "id": "plan_scope",
-        "text": "¿A qué se aplica este plan de HACCP?",
+        "text": "Este borrador de HACCP se aplica a:",
         "type": "single_select",
         "required": true,
         "options": [
-          "Un Solo Producto",
-          "Una Familia / Categoría de Productos",
-          "Una Línea de Proceso / Tecnología"
+          "Un único producto específico",
+          "Un grupo definido de productos similares",
+          "Un proceso o línea de producción definida"
         ]
       },
       {
+        "id": "scope_description",
+        "text": "Describa el alcance cubierto por este borrador de HACCP",
+        "description": "Este borrador de HACCP asume peligros similares en todo el alcance definido. Las diferencias en ingredientes, alérgenos o procesamiento pueden introducir peligros no evaluados.",
+        "warningLevel": "assumption",
+        "type": "multiline_text",
+        "required": true
+      },
+      {
         "id": "product_name",
-        "text": "Nombre del Producto / Familia / Línea",
-        "description": "Si se trata de una familia, utilice un nombre representativo (por ejemplo, 'Comidas Preparadas Congeladas').",
+        "text": "Nombre del producto, grupo de productos o proceso cubierto",
+        "description": "Utilice un nombre claro y descriptivo (por ejemplo, “Sandwiches refrigerados listos para comer” o “Productos de pollo cocinados”).",
         "type": "text",
         "required": true
       },
       {
         "id": "product_category",
-        "text": "Categoría del producto",
+        "text": "Categoría principal del producto",
+        "description": "Seleccione la opción que mejor describa el producto en el punto de venta al consumidor. Las categorías son indicativas y se utilizan para ayudar en la identificación de peligros. Pueden no captar todos los riesgos específicos del producto.",
         "type": "single_select",
         "required": true,
         "options": [
-          "Crudo",
-          "Listo para Consumir (RTE)",
-          "Tratado Térmicamente",
-          "Estable a Temperatura Ambiente",
-          "Congelado",
-          "Refrigerado"
+          "Crudo / No procesado",
+          "Listo para comer (sin cocción adicional)",
+          "Tratado térmicamente (requiere cocción adicional)",
+          "Estable a temperatura ambiente",
+          "Refrigerado",
+          "Congelado"
         ]
       },
       {
         "id": "key_ingredients",
-        "text": "Ingredientes clave / Formulación",
-        "description": "Para familias, enumere los ingredientes típicos. Las recetas detalladas se pueden gestionar por separado.",
+        "text": "Ingredientes principales y características de formulación",
+        "description": "Liste todos los ingredientes y componentes principales. La identificación de peligros se basará en la información ingresada aquí.",
         "type": "multiline_text",
         "required": true
       },
       {
         "id": "allergens_present",
-        "text": "Alergenos presentes",
+        "text": "Alérgenos presentes intencionalmente en el producto",
+        "description": "Esto no reemplaza la evaluación del riesgo de alérgenos ni los controles de contacto cruzado. Se requiere la verificación por parte de una persona competente.",
         "type": "multi_select",
         "required": true,
         "options": [
@@ -67,43 +79,115 @@
           "Crustáceos",
           "Moluscos",
           "Maní",
-          "Frutos secos",
+          "Frutos de cáscara",
           "Soja",
           "Gluten",
           "Sésamo",
-          "Sulfites",
+          "Sulfitos",
           "Ninguno"
         ]
       },
       {
         "id": "packaging_type",
-        "text": "Tipo de envasado",
+        "text": "Tipo de envase primario",
+        "description": "Ejemplo: película plástica, envasado al vacío, frasco de vidrio, caja de cartón.",
         "type": "text",
         "required": false
       },
       {
         "id": "shelf_life",
-        "text": "Vida útil",
+        "text": "Vida útil declarada",
         "type": "text",
-        "required": false
+        "required": true
+      },
+      {
+        "id": "shelf_life_basis",
+        "text": "Base para la vida útil",
+        "description": "Si se selecciona 'Suposición': La vida útil no ha sido validada. Este borrador de HACCP debe ser revisado y aprobado por una persona competente.",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Especificación del proveedor",
+          "Guía de la industria",
+          "Pruebas internas",
+          "Suposición (no validada)"
+        ]
+      },
+      {
+        "id": "shelf_life_unvalidated_ack",
+        "text": "Entiendo que esta vida útil no está validada.",
+        "type": "boolean",
+        "required": true,
+        "show_if": {
+          "questionId": "shelf_life_basis",
+          "value": "Suposición (no validada)"
+        }
       },
       {
         "id": "storage_conditions",
-        "text": "Condiciones de almacenamiento",
+        "text": "Condiciones de almacenamiento previstas",
         "type": "single_select",
         "required": false,
         "options": [
-          "Ambiental",
+          "Ambiente",
           "Refrigerado",
           "Congelado"
         ]
       },
       {
         "id": "intended_use",
-        "text": "Uso previsto",
-        "tooltip": "El uso previsto describe cómo se espera que el consumidor utilice el producto, incluyendo si está listo para comer o requiere una preparación adicional.",
+        "text": "Uso previsto del producto",
+        "tooltip": "El uso previsto describe cómo se espera que el consumidor utilice el producto, incluyendo si está listo para comer o requiere preparación adicional.",
         "type": "text",
         "required": true
+      },
+      {
+        "id": "intended_consumer_group",
+        "text": "Grupo de consumidores previsto",
+        "description": "Los productos destinados a consumidores vulnerables pueden requerir medidas de control y validación adicionales.",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Población general",
+          "Consumidores vulnerables (ej: lactantes, ancianos, inmunodeprimidos)",
+          "Grupos de consumidores mixtos"
+        ]
+      },
+      {
+        "id": "vulnerable_group_ack",
+        "text": "Entiendo que los productos para grupos vulnerables requieren controles más estrictos.",
+        "type": "boolean",
+        "required": true,
+        "show_if": {
+          "questionId": "intended_consumer_group",
+          "value": [
+            "Consumidores vulnerables (ej: lactantes, ancianos, inmunodeprimidos)",
+            "Grupos de consumidores mixtos"
+          ]
+        }
+      },
+      {
+        "id": "cooking_required",
+        "text": "Preparación del producto antes del consumo",
+        "description": "Los productos que dependen de la cocción del consumidor aún pueden presentar riesgos si no se siguen las instrucciones.",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Listo para comer (no requiere cocción adicional)",
+          "Requiere cocción antes del consumo",
+          "Preparación del consumidor poco clara o variable"
+        ]
+      },
+      {
+        "id": "foreseeable_misuse",
+        "text": "Mal uso previsible del producto",
+        "description": "El mal uso razonablemente previsible debe ser considerado en el análisis de peligros.",
+        "type": "single_select",
+        "required": false,
+        "options": [
+          "No se ha identificado mal uso previsible",
+          "Posible mal uso (ej: abuso de temperatura, cocción insuficiente)"
+        ]
       }
     ]
   }

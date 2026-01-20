@@ -11,7 +11,10 @@ import {
   Trash2, 
   X,
   UploadCloud,
-  Loader2
+  Loader2,
+  Info,
+  AlertTriangle,
+  AlertOctagon
 } from 'lucide-react';
 
 interface QuestionCardProps {
@@ -20,11 +23,57 @@ interface QuestionCardProps {
   onChange: (id: string, value: any) => void;
   error?: string;
   context?: any;
+  customWarning?: { level: 'info' | 'assumption' | 'risk', text: string };
 }
 
-export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onChange, error, context }) => {
+export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onChange, error, context, customWarning }) => {
   const supabase = createClient();
   const [isUploading, setIsUploading] = useState(false);
+  
+  const renderDescription = () => {
+    // Priority: Custom Warning > Static Warning > Static Description
+    const activeWarning = customWarning || (question.warningLevel ? { level: question.warningLevel, text: question.description || '' } : null);
+
+    if (activeWarning) {
+        const styles = {
+            info: "bg-emerald-50 text-emerald-800 border-emerald-200",
+            assumption: "bg-amber-50 text-amber-800 border-amber-200",
+            risk: "bg-red-50 text-red-800 border-red-200"
+        };
+
+        const icons = {
+            info: <Info className="w-5 h-5 shrink-0 text-emerald-600" />,
+            assumption: <AlertTriangle className="w-5 h-5 shrink-0 text-amber-600" />,
+            risk: <AlertOctagon className="w-5 h-5 shrink-0 text-red-600" />
+        };
+
+        const titles = {
+            info: "Informational",
+            assumption: "Assumption / Increased Risk",
+            risk: "High Risk / Auditor Attention"
+        };
+
+        return (
+            <div className={`flex items-start gap-3 p-4 rounded-xl border ${styles[activeWarning.level]} mt-2 animate-in fade-in slide-in-from-top-2`}>
+                 {icons[activeWarning.level]}
+                 <div className="space-y-1">
+                    <p className="text-xs font-black uppercase tracking-wider opacity-80">
+                        {titles[activeWarning.level]}
+                    </p>
+                    <div className="text-sm font-medium leading-relaxed opacity-90">
+                        {activeWarning.text}
+                    </div>
+                 </div>
+            </div>
+        );
+    }
+
+    if (question.description) {
+        return <p className="text-slate-500 text-sm font-medium">{question.description}</p>;
+    }
+
+    return null;
+  };
   
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -66,13 +115,13 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                         <img src={value} alt="Uploaded logo" className="w-full h-full object-contain p-4" />
                         <button
                             onClick={() => onChange(question.id, null)}
-                            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                         >
                             <Trash2 className="w-4 h-4" />
                         </button>
                     </div>
                 ) : (
-                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:bg-slate-50 transition-colors relative">
+                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:bg-slate-50 transition-colors relative cursor-pointer">
                         <input 
                             type="file" 
                             accept="image/png, image/jpeg" 
@@ -147,7 +196,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                     const newValue = current ? `${current}, ${ing}` : ing;
                                     onChange(question.id, newValue);
                                 }}
-                                className="px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 text-xs font-bold rounded-lg border border-slate-200 hover:border-blue-200 transition-all"
+                                className="px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 text-xs font-bold rounded-lg border border-slate-200 hover:border-blue-200 transition-all cursor-pointer"
                             >
                                 + {ing}
                             </button>
@@ -163,7 +212,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
           <div className="flex gap-4">
             <button
               onClick={() => onChange(question.id, true)}
-              className={`flex-1 p-4 rounded-xl border-2 font-black transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 p-4 rounded-xl border-2 font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
                 value === true 
                   ? 'border-emerald-500 bg-emerald-50 text-emerald-700' 
                   : 'border-slate-200 text-slate-500 hover:border-slate-300'
@@ -173,7 +222,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
             </button>
             <button
               onClick={() => onChange(question.id, false)}
-              className={`flex-1 p-4 rounded-xl border-2 font-black transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 p-4 rounded-xl border-2 font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
                 value === false 
                   ? 'border-red-500 bg-red-50 text-red-700' 
                   : 'border-slate-200 text-slate-500 hover:border-slate-300'
@@ -191,7 +240,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
               <button
                 key={opt}
                 onClick={() => onChange(question.id, opt)}
-                className={`w-full text-left p-4 rounded-xl border-2 font-bold transition-all flex justify-between items-center ${
+                className={`w-full text-left p-4 rounded-xl border-2 font-bold transition-all flex justify-between items-center cursor-pointer ${
                   value === opt 
                     ? 'border-blue-600 bg-blue-50 text-blue-700' 
                     : 'border-slate-200 text-slate-600 hover:border-blue-200'
@@ -223,7 +272,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                         onChange(question.id, newSelection);
                     }
                   }}
-                  className={`w-full text-left p-4 rounded-xl border-2 font-bold transition-all flex justify-between items-center ${
+                  className={`w-full text-left p-4 rounded-xl border-2 font-bold transition-all flex justify-between items-center cursor-pointer ${
                     isSelected 
                       ? 'border-blue-600 bg-blue-50 text-blue-700' 
                       : 'border-slate-200 text-slate-600 hover:border-blue-200'
@@ -241,14 +290,22 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
         const items = Array.isArray(value) ? value : [];
         const commonProcessSteps = [
             "Goods Receiving",
-            "Storage",
-            "Preparation",
-            "Cooking / Processing",
+            "Ambient Storage",
+            "Chilled Storage",
+            "Frozen Storage",
+            "Defrosting",
+            "Preparation (Raw)",
+            "Preparation (RTE)",
+            "Cooking / Heat Treatment",
             "Cooling",
-            "Packaging",
-            "Storage (Finished Product)",
+            "Reheating",
+            "Hot Holding",
+            "Cold Display",
+            "Packaging / Labelling",
             "Distribution / Sale"
         ];
+
+        const criticalSteps = ["Chilled Storage", "Frozen Storage", "Defrosting", "Cooking / Heat Treatment", "Cooling", "Reheating", "Hot Holding", "Cold Display"];
 
         const addItem = (prefillName?: string) => {
             const newItem: any = { step_id: crypto.randomUUID() };
@@ -260,64 +317,131 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
 
         return (
           <div className="space-y-4">
-            {items.map((item: any, idx: number) => (
-              <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200 relative group animate-in fade-in slide-in-from-top-2">
-                <button
-                    onClick={() => {
-                        const newItems = [...items];
-                        newItems.splice(idx, 1);
-                        onChange(question.id, newItems);
-                    }}
-                    className="absolute top-2 right-2 text-slate-400 hover:text-red-500 transition-colors"
-                >
-                    <Trash2 className="w-4 h-4" />
-                </button>
-                <div className="space-y-3">
-                    {question.item_schema?.fields.map(field => {
-                        if (field.type === 'hidden_auto_id') return null;
-                        return (
-                            <div key={field.id}>
-                                <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">{field.text}</label>
-                                <input
-                                    type="text"
-                                    value={item[field.id] || ''}
-                                    onChange={(e) => {
-                                        const newItems = [...items];
-                                        newItems[idx] = { ...newItems[idx], [field.id]: e.target.value };
-                                        onChange(question.id, newItems);
-                                    }}
-                                    className="w-full p-2 rounded-lg border border-slate-200 text-sm font-bold"
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
-              </div>
-            ))}
+            {items.map((item: any, idx: number) => {
+                // Determine if this is a "Process Step" row to apply special logic
+                const isProcessStep = question.id === 'process_steps';
+                const isCritical = isProcessStep && criticalSteps.some(cs => item.step_name === cs);
+
+                return (
+                  <div key={idx} className={`p-4 rounded-xl border relative group animate-in fade-in slide-in-from-top-2 ${isCritical ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200'}`}>
+                    <button
+                        onClick={() => {
+                            const newItems = [...items];
+                            newItems.splice(idx, 1);
+                            onChange(question.id, newItems);
+                        }}
+                        className="absolute top-2 right-2 text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </button>
+                    
+                    <div className="space-y-3">
+                        {isProcessStep ? (
+                            // CUSTOM RENDERER FOR PROCESS STEPS
+                            <>
+                                <div>
+                                    <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">Step Name / Type</label>
+                                    <div className="relative">
+                                        <select
+                                            value={commonProcessSteps.includes(item.step_name) ? item.step_name : "Other"}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                const newItems = [...items];
+                                                if (val === "Other") {
+                                                    newItems[idx] = { ...newItems[idx], step_name: "" }; // Clear to allow typing
+                                                } else {
+                                                    newItems[idx] = { ...newItems[idx], step_name: val };
+                                                }
+                                                onChange(question.id, newItems);
+                                            }}
+                                            className="w-full p-2 rounded-lg border border-slate-200 text-sm font-bold bg-white mb-2"
+                                        >
+                                            <option value="" disabled>Select Step Type</option>
+                                            {commonProcessSteps.map(s => <option key={s} value={s}>{s}</option>)}
+                                            <option value="Other">Other (Custom)</option>
+                                        </select>
+                                        {(!commonProcessSteps.includes(item.step_name) && item.step_name !== "" && !commonProcessSteps.includes("Other")) && (
+                                            // Handle case where existing data might be custom
+                                            <div className="mb-2">
+                                                <input
+                                                    type="text"
+                                                    value={item.step_name}
+                                                    onChange={(e) => {
+                                                        const newItems = [...items];
+                                                        newItems[idx] = { ...newItems[idx], step_name: e.target.value };
+                                                        onChange(question.id, newItems);
+                                                    }}
+                                                    placeholder="Enter custom step name..."
+                                                    className="w-full p-2 rounded-lg border border-slate-200 text-sm font-bold"
+                                                />
+                                            </div>
+                                        )}
+                                        {/* If "Other" selected or empty (and not in list), show text input */}
+                                        {(!commonProcessSteps.includes(item.step_name)) && (
+                                             <input
+                                                type="text"
+                                                value={item.step_name}
+                                                onChange={(e) => {
+                                                    const newItems = [...items];
+                                                    newItems[idx] = { ...newItems[idx], step_name: e.target.value };
+                                                    onChange(question.id, newItems);
+                                                }}
+                                                placeholder="Type step name..."
+                                                className="w-full p-2 rounded-lg border border-slate-200 text-sm font-bold"
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className={`text-xs font-bold uppercase mb-1 block flex items-center gap-2 ${isCritical ? 'text-amber-600' : 'text-slate-400'}`}>
+                                        {isCritical ? <><AlertTriangle className="w-3 h-3" /> Critical Parameters (Required)</> : "Description / Parameters (Optional)"}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={item.step_description || ''}
+                                        onChange={(e) => {
+                                            const newItems = [...items];
+                                            newItems[idx] = { ...newItems[idx], step_description: e.target.value };
+                                            onChange(question.id, newItems);
+                                        }}
+                                        className={`w-full p-2 rounded-lg border text-sm font-bold ${isCritical ? 'border-amber-300 bg-amber-50 focus:border-amber-500' : 'border-slate-200'}`}
+                                        placeholder={isCritical ? "e.g. 75°C for 2 mins, <5°C" : "e.g. Visual check"}
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            // STANDARD RENDERER
+                            question.item_schema?.fields.map(field => {
+                                if (field.type === 'hidden_auto_id') return null;
+                                return (
+                                    <div key={field.id}>
+                                        <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">{field.text}</label>
+                                        <input
+                                            type="text"
+                                            value={item[field.id] || ''}
+                                            onChange={(e) => {
+                                                const newItems = [...items];
+                                                newItems[idx] = { ...newItems[idx], [field.id]: e.target.value };
+                                                onChange(question.id, newItems);
+                                            }}
+                                            className="w-full p-2 rounded-lg border border-slate-200 text-sm font-bold"
+                                        />
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                  </div>
+                );
+            })}
             
             <button
                 onClick={() => addItem()}
-                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
                 <Plus className="w-5 h-5" /> Add Step
             </button>
-
-            {question.id === 'process_steps' && (
-                <div className="pt-2">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Common Process Steps:</p>
-                    <div className="flex flex-wrap gap-2">
-                        {commonProcessSteps.map(step => (
-                            <button
-                                key={step}
-                                onClick={() => addItem(step)}
-                                className="px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 text-xs font-bold rounded-lg border border-slate-200 hover:border-blue-200 transition-all"
-                            >
-                                + {step}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
           </div>
         );
         
@@ -446,15 +570,15 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
   return (
     <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 space-y-4">
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="w-full">
             <div className="flex items-center gap-2 mb-1">
                 <h3 className="text-xl font-black text-slate-900 leading-tight">{question.text}</h3>
                 {question.tooltip && <Tooltip text={question.tooltip} />}
             </div>
-            {question.description && <p className="text-slate-500 text-sm font-medium">{question.description}</p>}
+            {renderDescription()}
         </div>
         {question.required && (
-            <span className="bg-slate-100 text-slate-500 text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">Required</span>
+            <span className="bg-slate-100 text-slate-500 text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest shrink-0">Required</span>
         )}
       </div>
 

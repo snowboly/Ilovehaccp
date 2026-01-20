@@ -6,58 +6,70 @@
     "translations": [
       {
         "id": "businessLegalName",
-        "text": "Nome Legal da Empresa",
+        "text": "Nome legal do operador da empresa de setor alimentar",
+        "description": "Insira o nome legal registrado da empresa responsável pela segurança alimentar neste local. Este rascunho de HACCP será gerado especificamente para esta empresa.",
         "type": "text",
         "required": true
       },
       {
         "id": "business_address",
-        "text": "Endereço da Empresa (Opcional)",
+        "text": "Endereço do local de produção de alimentos (se for diferente da sede social)",
+        "description": "Os planos HACCP são específicos para cada local. Se este plano se aplicar a um local de produção específico, introduza o endereço aqui.",
         "type": "text",
         "required": false
       },
       {
         "id": "plan_scope",
-        "text": "Este plano HACCP se aplica a:",
+        "text": "Este rascunho de HACCP aplica-se a:",
         "type": "single_select",
         "required": true,
         "options": [
-          "Um Produto Único",
-          "Uma Família de Produtos / Categoria",
-          "Uma Linha de Processo / Tecnologia"
+          "Um único produto específico",
+          "Um grupo definido de produtos semelhantes",
+          "Um processo ou linha de produção definida"
         ]
       },
       {
+        "id": "scope_description",
+        "text": "Descreva o âmbito abrangido por este rascunho de HACCP",
+        "description": "Este rascunho de HACCP pressupõe perigos semelhantes em todo o âmbito definido. Diferenças nos ingredientes, alérgenos ou processamento podem introduzir perigos não avaliados.",
+        "warningLevel": "assumption",
+        "type": "multiline_text",
+        "required": true
+      },
+      {
         "id": "product_name",
-        "text": "Nome do Produto / Família / Linha",
-        "description": "Se estiver cobrindo uma família, use um nome representativo (por exemplo, 'Refeições Congeladas Prontas').",
+        "text": "Nome do produto, grupo de produtos ou processo abrangido",
+        "description": "Utilize um nome claro e descritivo (por exemplo, “Sanduíches refrigeradas prontas a comer” ou “Produtos de frango cozinhados”).",
         "type": "text",
         "required": true
       },
       {
         "id": "product_category",
-        "text": "Categoria do produto",
+        "text": "Categoria principal do produto",
+        "description": "Selecione a opção que melhor descreve o produto no ponto de venda ao consumidor. As categorias são indicativas e utilizadas para ajudar na identificação de perigos. Podem não captar todos os riscos específicos do produto.",
         "type": "single_select",
         "required": true,
         "options": [
-          "Cru",
-          "Pronto para Consumo (RTE)",
-          "Tratado Termicamente",
-          "Estável em Prateleira",
-          "Congelado",
-          "Refrigerado"
+          "Cru / Não processado",
+          "Pronto para comer (sem cozedura adicional)",
+          "Tratado termicamente (requer cozedura adicional)",
+          "Estável à temperatura ambiente",
+          "Refrigerado",
+          "Congelado"
         ]
       },
       {
         "id": "key_ingredients",
-        "text": "Ingredientes Chave / Formulação",
-        "description": "Para famílias, liste os ingredientes típicos. Receitas detalhadas podem ser gerenciadas separadamente.",
+        "text": "Ingredientes principais e características de formulação",
+        "description": "Liste todos os principais ingredientes e componentes. A identificação de perigos dependerá das informações inseridas aqui.",
         "type": "multiline_text",
         "required": true
       },
       {
         "id": "allergens_present",
-        "text": "Alérgenos presentes",
+        "text": "Alérgenos intencionalmente presentes no produto",
+        "description": "Isto não substitui a avaliação do risco de alérgenos ou os controlos de contacto cruzado. É necessária a verificação por uma pessoa competente.",
         "type": "multi_select",
         "required": true,
         "options": [
@@ -71,25 +83,49 @@
           "Soja",
           "Glúten",
           "Sésamo",
-          "Sulfites",
+          "Sulfitos",
           "Nenhum"
         ]
       },
       {
         "id": "packaging_type",
-        "text": "Tipo de Embalagem",
+        "text": "Tipo de embalagem primária",
+        "description": "Exemplo: película de plástico, embalagem a vácuo, frasco de vidro, caixa de cartão.",
         "type": "text",
         "required": false
       },
       {
         "id": "shelf_life",
-        "text": "Vida Útil",
+        "text": "Prazo de validade declarado",
         "type": "text",
-        "required": false
+        "required": true
+      },
+      {
+        "id": "shelf_life_basis",
+        "text": "Base para o prazo de validade",
+        "description": "Se 'Suposição' for selecionado: O prazo de validade não foi validado. Este rascunho de HACCP deve ser revisto e aprovado por uma pessoa competente.",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Especificação do fornecedor",
+          "Orientação da indústria",
+          "Testes internos",
+          "Suposição (não validada)"
+        ]
+      },
+      {
+        "id": "shelf_life_unvalidated_ack",
+        "text": "Entendo que este prazo de validade não está validado.",
+        "type": "boolean",
+        "required": true,
+        "show_if": {
+          "questionId": "shelf_life_basis",
+          "value": "Suposição (não validada)"
+        }
       },
       {
         "id": "storage_conditions",
-        "text": "Condições de Armazenamento",
+        "text": "Condições de armazenamento previstas",
         "type": "single_select",
         "required": false,
         "options": [
@@ -100,10 +136,58 @@
       },
       {
         "id": "intended_use",
-        "text": "Uso Pretendido",
+        "text": "Uso pretendido do produto",
         "tooltip": "O uso pretendido descreve como o produto é esperado para ser usado pelo consumidor, incluindo se está pronto para consumo ou requer preparação adicional.",
         "type": "text",
         "required": true
+      },
+      {
+        "id": "intended_consumer_group",
+        "text": "Grupo de consumidores pretendido",
+        "description": "Os produtos destinados a consumidores vulneráveis podem exigir medidas de controlo e validação adicionais.",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "População geral",
+          "Consumidores vulneráveis (ex: bebés, idosos, imunocomprometidos)",
+          "Grupos de consumidores mistos"
+        ]
+      },
+      {
+        "id": "vulnerable_group_ack",
+        "text": "Entendo que produtos para grupos vulneráveis exigem controlos mais rigorosos.",
+        "type": "boolean",
+        "required": true,
+        "show_if": {
+          "questionId": "intended_consumer_group",
+          "value": [
+            "Consumidores vulneráveis (ex: bebés, idosos, imunocomprometidos)",
+            "Grupos de consumidores mistos"
+          ]
+        }
+      },
+      {
+        "id": "cooking_required",
+        "text": "Preparação do produto antes do consumo",
+        "description": "Os produtos que dependem da cozedura pelo consumidor podem ainda apresentar riscos se as instruções não forem seguidas.",
+        "type": "single_select",
+        "required": true,
+        "options": [
+          "Pronto a comer (não requer cozedura adicional)",
+          "Requer cozedura antes do consumo",
+          "Preparação pelo consumidor pouco clara ou variável"
+        ]
+      },
+      {
+        "id": "foreseeable_misuse",
+        "text": "Mau uso previsível do produto",
+        "description": "O mau uso razoavelmente previsível deve ser considerado na análise de perigos.",
+        "type": "single_select",
+        "required": false,
+        "options": [
+          "Nenhum mau uso previsível identificado",
+          "Possível mau uso (ex: abuso de temperatura, cozimento insuficiente)"
+        ]
       }
     ]
   }

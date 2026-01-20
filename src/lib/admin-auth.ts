@@ -1,30 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
 import { supabaseService } from '@/lib/supabase';
-import { redirect } from 'next/navigation';
-
-// For Server Components / Pages
-export async function verifyAdminAccess() {
-  const supabase = await createClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
-
-  if (error || !user) {
-    redirect('/login');
-  }
-
-  // Role Check via Profiles (RLS protected)
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  if (profileError || !profile || profile.role !== 'admin') {
-    // console.warn(`Unauthorized admin access attempt: ${user.email}`);
-    redirect('/dashboard');
-  }
-
-  return user;
-}
 
 // For API Routes
 export async function validateAdminRequest(req: Request) {

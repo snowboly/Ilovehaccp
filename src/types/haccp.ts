@@ -39,6 +39,7 @@ export interface HACCPQuestion {
   type: QuestionType;
   required: boolean | string; // 'when_all_hazards_false' string type support
   description?: string;
+  warningLevel?: 'info' | 'assumption' | 'risk';
   tooltip?: string;
   placeholder?: string;
   options?: string[]; // For select types
@@ -52,6 +53,7 @@ export interface HACCPQuestion {
   min_items?: number; // For repeatable_list
   item_schema?: RepeatableItemSchema; // For repeatable_list
   show_if_all_false?: string[]; // For special conditions
+  show_if?: { questionId: string; value: string | boolean | string[] };
 }
 
 export interface HACCPSectionData {

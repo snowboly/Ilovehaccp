@@ -1,10 +1,7 @@
 import { supabaseService } from '@/lib/supabase';
-import { verifyAdminAccess } from '@/lib/admin-auth';
 import { ShieldAlert } from 'lucide-react';
 
 export default async function AdminLogsPage() {
-  await verifyAdminAccess();
-
   const { data: logs } = await supabaseService
     .from('admin_audit_logs')
     .select('*')

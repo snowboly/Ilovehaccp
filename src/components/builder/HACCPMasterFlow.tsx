@@ -23,7 +23,7 @@ type SectionKey =
   | 'hazards' 
   | 'ccp_determination' 
   | 'ccp_management' 
-  | 'validation'
+  | 'review_validation'
   | 'generating'
   | 'validating'
   | 'complete';
@@ -54,6 +54,7 @@ export default function HACCPMasterFlow() {
             console.log("Starting fresh session (?new=true)");
             localStorage.removeItem('haccp_plan_id');
             localStorage.removeItem('haccp_draft_id');
+            localStorage.removeItem('haccp_last_active');
             await createNewDraft();
             return;
         } 
@@ -64,14 +65,23 @@ export default function HACCPMasterFlow() {
             return;
         }
 
-        // C. Fallback: LocalStorage -> PROMPT (Don't auto-load)
-        const storedPlanId = localStorage.getItem('haccp_plan_id');
+        // C. Fallback: LocalStorage -> PROMPT (Conditional)
         const storedDraftId = localStorage.getItem('haccp_draft_id');
+        const lastActive = localStorage.getItem('haccp_last_active');
+        const MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 Days
 
-        if (storedPlanId || storedDraftId) {
-             setResumeIds({ planId: storedPlanId, draftId: storedDraftId });
-             setShowResumePrompt(true);
-             return;
+        if (storedDraftId) {
+             const isRecent = lastActive ? (Date.now() - new Date(lastActive).getTime() < MAX_AGE) : true; // Default to true if missing (legacy support)
+             
+             if (isRecent) {
+                 setResumeIds({ planId: null, draftId: storedDraftId });
+                 setShowResumePrompt(true);
+                 return;
+             } else {
+                 // Expired draft -> Clean up
+                 localStorage.removeItem('haccp_draft_id');
+                 localStorage.removeItem('haccp_last_active');
+             }
         }
 
         // D. Fallback: Create New
@@ -110,6 +120,9 @@ export default function HACCPMasterFlow() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ answers: dataToSave })
             });
+            // Update local timestamp
+            localStorage.setItem('haccp_last_active', new Date().toISOString());
+
             // If the pending data is what we just saved, clear it
             if (pendingSaveRef.current === dataToSave) {
                 pendingSaveRef.current = null;
@@ -169,6 +182,10 @@ export default function HACCPMasterFlow() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [transition, setTransition] = useState<{ show: boolean, message: string }>({ show: false, message: '' });
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showHighRiskModal, setShowHighRiskModal] = useState(false);
+  const [showScopeConfirmation, setShowScopeConfirmation] = useState(false);
+  const [isResumed, setIsResumed] = useState(false);
+  const [highRiskConfirmation, setHighRiskConfirmation] = useState("");
 
   // Resume / Start New Logic
   const [showResumePrompt, setShowResumePrompt] = useState(false);
@@ -257,6 +274,7 @@ export default function HACCPMasterFlow() {
 
   const handleResume = async () => {
       setShowResumePrompt(false);
+      setIsResumed(true);
       // Prioritize DRAFT over Plan (Work in Progress > Finished Work)
       const idToLoad = resumeIds.draftId || resumeIds.planId;
       if (idToLoad) {
@@ -268,12 +286,74 @@ export default function HACCPMasterFlow() {
 
   const handleStartNew = async () => {
       setShowResumePrompt(false);
+      setIsResumed(false);
+      
+      // ZERO STATE ENFORCEMENT
       localStorage.removeItem('haccp_plan_id');
       localStorage.removeItem('haccp_draft_id');
+      localStorage.removeItem('haccp_last_active');
+      
       setAllAnswers({});
+      setGeneratedPlan(null);
+      setValidationReport(null);
+      setDraftId(null);
+      setIdentifiedCCPs([]);
+      setCurrentStepIndex(0);
+      setCurrentCCPIndex(0);
+      setValidationStatus('idle');
+      
       setCurrentSection('product');
       await createNewDraft();
   };
+
+  // Helper: Calculate Risk Flags
+  const riskFlags = React.useMemo(() => {
+      const product = allAnswers.product || {};
+      
+      // 1. Scope Grouped
+      const scope = product.plan_scope || "";
+      const SCOPE_GROUPED = scope.includes("group") || scope.includes("process");
+
+      // 2. Ingredient Detail Low
+      const ingredients = product.key_ingredients || "";
+      const INGREDIENT_DETAIL_LOW = (ingredients.length > 0 && ingredients.length < 20) || 
+                                    !!ingredients.match(/\b(various|mixed|etc|misc|assorted|generic)\b/i);
+
+      // 3. Shelf Life Unvalidated
+      const shelfLifeBasis = product.shelf_life_basis || "";
+      const SHELF_LIFE_UNVALIDATED = shelfLifeBasis.includes("Assumption") || 
+                                     shelfLifeBasis.includes("Suposição") || 
+                                     shelfLifeBasis.includes("Suposición") || 
+                                     shelfLifeBasis.includes("Hypothèse");
+
+      // 4. High Risk RTE
+      const cooking = product.cooking_required || "";
+      const storage = product.storage_conditions || "";
+      const isRTE = cooking.includes('Ready-to-eat') || cooking.includes('Pronto a comer') || cooking.includes('Listo para comer') || cooking.includes('Prêt à consommer');
+      const isCold = storage.includes('Refrigerated') || storage.includes('Frozen') || storage.includes('Refrigerado') || storage.includes('Congelado') || storage.includes('Réfrigéré') || storage.includes('Congelé');
+      const HIGH_RISK_RTE = isRTE && isCold;
+
+      // 5. Vulnerable Consumer
+      const consumerGroup = product.intended_consumer_group || "";
+      const VULNERABLE_CONSUMER = consumerGroup.includes("Vulnerable") || consumerGroup.includes("Mixed") ||
+                                  consumerGroup.includes("vulneráveis") || consumerGroup.includes("mistos") ||
+                                  consumerGroup.includes("vulnerables") || consumerGroup.includes("vulnérables");
+
+      // 6. Foreseeable Misuse
+      const misuse = product.foreseeable_misuse || "";
+      const FORESEEABLE_MISUSE = misuse.includes("Possible") || misuse.includes("Possível") || 
+                                 misuse.includes("Posible") || misuse.includes("possible");
+
+      return {
+          SCOPE_GROUPED,
+          INGREDIENT_DETAIL_LOW,
+          SHELF_LIFE_UNVALIDATED,
+          HIGH_RISK_RTE,
+          VULNERABLE_CONSUMER,
+          FORESEEABLE_MISUSE,
+          HAS_WARNINGS: SCOPE_GROUPED || INGREDIENT_DETAIL_LOW || SHELF_LIFE_UNVALIDATED || HIGH_RISK_RTE || VULNERABLE_CONSUMER || FORESEEABLE_MISUSE
+      };
+  }, [allAnswers]);
 
   // Helper: Detect Generic Risk Pattern
   const checkGenericRiskPattern = () => {
@@ -379,16 +459,55 @@ export default function HACCPMasterFlow() {
     // Navigation Logic
     switch (sectionKey) {
       case 'product':
+        // Critical Change Detection
+        const oldProduct = allAnswers.product || {};
+        const productKeys = ['plan_scope', 'product_category', 'intended_consumer_group', 'shelf_life_basis', 'cooking_required'];
+        const productChanged = productKeys.some(k => oldProduct[k] !== data[k]);
+
+        if (productChanged && (allAnswers.hazard_analysis?.length > 0 || allAnswers.ccp_decisions?.length > 0)) {
+            if (confirm("⚠️ Critical changes detected.\n\nChanging product details invalidates your Hazard Analysis and CCPs.\n\nClick OK to save and CLEAR downstream data.\nClick Cancel to discard changes.")) {
+                newAnswers.hazard_analysis = undefined;
+                newAnswers.ccp_decisions = undefined;
+                newAnswers.ccp_management = undefined;
+                setValidationReport(null);
+                setGeneratedPlan(null);
+            } else {
+                return;
+            }
+        }
         triggerTransition("Product details saved!", 'process');
         break;
       
       case 'process':
+        // Process Step Change Detection
+        const oldSteps = allAnswers.process?.process_steps || [];
+        const newSteps = data.process_steps || [];
+        // Compare step IDs and names to detect structural changes
+        const stepsChanged = JSON.stringify(oldSteps.map((s: any) => ({id: s.step_id, name: s.step_name}))) !== 
+                             JSON.stringify(newSteps.map((s: any) => ({id: s.step_id, name: s.step_name})));
+
+        if (stepsChanged && (allAnswers.hazard_analysis?.length > 0 || allAnswers.ccp_decisions?.length > 0)) {
+             if (confirm("⚠️ Process Flow modified.\n\nChanging the process flow invalidates your Hazard Analysis (steps no longer match).\n\nClick OK to save and CLEAR downstream data.\nClick Cancel to discard changes.")) {
+                newAnswers.hazard_analysis = undefined;
+                newAnswers.ccp_decisions = undefined;
+                newAnswers.ccp_management = undefined;
+                setValidationReport(null);
+                setGeneratedPlan(null);
+            } else {
+                return;
+            }
+        }
         triggerTransition("Process flow mapped!", 'prp');
         break;
       
       case 'prp':
         // Start Hazard Analysis Loop
         if (newAnswers.process?.process_steps?.length > 0) {
+            // Priority 2: Grouped Scope Variance Confirmation
+            if (riskFlags.SCOPE_GROUPED) {
+                setShowScopeConfirmation(true);
+                return;
+            }
             triggerTransition("Starting Hazard Analysis...", 'hazards', () => setCurrentStepIndex(0));
         } else {
             alert("No process steps defined!");
@@ -419,7 +538,7 @@ export default function HACCPMasterFlow() {
             // Check if any significant hazards were identified
             const sigHazards = getSignificantHazards(newAnswers);
             if (sigHazards.length === 0) {
-                triggerTransition("Risk Assessment Complete!", 'validation'); // Skip CCP steps entirely
+                triggerTransition("Risk Assessment Complete!", 'review_validation'); // Skip CCP steps entirely
             } else {
                 triggerTransition("Hazards Identified. Moving to CCPs...", 'ccp_determination', () => {
                     setCurrentCCPIndex(0);
@@ -458,7 +577,7 @@ export default function HACCPMasterFlow() {
              if (hasCCPs) {
                  triggerTransition("Critical Points Identified!", 'ccp_management', () => setCurrentCCPIndex(0));
              } else {
-                 triggerTransition("Analysis Complete!", 'validation');
+                 triggerTransition("Analysis Complete!", 'review_validation');
              }
          }
          break;
@@ -482,10 +601,16 @@ export default function HACCPMasterFlow() {
         // Save
         newAnswers.ccp_management = flattenedManagement;
         setAllAnswers(newAnswers);
-        setCurrentSection('validation'); // No transition here, validation logic runs next
+        setCurrentSection('review_validation'); // No transition here, validation logic runs next
         break;
 
-      case 'validation':
+      case 'review_validation':
+        // Check for High Risk Gate
+        if (riskFlags.HIGH_RISK_RTE && riskFlags.SHELF_LIFE_UNVALIDATED) {
+            setShowHighRiskModal(true);
+            return;
+        }
+
         // No visual transition needed, goes to 'generating' spinner
         setCurrentSection('generating');
         await generatePlan(newAnswers);
@@ -497,6 +622,7 @@ export default function HACCPMasterFlow() {
     try {
         const payload = {
             ...answers,
+            ...riskFlags,
             metadata: {
                 framework_version: "1.0.0",
                 question_set_versions: {
@@ -760,48 +886,209 @@ export default function HACCPMasterFlow() {
       }
   };
 
-  // --- Render Helpers ---
+    const handleHighRiskConfirm = async () => {
 
-  const getProgress = (section: SectionKey) => {
-    const steps = ['product', 'process', 'prp', 'hazards', 'ccp_determination', 'ccp_management', 'validation', 'complete'];
-    const idx = steps.indexOf(section);
-    if (section === 'generating' || section === 'validating') return 90;
-    if (idx === -1) return 0;
-    return Math.min(Math.round((idx / 7) * 100), 100);
-  };
+        if (highRiskConfirmation.toLowerCase() === "i accept responsibility for validation") {
+
+            setShowHighRiskModal(false);
+
+            setCurrentSection('generating');
+
+            await generatePlan(allAnswers);
+
+        } else {
+
+            alert("Please type the confirmation sentence exactly as shown.");
+
+        }
+
+    };
+
   
-  const getSectionTitle = (section: SectionKey) => {
-      const titles: Record<string, string> = {
-          product: '1. Product Description',
-          process: '2. Process Flow',
-          prp: '3. Prerequisite Programs',
-          hazards: '4. Hazard Analysis',
-          ccp_determination: '5. CCP Determination',
-          ccp_management: '6. CCP Management',
-          validation: '7. Final Validation',
-          generating: 'Generating Plan...',
-          validating: 'Auditing Plan...',
-          complete: 'Plan Complete'
-      };
-      return titles[section] || 'Builder';
-  }
 
-  const progress = getProgress(currentSection);
+    // --- Render Helpers ---
 
-  const renderContent = () => {
-    if (transition.show) {
-        return (
-            <div className="min-h-[60vh] flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300">
-                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
-                    <CheckCircle2 className="w-10 h-10 text-emerald-600" />
-                </div>
-                <h2 className="text-3xl font-black text-slate-900 mb-2">{transition.message}</h2>
-                <p className="text-slate-500">Saving progress...</p>
-            </div>
-        );
-    }
+  
+
+    const getProgress = (section: SectionKey) => {
+
+      const steps = ['product', 'process', 'prp', 'hazards', 'ccp_determination', 'ccp_management', 'review_validation', 'complete'];
+
+      const idx = steps.indexOf(section);
+
+      if (section === 'generating' || section === 'validating') return 90;
+
+      if (idx === -1) return 0;
+
+      return Math.min(Math.round((idx / 7) * 100), 100);
+
+    };
+
     
-    if (showResumePrompt) {
+
+    const getSectionTitle = (section: SectionKey) => {
+
+        const titles: Record<string, string> = {
+
+            product: '1. Product Description',
+
+            process: '2. Process Flow',
+
+            prp: '3. Prerequisite Programs',
+
+            hazards: '4. Hazard Analysis',
+
+            ccp_determination: '5. CCP Determination',
+
+            ccp_management: '6. CCP Management',
+
+            review_validation: '7. Review & Validation Requirements',
+
+            generating: 'Generating Plan...', 
+
+            validating: 'Auditing Plan...', 
+
+            complete: 'Plan Complete'
+
+        };
+
+        return titles[section] || 'Builder';
+
+    }
+
+  
+
+    const progress = getProgress(currentSection);
+
+  
+
+    const renderContent = () => {
+
+      if (transition.show) {
+
+          return (
+
+              <div className="min-h-[60vh] flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300">
+
+                  <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+
+                      <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+
+                  </div>
+
+                  <h2 className="text-3xl font-black text-slate-900 mb-2">{transition.message}</h2>
+
+                  <p className="text-slate-500">Saving progress...</p>
+
+              </div>
+
+          );
+
+      }
+
+      
+
+      if (showHighRiskModal) {
+
+          return (
+
+              <div className="max-w-2xl mx-auto p-10 text-center space-y-8 mt-20 animate-in fade-in zoom-in duration-300">
+
+                  <div className="bg-red-50 p-10 rounded-3xl border-2 border-red-200 shadow-xl">
+
+                      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+
+                          <ShieldAlert className="w-8 h-8 text-red-600" />
+
+                      </div>
+
+                      <h2 className="text-3xl font-black text-red-900 mb-4">CRITICAL SAFETY WARNING</h2>
+
+                      <p className="text-red-800 font-bold text-lg mb-4">
+
+                          You are creating a plan for High-Risk Ready-to-Eat food with an Unvalidated Shelf Life.
+
+                      </p>
+
+                      <p className="text-red-700 mb-8 leading-relaxed">
+
+                          This combination creates a severe risk of pathogen growth (e.g., Listeria monocytogenes) which can be fatal. 
+
+                          You CANNOT rely on this draft for safety without professional laboratory validation of your shelf life.
+
+                      </p>
+
+                      
+
+                      <div className="bg-white p-6 rounded-xl border border-red-200 text-left mb-6">
+
+                          <label className="block text-xs font-bold text-red-500 uppercase mb-2">
+
+                              To proceed, type: "I accept responsibility for validation"
+
+                          </label>
+
+                          <input 
+
+                              type="text" 
+
+                              value={highRiskConfirmation}
+
+                              onChange={(e) => setHighRiskConfirmation(e.target.value)}
+
+                              className="w-full p-3 rounded-lg border-2 border-red-100 focus:border-red-500 outline-none font-bold text-slate-700"
+
+                              placeholder="Type here..."
+
+                          />
+
+                      </div>
+
+  
+
+                      <div className="flex justify-center gap-4">
+
+                          <button 
+
+                              onClick={() => setShowHighRiskModal(false)} 
+
+                              className="px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors"
+
+                          >
+
+                              Go Back
+
+                          </button>
+
+                          <button 
+
+                              onClick={handleHighRiskConfirm} 
+
+                              disabled={highRiskConfirmation.toLowerCase() !== "i accept responsibility for validation"}
+
+                              className="bg-red-600 disabled:bg-slate-300 disabled:text-slate-400 text-white px-8 py-3 rounded-xl font-black hover:bg-red-700 transition-all shadow-lg shadow-red-500/20"
+
+                          >
+
+                              Confirm & Generate
+
+                          </button>
+
+                      </div>
+
+                  </div>
+
+              </div>
+
+          );
+
+      }
+
+      
+
+      if (showResumePrompt) {
+
+  
         return (
             <div className="max-w-2xl mx-auto p-10 text-center space-y-8 mt-20">
                 <div className="bg-white p-10 rounded-3xl border border-slate-200 shadow-xl">
@@ -827,7 +1114,34 @@ export default function HACCPMasterFlow() {
     }
 
     if (currentSection === 'product') {
-        return <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />;
+        return (
+            <div className="space-y-12">
+                <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />
+                
+                <div className="max-w-3xl mx-auto pt-8 border-t border-slate-200">
+                    <div className={`rounded-2xl p-6 border ${riskFlags.HAS_WARNINGS ? 'bg-amber-50 border-amber-200' : 'bg-slate-100/50 border-slate-200'}`}>
+                        <div className="flex items-start gap-3">
+                            {riskFlags.HAS_WARNINGS ? (
+                                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+                            ) : (
+                                <Info className="w-5 h-5 text-slate-400 mt-0.5 shrink-0" />
+                            )}
+                            <div>
+                                <h4 className={`font-black text-sm uppercase tracking-wider mb-2 ${riskFlags.HAS_WARNINGS ? 'text-amber-900' : 'text-slate-900'}`}>
+                                    HACCP Assisted Draft Notice
+                                </h4>
+                                <p className={`text-sm leading-relaxed ${riskFlags.HAS_WARNINGS ? 'text-amber-800' : 'text-slate-600'}`}>
+                                    {riskFlags.HAS_WARNINGS 
+                                        ? "This HACCP draft includes assumptions and unvalidated elements. Review and approval by a competent food safety professional is required before implementation."
+                                        : "This HACCP document is an assisted draft based on the information provided. It has not been validated or verified and must be reviewed by a competent food safety professional before implementation."
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
     
     if (currentSection === 'process') {
@@ -849,6 +1163,20 @@ export default function HACCPMasterFlow() {
 
       return (
         <div key={currentStepIndex} className="space-y-6"> 
+            {riskFlags.SCOPE_GROUPED && (
+                <div className="bg-amber-50 border-l-4 border-amber-500 p-6 rounded-r-xl max-w-3xl mx-auto shadow-sm animate-in fade-in slide-in-from-top-4">
+                    <div className="flex items-start gap-3">
+                        <AlertTriangle className="w-6 h-6 text-amber-500 mt-1" />
+                        <div>
+                            <h3 className="font-black text-amber-900 text-lg mb-1">Hazard analysis is based on grouped product assumptions.</h3>
+                            <p className="text-amber-800 font-medium text-sm">
+                                This HACCP draft assumes similar hazards across the defined scope. 
+                                Differences in ingredients, allergens, or processing may introduce unassessed hazards.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
             <HACCPQuestionnaire 
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('hazards', d)} 
@@ -983,7 +1311,7 @@ export default function HACCPMasterFlow() {
        );
   }
 
-  if (currentSection === 'validation') {
+  if (currentSection === 'review_validation') {
        const isGeneric = checkGenericRiskPattern();
        
        return (
@@ -1003,7 +1331,7 @@ export default function HACCPMasterFlow() {
                     </div>
                 </div>
             )}
-            <HACCPQuestionnaire sectionData={getQuestions('validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('validation', d)} />
+            <HACCPQuestionnaire sectionData={getQuestions('review_validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('review_validation', d)} />
         </div>
        );
   }
@@ -1445,6 +1773,12 @@ export default function HACCPMasterFlow() {
                 </div>
             </div>
         </div>
+
+        {isResumed && currentSection !== 'complete' && !showScopeConfirmation && !showHighRiskModal && (
+            <div className="bg-blue-600 text-white py-2 px-6 text-center text-xs font-black uppercase tracking-widest animate-in slide-in-from-top duration-500">
+                You are continuing a previous draft.
+            </div>
+        )}
 
         <div className="pt-10 px-6">
             {renderContent()}

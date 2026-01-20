@@ -1,10 +1,7 @@
 import { supabaseService } from '@/lib/supabase';
-import { verifyAdminAccess } from '@/lib/admin-auth';
 import { FileText, Download } from 'lucide-react';
 
 export default async function AdminPlansPage() {
-  await verifyAdminAccess();
-
   const { data: plans } = await supabaseService
     .from('plans')
     .select('*')

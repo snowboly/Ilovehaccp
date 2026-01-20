@@ -47,7 +47,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         await attachDraft(session);
-        router.push(next || '/dashboard');
+        window.location.href = next || '/dashboard';
       }
     });
 
@@ -83,7 +83,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
             await attachDraft(data.session);
         }
 
-        router.push(next || '/dashboard');
+        window.location.href = next || '/dashboard';
       } else if (view === 'forgot_password') {
         const origin = window.location.origin;
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
