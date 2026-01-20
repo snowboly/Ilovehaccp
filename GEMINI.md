@@ -2,12 +2,37 @@
 
 ## Implementation Status
 
-### v3.31 Admin Auth Hydration Fix (Jan 20, 2026)
-- **Duplicate Check Prevention:** Implemented a robust "one-time resolution guard" in `AdminGuard.tsx` using `useRef` and a `resolved` flag.
-    - **Logic:** Ensures the expensive and state-altering `checkUser` logic runs exactly once per mount/session event.
-    - **Optimization:** Immediately unsubscribes from Supabase auth listeners (`onAuthStateChange`) as soon as the user's role is determined.
-    - **Impact:** Eliminates race conditions, duplicate redirects (login/dashboard), and UI flicker caused by parallel execution of `getSession` and `onAuthStateChange`.
-- **Code Quality:** Added missing `useRef` import and verified the fix with a clean production build.
+- v3.31 Admin Auth Hydration Fix (Jan 20, 2026):
+- **Problem:** `/admin` was briefly loading then redirecting to `/login` due to a Supabase auth hydration race condition (getUser() running before session restoration).
+- **Fix:** Updated `src/components/admin/AdminGuard.tsx` to:
+    1. Use `supabase.auth.getSession()` for the initial fast check.
+    2. Subscribe to `supabase.auth.onAuthStateChange()` to handle hydration events.
+    3. Show a loading spinner (`checking` state) until the session is definitively resolved.
+    4. Only redirect after confirming no session or non-admin role.
+- **Architecture:** 
+    - **Frontend:** Strict Client-Side Gating via `AdminGuard`. No server-side auth in `layout.tsx` or `page.tsx`.
+    - **Backend:** API routes continue to use server-side `validateAdminRequest` from `src/lib/admin-auth.ts`.
+
+- v3.32 HACCP Builder Audit Hardening & Results Page Overhaul (Jan 20, 2026):
+- **Goal:** Align with strict auditor requirements, remove "HACCP Lite" branding, and enforce data integrity.
+- **Key Changes:**
+    1. **Zero State Enforcement:** 
+        - "Start New Plan" and anonymous sessions now strictly purge all local state.
+        - Resume logic is conditional: only for authenticated users with server-side drafts.
+        - Added "Continuing Draft" banner for clarity.
+    2. **Risk & Assumption Gating:**
+        - Implemented `riskFlags` (e.g., `SHELF_LIFE_UNVALIDATED`, `HIGH_RISK_RTE`, `SCOPE_GROUPED`).
+        - Added dynamic "Key Assumptions & Gaps" section to the results page.
+        - High-Risk combinations (RTE + Assumption) trigger a mandatory typed confirmation modal.
+    3. **Results Page Overhaul ("Audit Grade"):**
+        - **Renamed:** "Validation" -> "Draft Review". "Audit Report" -> "Draft Assessment".
+        - **Explicit Exclusions:** Added "What This Draft Does Not Provide" section (No validation, no approval).
+        - **Automated Checks:** Clearly listed what IS checked (Logic, Completeness) vs what IS NOT (Accuracy, Effectiveness).
+        - **Neutral Next Steps:** Replaced sales pricing with factual "Optional Next Steps" (Self-Service vs Professional Review).
+        - **Strong Warnings:** Added "Use without professional review may result in unmanaged risks" to all export options.
+    4. **UX/UI:**
+        - Added `cursor-pointer` to all interactive builder elements.
+        - Improved button affordance and layout for the review page.
 
 ### v3.30 Admin Auth & Browser Client Fixes (Jan 19, 2026)
 - **Browser Client:** Standardized `src/utils/supabase/client.ts` to use `@supabase/ssr` `createBrowserClient`.

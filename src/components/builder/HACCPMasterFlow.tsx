@@ -8,11 +8,10 @@ import { getQuestions } from '@/data/haccp/loader';
 import { useLanguage } from '@/lib/i18n';
 
 import { generateHACCPWordDoc } from '@/lib/export-utils';
-import { AlertTriangle, Info, Edit, ShieldAlert, CheckCircle2, Save } from 'lucide-react';
+import { AlertTriangle, Info, Edit, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
-import { SaveProgressModal } from '@/components/builder/SaveProgressModal';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -205,7 +204,6 @@ export default function HACCPMasterFlow() {
   const [isSavingPlan, setIsSavingPlan] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [transition, setTransition] = useState<{ show: boolean, message: string }>({ show: false, message: '' });
-  const [showSaveModal, setShowSaveModal] = useState(false);
   const [showHighRiskModal, setShowHighRiskModal] = useState(false);
   const [showScopeConfirmation, setShowScopeConfirmation] = useState(false);
   const [isResumed, setIsResumed] = useState(false);
@@ -1937,20 +1935,8 @@ export default function HACCPMasterFlow() {
 
         <div className="pt-10 px-6">
             {renderContent()}
-
-            {draftId && currentSection !== 'complete' && (
-                <div className="mt-8 text-center">
-                    <button 
-                        onClick={() => setShowSaveModal(true)}
-                        className="text-slate-400 hover:text-blue-600 text-sm font-medium flex items-center justify-center gap-2 mx-auto transition-colors cursor-pointer"
-                    >
-                        <Save className="w-4 h-4" /> Need to finish later? Email me a magic link
-                    </button>
-                </div>
-            )}
         </div>
         
-        {draftId && <SaveProgressModal isOpen={showSaveModal} onClose={() => setShowSaveModal(false)} draftId={draftId} />}
     </div>
   );
 }
