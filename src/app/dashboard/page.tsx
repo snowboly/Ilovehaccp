@@ -136,13 +136,19 @@ function DashboardContent() {
     if (!confirm('Are you sure you want to delete this? This cannot be undone.')) return;
     
     const planToDelete = plans.find(p => p.id === id);
-    const table = planToDelete?.status === 'draft' ? 'drafts' : 'plans';
+    const isDraft = planToDelete?.status === 'draft';
+    const table = isDraft ? 'drafts' : 'plans';
 
     try {
-      const { error } = await supabase
-        .from(table)
-        .delete()
-        .eq('id', id);
+      const { error } = isDraft
+        ? await supabase
+            .from(table)
+            .update({ status: 'abandoned' })
+            .eq('id', id)
+        : await supabase
+            .from(table)
+            .delete()
+            .eq('id', id);
         
       if (error) throw error;
       setPlans(plans.filter(p => p.id !== id));
