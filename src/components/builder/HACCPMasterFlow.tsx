@@ -8,7 +8,7 @@ import { getQuestions } from '@/data/haccp/loader';
 import { useLanguage } from '@/lib/i18n';
 
 import { generateHACCPWordDoc } from '@/lib/export-utils';
-import { AlertTriangle, Info, Edit, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, Info, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
@@ -1418,6 +1418,8 @@ export default function HACCPMasterFlow() {
   }
 
   if (currentSection === 'complete') {
+      const isPaid = isPaid;
+      const exportBlocked = validationReport?.block_export || validationReport?.section_1_overall_assessment?.audit_readiness === "Major Gaps";
       return (
           <div className="max-w-4xl mx-auto p-10 space-y-8">
               <div className="bg-slate-50 border border-slate-200 p-8 rounded-3xl text-center space-y-4">
@@ -1585,6 +1587,152 @@ export default function HACCPMasterFlow() {
               {/* 3. Completed State: Report & Export */}
               {validationStatus === 'completed' && (
                   <>
+                    <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm space-y-6">
+                        <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+                            <div>
+                                <h2 className="text-2xl font-black text-slate-900 mb-2">Validation complete  choose an outcome</h2>
+                                <p className="text-slate-600 text-sm">
+                                    Free users can download a watermarked draft. Paid users can check out and unlock full exports from this page.
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {['Audit Classic', 'Professional Modern'].map(style => (
+                                    <button
+                                        key={style}
+                                        onClick={() => setExportTemplate(style)}
+                                        className={`px-4 py-2 rounded-xl font-bold text-xs transition-all border-2 cursor-pointer ${
+                                            exportTemplate === style 
+                                            ? 'bg-blue-600 border-blue-600 text-white' 
+                                            : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'
+                                        }`}
+                                    >
+                                        {style}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-6">
+                            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+                                <div>
+                                    <p className="text-xs font-bold uppercase text-slate-400 mb-2">Free draft download</p>
+                                    <h3 className="text-lg font-black text-slate-900 mb-3">Watermarked PDF for review</h3>
+                                    <p className="text-sm text-slate-600">
+                                        Keep a watermarked version for internal review and team sign-off. It stays clearly marked as a draft.
+                                    </p>
+                                </div>
+                                <div className="mt-6 space-y-3">
+                                    <button 
+                                        onClick={handleDownloadPdf}
+                                        className="bg-white text-slate-900 border border-slate-300 px-4 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all w-full"
+                                    >
+                                        Download Watermarked PDF
+                                    </button>
+                                    <p className="text-[11px] text-slate-500">
+                                        Drafts are for internal review only and are not intended for operational implementation.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className={`rounded-2xl border p-6 ${isPaid ? 'bg-emerald-50 border-emerald-200' : 'bg-blue-50 border-blue-200'}`}>
+                                <div className="flex flex-col gap-4">
+                                    <div>
+                                        <p className={`text-xs font-bold uppercase mb-2 ${isPaid ? 'text-emerald-500' : 'text-blue-500'}`}>
+                                            {isPaid ? 'Export unlocked' : 'Checkout to unlock'}
+                                        </p>
+                                        <h3 className={`text-xl font-black mb-2 ${isPaid ? 'text-emerald-900' : 'text-blue-900'}`}>
+                                            {isPaid ? 'Professional exports are ready' : 'Remove watermarks & unlock findings'}
+                                        </h3>
+                                        <p className={`text-sm ${isPaid ? 'text-emerald-700' : 'text-blue-700'}`}>
+                                            {isPaid
+                                                ? 'Download your plan in Word or PDF with your selected format.'
+                                                : 'Pay here to unlock Word + PDF exports and the full validation findings.'}
+                                        </p>
+                                    </div>
+                    {exportBlocked && (
+                                        <div className="bg-amber-50 border border-amber-200 text-amber-900 p-3 rounded-xl text-xs font-bold">
+                                            Major gaps detected  exports are disabled until critical issues are addressed.
+                                        </div>
+                                    )}
+
+                                    {isPaid ? (
+                                        <div className="grid sm:grid-cols-2 gap-3">
+                                            <button 
+                                                onClick={() => generateHACCPWordDoc({
+                                                    businessName: allAnswers.product?.businessLegalName || "My Business",
+                                                    full_plan: {
+                                                        ...generatedPlan?.full_plan,
+                                                        _original_inputs: { ...allAnswers, template: exportTemplate }
+                                                    }
+                                                })}
+                                                disabled={exportBlocked}
+                                                className="bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                Download Word
+                                            </button>
+                                            <button 
+                                                onClick={handleDownloadPdf}
+                                                disabled={exportBlocked}
+                                                className="bg-white text-emerald-900 px-4 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-all border border-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                Download PDF
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="grid sm:grid-cols-2 gap-3">
+                                            <button 
+                                                onClick={() => handleCheckout('professional')}
+                                                disabled={isSavingPlan}
+                                                className="bg-slate-900 text-white px-4 py-3 rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {isSavingPlan ? 'Saving...' : 'Self-Service Export (€39)'}
+                                            </button>
+                                            <button 
+                                                onClick={() => handleCheckout('expert')}
+                                                disabled={isSavingPlan}
+                                                className="bg-blue-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {isSavingPlan ? 'Saving...' : 'Professional Review (€79)'}
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {saveError && (
+                                        <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex flex-col items-center gap-3 animate-in fade-in zoom-in">
+                                            <p className="text-red-600 font-bold text-sm"> {saveError}</p>
+                                            <button 
+                                                onClick={() => savePlan(generatedPlan.full_plan, validationReport)}
+                                                className="bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
+                                            >
+                                                Retry Saving Progress
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {!isPaid && (
+                                        <div className="grid md:grid-cols-2 gap-4 text-xs">
+                                            <div className="bg-white border border-slate-200 rounded-xl p-4">
+                                                <p className="font-bold text-slate-500 uppercase mb-2">Self-service export</p>
+                                                <ul className="text-slate-600 space-y-1">
+                                                    <li> Remove watermarks</li>
+                                                    <li> Word + PDF downloads</li>
+                                                    <li> Automated gap list</li>
+                                                </ul>
+                                            </div>
+                                            <div className="bg-white border border-blue-200 rounded-xl p-4">
+                                                <p className="font-bold text-blue-500 uppercase mb-2">Professional review</p>
+                                                <ul className="text-blue-700 space-y-1">
+                                                    <li> Expert feedback</li>
+                                                    <li> Review notes in dashboard</li>
+                                                    <li> Includes all exports</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div id="audit-report" className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm space-y-6">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-6">
                             <h2 className="text-2xl font-black text-slate-900">Audit Report</h2>
@@ -1609,7 +1757,7 @@ export default function HACCPMasterFlow() {
                         
                         {/* Detailed Report Gating */}
                         <div className="relative">
-                            <div className={generatedPlan?.payment_status === 'paid' ? '' : 'blur-md select-none pointer-events-none opacity-40 max-h-96 overflow-hidden'}>
+                            <div className={isPaid ? '' : 'blur-md select-none pointer-events-none opacity-40 max-h-96 overflow-hidden'}>
                                 {/* Strengths */}
                                 <div className="mt-6">
                                     <h3 className="font-bold text-slate-900 mb-2">Strengths</h3>
@@ -1624,7 +1772,7 @@ export default function HACCPMasterFlow() {
                                     <ul className="list-none space-y-3">
                                         {validationReport?.section_3_weaknesses_risks?.map((w: any, i: number) => {
                                             // Paid: Show all
-                                            if (generatedPlan?.payment_status === 'paid') {
+                                            if (isPaid) {
                                                 return (
                                                     <li key={i} className="flex items-start gap-2 text-slate-600">
                                                         <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-1" />
@@ -1655,7 +1803,7 @@ export default function HACCPMasterFlow() {
                                             );
                                         })}
                                         {/* Fake extra blurred lines if list is short to create "Volume" illusion */}
-                                        {generatedPlan?.payment_status !== 'paid' && (!validationReport?.section_3_weaknesses_risks || validationReport.section_3_weaknesses_risks.length < 3) && (
+                                        {!isPaid && (!validationReport?.section_3_weaknesses_risks || validationReport.section_3_weaknesses_risks.length < 3) && (
                                             <>
                                                 <li className="flex items-center gap-2 text-slate-400 blur-sm select-none opacity-60">
                                                     <div className="w-4 h-4 bg-slate-200 rounded-full" />
@@ -1702,224 +1850,39 @@ export default function HACCPMasterFlow() {
                                     </div>
                                 )}
                             </div>
-                            
-                            {generatedPlan?.payment_status !== 'paid' && (
-                                <div className="absolute inset-0 flex items-center justify-center z-10 bg-white/95 backdrop-blur-sm rounded-3xl">
-                                    <div className="max-w-4xl w-full px-6">
-                                        <div className="text-center mb-8">
-                                            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                                                <ShieldAlert className="w-6 h-6" />
-                                            </div>
-                                            <h3 className="text-2xl font-black text-slate-900 mb-2">Upgrade to View Details</h3>
-                                            <p className="text-slate-500 font-medium">Unlock your full HACCP plan and remove watermarks.</p>
-                                            
-                                            {saveError && (
-                                                <div className="mt-4 bg-red-50 border border-red-100 p-4 rounded-2xl flex flex-col items-center gap-3 animate-in fade-in zoom-in">
-                                                    <p className="text-red-600 font-bold text-sm">⚠️ {saveError}</p>
-                                                    <button 
-                                                        onClick={() => savePlan(generatedPlan.full_plan, validationReport)}
-                                                        className="bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
-                                                    >
-                                                        Retry Saving Progress
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <div className="grid md:grid-cols-2 gap-6 relative">
-                                            {/* Tier 39: Self-Service Export */}
-                                            <div 
-                                                className={`bg-white border-2 border-slate-200 p-6 rounded-2xl transition-colors shadow-sm flex flex-col justify-between ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'hover:border-slate-300 cursor-pointer'}`} 
-                                                onClick={() => !isSavingPlan && handleCheckout('professional')}
-                                            >
-                                                <div>
-                                                    <div className="mb-4">
-                                                        <h4 className="font-black text-slate-900 text-lg">Self-Service Export (Document Only)</h4>
-                                                        <div className="flex items-baseline gap-2 mt-1">
-                                                            <span className="text-3xl font-black text-slate-900">€39</span>
-                                                            <span className="text-xs text-slate-400 font-medium">+ VAT</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="space-y-4 text-left">
-                                                        <div>
-                                                            <p className="text-xs font-bold text-slate-400 uppercase mb-2">Includes</p>
-                                                            <ul className="space-y-2 text-sm text-slate-600">
-                                                                <li>• Removal of "Draft" watermark</li>
-                                                                <li>• Download in Word (DOCX) & PDF</li>
-                                                                <li>• Automated Gap List (Major/Minor)</li>
-                                                                <li>• Document Storage</li>
-                                                            </ul>
-                                                        </div>
-                                                        <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                                            <p className="text-xs font-bold text-slate-500 uppercase mb-2">Exclusions</p>
-                                                            <ul className="space-y-1 text-xs text-slate-500">
-                                                                <li>× No human review</li>
-                                                                <li>× No confirmation of hazards/CCPs</li>
-                                                                <li>× No scientific assessment</li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="mt-6">
-                                                    <p className="text-[10px] text-slate-400 italic mb-3 border-t border-slate-100 pt-2">
-                                                        Limitation: This option provides document export and automated gap listing only. No professional review is included. <strong>Use of exported documents without professional review may result in unmanaged food safety risks.</strong>
-                                                    </p>
-                                                    <button 
-                                                        disabled={isSavingPlan}
-                                                        onClick={(e) => { e.stopPropagation(); handleCheckout('professional'); }}
-                                                        className="bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-colors w-full flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
-                                                    >
-                                                        {isSavingPlan ? 'Saving...' : 'Select Self-Service Export'}
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* Tier 79: Professional Review */}
-                                            <div 
-                                                className={`bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl relative shadow-md transition-colors flex flex-col justify-between ${isSavingPlan ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} 
-                                                onClick={() => !isSavingPlan && handleCheckout('expert')}
-                                            >
-                                                <div>
-                                                    <div className="mb-4">
-                                                        <h4 className="font-black text-blue-900 text-lg">Professional Review (Expert Feedback)</h4>
-                                                        <div className="flex items-baseline gap-2 mt-1">
-                                                            <span className="text-3xl font-black text-blue-900">€79</span>
-                                                            <span className="text-xs text-blue-400 font-medium">+ VAT</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="space-y-4 text-left">
-                                                        <div>
-                                                            <p className="text-xs font-bold text-blue-400 uppercase mb-2">Includes</p>
-                                                            <ul className="space-y-2 text-sm text-blue-800">
-                                                                <li>• All Self-Service features</li>
-                                                                <li>• Human review by qualified professional</li>
-                                                                <li>• Written feedback on gaps & clarity</li>
-                                                                <li>• Review notes in dashboard</li>
-                                                            </ul>
-                                                        </div>
-                                                        <div className="bg-white/50 p-3 rounded-lg border border-blue-100">
-                                                            <p className="text-xs font-bold text-blue-500 uppercase mb-2">Boundaries</p>
-                                                            <ul className="space-y-1 text-xs text-blue-600">
-                                                                <li>! Feedback & recommendations only</li>
-                                                                <li>! No approval/certification implied</li>
-                                                                <li>! Legal responsibility remains yours</li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="mt-6">
-                                                    <p className="text-[10px] text-blue-500 italic mb-3 border-t border-blue-200 pt-2">
-                                                        Responsibility: Professional review provides expert feedback but does not replace the food business's responsibility for compliance. <strong>Use of exported documents without professional review may result in unmanaged food safety risks.</strong>
-                                                    </p>
-                                                    <button 
-                                                        disabled={isSavingPlan}
-                                                        onClick={(e) => { e.stopPropagation(); handleCheckout('expert'); }}
-                                                        className="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 cursor-pointer disabled:cursor-not-allowed"
-                                                    >
-                                                        {isSavingPlan ? 'Saving...' : 'Select Professional Review'}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                            {!isPaid && (
+                                <div className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                                    <div>
+                                        <p className="text-sm font-bold text-blue-900">Upgrade to view full findings</p>
+                                        <p className="text-xs text-blue-700">
+                                            Detailed weaknesses, recommendations, and auditor notes unlock after purchase.
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-2">
+                                        <button
+                                            onClick={() => handleCheckout('professional')}
+                                            disabled={isSavingPlan}
+                                            className="bg-white text-blue-800 border border-blue-200 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isSavingPlan ? 'Saving...' : 'Unlock Export'}
+                                        </button>
+                                        <button
+                                            onClick={() => handleCheckout('expert')}
+                                            disabled={isSavingPlan}
+                                            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isSavingPlan ? 'Saving...' : 'Add Review'}
+                                        </button>
                                     </div>
                                 </div>
                             )}
                         </div>
                     </div>
-
-                    {/* Export Controls - Only visible after validation */}
-                    <div className="bg-slate-900 p-8 rounded-3xl text-center space-y-6">
-                        <h2 className="text-2xl font-black text-white">Export Documents</h2>
-                        
-                        {/* Document Style Selection */}
-                        <div className="flex justify-center gap-4 mb-4">
-                            {['Audit Classic', 'Professional Modern'].map(style => (
-                                <button
-                                    key={style}
-                                    onClick={() => setExportTemplate(style)}
-                                    className={`px-4 py-2 rounded-xl font-bold text-sm transition-all border-2 cursor-pointer ${
-                                        exportTemplate === style 
-                                        ? 'bg-blue-600 border-blue-600 text-white' 
-                                        : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
-                                    }`}
-                                >
-                                    {style}
-                                </button>
-                            ))}
+                    {exportBlocked && (
+                        <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-2xl text-sm font-bold">
+                            Major gaps were detected during validation. Please revise critical items before using exported documents operationally.
                         </div>
-
-                        {validationReport?.block_export || validationReport?.section_1_overall_assessment?.audit_readiness === "Major Gaps" ? (
-                            <div className="space-y-6">
-                                <div className="bg-red-500/10 border border-red-500/50 text-red-200 p-4 rounded-xl font-bold">
-                                    Cannot Export: Major Gaps Detected. Please fix critical issues before downloading.
-                                </div>
-                                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                                    <button 
-                                        onClick={() => {
-                                            setCurrentSection('product');
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        }}
-                                        className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                                    >
-                                        <Edit className="w-4 h-4" /> Go back to Builder
-                                    </button>
-                                    <button 
-                                        onClick={() => {
-                                            document.getElementById('audit-report')?.scrollIntoView({ behavior: 'smooth' });
-                                        }}
-                                        className="bg-slate-800 text-slate-300 border border-slate-700 px-8 py-3 rounded-xl font-bold hover:text-white hover:bg-slate-700 transition-all cursor-pointer"
-                                    >
-                                        View Validation Report
-                                    </button>
-                                </div>
-                            </div>
-                        ) : generatedPlan?.payment_status !== 'paid' ? (
-                            // UNPAID STATE
-                            <div className="text-center pt-4 space-y-4">
-                                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                                    <button 
-                                        onClick={handleDownloadPdf}
-                                        className="bg-white text-slate-900 border border-slate-300 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                                    >
-                                        Download Watermarked Preview (PDF)
-                                    </button>
-                                </div>
-                                <p className="text-xs text-slate-500 max-w-lg mx-auto">
-                                    This document is for internal review only, contains protective watermarks, and is not intended for operational implementation or regulatory submission.
-                                </p>
-                            </div>
-                        ) : (
-                            // PAID STATE
-                            <div className="text-center space-y-6">
-                                <h2 className="text-3xl font-black text-white">Export unlocked</h2>
-                                <p className="text-slate-400">
-                                    You can now download your HACCP plan as a Word or PDF document.
-                                    <br/><span className="text-xs opacity-75 mt-1 block">Your document reflects the information you entered in the builder.</span>
-                                </p>
-
-                                <div className="flex justify-center gap-4">
-                                    <button 
-                                        onClick={() => generateHACCPWordDoc({
-                                            businessName: allAnswers.product?.businessLegalName || "My Business",
-                                            full_plan: {
-                                                ...generatedPlan?.full_plan,
-                                                _original_inputs: { ...allAnswers, template: exportTemplate }
-                                            }
-                                        })}
-                                        className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/50 cursor-pointer"
-                                    >
-                                        Download Word (.docx)
-                                    </button>
-                                    <button 
-                                        onClick={handleDownloadPdf}
-                                        className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black hover:bg-slate-100 transition-all flex items-center gap-2 cursor-pointer"
-                                    >
-                                        Download PDF (.pdf)
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    )}
 
                     <div className="pt-8 border-t border-slate-200">
                         <p className="text-[10px] text-slate-400 text-center leading-relaxed max-w-2xl mx-auto">
@@ -1967,3 +1930,5 @@ export default function HACCPMasterFlow() {
     </div>
   );
 }
+
+
