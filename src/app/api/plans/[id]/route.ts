@@ -20,7 +20,12 @@ export async function GET(
       .eq('id', id)
       .single();
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+      }
+      throw error;
+    }
     if (!plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
 
     return NextResponse.json({ plan });

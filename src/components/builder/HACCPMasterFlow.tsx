@@ -783,9 +783,17 @@ export default function HACCPMasterFlow() {
       }
 
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            throw new Error("Unauthorized");
+        }
+
         const res = await fetch('/api/save-plan', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            },
             body: JSON.stringify({
                 draftId, 
                 businessName: allAnswers.product?.businessLegalName,
