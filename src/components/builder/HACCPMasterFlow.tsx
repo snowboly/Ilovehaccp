@@ -1418,7 +1418,7 @@ export default function HACCPMasterFlow() {
   }
 
   if (currentSection === 'complete') {
-      const isPaid = isPaid;
+      const isPaid = generatedPlan?.payment_status === 'paid';
       const exportBlocked = validationReport?.block_export || validationReport?.section_1_overall_assessment?.audit_readiness === "Major Gaps";
       return (
           <div className="max-w-4xl mx-auto p-10 space-y-8">
