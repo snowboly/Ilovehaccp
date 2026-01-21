@@ -80,6 +80,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
     
     setIsUploading(true);
     const file = e.target.files[0];
+    const maxBytes = 2 * 1024 * 1024;
+    if (file.size > maxBytes) {
+        alert("Logo must be smaller than 2MB.");
+        setIsUploading(false);
+        return;
+    }
     const fileExt = file.name.split('.').pop();
     const fileName = `${crypto.randomUUID()}.${fileExt}`;
     const filePath = `${fileName}`;
@@ -91,7 +97,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
 
         if (uploadError) {
             console.error(uploadError);
-            alert("Upload failed. Please ensure the image is < 2MB.");
+            alert(uploadError.message || "Upload failed. Please try again.");
             return;
         }
 
