@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -21,6 +22,19 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
     setAnswers(initialData || {});
   }, [initialData]);
 
+  // MOVED UP: Calculate visible questions first so validate() can use it
+  const visibleQuestions = sectionData.questions.filter(q => {
+      if (q.show_if) {
+          const parentVal = answers[q.show_if.questionId];
+          const requiredVal = q.show_if.value;
+          if (Array.isArray(requiredVal)) {
+              return requiredVal.includes(parentVal);
+          }
+          return parentVal === requiredVal;
+      }
+      return true;
+  });
+
   const handleAnswerChange = (id: string, value: any) => {
     setAnswers((prev: any) => ({ ...prev, [id]: value }));
     
@@ -36,8 +50,9 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
     const newErrors: Record<string, string> = {};
     let isValid = true;
 
-    sectionData.questions.forEach(q => {
-      // Logic for group/conditional validation could be expanded here
+    // CHANGED: Only validate visible questions
+    visibleQuestions.forEach(q => {
+      // Logic for group/conditional validation
       if (q.required === true) {
         const val = answers[q.id];
         
@@ -68,24 +83,10 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
           const hazGroup = q.questions?.find(sq => sq.id === 'no_hazards_justification');
           
           if (hazGroup && hazGroup.required === 'when_all_hazards_false' && hazGroup.show_if_all_false) {
-              const allFalse = hazGroup.show_if_all_false.every(key => groupAnswers[key] === false);
+              const allFalse = hazGroup.show_if_all_false.every((key: string) => groupAnswers[key] === false);
               if (allFalse) {
                   const val = groupAnswers[hazGroup.id];
                   if (!val || val === '') {
-                      // We need to set error on the group or specific field? 
-                      // HACCPQuestionnaire handles top-level errors. 
-                      // But hazard_identification is a group. 
-                      // The error needs to be propagated or handled in QuestionCard.
-                      // Current architecture doesn't easily support deep validation errors from top level
-                      // UNLESS we flatten keys or QuestionCard handles validation.
-                      // For now, let's mark the group as invalid or handle it specially.
-                      // Actually, QuestionCard takes `error`.
-                      // But the error key matches the top question ID.
-                      // I'll stick to top-level validation if possible, but here it's nested.
-                      
-                      // WORKAROUND: Pass error to the group ID, but formatted?
-                      // Or rely on QuestionCard to show it.
-                      // Let's set it on the group ID for now.
                       newErrors[q.id] = "Please provide justification for no hazards.";
                       isValid = false;
                   }
@@ -202,18 +203,6 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
 
   const fullContext = { ...answers, ...additionalContext };
 
-  const visibleQuestions = sectionData.questions.filter(q => {
-      if (q.show_if) {
-          const parentVal = answers[q.show_if.questionId];
-          const requiredVal = q.show_if.value;
-          if (Array.isArray(requiredVal)) {
-              return requiredVal.includes(parentVal);
-          }
-          return parentVal === requiredVal;
-      }
-      return true;
-  });
-
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-20 animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="text-center space-y-2 mb-10">
@@ -234,7 +223,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
             value={answers[q.id]}
             onChange={handleAnswerChange}
             error={errors[q.id]}
-            context={fullContext} // Pass full section context for smart suggestions
+            context={fullContext} 
             customWarning={getDynamicWarning(q.id, answers[q.id])}
           />
         ))}
