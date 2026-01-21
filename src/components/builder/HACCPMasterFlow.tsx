@@ -1372,7 +1372,7 @@ export default function HACCPMasterFlow() {
                     </div>
                 </div>
             )}
-            <HACCPQuestionnaire sectionData={getQuestions('review_validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('review_validation', d)} />
+            <HACCPQuestionnaire sectionData={getQuestions('validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('review_validation', d)} />
         </div>
        );
   }
