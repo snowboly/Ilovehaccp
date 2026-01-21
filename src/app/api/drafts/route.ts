@@ -3,20 +3,21 @@ import { supabaseService } from '@/lib/supabase';
 
 export async function POST(req: Request) {
   try {
-    // Optional: Link to user if logged in
     const authHeader = req.headers.get('Authorization');
-    let userId = null;
-    
-    if (authHeader) {
-        const token = authHeader.replace('Bearer ', '');
-        const { data: { user } } = await supabaseService.auth.getUser(token);
-        if (user) userId = user.id;
+    if (!authHeader) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseService.auth.getUser(token);
+    if (authError || !user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { data, error } = await supabaseService
         .from('drafts')
         .insert({ 
-            user_id: userId,
+            user_id: user.id,
             answers: {} 
         })
         .select()

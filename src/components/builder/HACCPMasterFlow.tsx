@@ -72,9 +72,7 @@ export default function HACCPMasterFlow() {
             localStorage.removeItem('haccp_plan_id');
             localStorage.removeItem('haccp_draft_id');
             localStorage.removeItem('haccp_last_active');
-            
-            // Start fresh ephemeral session
-            await createNewDraft();
+            setDraftId(null);
             return;
         }
 
@@ -103,11 +101,11 @@ export default function HACCPMasterFlow() {
             } else {
                 // No drafts found for user -> Start New
                 console.log("No server-side drafts found -> Starting New");
-                await createNewDraft();
+                await createNewDraft(session);
             }
         } catch (err) {
             console.error("Failed to check server drafts", err);
-            await createNewDraft(); // Fallback to safe state
+            await createNewDraft(session); // Fallback to safe state
         }
     };
     
@@ -138,9 +136,18 @@ export default function HACCPMasterFlow() {
         isSavingRef.current = true;
         
         try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                isSavingRef.current = false;
+                return;
+            }
+
             await fetch(`/api/drafts/${draftId}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
                 body: JSON.stringify({ answers: dataToSave })
             });
             // Update local timestamp
@@ -213,24 +220,6 @@ export default function HACCPMasterFlow() {
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [resumeIds, setResumeIds] = useState<{planId: string | null, draftId: string | null}>({planId: null, draftId: null});
 
-  const claimDraft = async (id: string) => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-           try {
-              await fetch('/api/drafts/attach', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${session.access_token}`
-                  },
-                  body: JSON.stringify({ draftId: id })
-              });
-          } catch (e) {
-              console.error("Failed to attach draft to user", e);
-          }
-      }
-  };
-
   const loadFromId = async (id: string) => {
     // Try as PLAN first (Paid/Generated)
     try {
@@ -253,7 +242,16 @@ export default function HACCPMasterFlow() {
 
     // Try as DRAFT
     try {
-        const draftRes = await fetch(`/api/drafts/${id}`);
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            const nextUrl = encodeURIComponent(`/builder?id=${id}`);
+            window.location.href = `/login?next=${nextUrl}`;
+            return;
+        }
+
+        const draftRes = await fetch(`/api/drafts/${id}`, {
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
         if (draftRes.ok) {
             const data = await draftRes.json();
             if (data.draft) {
@@ -273,17 +271,24 @@ export default function HACCPMasterFlow() {
                 // Update local storage
                 localStorage.setItem('haccp_draft_id', id);
                 
-                // Attempt to claim if logged in
-                claimDraft(id);
                 return;
             }
         }
     } catch (e) { console.error("Failed to restore draft from URL"); }
   };
 
-  const createNewDraft = async () => {
+  const createNewDraft = async (activeSession?: { access_token: string } | null) => {
       try {
-          const res = await fetch('/api/drafts', { method: 'POST' });
+          const session = activeSession || (await supabase.auth.getSession()).data.session;
+          if (!session) {
+              setDraftId(null);
+              return;
+          }
+
+          const res = await fetch('/api/drafts', { 
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${session.access_token}` }
+          });
           if (res.ok) {
               const data = await res.json();
               setDraftId(data.draftId);
@@ -670,9 +675,16 @@ export default function HACCPMasterFlow() {
 
         // Persist generated content to draft
         if (draftId) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                return;
+            }
             await fetch(`/api/drafts/${draftId}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
                 body: JSON.stringify({ plan_data: data })
             });
         }
@@ -732,9 +744,16 @@ export default function HACCPMasterFlow() {
 
           // Save validation result to draft immediately
           if (draftId) {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session) {
+                  return;
+              }
               await fetch(`/api/drafts/${draftId}`, {
                   method: 'PATCH',
-                  headers: { 'Content-Type': 'application/json' },
+                  headers: { 
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${session.access_token}`
+                  },
                   body: JSON.stringify({ validation: data })
               });
           }
@@ -1377,14 +1396,14 @@ export default function HACCPMasterFlow() {
                   </p>
                   <button 
                       onClick={() => {
-                          const nextUrl = encodeURIComponent(`/builder?id=${draftId}`);
+                          const nextUrl = encodeURIComponent(draftId ? `/builder?id=${draftId}` : '/builder');
                           window.location.href = `/signup?next=${nextUrl}`;
                       }}
                       className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 cursor-pointer"
                   >
                       Save & Continue
                   </button>
-                  <p className="text-sm text-slate-400 mt-4">Already have an account? <a href={`/login?next=${encodeURIComponent(`/builder?id=${draftId}`)}`} className="text-blue-600 hover:underline">Log In</a></p>
+                  <p className="text-sm text-slate-400 mt-4">Already have an account? <a href={`/login?next=${encodeURIComponent(draftId ? `/builder?id=${draftId}` : '/builder')}`} className="text-blue-600 hover:underline">Log In</a></p>
               </div>
           </div>
       );
