@@ -701,13 +701,24 @@ export default function HACCPMasterFlow() {
           const { data: { session } } = await supabase.auth.getSession();
           if (!session) return;
 
-          const res = await fetch(`/api/download-pdf?planId=${exportId}&lang=${language}`, {
-              headers: { Authorization: `Bearer ${session.access_token}` }
-          });
-          
+          const fetchPdf = async (id: string) => {
+              const response = await fetch(`/api/download-pdf?planId=${id}&lang=${language}`, {
+                  headers: { Authorization: `Bearer ${session.access_token}` }
+              });
+              return response;
+          };
+
+          let res = await fetchPdf(exportId);
+          if (!res.ok && draftId && draftId !== exportId) {
+              const err = await res.json().catch(() => null);
+              if (err?.error === 'Plan not found') {
+                  res = await fetchPdf(draftId);
+              }
+          }
+
           if (!res.ok) {
-              const err = await res.json();
-              alert(err.error || 'Download failed');
+              const err = await res.json().catch(() => null);
+              alert(err?.error || 'Download failed');
               return;
           }
           
