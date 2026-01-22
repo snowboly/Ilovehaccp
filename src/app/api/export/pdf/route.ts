@@ -1,6 +1,6 @@
 import React from 'react';
 import { NextResponse } from 'next/server';
-import { renderToBuffer } from '@react-pdf/renderer';
+import { renderToBuffer, type DocumentProps } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { getDictionary } from '@/lib/locales';
 
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       dict,
       logo,
       template
-    }) as unknown as React.ReactElement;
+    }) as React.ReactElement<DocumentProps>;
     const pdfBuffer = await renderToBuffer(pdfElement);
 
     const baseName = data.businessName || 'HACCP_Plan';
