@@ -73,10 +73,7 @@ import {
 } from 'lucide-react';
 
 import { createClient } from '@/utils/supabase/client';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import HACCPDocument from '../pdf/HACCPDocument';
 import { useLanguage } from '@/lib/i18n';
-import { getDictionary } from '@/lib/locales';
 
 type Step = 'intro' | 'questions' | 'generating' | 'result';
 
@@ -142,7 +139,6 @@ const GENERATION_LOG_MESSAGES = [
 export default function HACCPBuilder() {
   const supabase = createClient();
   const { t, language } = useLanguage();
-  const dict = getDictionary(language).pdf;
   const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>('intro');
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -157,6 +153,7 @@ export default function HACCPBuilder() {
   const [history, setHistory] = useState<number[]>([]);
   const [hasSavedProgress, setHasSavedProgress] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isFreePdfDownloading, setIsFreePdfDownloading] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -218,6 +215,54 @@ export default function HACCPBuilder() {
         return () => clearInterval(interval);
     }
   }, [step]);
+
+  const handleFreePdfDownload = async () => {
+    setIsFreePdfDownloading(true);
+    try {
+      const payload = {
+        lang: language,
+        template: formData.template,
+        logo: formData.logo,
+        fileName: `${(formData.businessLegalName || 'HACCP_Plan').replace(/\s+/g, '_')}.pdf`,
+        data: {
+          businessName: formData.businessLegalName || 'My Business',
+          productName: 'HACCP Plan',
+          productDescription: `Food Safety Plan for ${formData.businessType}`,
+          intendedUse: 'General Consumption',
+          storageType: 'Multiple',
+          analysis: generatedAnalysis,
+          fullPlan: fullPlan || {}
+        }
+      };
+
+      const res = await fetch('/api/export/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        alert(err?.error || 'Failed to download PDF.');
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = payload.fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to download PDF.');
+    } finally {
+      setIsFreePdfDownloading(false);
+    }
+  };
 
   // Helper to determine temperature unit (Default to Celsius for EU focus)
   const tempUnit = '°C';
@@ -1075,33 +1120,15 @@ export default function HACCPBuilder() {
                         onSuccess={() => {}} // Optional: trigger some tracking
                     >
                         {isClient && (
-                            <PDFDownloadLink
-                                document={
-                                <HACCPDocument 
-                                    dict={dict}
-                                    logo={formData.logo}
-                                    template={formData.template}
-                                    data={{
-                                    businessName: formData.businessLegalName || "My Business",
-                                    productName: "HACCP Plan",
-                                    productDescription: `Food Safety Plan for ${formData.businessType}`,
-                                    intendedUse: "General Consumption",
-                                    storageType: "Multiple",
-                                    analysis: generatedAnalysis,
-                                    fullPlan: fullPlan
-                                    }} 
-                                />
-                                }
-                                fileName={`${(formData.businessLegalName || "HACCP_Plan").replace(/\s+/g, '_')}.pdf`}
-                                className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-center shadow-xl hover:bg-slate-100 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                            <button
+                                type="button"
+                                onClick={handleFreePdfDownload}
+                                disabled={isFreePdfDownloading}
+                                className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-center shadow-xl hover:bg-slate-100 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70"
                             >
-                                {({ loading }) => (
-                                <>
-                                    {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
-                                    {loading ? 'Preparing...' : 'Download PDF Plan'}
-                                </>
-                                )}
-                            </PDFDownloadLink>
+                                {isFreePdfDownloading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
+                                {isFreePdfDownloading ? 'Preparing...' : 'Download PDF Plan'}
+                            </button>
                         )}
                     </LeadCapture>
                   </div>
