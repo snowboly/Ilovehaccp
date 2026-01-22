@@ -2,10 +2,16 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { supabaseService } from '@/lib/supabase';
+import { renderToBuffer } from '@react-pdf/renderer';
+import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { generateWordDocument } from '@/lib/word-generator';
+import { getDictionary } from '@/lib/locales';
 import { emailTranslations } from '@/lib/email-locales';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
@@ -16,8 +22,127 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Email service not configured" }, { status: 500 });
     }
 
+    if (!email || !planId) {
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+    }
+
     // Select Locale (Fallback to EN)
-    const t = (emailTranslations as any)[language]?.payment_confirmed || emailTranslations.en.payment_confirmed;
+    const fallbackTranslations = emailTranslations.en.payment_confirmed;
+    const t = {
+      ...fallbackTranslations,
+      ...((emailTranslations as any)[language]?.payment_confirmed || {})
+    };
+    const planIdLabel = t.plan_id_label || 'Plan ID';
+
+    let plan: any = null;
+    let planVersion = 1;
+    if (planId !== 'test-plan-id') {
+      const { data, error } = await supabaseService
+        .from('plans')
+        .select('*')
+        .eq('id', planId)
+        .single();
+
+      if (error) {
+        console.error("Supabase Plan Fetch Error:", error);
+      } else {
+        plan = data;
+      }
+
+      if (plan) {
+        if (plan.payment_status !== 'paid') {
+          console.warn(`Plan ${planId} is not paid. Skipping attachment generation.`);
+          return NextResponse.json({ success: false, error: "Payment required" }, { status: 403 });
+        }
+
+        if (plan.user_id) {
+          const { data: authData, error: authError } = await supabaseService.auth.admin.getUserById(plan.user_id);
+          const planOwnerEmail = authData?.user?.email?.toLowerCase();
+          if (authError || !planOwnerEmail || planOwnerEmail !== String(email).toLowerCase()) {
+            console.warn(`Email mismatch for plan ${planId}. Requested ${email}, owner ${planOwnerEmail || 'unknown'}.`);
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
+          }
+        }
+
+        const { data: latestVersion } = await supabaseService
+          .from('haccp_plan_versions')
+          .select('version_number')
+          .eq('plan_id', planId)
+          .order('version_number', { ascending: false })
+          .limit(1)
+          .single();
+
+        planVersion = latestVersion?.version_number || 1;
+      }
+    }
+
+    let userAttachments: any[] = [];
+    if (plan) {
+      const fullPlan = plan.full_plan || {};
+      const originalInputs = fullPlan._original_inputs || {};
+      const productInputs = originalInputs.product || {};
+      const dict = getDictionary(language as any).pdf;
+
+      const pdfBuffer = await renderToBuffer(
+        <HACCPDocument
+          data={{
+            businessName: plan.business_name,
+            productName: productInputs.product_name || plan.product_name || "HACCP Plan",
+            productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
+            intendedUse: productInputs.intended_use || plan.intended_use || "General",
+            storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
+            mainIngredients: productInputs.key_ingredients || "Standard",
+            shelfLife: productInputs.shelf_life || "As per label",
+            analysis: plan.hazard_analysis || [],
+            fullPlan,
+            planVersion,
+            lang: language,
+            isPaid: true
+          }}
+          dict={dict}
+          logo={productInputs.logo_url || null}
+          template={originalInputs.template || 'audit-classic'}
+        />
+      );
+
+      let logoBuffer = null;
+      if (productInputs.logo_url) {
+        try {
+          const res = await fetch(productInputs.logo_url);
+          if (res.ok) {
+            const arrayBuffer = await res.arrayBuffer();
+            logoBuffer = Buffer.from(arrayBuffer);
+          }
+        } catch (e) {
+          console.warn("Failed to fetch logo for Word doc", e);
+        }
+      }
+
+      const wordBuffer = await generateWordDocument({
+        businessName: plan.business_name,
+        full_plan: fullPlan,
+        planVersion,
+        template: originalInputs.template || fullPlan.validation?.document_style,
+        productName: productInputs.product_name || plan.product_name || "HACCP Plan",
+        productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
+        mainIngredients: productInputs.key_ingredients || "Standard",
+        intendedUse: productInputs.intended_use || plan.intended_use || "General",
+        storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
+        shelfLife: productInputs.shelf_life || "As per label",
+        logoBuffer
+      }, language);
+
+      userAttachments = [
+        {
+          filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.pdf`,
+          content: pdfBuffer
+        },
+        {
+          filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
+          content: wordBuffer
+        }
+      ];
+    }
 
     // 1. Email to User
     await resend.emails.send({
@@ -25,11 +150,13 @@ export async function POST(req: Request) {
       to: [email],
       replyTo: 'support@ilovehaccp.com',
       subject: t.subject.replace('{businessName}', businessName),
+      attachments: userAttachments,
       html: `
         <div style="font-family: sans-serif; color: #333;">
           <h1>${t.title}</h1>
           <p>${t.greeting}</p>
           <p>${t.thank_you.replace('{businessName}', businessName)}</p>
+          <p><strong>${planIdLabel}:</strong> ${planId}</p>
           
           <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <strong style="color: #166534;">${t.next_steps_title}</strong>
@@ -58,34 +185,24 @@ export async function POST(req: Request) {
     // 2. Prepare Attachment for Admin
     let attachments: any[] = [];
     if (planId === 'test-plan-id') {
-        console.log("Skipping attachment for TEST plan.");
-    } else {
-        try {
-            console.log(`Generating attachment for Plan ID: ${planId}`);
-        const { data: plan, error } = await supabaseService
-            .from('plans')
-            .select('*')
-            .eq('id', planId)
-            .single();
-
-        if (error) {
-             console.error("Supabase Plan Fetch Error:", error);
-        } else if (plan) {
-            const buffer = await generateWordDocument({
-                businessName: plan.business_name,
-                full_plan: plan.full_plan
-            });
-            
-            attachments.push({
-                filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
-                content: buffer
-            });
-            console.log("Attachment generated successfully.");
-                    }
-                } catch (docError) {
-                    console.error("CRITICAL: Failed to generate doc attachment, sending email without it.", docError);
-                }
-            }
+      console.log("Skipping attachment for TEST plan.");
+    } else if (plan) {
+      try {
+        console.log(`Generating attachment for Plan ID: ${planId}`);
+        const buffer = await generateWordDocument({
+          businessName: plan.business_name,
+          full_plan: plan.full_plan
+        });
+        
+        attachments.push({
+          filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
+          content: buffer
+        });
+        console.log("Attachment generated successfully.");
+      } catch (docError) {
+        console.error("CRITICAL: Failed to generate doc attachment, sending email without it.", docError);
+      }
+    }
     // 3. Email to Admin
     console.log("Sending Admin Email...");
     const adminRes = await resend.emails.send({
