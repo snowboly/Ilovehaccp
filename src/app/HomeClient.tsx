@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { 
   Clock, 
   ArrowRight, 
-  Star, 
   CheckCircle2, 
   X,
   Gavel,
@@ -41,10 +40,6 @@ export default function Home() {
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-xs font-bold">
-                  <Star className="w-3 h-3 fill-blue-700" />
-                  {t('landing.hero.badge')}
-                </div>
                 <h1 className="text-4xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
                   {t('landing.hero.titlePart1')} <br />
                   <span className="text-3xl lg:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 block mt-2">

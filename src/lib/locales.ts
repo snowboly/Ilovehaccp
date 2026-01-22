@@ -14,7 +14,6 @@ export const translations = {
     },
     landing: {
       hero: {
-        badge: "Rated #1 Food Safety Tool",
         titlePart1: "Create a HACCP Plan in Minutes —",
         titlePart2: "Without Consultants or Spreadsheets",
         subtitle: "Create a HACCP plan in minutes. Professional food safety tools for restaurants, manufacturers, and catering.",
@@ -372,7 +371,6 @@ export const translations = {
     },
     landing: {
       hero: {
-        badge: "Herramienta #1 de Seguridad Alimentaria",
         titlePart1: "Cree un Plan HACCP en Minutos —",
         titlePart2: "Sin Consultores ni Hojas de Cálculo",
         subtitle: "Cree un plan HACCP profesional en minutos. Herramientas de seguridad alimentaria para restaurantes, fabricantes y catering.",
@@ -728,7 +726,6 @@ export const translations = {
     },
     landing: {
       hero: {
-        badge: "Outil #1 de Sécurité Alimentaire",
         titlePart1: "Créez un Plan HACCP en quelques minutes —",
         titlePart2: "Sans Consultants ni Tableurs",
         subtitle: "Créez un plan HACCP professionnel en quelques minutes. Des outils de sécurité alimentaire pour les restaurants, les fabricants et le traiteur.",
@@ -1094,7 +1091,6 @@ export const translations = {
     },
     landing: {
       hero: {
-        badge: "Ferramenta #1 de Segurança Alimentar",
         titlePart1: "Crie um Plano HACCP em Minutos —",
         titlePart2: "Sem Consultores ou Planilhas",
         subtitle: "Crie um plano HACCP profissional em minutos. Ferramentas de segurança alimentar para restaurantes, fabricantes e catering.",
