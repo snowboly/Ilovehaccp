@@ -25,7 +25,6 @@ export default function Footer() {
           <ul className="space-y-2 text-sm font-medium">
             <li><Link href="/builder" className="hover:text-blue-400 transition-colors">HACCP Builder</Link></li>
             <li><Link href="/#pricing" className="hover:text-blue-400 transition-colors">{t('nav.pricing')}</Link></li>
-            <li><Link href="/#features" className="hover:text-blue-400 transition-colors">{t('nav.features')}</Link></li>
             <li><Link href="/login" className="hover:text-blue-400 transition-colors">{t('nav.login')}</Link></li>
             <li><Link href="/signup" className="hover:text-blue-400 transition-colors">Create Account</Link></li>
           </ul>
