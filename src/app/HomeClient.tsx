@@ -194,7 +194,7 @@ export default function Home() {
                       </div>
 
                       <p className="text-slate-500 font-medium">
-                        Capture hazards, controls, and monitoring notes in a consistent format your team can update over time.
+                        Capture hazards, controls, and monitoring notes in a consistent format your team can maintain over time.
                       </p>
                    </div>
                 </div>
