@@ -1,10 +1,6 @@
 "use client";
 
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import HACCPDocument from '../pdf/HACCPDocument';
-import { Loader2, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getDictionary } from '@/lib/locales';
 
 const sampleData = {
   businessName: "The Artisanal Bakery",
@@ -36,7 +32,7 @@ const sampleData = {
 
 export default function SampleDownload() {
   const [isClient, setIsClient] = useState(false);
-  const dict = getDictionary('en').pdf;
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setIsClient(true), 0);
@@ -46,13 +42,47 @@ export default function SampleDownload() {
 
   return (
     <div className="hidden">
-      <PDFDownloadLink
+      <button
         id="download-sample-trigger"
-        document={<HACCPDocument data={sampleData} dict={dict} />}
-        fileName="Sample_Bakery_HACCP_Plan.pdf"
+        type="button"
+        onClick={async () => {
+          setIsDownloading(true);
+          try {
+            const res = await fetch('/api/export/pdf', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                lang: 'en',
+                fileName: 'Sample_Bakery_HACCP_Plan.pdf',
+                data: sampleData
+              })
+            });
+
+            if (!res.ok) {
+              const err = await res.json().catch(() => null);
+              console.error(err?.error || 'Sample PDF download failed.');
+              return;
+            }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Sample_Bakery_HACCP_Plan.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error(error);
+          } finally {
+            setIsDownloading(false);
+          }
+        }}
+        aria-busy={isDownloading}
       >
-        {({ loading }) => (loading ? 'Loading...' : 'Download')}
-      </PDFDownloadLink>
+        Download
+      </button>
     </div>
   );
 }
