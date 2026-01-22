@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { 
   Clock, 
   ArrowRight, 
-  Star, 
   CheckCircle2, 
   X,
   Gavel,
@@ -18,7 +17,6 @@ import BlogPreview from '@/components/landing/BlogPreview';
 import SampleDownload from '@/components/landing/SampleDownload';
 import FounderNote from '@/components/landing/FounderNote';
 import TrustSection from '@/components/landing/TrustSection';
-import LeadMagnet from '@/components/landing/LeadMagnet';
 import JSONLD from '@/components/layout/JSONLD';
 import { useLanguage } from '@/lib/i18n';
 
@@ -41,10 +39,6 @@ export default function Home() {
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-xs font-bold">
-                  <Star className="w-3 h-3 fill-blue-700" />
-                  {t('landing.hero.badge')}
-                </div>
                 <h1 className="text-4xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
                   {t('landing.hero.titlePart1')} <br />
                   <span className="text-3xl lg:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 block mt-2">
@@ -74,19 +68,6 @@ export default function Home() {
                     {t('landing.hero.cta')}
                     <ArrowRight className="w-5 h-5" />
                   </Link>
-                  <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
-                      <div className="flex -space-x-2">
-                          {[1,2,3].map(i => (
-                              <div key={i} className="w-7 h-7 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center">
-                                  <UserCheck className="w-3.5 h-3.5 text-blue-600" />
-                              </div>
-                          ))}
-                      </div>
-                      <div className="text-xs">
-                          <p className="font-black text-slate-900 leading-none">{t('landing.hero.auditReady')}</p>
-                          <p className="text-slate-500 font-bold text-[9px] uppercase tracking-widest mt-1">{t('landing.hero.validated')}</p>
-                      </div>
-                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] pt-2 grayscale opacity-60">
@@ -151,25 +132,28 @@ export default function Home() {
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-4xl font-black text-slate-900 mb-6 tracking-tight italic uppercase">
-                  Rigorous Standards Alignment. <br />
-                  <span className="text-blue-600">Zero Shortcuts.</span>
+                <h2 className="text-4xl font-black text-slate-900 mb-6 tracking-tight">
+                  Clear HACCP structure, built for real teams
                 </h2>
                 <p className="text-xl text-slate-600 leading-relaxed font-medium mb-10">
-                  Our intelligence engine isn't just generating text—it's executing a logical risk assessment based on strict EU and UK food safety standards.
+                  Turn your process details into a clean, step-by-step plan that stays easy to review and maintain.
                 </p>
-                
-                <div className="grid gap-6">
-                  {[{
-                    "title": "Codex Alimentarius",
-                    "desc": "Scientific logic based on the CXC 1-1969 General Principles of Food Hygiene."
-                  }, {
-                    "title": "Auditor-Ready Structure",
-                    "desc": "Output follows the standard 7-principle format expected by Environmental Health Officers."
-                  }, {
-                    "title": "EC Regulation 852/2004",
-                    "desc": "Aligned with EU hygiene of foodstuffs regulations."
-                  }].map((item, i) => (
+
+                <div className="grid gap-6 mb-8">
+                  {[
+                    {
+                      title: "Core HACCP principles",
+                      desc: "Organized around the essential steps without extra complexity."
+                    },
+                    {
+                      title: "Plain-language guidance",
+                      desc: "Clear structure so teams can document consistently."
+                    },
+                    {
+                      title: "Easy to update",
+                      desc: "Keep your plan current as menus or processes change."
+                    }
+                  ].map((item, i) => (
                     <div key={i} className="flex gap-4 p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
                       <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 flex-shrink-0">
                         <ShieldCheck className="w-6 h-6" />
@@ -181,6 +165,13 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
+                <Link
+                  href="/builder"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-700"
+                >
+                  Build your plan
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
               
               <div className="relative">
@@ -202,11 +193,9 @@ export default function Home() {
                         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-200"></div>
                       </div>
 
-                      <h3 className="text-3xl font-black text-slate-900">{t('landing.hero.validated')}</h3>
-                      <p className="text-slate-500 font-medium">Every Critical Control Point (CCP) identified by our engine includes scientific critical limits and corrective actions verified for audit submission.</p>
-                      <div className="pt-2">
-                        <span className="bg-slate-900 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">Validated for 2026</span>
-                      </div>
+                      <p className="text-slate-500 font-medium">
+                        Capture hazards, controls, and monitoring notes in a consistent format your team can update over time.
+                      </p>
                    </div>
                 </div>
                 {/* Background Decoration */}
@@ -374,7 +363,6 @@ export default function Home() {
         </section>
 
         <HowItWorks />
-        <LeadMagnet />
         <BlogPreview />
 
         {/* Final CTA */}
@@ -384,7 +372,6 @@ export default function Home() {
             <Link href="/builder" className="inline-block bg-white text-blue-600 px-10 py-5 rounded-full text-xl font-bold shadow-2xl hover:scale-105 transition-transform">
               {t('landing.finalCta.btn')}
             </Link>
-            <p className="mt-6 text-blue-200">{t('landing.finalCta.sub')}</p>
           </div>
         </section>
       </main>
