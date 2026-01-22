@@ -8,6 +8,7 @@ import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { generateWordDocument } from '@/lib/word-generator';
 import { getDictionary } from '@/lib/locales';
 import { emailTranslations } from '@/lib/email-locales';
+import { isExportAllowed } from '@/lib/export/permissions';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
@@ -79,70 +80,75 @@ export async function POST(req: Request) {
 
     let userAttachments: any[] = [];
     if (plan) {
-      const fullPlan = plan.full_plan || {};
-      const originalInputs = fullPlan._original_inputs || {};
-      const productInputs = originalInputs.product || {};
-      const dict = getDictionary(language as any).pdf;
+      const exportPermission = isExportAllowed(plan);
+      if (!exportPermission.allowed) {
+        console.warn(`Plan ${planId} export blocked: ${exportPermission.reason}`);
+      } else {
+        const fullPlan = plan.full_plan || {};
+        const originalInputs = fullPlan._original_inputs || {};
+        const productInputs = originalInputs.product || {};
+        const dict = getDictionary(language as any).pdf;
 
-      const pdfBuffer = await renderToBuffer(
-        React.createElement(HACCPDocument, {
-          data: {
-            businessName: plan.business_name,
-            productName: productInputs.product_name || plan.product_name || "HACCP Plan",
-            productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
-            intendedUse: productInputs.intended_use || plan.intended_use || "General",
-            storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
-            mainIngredients: productInputs.key_ingredients || "Standard",
-            shelfLife: productInputs.shelf_life || "As per label",
-            analysis: plan.hazard_analysis || [],
-            fullPlan,
-            planVersion,
-            lang: language,
-            isPaid: true
-          },
-          dict,
-          logo: productInputs.logo_url || null,
-          template: originalInputs.template || 'audit-classic'
-        })
-      );
+        const pdfBuffer = await renderToBuffer(
+          React.createElement(HACCPDocument, {
+            data: {
+              businessName: plan.business_name,
+              productName: productInputs.product_name || plan.product_name || "HACCP Plan",
+              productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
+              intendedUse: productInputs.intended_use || plan.intended_use || "General",
+              storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
+              mainIngredients: productInputs.key_ingredients || "Standard",
+              shelfLife: productInputs.shelf_life || "As per label",
+              analysis: plan.hazard_analysis || [],
+              fullPlan,
+              planVersion,
+              lang: language,
+              isPaid: true
+            },
+            dict,
+            logo: productInputs.logo_url || null,
+            template: originalInputs.template || 'audit-classic'
+          })
+        );
 
-      let logoBuffer = null;
-      if (productInputs.logo_url) {
-        try {
-          const res = await fetch(productInputs.logo_url);
-          if (res.ok) {
-            const arrayBuffer = await res.arrayBuffer();
-            logoBuffer = Buffer.from(arrayBuffer);
+        let logoBuffer = null;
+        if (productInputs.logo_url) {
+          try {
+            const res = await fetch(productInputs.logo_url);
+            if (res.ok) {
+              const arrayBuffer = await res.arrayBuffer();
+              logoBuffer = Buffer.from(arrayBuffer);
+            }
+          } catch (e) {
+            console.warn("Failed to fetch logo for Word doc", e);
           }
-        } catch (e) {
-          console.warn("Failed to fetch logo for Word doc", e);
         }
+
+        const wordBuffer = await generateWordDocument({
+          businessName: plan.business_name,
+          full_plan: fullPlan,
+          planVersion,
+          template: originalInputs.template || fullPlan.validation?.document_style,
+          productName: productInputs.product_name || plan.product_name || "HACCP Plan",
+          productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
+          mainIngredients: productInputs.key_ingredients || "Standard",
+          intendedUse: productInputs.intended_use || plan.intended_use || "General",
+          storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
+          shelfLife: productInputs.shelf_life || "As per label",
+          logoBuffer
+        }, language);
+
+        userAttachments = [
+          {
+            filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.pdf`,
+            content: pdfBuffer
+          },
+          {
+            filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
+            content: wordBuffer
+          }
+        ];
       }
-
-      const wordBuffer = await generateWordDocument({
-        businessName: plan.business_name,
-        full_plan: fullPlan,
-        planVersion,
-        template: originalInputs.template || fullPlan.validation?.document_style,
-        productName: productInputs.product_name || plan.product_name || "HACCP Plan",
-        productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
-        mainIngredients: productInputs.key_ingredients || "Standard",
-        intendedUse: productInputs.intended_use || plan.intended_use || "General",
-        storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
-        shelfLife: productInputs.shelf_life || "As per label",
-        logoBuffer
-      }, language);
-
-      userAttachments = [
-        {
-          filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.pdf`,
-          content: pdfBuffer
-        },
-        {
-          filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
-          content: wordBuffer
-        }
-      ];
     }
 
     // 1. Email to User
