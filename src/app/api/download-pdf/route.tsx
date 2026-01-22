@@ -5,6 +5,7 @@ import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { checkAdminRole } from '@/lib/admin-auth';
 import { getDictionary } from '@/lib/locales';
 import { isExportAllowed } from '@/lib/export/permissions';
+import { fetchLogoAssets } from '@/lib/export/logo';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -102,11 +103,13 @@ export async function GET(req: Request) {
         isPaid: plan.payment_status === 'paid' || isAdmin // Admin gets clean copy
     };
 
+    const { pdfLogo } = await fetchLogoAssets(originalInputs.product?.logo_url);
+
     const pdfBuffer = await renderToBuffer(
         <HACCPDocument 
             data={pdfData}
             dict={dict}
-            logo={originalInputs.product?.logo_url || null}
+            logo={pdfLogo}
             template={originalInputs.template || 'audit-classic'}
         />
     );

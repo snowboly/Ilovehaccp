@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, BorderStyle, WidthType, PageBreak, ImageRun, AlignmentType, Header, Footer } from 'docx';
 import { checkAdminRole } from '@/lib/admin-auth';
 import { generateWordDocument } from '@/lib/word-generator';
 import { isExportAllowed } from '@/lib/export/permissions';
+import { fetchLogoAssets } from '@/lib/export/logo';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -98,18 +98,7 @@ export async function GET(req: Request) {
     const originalInputs = fullPlan._original_inputs || {};
     const productInputs = originalInputs.product || {};
 
-    let logoBuffer = null;
-    if (productInputs.logo_url) {
-        try {
-            const res = await fetch(productInputs.logo_url);
-            if (res.ok) {
-                const arrayBuffer = await res.arrayBuffer();
-                logoBuffer = Buffer.from(arrayBuffer);
-            }
-        } catch (e) {
-            console.warn("Failed to fetch logo for Word doc", e);
-        }
-    }
+    const { wordLogo } = await fetchLogoAssets(productInputs.logo_url);
 
     const buffer = await generateWordDocument({
         businessName: plan.business_name,
@@ -122,7 +111,7 @@ export async function GET(req: Request) {
         intendedUse: productInputs.intended_use || plan.intended_use || "General",
         storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
         shelfLife: productInputs.shelf_life || "As per label",
-        logoBuffer
+        logoBuffer: wordLogo
     }, lang);
 
     // 5. Return Stream
