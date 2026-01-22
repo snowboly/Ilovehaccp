@@ -22,6 +22,19 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
   const searchParams = useSearchParams();
   const next = searchParams.get('next');
 
+  const getPostLoginRedirect = async () => {
+    try {
+      const response = await fetch('/api/me/admin');
+      if (response.ok) {
+        const data = (await response.json()) as { isAdmin?: boolean };
+        return data.isAdmin ? '/admin' : '/dashboard';
+      }
+    } catch (e) {
+      console.error('Failed to fetch admin status', e);
+    }
+    return '/dashboard';
+  };
+
   // Helper: Attach Draft if exists
   const attachDraft = async (session: any) => {
       const draftId = localStorage.getItem('haccp_draft_id');
@@ -47,7 +60,8 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         await attachDraft(session);
-        window.location.href = next || '/dashboard';
+        const redirectTo = await getPostLoginRedirect();
+        window.location.href = redirectTo;
       }
     });
 
@@ -83,7 +97,8 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
             await attachDraft(data.session);
         }
 
-        window.location.href = next || '/dashboard';
+        const redirectTo = await getPostLoginRedirect();
+        window.location.href = redirectTo;
       } else if (view === 'forgot_password') {
         const origin = window.location.origin;
         const { error } = await supabase.auth.resetPasswordForEmail(email, {

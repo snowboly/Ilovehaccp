@@ -1,7 +1,5 @@
 import { supabaseService } from '@/lib/supabase';
 import { Activity } from 'lucide-react';
-import AdminGuard from '@/components/admin/AdminGuard';
-
 export default async function AdminPage() {
   const [
     { count: totalPlans },
@@ -36,7 +34,6 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <AdminGuard>
       <div className="max-w-6xl mx-auto space-y-8">
         <h1 className="text-3xl font-black text-slate-900">Dashboard Overview</h1>
         <div className="grid md:grid-cols-4 gap-6">
@@ -88,6 +85,5 @@ export default async function AdminPage() {
           </div>
         </div>
       </div>
-    </AdminGuard>
   );
 }
