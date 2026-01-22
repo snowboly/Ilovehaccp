@@ -1144,7 +1144,7 @@ export default function HACCPBuilder() {
                         <li className="flex items-center gap-3 text-sm font-bold text-blue-50"><CheckCircle2 className="w-4 h-4 text-blue-200" /> Editable Word/Excel</li>
                         <li className="flex items-center gap-3 text-sm font-bold text-blue-50"><CheckCircle2 className="w-4 h-4 text-blue-200" /> Basic Prof. Review</li>
                     </ul>
-                    <button onClick={() => handleCheckout('starter')} disabled={isPaying} className="w-full py-4 bg-white text-blue-600 rounded-2xl font-black shadow-xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+                    <button onClick={() => handleCheckout('expert')} disabled={isPaying} className="w-full py-4 bg-white text-blue-600 rounded-2xl font-black shadow-xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
                         {isPaying ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Get Reviewed Plan'}
                     </button>
                   </div>

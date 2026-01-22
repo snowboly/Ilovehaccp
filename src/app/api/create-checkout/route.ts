@@ -26,6 +26,24 @@ export async function POST(req: Request) {
 
     const { tier, planId, businessName } = await req.json();
 
+    if (!planId) {
+      return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
+    }
+
+    const { data: plan, error: planError } = await supabaseService
+      .from('plans')
+      .select('id, user_id')
+      .eq('id', planId)
+      .single();
+
+    if (planError || !plan) {
+      return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+    }
+
+    if (plan.user_id !== user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const prices: Record<string, { amount: number, name: string, desc: string }> = {
       professional: { 
           amount: 3900, 
