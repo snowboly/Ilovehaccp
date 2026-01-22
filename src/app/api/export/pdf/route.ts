@@ -22,9 +22,13 @@ export async function POST(req: Request) {
     }
 
     const dict = getDictionary(lang).pdf;
-    const pdfBuffer = await renderToBuffer(
-      React.createElement(HACCPDocument, { data, dict, logo, template })
-    );
+    const pdfElement = React.createElement(HACCPDocument, {
+      data,
+      dict,
+      logo,
+      template
+    }) as unknown as React.ReactElement;
+    const pdfBuffer = await renderToBuffer(pdfElement);
 
     const baseName = data.businessName || 'HACCP_Plan';
     const fileName = sanitizeFileName(body?.fileName || `${baseName}.pdf`);
