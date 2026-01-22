@@ -2,12 +2,9 @@
 
 import Link from 'next/link';
 import { 
-  Clock, 
   ArrowRight, 
   CheckCircle2, 
   X,
-  Gavel,
-  UserCheck,
   ShieldCheck,
   ChevronRight
 } from 'lucide-react';
@@ -85,46 +82,6 @@ export default function Home() {
         </section>
 
         <TrustSection />
-
-        {/* Features Section */}
-        <section id="features" className="py-24 bg-white text-slate-900">
-          <div className="container px-4 mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-20">
-              <h2 className="text-3xl font-bold mb-4">{t('landing.features.title')}</h2>
-              <p className="text-lg text-slate-500">
-                {t('landing.features.subtitle')}
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: <Clock className="w-6 h-6" />,
-                  title: t('landing.features.f1_title'),
-                  desc: t('landing.features.f1_desc')
-                },
-                {
-                  icon: <Gavel className="w-6 h-6" />,
-                  title: t('landing.features.f2_title'),
-                  desc: t('landing.features.f2_desc')
-                },
-                {
-                  icon: <UserCheck className="w-6 h-6" />,
-                  title: t('landing.features.f3_title'),
-                  desc: t('landing.features.f3_desc')
-                }
-              ].map((feature, i) => (
-                <div key={i} className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-colors text-slate-900">
-                  <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-500/20">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                  <p className="text-slate-500 leading-relaxed">{feature.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Regulatory Integrity Section (Kept mostly static for now as names are standard, but headers translated) */}
         <section className="py-20 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
