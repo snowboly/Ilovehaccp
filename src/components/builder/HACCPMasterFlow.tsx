@@ -7,7 +7,6 @@ import HACCPQuestionnaire from './HACCPQuestionnaire';
 import { getQuestions } from '@/data/haccp/loader';
 import { useLanguage } from '@/lib/i18n';
 
-import { generateHACCPWordDoc } from '@/lib/export-utils';
 import { AlertTriangle, Info, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -734,6 +733,42 @@ export default function HACCPMasterFlow() {
       } catch (e) {
           console.error(e);
           alert('Failed to download PDF.');
+      }
+  };
+
+  const handleDownloadWord = async () => {
+      const exportId = generatedPlan?.id;
+      if (!exportId) {
+          alert('Please save your plan before downloading the Word document.');
+          return;
+      }
+
+      try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) return;
+
+          const res = await fetch(`/api/download-word?planId=${exportId}&lang=${language}`, {
+              headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+
+          if (!res.ok) {
+              const err = await res.json().catch(() => null);
+              alert(err?.error || 'Download failed');
+              return;
+          }
+
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.docx`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+      } catch (e) {
+          console.error(e);
+          alert('Failed to download Word document.');
       }
   };
 
@@ -1670,13 +1705,7 @@ export default function HACCPMasterFlow() {
                                     {isPaid ? (
                                         <div className="grid sm:grid-cols-2 gap-3">
                                             <button 
-                                                onClick={() => generateHACCPWordDoc({
-                                                    businessName: allAnswers.product?.businessLegalName || "My Business",
-                                                    full_plan: {
-                                                        ...generatedPlan?.full_plan,
-                                                        _original_inputs: { ...allAnswers, template: exportTemplate }
-                                                    }
-                                                })}
+                                                onClick={handleDownloadWord}
                                                 disabled={exportBlocked}
                                                 className="bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
@@ -1942,5 +1971,3 @@ export default function HACCPMasterFlow() {
     </div>
   );
 }
-
-

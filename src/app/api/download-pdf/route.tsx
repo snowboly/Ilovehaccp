@@ -6,6 +6,9 @@ import { checkAdminRole } from '@/lib/admin-auth';
 import { getDictionary } from '@/lib/locales';
 import { isExportAllowed } from '@/lib/export/permissions';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
