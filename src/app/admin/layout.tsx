@@ -1,4 +1,4 @@
-import { 
+import {
   Activity,
   UserCheck,
   Files,
@@ -6,15 +6,43 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/utils/supabase/server';
+import { supabaseService } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login?next=/admin');
+  }
+
+  const [{ data: roleRow }, { data: whitelistRow }] = await Promise.all([
+    supabaseService
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .maybeSingle(),
+    supabaseService
+      .from('admin_whitelist')
+      .select('email')
+      .eq('email', user.email ?? '')
+      .maybeSingle(),
+  ]);
+
+  const isAdmin = roleRow?.role === 'admin' && !!whitelistRow?.email;
+  if (!isAdmin) {
+    redirect('/dashboard');
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans">
       {/* Sidebar */}

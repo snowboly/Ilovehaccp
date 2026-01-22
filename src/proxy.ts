@@ -38,29 +38,6 @@ export async function proxy(request: NextRequest) {
       loginUrl.searchParams.set('next', nextPath)
       return NextResponse.redirect(loginUrl)
     }
-
-    if (isAdminRoute) {
-      const [{ data: roleRow, error: roleError }, { data: whitelistRow, error: whitelistError }] =
-        await Promise.all([
-          supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', user.id)
-            .maybeSingle(),
-          supabase
-            .from('admin_whitelist')
-            .select('email')
-            .eq('email', user.email ?? '')
-            .maybeSingle(),
-        ])
-
-      const isAdmin = !roleError && roleRow?.role === 'admin'
-      const isWhitelisted = !whitelistError && !!whitelistRow?.email
-
-      if (!isAdmin || !isWhitelisted) {
-        return NextResponse.redirect(new URL('/dashboard', request.url))
-      }
-    }
   }
 
   return response
