@@ -2,6 +2,7 @@ import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, Width
 import { getWordStyles } from "./styles";
 import { renderWordTable } from "./renderTable";
 import { getDictionary } from "@/lib/locales";
+import { getQuestions } from "@/data/haccp/loader";
 
 export async function generateModularWordDocument(data: any, theme: any, lang: string = 'en'): Promise<Document> {
   const { businessName, full_plan, planVersion = 1 } = data;
@@ -9,6 +10,13 @@ export async function generateModularWordDocument(data: any, theme: any, lang: s
   const ccps = full_plan.ccp_summary || [];
   const originalInputs = full_plan._original_inputs || {};
   const processSteps = originalInputs.process?.process_steps || [];
+  const productInputs = originalInputs.product || {};
+  const processInputs = originalInputs.process || {};
+  const prpInputs = originalInputs.prp || {};
+  const hazardInputs = originalInputs.hazards || {};
+  const ccpDeterminationInputs = originalInputs.ccp_determination || {};
+  const ccpManagementInputs = originalInputs.ccp_management || {};
+  const validationInputs = originalInputs.review_validation || originalInputs.validation || {};
   
   const styles = getWordStyles(theme);
   const dict = getDictionary(lang as any).pdf;
@@ -19,6 +27,127 @@ export async function generateModularWordDocument(data: any, theme: any, lang: s
       shading: styles.heading1.shading,
       border: { bottom: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 6 } }
   });
+
+  const formatValue = (value: any) => {
+    if (value === null || value === undefined || value === '') return 'Not provided';
+    if (Array.isArray(value)) {
+      if (value.length === 0) return 'Not provided';
+      return value
+        .map((item) => (typeof item === 'object' ? JSON.stringify(item) : String(item)))
+        .join('; ');
+    }
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
+  };
+
+  const getAnswerValue = (answers: Record<string, any>, questionId: string, parentId?: string) => {
+    if (!answers) return undefined;
+    if (answers[questionId] !== undefined) return answers[questionId];
+    if (parentId) {
+      const compoundKey = `${parentId}_${questionId}`;
+      if (answers[compoundKey] !== undefined) return answers[compoundKey];
+    }
+    return undefined;
+  };
+
+  const buildQuestionRows = (questions: any[], answers: Record<string, any>, parentId?: string) => {
+    const rows: string[][] = [];
+    const repeatableTables: { title: string; headers: string[]; rows: string[][] }[] = [];
+    const hazardKeysDefault = ['bio', 'chem', 'phys', 'allergen'];
+
+    questions.forEach((q) => {
+      if (q.type === 'repeatable_list' && q.item_schema?.fields) {
+        const headers = q.item_schema.fields.map((f: any) => f.text || f.id);
+        const items = Array.isArray(answers?.[q.id]) ? answers[q.id] : [];
+        const tableRows =
+          items.length > 0
+            ? items.map((item: any) =>
+                q.item_schema.fields.map((f: any) => formatValue(item?.[f.id]))
+              )
+            : [headers.map((_: any, i: number) => (i === 0 ? 'No items provided' : ''))];
+        repeatableTables.push({ title: q.text, headers, rows: tableRows });
+        return;
+      }
+
+      if (q.type === 'prp_group' && Array.isArray(q.fields)) {
+        const groupAnswers = answers?.[q.id] || {};
+        q.fields.forEach((field: any) => {
+          rows.push([`${q.text} — ${field.text}`, formatValue(groupAnswers?.[field.id])]);
+        });
+        return;
+      }
+
+      if (q.type === 'group' && Array.isArray(q.questions)) {
+        const groupAnswers = answers?.[q.id] || {};
+        const nested = buildQuestionRows(q.questions, groupAnswers, q.id);
+        rows.push(...nested.rows);
+        repeatableTables.push(...nested.repeatableTables);
+        return;
+      }
+
+      if (q.type === 'group_per_hazard' && Array.isArray(q.questions)) {
+        const hazardAnswers = answers?.[q.id] || {};
+        const hazardKeys = Object.keys(hazardAnswers);
+        const keys = hazardKeys.length > 0 ? hazardKeys : hazardKeysDefault;
+
+        keys.forEach((hazardKey) => {
+          q.questions.forEach((subQ: any) => {
+            rows.push([
+              `${q.text} (${hazardKey}) — ${subQ.text}`,
+              formatValue(hazardAnswers?.[hazardKey]?.[subQ.id]),
+            ]);
+          });
+        });
+        return;
+      }
+
+      rows.push([q.text, formatValue(getAnswerValue(answers, q.id, parentId))]);
+
+      if (Array.isArray(q.conditional_questions)) {
+        q.conditional_questions.forEach((subQ: any) => {
+          rows.push([
+            `${q.text} — ${subQ.text}`,
+            formatValue(getAnswerValue(answers, subQ.id, q.id)),
+          ]);
+        });
+      }
+    });
+
+    return { rows, repeatableTables };
+  };
+
+  const renderInputSection = (title: string, questions: any, answers: Record<string, any>) => {
+    const questionList = Array.isArray(questions?.questions) ? questions.questions : [];
+    const { rows, repeatableTables } = buildQuestionRows(questionList, answers);
+    const blocks: Paragraph[] = [createSectionHeader(title)];
+
+    const table = renderWordTable(
+      ["Question", "Answer"],
+      rows.length > 0 ? rows : [['', 'No inputs provided']],
+      [45, 55],
+      theme
+    );
+
+    blocks.push(table as any);
+
+    repeatableTables.forEach((t) => {
+      blocks.push(new Paragraph({
+        children: [new TextRun({ text: t.title, bold: true, color: theme.colors.primary.replace('#', '') })],
+        spacing: { before: 200, after: 120 }
+      }));
+      blocks.push(
+        renderWordTable(
+          t.headers,
+          t.rows,
+          t.headers.map(() => Math.floor(100 / t.headers.length)),
+          theme
+        ) as any
+      );
+    });
+
+    return blocks;
+  };
 
   const doc = new Document({
     sections: [
@@ -191,6 +320,34 @@ export async function generateModularWordDocument(data: any, theme: any, lang: s
 
           createSectionHeader(dict.s10_title),
           new Paragraph({ children: [new TextRun({ text: full_plan.record_keeping || "Records maintained.", ...styles.paragraph.run })] }),
+
+          createSectionHeader("APPENDIX — USER INPUTS"),
+          new Paragraph({ children: [new TextRun({ text: "The following tables list every question and response captured in the builder.", ...styles.paragraph.run })] }),
+
+          ...renderInputSection("Product Inputs", getQuestions('product', lang), productInputs),
+          ...renderInputSection("Process Inputs", getQuestions('process', lang), processInputs),
+          ...renderInputSection("PRP Inputs", getQuestions('prp', lang), prpInputs),
+          ...renderInputSection("Hazard Analysis Inputs", getQuestions('hazards', lang), hazardInputs),
+          ...renderInputSection("CCP Determination Inputs", getQuestions('ccp_determination', lang), ccpDeterminationInputs),
+          ...renderInputSection("CCP Management Inputs", getQuestions('ccp_management', lang), ccpManagementInputs),
+          ...renderInputSection("Verification, Validation & Records Inputs", getQuestions('validation', lang), validationInputs),
+
+          createSectionHeader("APPENDIX — GENERATED SUMMARIES"),
+          renderWordTable(
+            ["Field", "Value"],
+            [
+              ["Team & Scope Summary", formatValue(full_plan.team_scope)],
+              ["Product Description Summary", formatValue(full_plan.product_description)],
+              ["Process Flow Narrative", formatValue(full_plan.process_flow_narrative)],
+              ["Assumptions & Limitations", formatValue(full_plan.assumptions_limitations)],
+              ["Next Steps", formatValue(full_plan.next_steps)],
+              ["Auditor Review", formatValue(full_plan.auditor_review)],
+              ["Final Disclaimer", formatValue(full_plan.final_disclaimer)],
+              ["Benchmarking", formatValue(full_plan.benchmarking)],
+            ],
+            [30, 70],
+            theme
+          ),
 
           new Paragraph({ text: "", pageBreakBefore: true }),
           new Paragraph({ children: [new TextRun({ text: `${dict.sign_prepared}: ____________________ Date: _______`, ...styles.paragraph.run })], spacing: { before: 400, after: 400 } }),
