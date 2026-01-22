@@ -10,14 +10,20 @@ export async function validateAdminRequest(req: Request) {
 
   if (authError || !user) return { error: 'Invalid Session', status: 401 };
 
-  // Role Check via Service Client (Bypasses RLS)
-  const { data: profile } = await supabaseService
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
+  const [{ data: profile }, { data: whitelistEntry }] = await Promise.all([
+    supabaseService
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single(),
+    supabaseService
+      .from('admin_whitelist')
+      .select('email')
+      .eq('email', user.email ?? '')
+      .maybeSingle(),
+  ]);
 
-  if (!profile || profile.role !== 'admin') {
+  if (!profile || profile.role !== 'admin' || !whitelistEntry?.email) {
     return { error: 'Forbidden: Admin Access Required', status: 403 };
   }
 

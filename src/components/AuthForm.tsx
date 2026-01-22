@@ -21,6 +21,31 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get('next');
+  const safeNext = next && next.startsWith('/') && !next.startsWith('//') ? next : null;
+
+  const getPostLoginRedirect = async () => {
+    try {
+      if (safeNext) {
+        if (safeNext.startsWith('/admin')) {
+          const response = await fetch('/api/me/admin');
+          if (response.ok) {
+            const data = (await response.json()) as { isAdmin?: boolean };
+            return data.isAdmin ? safeNext : '/dashboard';
+          }
+          return '/dashboard';
+        }
+        return safeNext;
+      }
+      const response = await fetch('/api/me/admin');
+      if (response.ok) {
+        const data = (await response.json()) as { isAdmin?: boolean };
+        return data.isAdmin ? '/admin' : '/dashboard';
+      }
+    } catch (e) {
+      console.error('Failed to fetch admin status', e);
+    }
+    return '/dashboard';
+  };
 
   // Helper: Attach Draft if exists
   const attachDraft = async (session: any) => {
@@ -47,7 +72,8 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         await attachDraft(session);
-        window.location.href = next || '/dashboard';
+        const redirectTo = await getPostLoginRedirect();
+        window.location.href = redirectTo;
       }
     });
 
@@ -66,7 +92,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
           email,
           password,
           options: {
-            emailRedirectTo: `${origin}/login${next ? `?next=${encodeURIComponent(next)}` : ''}`,
+            emailRedirectTo: `${origin}/login${safeNext ? `?next=${encodeURIComponent(safeNext)}` : ''}`,
           },
         });
         if (error) throw error;
@@ -83,7 +109,8 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
             await attachDraft(data.session);
         }
 
-        window.location.href = next || '/dashboard';
+        const redirectTo = await getPostLoginRedirect();
+        window.location.href = redirectTo;
       } else if (view === 'forgot_password') {
         const origin = window.location.origin;
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -204,7 +231,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
                 supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: `${window.location.origin}${next || '/dashboard'}`,
+                        redirectTo: `${window.location.origin}${safeNext || '/dashboard'}`,
                     },
                 }).then(({ error }) => {
                     if (error) {
