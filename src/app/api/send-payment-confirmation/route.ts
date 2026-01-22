@@ -23,6 +23,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Email service not configured" }, { status: 500 });
     }
 
+    if (!email || !planId) {
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+    }
+
     // Select Locale (Fallback to EN)
     const fallbackTranslations = emailTranslations.en.payment_confirmed;
     const t = {
@@ -47,6 +51,20 @@ export async function POST(req: Request) {
       }
 
       if (plan) {
+        if (plan.payment_status !== 'paid') {
+          console.warn(`Plan ${planId} is not paid. Skipping attachment generation.`);
+          return NextResponse.json({ success: false, error: "Payment required" }, { status: 403 });
+        }
+
+        if (plan.user_id) {
+          const { data: authData, error: authError } = await supabaseService.auth.admin.getUserById(plan.user_id);
+          const planOwnerEmail = authData?.user?.email?.toLowerCase();
+          if (authError || !planOwnerEmail || planOwnerEmail !== String(email).toLowerCase()) {
+            console.warn(`Email mismatch for plan ${planId}. Requested ${email}, owner ${planOwnerEmail || 'unknown'}.`);
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
+          }
+        }
+
         const { data: latestVersion } = await supabaseService
           .from('haccp_plan_versions')
           .select('version_number')
