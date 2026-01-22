@@ -21,9 +21,21 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get('next');
+  const safeNext = next && next.startsWith('/') && !next.startsWith('//') ? next : null;
 
   const getPostLoginRedirect = async () => {
     try {
+      if (safeNext) {
+        if (safeNext.startsWith('/admin')) {
+          const response = await fetch('/api/me/admin');
+          if (response.ok) {
+            const data = (await response.json()) as { isAdmin?: boolean };
+            return data.isAdmin ? safeNext : '/dashboard';
+          }
+          return '/dashboard';
+        }
+        return safeNext;
+      }
       const response = await fetch('/api/me/admin');
       if (response.ok) {
         const data = (await response.json()) as { isAdmin?: boolean };
@@ -80,7 +92,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
           email,
           password,
           options: {
-            emailRedirectTo: `${origin}/login${next ? `?next=${encodeURIComponent(next)}` : ''}`,
+            emailRedirectTo: `${origin}/login${safeNext ? `?next=${encodeURIComponent(safeNext)}` : ''}`,
           },
         });
         if (error) throw error;
@@ -219,7 +231,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
                 supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: `${window.location.origin}${next || '/dashboard'}`,
+                        redirectTo: `${window.location.origin}${safeNext || '/dashboard'}`,
                     },
                 }).then(({ error }) => {
                     if (error) {
