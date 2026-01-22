@@ -137,27 +137,40 @@ function DashboardContent() {
     
     const planToDelete = plans.find(p => p.id === id);
     const isDraft = planToDelete?.status === 'draft';
-    const table = isDraft ? 'drafts' : 'plans';
 
     try {
-      const { error } = isDraft
-        ? await supabase
-            .from(table)
-            .update({ status: 'abandoned' })
-            .eq('id', id)
-        : await supabase
-            .from(table)
-            .delete()
-            .eq('id', id);
-        
-      if (error) throw error;
+      if (isDraft) {
+        const { error } = await supabase
+          .from('drafts')
+          .update({ status: 'abandoned' })
+          .eq('id', id);
+
+        if (error) throw error;
+      } else {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          router.push('/login');
+          return;
+        }
+
+        const res = await fetch(`/api/plans/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${session.access_token}` }
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => null);
+          throw new Error(err?.error || 'Failed to delete plan');
+        }
+      }
+
       setPlans(plans.filter(p => p.id !== id));
     } catch (err: any) {
       console.error('Error deleting:', err);
-      if (err.code === '23503') { 
-          alert('Cannot delete: It has active dependencies. Please contact support.');
+      if (err.code === '23503') {
+        alert('Cannot delete: It has active dependencies. Please contact support.');
       } else {
-          alert('Failed to delete. Please try again.');
+        alert(err.message || 'Failed to delete. Please try again.');
       }
     }
   };
