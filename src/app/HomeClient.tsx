@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { 
   Clock, 
   ArrowRight, 
-  Star, 
   CheckCircle2, 
   X,
   Gavel,
@@ -18,7 +17,6 @@ import BlogPreview from '@/components/landing/BlogPreview';
 import SampleDownload from '@/components/landing/SampleDownload';
 import FounderNote from '@/components/landing/FounderNote';
 import TrustSection from '@/components/landing/TrustSection';
-import LeadMagnet from '@/components/landing/LeadMagnet';
 import JSONLD from '@/components/layout/JSONLD';
 import { useLanguage } from '@/lib/i18n';
 
@@ -41,10 +39,6 @@ export default function Home() {
           <div className="container px-4 mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-xs font-bold">
-                  <Star className="w-3 h-3 fill-blue-700" />
-                  {t('landing.hero.badge')}
-                </div>
                 <h1 className="text-4xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
                   {t('landing.hero.titlePart1')} <br />
                   <span className="text-3xl lg:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 block mt-2">
@@ -74,19 +68,6 @@ export default function Home() {
                     {t('landing.hero.cta')}
                     <ArrowRight className="w-5 h-5" />
                   </Link>
-                  <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
-                      <div className="flex -space-x-2">
-                          {[1,2,3].map(i => (
-                              <div key={i} className="w-7 h-7 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center">
-                                  <UserCheck className="w-3.5 h-3.5 text-blue-600" />
-                              </div>
-                          ))}
-                      </div>
-                      <div className="text-xs">
-                          <p className="font-black text-slate-900 leading-none">{t('landing.hero.auditReady')}</p>
-                          <p className="text-slate-500 font-bold text-[9px] uppercase tracking-widest mt-1">{t('landing.hero.validated')}</p>
-                      </div>
-                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] pt-2 grayscale opacity-60">
@@ -202,11 +183,7 @@ export default function Home() {
                         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-200"></div>
                       </div>
 
-                      <h3 className="text-3xl font-black text-slate-900">{t('landing.hero.validated')}</h3>
                       <p className="text-slate-500 font-medium">Every Critical Control Point (CCP) identified by our engine includes scientific critical limits and corrective actions verified for audit submission.</p>
-                      <div className="pt-2">
-                        <span className="bg-slate-900 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">Validated for 2026</span>
-                      </div>
                    </div>
                 </div>
                 {/* Background Decoration */}
@@ -374,7 +351,6 @@ export default function Home() {
         </section>
 
         <HowItWorks />
-        <LeadMagnet />
         <BlogPreview />
 
         {/* Final CTA */}
@@ -384,7 +360,6 @@ export default function Home() {
             <Link href="/builder" className="inline-block bg-white text-blue-600 px-10 py-5 rounded-full text-xl font-bold shadow-2xl hover:scale-105 transition-transform">
               {t('landing.finalCta.btn')}
             </Link>
-            <p className="mt-6 text-blue-200">{t('landing.finalCta.sub')}</p>
           </div>
         </section>
       </main>

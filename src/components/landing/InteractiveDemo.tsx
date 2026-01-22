@@ -181,9 +181,6 @@ export default function InteractiveDemo() {
           )}
         </AnimatePresence>
         
-        <p className="text-center text-[10px] text-slate-600 font-bold uppercase tracking-widest">
-          The full builder analyzes 18+ data points for a complete safety system.
-        </p>
       </div>
     </div>
   );
