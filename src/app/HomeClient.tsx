@@ -1,12 +1,11 @@
 "use client";
 
 import Link from 'next/link';
-import { 
-  ArrowRight, 
-  CheckCircle2, 
+import {
+  ArrowRight,
+  CheckCircle2,
   X,
-  ShieldCheck,
-  ChevronRight
+  ShieldCheck
 } from 'lucide-react';
 import InteractiveDemo from '@/components/landing/InteractiveDemo';
 import HowItWorks from '@/components/landing/HowItWorks';
@@ -14,6 +13,7 @@ import BlogPreview from '@/components/landing/BlogPreview';
 import SampleDownload from '@/components/landing/SampleDownload';
 import FounderNote from '@/components/landing/FounderNote';
 import TrustSection from '@/components/landing/TrustSection';
+import MiniBuilderDemoCard from '@/components/landing/MiniBuilderDemoCard';
 import JSONLD from '@/components/layout/JSONLD';
 import { useLanguage } from '@/lib/i18n';
 
@@ -132,31 +132,7 @@ export default function Home() {
               </div>
               
               <div className="relative">
-                <div className="aspect-square bg-white rounded-[3rem] shadow-2xl p-8 md:p-12 border border-slate-100 flex flex-col items-center justify-center text-center overflow-hidden">
-                   <div className="space-y-6">
-                      <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 relative">
-                        <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">HACCP Drafting Flow</div>
-                        <div className="flex items-center justify-center gap-2">
-                          {["Product", "Process", "Hazards", "Review"].map((step, index) => (
-                            <div key={step} className="flex items-center gap-2">
-                              <div className="w-16 h-10 rounded-lg border-2 border-slate-200 bg-white flex items-center justify-center text-[8px] font-black text-slate-500">
-                                {step}
-                              </div>
-                              {index < 3 && <ChevronRight className="w-3 h-3 text-slate-300" />}
-                            </div>
-                          ))}
-                        </div>
-                        <p className="text-xs text-slate-400 font-semibold mt-4">
-                          This visual supports drafting your HACCP plan steps before formal review.
-                        </p>
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-200"></div>
-                      </div>
-
-                      <p className="text-slate-500 font-medium">
-                        Capture product details, process steps, and hazards in a consistent draft your team can refine later.
-                      </p>
-                   </div>
-                </div>
+                <MiniBuilderDemoCard />
                 {/* Background Decoration */}
                 <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50 -z-10"></div>
               </div>
