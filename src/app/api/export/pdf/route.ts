@@ -1,3 +1,4 @@
+import React from 'react';
 import { NextResponse } from 'next/server';
 import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
 
     const dict = getDictionary(lang).pdf;
     const pdfBuffer = await renderToBuffer(
-      <HACCPDocument data={data} dict={dict} logo={logo} template={template} />
+      React.createElement(HACCPDocument, { data, dict, logo, template })
     );
 
     const baseName = data.businessName || 'HACCP_Plan';
