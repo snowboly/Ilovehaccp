@@ -7,6 +7,7 @@ import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { generateWordDocument } from '@/lib/word-generator';
 import { getDictionary } from '@/lib/locales';
 import { emailTranslations } from '@/lib/email-locales';
+import { fetchLogoAssets } from '@/lib/export/logo';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
@@ -82,6 +83,7 @@ export async function POST(req: Request) {
       const originalInputs = fullPlan._original_inputs || {};
       const productInputs = originalInputs.product || {};
       const dict = getDictionary(language as any).pdf;
+      const { pdfLogo, wordLogo } = await fetchLogoAssets(productInputs.logo_url);
 
       const pdfBuffer = await renderToBuffer(
         <HACCPDocument
@@ -100,23 +102,10 @@ export async function POST(req: Request) {
             isPaid: true
           }}
           dict={dict}
-          logo={productInputs.logo_url || null}
+          logo={pdfLogo}
           template={originalInputs.template || 'audit-classic'}
         />
       );
-
-      let logoBuffer = null;
-      if (productInputs.logo_url) {
-        try {
-          const res = await fetch(productInputs.logo_url);
-          if (res.ok) {
-            const arrayBuffer = await res.arrayBuffer();
-            logoBuffer = Buffer.from(arrayBuffer);
-          }
-        } catch (e) {
-          console.warn("Failed to fetch logo for Word doc", e);
-        }
-      }
 
       const wordBuffer = await generateWordDocument({
         businessName: plan.business_name,
@@ -129,7 +118,7 @@ export async function POST(req: Request) {
         intendedUse: productInputs.intended_use || plan.intended_use || "General",
         storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
         shelfLife: productInputs.shelf_life || "As per label",
-        logoBuffer
+        logoBuffer: wordLogo
       }, language);
 
       userAttachments = [

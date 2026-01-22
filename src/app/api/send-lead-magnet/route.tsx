@@ -5,6 +5,9 @@ import ChecklistDocument from '@/components/pdf/ChecklistDocument';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123');
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
