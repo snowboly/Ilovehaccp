@@ -60,7 +60,7 @@ export async function GET(req: Request) {
     }
 
     // 3. Ownership & Permission Check
-    const isAdmin = await checkAdminRole(user.id);
+    const isAdmin = await checkAdminRole(user.id, user.email);
     if (plan.user_id !== user.id && !isAdmin) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }

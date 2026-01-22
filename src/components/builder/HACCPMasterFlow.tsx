@@ -222,7 +222,16 @@ export default function HACCPMasterFlow() {
   const loadFromId = async (id: string) => {
     // Try as PLAN first (Paid/Generated)
     try {
-        const planRes = await fetch(`/api/plans/${id}`);
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            const nextUrl = encodeURIComponent(`/builder?id=${id}`);
+            window.location.href = `/login?next=${nextUrl}`;
+            return;
+        }
+
+        const planRes = await fetch(`/api/plans/${id}`, {
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
         if (planRes.ok) {
             const data = await planRes.json();
             if (data.plan) {

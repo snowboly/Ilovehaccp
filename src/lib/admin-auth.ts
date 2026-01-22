@@ -10,12 +10,12 @@ export async function validateAdminRequest(req: Request) {
 
   if (authError || !user) return { error: 'Invalid Session', status: 401 };
 
-  const [{ data: profile }, { data: whitelistEntry }] = await Promise.all([
+  const [{ data: roleRow }, { data: whitelistEntry }] = await Promise.all([
     supabaseService
-      .from('profiles')
+      .from('user_roles')
       .select('role')
-      .eq('id', user.id)
-      .single(),
+      .eq('user_id', user.id)
+      .maybeSingle(),
     supabaseService
       .from('admin_whitelist')
       .select('email')
@@ -23,19 +23,26 @@ export async function validateAdminRequest(req: Request) {
       .maybeSingle(),
   ]);
 
-  if (!profile || profile.role !== 'admin' || !whitelistEntry?.email) {
+  if (!roleRow || roleRow.role !== 'admin' || !whitelistEntry?.email) {
     return { error: 'Forbidden: Admin Access Required', status: 403 };
   }
 
   return { user };
 }
 
-export async function checkAdminRole(userId: string) {
-  const { data: profile } = await supabaseService
-    .from('profiles')
-    .select('role')
-    .eq('id', userId)
-    .single();
+export async function checkAdminRole(userId: string, email?: string | null) {
+  const [{ data: roleRow }, { data: whitelistEntry }] = await Promise.all([
+    supabaseService
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .maybeSingle(),
+    supabaseService
+      .from('admin_whitelist')
+      .select('email')
+      .eq('email', email ?? '')
+      .maybeSingle(),
+  ]);
 
-  return profile?.role === 'admin';
+  return roleRow?.role === 'admin' && !!whitelistEntry?.email;
 }
