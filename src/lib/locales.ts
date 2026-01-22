@@ -21,8 +21,6 @@ export const translations = {
         check2: "Custom to your business",
         check3: "Free to start",
         cta: "Build Your Plan Free",
-        auditReady: "Audit Support",
-        validated: "Standard-Based Logic",
         compliance: { standard_1: "EC 852/2004", eu: "UK FSA Standards", codex: "Codex CXC 1-1969" }
       },
       audience: {
@@ -106,8 +104,7 @@ export const translations = {
       },
       finalCta: {
         title: "Ready to start?",
-        btn: "Create Your Free Plan",
-        sub: "No credit card required. Cancel anytime."
+        btn: "Create Your Free Plan"
       }
     },
     hero: {
@@ -378,8 +375,6 @@ export const translations = {
         check2: "Personalizado para su negocio",
         check3: "Gratis para empezar",
         cta: "Cree su Plan Gratis",
-        auditReady: "Soporte de Auditoría",
-        validated: "Lógica Basada en Estándares",
         compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
@@ -461,8 +456,7 @@ export const translations = {
       },
       finalCta: {
         title: "¿Listo para cumplir?",
-        btn: "Cree su Plan Gratis",
-        sub: "No requiere tarjeta de crédito. Cancele cuando quiera."
+        btn: "Cree su Plan Gratis"
       }
     },
     hero: {
@@ -733,8 +727,6 @@ export const translations = {
         check2: "Personnalisé pour votre entreprise",
         check3: "Gratuit pour commencer",
         cta: "Créer votre Plan Gratuit",
-        auditReady: "Support d'Audit",
-        validated: "Logique Basée sur Normes",
         compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
@@ -826,8 +818,7 @@ export const translations = {
       },
       finalCta: {
         title: "Prêt à être conforme ?",
-        btn: "Créez Votre Plan Gratuit",
-        sub: "Pas de carte de crédit requise. Annulez à tout moment."
+        btn: "Créez Votre Plan Gratuit"
       }
     },
     hero: {
@@ -1098,8 +1089,6 @@ export const translations = {
         check2: "Personalizado para o seu negócio",
         check3: "Grátis para começar",
         cta: "Criar Plano Grátis",
-        auditReady: "Suporte de Auditoria",
-        validated: "Lógica Baseada em Padrões",
         compliance: { standard_1: "EC 852/2004", eu: "UE 852/2004", codex: "Codex CXC 1-1969" }
       },
       audience: {
@@ -1191,8 +1180,7 @@ export const translations = {
       },
       finalCta: {
         title: "Pronto para estar em conformidade?",
-        btn: "Crie Seu Plano Grátis",
-        sub: "Sem cartão de crédito. Cancele a qualquer momento."
+        btn: "Crie Seu Plano Grátis"
       }
     },
     hero: {
