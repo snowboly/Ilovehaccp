@@ -178,23 +178,25 @@ export default function Home() {
                 <div className="aspect-square bg-white rounded-[3rem] shadow-2xl p-8 md:p-12 border border-slate-100 flex flex-col items-center justify-center text-center overflow-hidden">
                    <div className="space-y-6">
                       <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 relative">
-                        <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">CCP Decision Tree</div>
+                        <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">HACCP Drafting Flow</div>
                         <div className="flex items-center justify-center gap-2">
-                          <div className="w-16 h-10 rounded-lg border-2 border-slate-200 bg-white flex items-center justify-center text-[8px] font-bold text-slate-400">Hazard?</div>
-                          <ChevronRight className="w-3 h-3 text-slate-300" />
-                          <div className="w-16 h-10 rounded-lg border-2 border-blue-500 bg-blue-50 flex items-center justify-center text-[8px] font-black text-blue-600">Control?</div>
-                          <ChevronRight className="w-3 h-3 text-slate-300" />
-                          <div className="w-16 h-10 rounded-lg bg-emerald-500 flex flex-col items-center justify-center text-[8px] font-black text-white shadow-lg shadow-emerald-500/40">
-                            <ShieldCheck className="w-3 h-3" />
-                            CCP
-                          </div>
+                          {["Product", "Process", "Hazards", "Review"].map((step, index) => (
+                            <div key={step} className="flex items-center gap-2">
+                              <div className="w-16 h-10 rounded-lg border-2 border-slate-200 bg-white flex items-center justify-center text-[8px] font-black text-slate-500">
+                                {step}
+                              </div>
+                              {index < 3 && <ChevronRight className="w-3 h-3 text-slate-300" />}
+                            </div>
+                          ))}
                         </div>
-                        {/* Connecting line */}
+                        <p className="text-xs text-slate-400 font-semibold mt-4">
+                          This visual supports drafting your HACCP plan steps before formal review.
+                        </p>
                         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-200"></div>
                       </div>
 
                       <p className="text-slate-500 font-medium">
-                        Capture hazards, controls, and monitoring notes in a consistent format your team can maintain over time.
+                        Capture product details, process steps, and hazards in a consistent draft your team can refine later.
                       </p>
                    </div>
                 </div>
