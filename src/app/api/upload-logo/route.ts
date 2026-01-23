@@ -12,16 +12,11 @@ const ensureBucket = async (supabaseAdmin: SupabaseClient) => {
     throw error;
   }
 
-  const existingBucket = buckets?.find((bucket) => bucket.id === bucketName || bucket.name === bucketName);
-  if (!existingBucket) {
-    const { error: createError } = await supabaseAdmin.storage.createBucket(bucketName, { public: true });
+  const bucketExists = buckets?.some((bucket) => bucket.id === bucketName || bucket.name === bucketName);
+  if (!bucketExists) {
+    const { error: createError } = await supabaseAdmin.storage.createBucket(bucketName, { public: false });
     if (createError && !createError.message.toLowerCase().includes('already exists')) {
       throw createError;
-    }
-  } else if (!existingBucket.public) {
-    const { error: updateError } = await supabaseAdmin.storage.updateBucket(bucketName, { public: true });
-    if (updateError) {
-      throw updateError;
     }
   }
 };
