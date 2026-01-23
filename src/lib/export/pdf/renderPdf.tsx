@@ -38,9 +38,14 @@ const Watermark = ({ isPaid }: { isPaid: boolean }) => {
 export const HACCPDocumentModular = ({ data, dict, logo, theme }: any) => {
   const { fullPlan, planVersion = 1, isPaid = false, lang = 'en' } = data;
   const today = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : lang);
-  const processSteps = fullPlan?._original_inputs?.process?.process_steps || [];
-  const analysis = fullPlan?.hazard_analysis || [];
-  const ccps = fullPlan?.ccp_summary || [];
+  const processSteps = Array.isArray(fullPlan?._original_inputs?.process?.process_steps)
+    ? fullPlan._original_inputs.process.process_steps
+    : [];
+  const analysis = Array.isArray(fullPlan?.hazard_analysis) ? fullPlan.hazard_analysis : [];
+  const ccps = Array.isArray(fullPlan?.ccp_summary) ? fullPlan.ccp_summary : [];
+  const prerequisitePrograms = Array.isArray(fullPlan?.prerequisite_programs)
+    ? fullPlan.prerequisite_programs
+    : [];
   const originalInputs = fullPlan?._original_inputs || {};
   const productInputs = originalInputs.product || {};
   const processInputs = originalInputs.process || {};
@@ -277,7 +282,7 @@ export const HACCPDocumentModular = ({ data, dict, logo, theme }: any) => {
         {renderSectionHeader("SECTION 5 — PREREQUISITE PROGRAMS (PRPS)", theme)}
         {renderTable(
             ["Program", "Control Details"],
-            (fullPlan?.prerequisite_programs || []).map((p: any) => [p.program, p.details]),
+            prerequisitePrograms.map((p: any) => [p.program, p.details]),
             ["30%", "70%"],
             theme
         )}
