@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const bucketName = 'logos';
 
-const ensureBucket = async (supabaseAdmin: ReturnType<typeof createClient>) => {
+const ensureBucket = async (supabaseAdmin: SupabaseClient) => {
   const { data: buckets, error } = await supabaseAdmin.storage.listBuckets();
   if (error) {
     throw error;
