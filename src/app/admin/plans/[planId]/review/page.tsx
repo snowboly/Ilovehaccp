@@ -1,0 +1,305 @@
+import { redirect, notFound } from 'next/navigation';
+import { createClient } from '@/utils/supabase/server';
+import { Resend } from 'resend';
+import { checkAdminRole } from '@/lib/admin-auth';
+import { supabaseService } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+type ReviewPageProps = {
+  params: Promise<{ planId: string }>;
+  searchParams?: Promise<{ edit?: string; submitted?: string }>;
+};
+
+type ReviewNotes = {
+  major: string[];
+  minor: string[];
+  general: string;
+};
+
+const resend = new Resend(process.env.RESEND_API_KEY || '');
+
+export default async function AdminPlanReviewPage({ params, searchParams }: ReviewPageProps) {
+  const { planId } = await params;
+  const resolvedSearchParams = await searchParams;
+  const isEditing = resolvedSearchParams?.edit === '1';
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect(`/login?next=/admin/plans/${planId}/review`);
+  }
+
+  const isAdmin = await checkAdminRole(user.id, user.email);
+  if (!isAdmin) {
+    redirect('/dashboard');
+  }
+
+  const { data: plan, error: planError } = await supabaseService
+    .from('plans')
+    .select('id, created_at, user_id, draft_id, business_name, product_name, payment_status, tier, review_notes, review_status, reviewed_at')
+    .eq('id', planId)
+    .maybeSingle();
+
+  if (planError) {
+    throw planError;
+  }
+
+  if (!plan) {
+    notFound();
+  }
+
+  const [userResponse, draftResponse] = await Promise.all([
+    plan.user_id
+      ? supabaseService.auth.admin.getUserById(plan.user_id)
+      : Promise.resolve({ data: { user: null }, error: null }),
+    plan.draft_id
+      ? supabaseService.from('drafts').select('id, name, created_at').eq('id', plan.draft_id).maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
+  ]);
+
+  const userEmail = userResponse.data?.user?.email ?? 'Unknown';
+  const draftName = draftResponse.data?.name?.trim();
+  const fallbackDraftLabel = draftResponse.data
+    ? `Draft – ${new Date(draftResponse.data.created_at).toLocaleDateString()}`
+    : 'Not linked';
+  const existingNotes = plan.review_notes as ReviewNotes | null;
+  const isReviewed = plan.review_status === 'reviewed';
+  const isReadOnly = isReviewed && !isEditing;
+
+  const handleSubmitReview = async (formData: FormData) => {
+    'use server';
+
+    const formSupabase = await createClient();
+    const { data: { user: formUser } } = await formSupabase.auth.getUser();
+    if (!formUser) {
+      redirect(`/login?next=/admin/plans/${planId}/review`);
+    }
+
+    const formIsAdmin = await checkAdminRole(formUser.id, formUser.email);
+    if (!formIsAdmin) {
+      redirect('/dashboard');
+    }
+
+    const { data: currentPlan, error: currentPlanError } = await supabaseService
+      .from('plans')
+      .select('review_status, user_id')
+      .eq('id', planId)
+      .maybeSingle();
+
+    if (currentPlanError) {
+      throw currentPlanError;
+    }
+
+    const editMode = formData.get('edit_mode') === 'true';
+    const wasReviewed = currentPlan?.review_status === 'reviewed';
+    if (wasReviewed && !editMode) {
+      throw new Error('Review is locked. Enable edit mode to update notes.');
+    }
+
+    const major = formData
+      .get('major')
+      ?.toString()
+      .split('\n')
+      .map((entry) => entry.trim())
+      .filter(Boolean) ?? [];
+    const minor = formData
+      .get('minor')
+      ?.toString()
+      .split('\n')
+      .map((entry) => entry.trim())
+      .filter(Boolean) ?? [];
+    const general = formData.get('general')?.toString().trim() ?? '';
+
+    const reviewNotes: ReviewNotes = {
+      major,
+      minor,
+      general,
+    };
+
+    const { error: updateError } = await supabaseService
+      .from('plans')
+      .update({
+        review_notes: reviewNotes,
+        review_status: 'reviewed',
+        reviewed_at: new Date().toISOString(),
+      })
+      .eq('id', planId);
+
+    if (updateError) {
+      throw updateError;
+    }
+
+    if (!wasReviewed && currentPlan?.user_id && process.env.RESEND_API_KEY) {
+      const { data: ownerData, error: ownerError } = await supabaseService.auth.admin.getUserById(currentPlan.user_id);
+      const ownerEmail = ownerData?.user?.email;
+
+      if (ownerError) {
+        console.error('Failed to fetch plan owner for review email:', ownerError);
+      } else if (ownerEmail) {
+        const reviewLink = `https://www.ilovehaccp.com/dashboard/plans/${planId}/review`;
+        const { error: emailError } = await resend.emails.send({
+          from: 'iLoveHACCP <noreply@ilovehaccp.com>',
+          to: [ownerEmail],
+          subject: 'Your HACCP Review Is Available',
+          html: `
+            <div style="font-family: sans-serif; color: #333;">
+              <h2>Your HACCP Review Is Available</h2>
+              <p>Your review has been completed and is ready for you.</p>
+              <p>
+                <a href="${reviewLink}" style="background-color: #2563eb; color: #fff; padding: 12px 18px; border-radius: 6px; text-decoration: none; display: inline-block;">
+                  View Your Review
+                </a>
+              </p>
+              <p style="font-size: 12px; color: #666;">Or copy this link: ${reviewLink}</p>
+            </div>
+          `,
+        });
+
+        if (emailError) {
+          console.error('Failed to send review available email:', emailError);
+        }
+      }
+    }
+
+    redirect(`/admin/plans/${planId}/review?submitted=1`);
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-8">
+      <header className="space-y-2">
+        <p className="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Admin Review</p>
+        <h1 className="text-3xl font-black text-slate-900">Plan Review – Step 1</h1>
+        <p className="text-sm text-slate-500">Confirm core metadata before starting the review workflow.</p>
+      </header>
+
+      <section className="bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div className="border-b border-slate-200 px-6 py-4">
+          <h2 className="text-lg font-bold text-slate-900">Plan Metadata</h2>
+        </div>
+        <div className="p-6 grid gap-6 md:grid-cols-2">
+          <div>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">Plan ID</p>
+            <p className="text-sm font-mono text-slate-700 break-all">{plan.id}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">Created At</p>
+            <p className="text-sm text-slate-700">{new Date(plan.created_at).toLocaleString()}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">User Email</p>
+            <p className="text-sm text-slate-700">{userEmail}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">Draft</p>
+            <p className="text-sm text-slate-700">
+              {draftName || fallbackDraftLabel}
+            </p>
+            {plan.draft_id && (
+              <p className="text-xs font-mono text-slate-400">Draft ID: {plan.draft_id}</p>
+            )}
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">Business Name</p>
+            <p className="text-sm text-slate-700">{plan.business_name || 'Untitled'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">Product Name</p>
+            <p className="text-sm text-slate-700">{plan.product_name || 'Not provided'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">Payment Status</p>
+            <p className="text-sm text-slate-700">{plan.payment_status || 'unknown'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">Tier</p>
+            <p className="text-sm text-slate-700">{plan.tier || 'standard'}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div className="border-b border-slate-200 px-6 py-4">
+          <h2 className="text-lg font-bold text-slate-900">Review Form</h2>
+          <p className="text-sm text-slate-500">Capture structured feedback before finalizing the review.</p>
+        </div>
+        <form action={handleSubmitReview} className="p-6 space-y-6">
+          <input type="hidden" name="edit_mode" value={isEditing ? 'true' : 'false'} />
+          <div className="space-y-2">
+            <label htmlFor="major" className="text-sm font-semibold text-slate-700">Major Gaps</label>
+            <p className="text-xs text-slate-500">Enter one item per line.</p>
+            <textarea
+              id="major"
+              name="major"
+              rows={4}
+              defaultValue={existingNotes?.major?.join('\n') ?? ''}
+              readOnly={isReadOnly}
+              className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isReadOnly ? 'border-slate-100 bg-slate-50 text-slate-500' : 'border-slate-200'}`}
+              placeholder="List major gaps..."
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="minor" className="text-sm font-semibold text-slate-700">Minor Gaps</label>
+            <p className="text-xs text-slate-500">Enter one item per line.</p>
+            <textarea
+              id="minor"
+              name="minor"
+              rows={4}
+              defaultValue={existingNotes?.minor?.join('\n') ?? ''}
+              readOnly={isReadOnly}
+              className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isReadOnly ? 'border-slate-100 bg-slate-50 text-slate-500' : 'border-slate-200'}`}
+              placeholder="List minor gaps..."
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="general" className="text-sm font-semibold text-slate-700">General Comments</label>
+            <textarea
+              id="general"
+              name="general"
+              rows={5}
+              defaultValue={existingNotes?.general ?? ''}
+              readOnly={isReadOnly}
+              className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isReadOnly ? 'border-slate-100 bg-slate-50 text-slate-500' : 'border-slate-200'}`}
+              placeholder="Add general review comments..."
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-slate-500">
+              Current status: <span className="font-semibold text-slate-700">{plan.review_status || 'unreviewed'}</span>
+              {plan.reviewed_at && (
+                <span className="ml-2 text-slate-400">Last updated {new Date(plan.reviewed_at).toLocaleString()}</span>
+              )}
+            </p>
+            <div className="flex items-center gap-3">
+              {isReviewed && !isEditing && (
+                <a
+                  href={`/admin/plans/${planId}/review?edit=1`}
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300"
+                >
+                  Edit Review
+                </a>
+              )}
+              {isEditing && (
+                <a
+                  href={`/admin/plans/${planId}/review`}
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-slate-300"
+                >
+                  Cancel Edit
+                </a>
+              )}
+              {!isReadOnly && (
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+                >
+                  Save Review Notes
+                </button>
+              )}
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
+}
