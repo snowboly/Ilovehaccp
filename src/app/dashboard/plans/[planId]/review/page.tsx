@@ -9,6 +9,9 @@ interface PlanReview {
   id: string;
   user_id?: string | null;
   review_notes?: {
+    major?: string[];
+    minor?: string[];
+    general?: string;
     major_gaps?: string[];
     minor_gaps?: string[];
     general_notes?: string;
@@ -86,9 +89,9 @@ export default function PlanReviewPage({ params }: { params: { planId: string } 
                 <div className="space-y-4 text-sm text-gray-700">
                   <div>
                     <div className="font-semibold text-gray-900 mb-1">Major gaps</div>
-                    {plan.review_notes.major_gaps?.length ? (
+                    {(plan.review_notes.major ?? plan.review_notes.major_gaps ?? []).length ? (
                       <ul className="list-disc list-inside space-y-1">
-                        {plan.review_notes.major_gaps.map((gap, index) => (
+                        {(plan.review_notes.major ?? plan.review_notes.major_gaps ?? []).map((gap, index) => (
                           <li key={index}>{gap}</li>
                         ))}
                       </ul>
@@ -98,9 +101,9 @@ export default function PlanReviewPage({ params }: { params: { planId: string } 
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900 mb-1">Minor gaps</div>
-                    {plan.review_notes.minor_gaps?.length ? (
+                    {(plan.review_notes.minor ?? plan.review_notes.minor_gaps ?? []).length ? (
                       <ul className="list-disc list-inside space-y-1">
-                        {plan.review_notes.minor_gaps.map((gap, index) => (
+                        {(plan.review_notes.minor ?? plan.review_notes.minor_gaps ?? []).map((gap, index) => (
                           <li key={index}>{gap}</li>
                         ))}
                       </ul>
@@ -109,9 +112,9 @@ export default function PlanReviewPage({ params }: { params: { planId: string } 
                     )}
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-900 mb-1">General notes</div>
-                    {plan.review_notes.general_notes ? (
-                      <p className="whitespace-pre-wrap">{plan.review_notes.general_notes}</p>
+                    <div className="font-semibold text-gray-900 mb-1">General comments</div>
+                    {plan.review_notes.general ?? plan.review_notes.general_notes ? (
+                      <p className="whitespace-pre-wrap">{plan.review_notes.general ?? plan.review_notes.general_notes}</p>
                     ) : (
                       <div className="text-gray-500">None</div>
                     )}
