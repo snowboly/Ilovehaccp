@@ -1223,7 +1223,7 @@ export default function HACCPMasterFlow() {
             <div className="space-y-12">
                 <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />
                 
-                <div className="max-w-3xl mx-auto pt-8 border-t border-slate-200">
+                <div className="max-w-3xl mx-auto pt-4 border-t border-slate-200">
                     <div className={`rounded-2xl p-6 border ${riskFlags.HAS_WARNINGS ? 'bg-amber-50 border-amber-200' : 'bg-slate-100/50 border-slate-200'}`}>
                         <div className="flex items-start gap-3">
                             {riskFlags.HAS_WARNINGS ? (
