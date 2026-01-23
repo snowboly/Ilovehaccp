@@ -15,14 +15,14 @@ export const HACCP_STANDARDS = {
     corrective_action: "Continue reheating until temperature reached. Discard if equipment fails."
   },
   chilled_storage: {
-    limit: "Air temperature ≤ 5°C (Food core temp ≤ 8°C allowed for short periods during prep).",
+    limit: "Air temperature ≤ 4°C (Food core temp ≤ 8°C allowed for short periods during prep).",
     monitoring: "Check fridge display temperature twice daily. Cross-check with manual probe weekly.",
     corrective_action: "Adjust dial. Move food to working fridge. If food >8°C for >4 hours, discard."
   },
   frozen_storage: {
     limit: "Air temperature ≤ -18°C.",
     monitoring: "Check freezer display temperature daily.",
-    corrective_action: "Adjust dial. Move food. If thawed but <5°C, use immediately. If >5°C, discard."
+    corrective_action: "Adjust dial. Move food. If thawed but <5°C, use immediately. If >4°C, discard."
   },
   hot_holding: {
     limit: "Core temperature ≥ 63°C.",
@@ -30,7 +30,7 @@ export const HACCP_STANDARDS = {
     corrective_action: "Turn up heat. If <63°C for <2 hours, reheat to 75°C. If >2 hours, discard."
   },
   thawing: {
-    limit: "Thaw in fridge <5°C. No thawing at room temperature.",
+    limit: "Thaw in fridge <4°C. No thawing at room temperature.",
     monitoring: "Visual check of method. Fridge temp check.",
     corrective_action: "Move to fridge. If surface >8°C for >4 hours, discard."
   },
@@ -40,7 +40,7 @@ export const HACCP_STANDARDS = {
     corrective_action: "Stop line. Re-check all product since last successful check. Repair device."
   },
   delivery_receipt: {
-    limit: "Chilled food ≤ 5°C, Frozen ≤ -18°C, Hot ≥ 63°C.",
+    limit: "Chilled food ≤ 4°C, Frozen ≤ -18°C, Hot ≥ 63°C.",
     monitoring: "Check temp of incoming goods before accepting.",
     corrective_action: "Reject delivery."
   }
