@@ -76,7 +76,7 @@ const CHECKLIST_ITEMS = {
     "Cuts/sores covered with blue water-proof detectable plasters."
   ],
   "Food Storage & Temperature": [
-    "Fridges verified at ≤ 5°C (41°F) and freezers at ≤ -18°C (0°F).",
+    "Fridges verified at ≤ 4°C and freezers at ≤ -18°C.",
     "Raw meat/fish stored BELOW ready-to-eat foods to prevent drip contamination.",
     "All prepared foods are labeled with a 'Use By' or 'Production' date.",
     "Dry storage is off the floor, pest-proof, and cool.",
@@ -86,14 +86,14 @@ const CHECKLIST_ITEMS = {
   "Food Preparation & Cooking": [
     "Separate cutting boards used for raw meat (red) and vegetables (green/brown).",
     "Core cooking temperatures are checked with a calibrated probe thermometer.",
-    "Hot holding verified at ≥ 63°C (145°F).",
+    "Hot holding verified at ≥ 63°C.",
     "Rapid cooling methods (blast chiller/ice bath) used for cooked foods.",
     "Frozen food is thawed in the fridge, not at room temperature."
   ],
   "Cleaning & Sanitation": [
     "Cleaning schedule is up-to-date and signed off by management.",
     "Sanitizer contact time (e.g., 30s) is known and respected.",
-    "Dishwasher is clean, and rinse temperature reaches ≥ 82°C (180°F).",
+    "Dishwasher is clean, and rinse temperature reaches ≥ 82°C.",
     "Waste bins are not overflowing and have lids.",
     "Pest control checks are current; no signs of infestation."
   ],
