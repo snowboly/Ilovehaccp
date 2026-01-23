@@ -35,6 +35,9 @@ export async function POST(req: Request) {
         businessType, 
         analysis, 
         fullPlan,
+        pdfUrl,
+        docxUrl,
+        reviewNotes,
         metadata,
         answers
     } = body;
@@ -67,6 +70,10 @@ export async function POST(req: Request) {
                 business_type: businessType,
                 hazard_analysis: analysis, 
                 full_plan: fullPlan,
+                draft_id: draftId || null,
+                pdf_url: pdfUrl || null,
+                docx_url: docxUrl || null,
+                review_notes: reviewNotes || null,
             })
             .eq('id', planId)
             .select()
@@ -83,6 +90,10 @@ export async function POST(req: Request) {
                 business_type: businessType,
                 hazard_analysis: analysis, 
                 full_plan: fullPlan, 
+                draft_id: draftId || null,
+                pdf_url: pdfUrl || null,
+                docx_url: docxUrl || null,
+                review_notes: reviewNotes || null,
                 user_id: authUserId // Enforce authenticated user
             })
             .select()

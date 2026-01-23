@@ -5,36 +5,25 @@ import { createClient } from '@/utils/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  FileText,
-  Download,
-  Clock,
-  Edit,
   Plus,
-  Trash2,
   Link2,
-  Lock,
   XCircle,
-  CheckCircle2,
   AlertTriangle,
-  FileDigit,
-  LayoutDashboard,
   ShieldCheck,
   Settings,
   LogOut,
-  ArrowRight,
-  MoreVertical,
-  Loader2,
-  History
+  Loader2
 } from 'lucide-react';
 import { Suspense } from 'react';
-import { getDictionary } from '@/lib/locales';
-import { isExportAllowed } from '@/lib/export/permissions';
+type Draft = Plan & { name?: string | null };
 
 interface Plan {
   id: string;
+  draft_id?: string | null;
   product_name: string;
   business_name: string;
   created_at: string;
+  name?: string | null;
   status: string;
   payment_status: string;
   tier?: 'professional' | 'expert';
@@ -43,17 +32,21 @@ interface Plan {
   intended_use: string;
   storage_type: string;
   business_type: string;
+  pdf_url?: string | null;
+  docx_url?: string | null;
   review_requested?: boolean;
   review_status?: 'pending' | 'completed';
   review_comments?: string;
+  review_notes?: string | null;
   reviewed_at?: string;
   is_locked?: boolean;
 }
 
 function DashboardContent() {
   const supabase = createClient();
-  const dict = getDictionary('en').pdf;
   const [plans, setPlans] = useState<Plan[]>([]);
+  const [drafts, setDrafts] = useState<Draft[]>([]);
+  const [draftNamesByPlanId, setDraftNamesByPlanId] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -101,30 +94,51 @@ function DashboardContent() {
         .select('*')
         .eq('user_id', user.id)
         .eq('status', 'active')
+        .is('deleted_at', null)
         .order('updated_at', { ascending: false });
 
       if (draftsError) throw draftsError;
 
-      // Map drafts to Plan interface for unified display if needed, 
-      // but we filter them separately anyway.
-      const unifiedPlans = [
-          ...(plansData || []),
-          ...(draftsData || []).map(d => ({
-              id: d.id,
-              product_name: d.answers?.product?.product_name || 'Unfinished Draft',
-              business_name: d.answers?.product?.businessLegalName || 'Draft',
-              created_at: d.updated_at,
-              status: 'draft',
-              payment_status: 'unpaid',
-              hazard_analysis: d.answers?.hazard_analysis || [],
-              full_plan: d.plan_data,
-              intended_use: d.answers?.product?.intended_use || '',
-              storage_type: d.answers?.product?.storage_conditions || '',
-              business_type: d.answers?.product?.product_category || '',
-          }))
-      ];
+      setPlans((plansData || []) as any);
+      setDrafts(
+        (draftsData || []).map(d => ({
+          id: d.id,
+          name: d.name ?? null,
+          product_name: d.answers?.product?.product_name || 'Unfinished Draft',
+          business_name: d.answers?.product?.businessLegalName || 'Draft',
+          created_at: d.updated_at,
+          status: 'draft',
+          payment_status: 'unpaid',
+          hazard_analysis: d.answers?.hazard_analysis || [],
+          full_plan: d.plan_data,
+          intended_use: d.answers?.product?.intended_use || '',
+          storage_type: d.answers?.product?.storage_conditions || '',
+          business_type: d.answers?.product?.product_category || '',
+        }))
+      );
 
-      setPlans(unifiedPlans as any);
+      const planDraftIds = (plansData || [])
+        .map(plan => plan.draft_id)
+        .filter((draftId): draftId is string => Boolean(draftId));
+
+      if (planDraftIds.length > 0) {
+        const { data: planDrafts, error: planDraftsError } = await supabase
+          .from('drafts')
+          .select('id, name')
+          .in('id', planDraftIds);
+
+        if (planDraftsError) throw planDraftsError;
+
+        const draftNameMap = (planDrafts || []).reduce<Record<string, string>>((acc, draft) => {
+          if (draft.name) {
+            acc[draft.id] = draft.name;
+          }
+          return acc;
+        }, {});
+        setDraftNamesByPlanId(draftNameMap);
+      } else {
+        setDraftNamesByPlanId({});
+      }
     } catch (err) {
       console.error('Error fetching plans:', err);
     } finally {
@@ -132,41 +146,18 @@ function DashboardContent() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this? This cannot be undone.')) return;
-    
-    const planToDelete = plans.find(p => p.id === id);
-    const isDraft = planToDelete?.status === 'draft';
-
+  const handleDeleteDraft = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this draft? This cannot be undone.')) return;
     try {
-      if (isDraft) {
-        const { error } = await supabase
-          .from('drafts')
-          .update({ status: 'abandoned' })
-          .eq('id', id);
+      const { error } = await supabase
+        .from('drafts')
+        .update({ status: 'abandoned', deleted_at: new Date().toISOString() })
+        .eq('id', id);
 
-        if (error) throw error;
-      } else {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          router.push('/login');
-          return;
-        }
-
-        const res = await fetch(`/api/plans/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${session.access_token}` }
-        });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => null);
-          throw new Error(err?.error || 'Failed to delete plan');
-        }
-      }
-
-      setPlans(plans.filter(p => p.id !== id));
+      if (error) throw error;
+      setDrafts(drafts.filter(draft => draft.id !== id));
     } catch (err: any) {
-      console.error('Error deleting:', err);
+      console.error('Error deleting draft:', err);
       if (err.code === '23503') {
         alert('Cannot delete: It has active dependencies. Please contact support.');
       } else {
@@ -175,69 +166,62 @@ function DashboardContent() {
     }
   };
 
+  const handleRenameDraft = async (id: string, currentName?: string | null) => {
+    const nextName = prompt('Enter a new draft name:', currentName || '');
+    if (nextName === null) return;
+    const trimmedName = nextName.trim();
+    if (!trimmedName) {
+      alert('Draft name cannot be empty.');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('drafts')
+        .update({ name: trimmedName })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setDrafts(drafts.map(draft => (draft.id === id ? { ...draft, name: trimmedName } : draft)));
+    } catch (err: any) {
+      console.error('Error renaming draft:', err);
+      alert(err.message || 'Failed to rename draft. Please try again.');
+    }
+  };
+
+  const handleDeletePlan = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this plan? This cannot be undone.')) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+        return;
+      }
+
+      const res = await fetch(`/api/plans/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new Error(err?.error || 'Failed to delete plan');
+      }
+
+      setPlans(plans.filter(plan => plan.id !== id));
+    } catch (err: any) {
+      console.error('Error deleting plan:', err);
+      if (err.code === '23503') {
+        alert('Cannot delete: It has active dependencies. Please contact support.');
+      } else {
+        alert(err.message || 'Failed to delete. Please try again.');
+      }
+    }
+  };
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/');
-  };
-
-  const handleDownloadWord = async (plan: Plan) => {
-      try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session) return;
-
-          const res = await fetch(`/api/download-word?planId=${plan.id}`, {
-              headers: { Authorization: `Bearer ${session.access_token}` }
-          });
-          
-          if (!res.ok) {
-              const err = await res.json();
-              alert(err.error || 'Download failed');
-              return;
-          }
-          
-          const blob = await res.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-      } catch (e) {
-          console.error(e);
-          alert('Failed to download Word document.');
-      }
-  };
-
-  const handleDownloadPdf = async (plan: Plan) => {
-      try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session) return;
-
-          // Default to EN if no language context (dashboard is EN-only for now or we can use useLanguage if we add it)
-          const res = await fetch(`/api/download-pdf?planId=${plan.id}&lang=en`, {
-              headers: { Authorization: `Bearer ${session.access_token}` }
-          });
-          
-          if (!res.ok) {
-              const err = await res.json();
-              alert(err.error || 'Download failed');
-              return;
-          }
-          
-          const blob = await res.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.pdf`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          window.URL.revokeObjectURL(url);
-      } catch (e) {
-          console.error(e);
-          alert('Failed to download PDF.');
-      }
   };
 
   const handleUpgrade = async (plan: Plan, tier: 'professional' | 'expert') => {
@@ -308,9 +292,6 @@ function DashboardContent() {
     }
   };
 
-  const drafts = plans.filter(p => p.status === 'draft');
-  const generatedPlans = plans.filter(p => p.status !== 'draft');
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -345,57 +326,22 @@ function DashboardContent() {
 
       <main className="container mx-auto px-4 py-8">
         {showSuccess && (
-            <div className="mb-8 bg-emerald-50 border border-emerald-200 text-emerald-800 px-6 py-4 rounded-2xl flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                    <div>
-                        <span className="font-bold text-lg text-emerald-900 block">
-                            {plans.find(p => p.id === searchParams.get('plan_id'))?.tier === 'expert' ? 'Review Requested' : 'Export Unlocked'}
-                        </span>
-                        <span className="font-medium text-sm">
-                            {plans.find(p => p.id === searchParams.get('plan_id'))?.tier === 'expert'
-                                ? (
-                                    <>
-                                        Your HACCP plan has been submitted for expert review. You will be notified when feedback is available.
-                                        <br/>
-                                        <span className="text-xs opacity-75">Expert reviews do not replace official audits or approvals.</span>
-                                    </>
-                                )
-                                : 'You can now download your HACCP plan as a Word or PDF document.'}
-                        </span>
-                    </div>
-                </div>
-                <button onClick={() => setShowSuccess(false)} className="text-emerald-400 hover:text-emerald-600">
-                    <XCircle className="w-5 h-5" />
-                </button>
-            </div>
+          <div className="mb-6 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-lg flex items-center justify-between">
+            <span className="text-sm font-medium">
+              {plans.find(p => p.id === searchParams.get('plan_id'))?.tier === 'expert'
+                ? 'Review requested successfully.'
+                : 'Export unlocked successfully.'}
+            </span>
+            <button onClick={() => setShowSuccess(false)} className="text-emerald-600">
+              <XCircle className="w-5 h-5" />
+            </button>
+          </div>
         )}
 
-        {/* Resume Draft Banner */}
-        {drafts.length > 0 && (
-            <div className="mb-8 bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-2xl shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="bg-white/20 p-3 rounded-full">
-                        <History className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-xl">You have an unfinished HACCP plan</h3>
-                        <p className="text-blue-100 text-sm">Don't lose your progress. Resume where you left off.</p>
-                    </div>
-                </div>
-                <Link 
-                    href={`/builder?id=${drafts[0].id}`}
-                    className="whitespace-nowrap bg-white text-blue-700 hover:bg-blue-50 px-6 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2"
-                >
-                    Resume Draft <ArrowRight className="w-4 h-4" />
-                </Link>
-            </div>
-        )}
-
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">My Dashboard</h1>
-            <p className="text-gray-500">Manage your food safety documentation</p>
+            <p className="text-gray-500 text-sm">Manage your food safety documentation</p>
           </div>
           <Link
             href="/builder?new=true"
@@ -406,208 +352,133 @@ function DashboardContent() {
           </Link>
         </div>
 
-        {/* Section A: In Progress */}
-        {drafts.length > 0 && (
-            <section className="mb-12">
-                <div className="flex items-center gap-2 mb-6">
-                    <div className="bg-amber-100 p-2 rounded-lg">
-                        <History className="w-5 h-5 text-amber-600" />
-                    </div>
-                    <h2 className="text-xl font-black text-slate-900">In Progress (Autosaved)</h2>
-                </div>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {drafts.map(plan => (
-                        <div key={plan.id} className="bg-white rounded-xl border-2 border-dashed border-slate-200 p-6 flex flex-col justify-between hover:border-blue-300 transition-colors">
-                            <div>
-                                <h3 className="font-bold text-slate-900 mb-1">{plan.product_name || 'Unnamed Draft'}</h3>
-                                <p className="text-slate-500 text-xs mb-4 uppercase font-black tracking-widest">{plan.business_name || 'No business set'}</p>
-                                <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold">
-                                    <Clock className="w-3 h-3" /> Updated {new Date(plan.created_at).toLocaleDateString()}
-                                </div>
-                            </div>
-                            <div className="mt-6 flex gap-2">
-                                <Link 
-                                    href={`/builder?id=${plan.id}`}
-                                    className="flex-1 bg-slate-900 text-white py-2 rounded-lg text-xs font-black text-center hover:bg-black"
-                                >
-                                    Resume
-                                </Link>
-                                <button 
-                                    onClick={() => handleDelete(plan.id)}
-                                    className="p-2 text-slate-400 hover:text-red-600"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-        )}
-
-        {/* Section B: Generated Plans */}
-        <section>
-            <div className="flex items-center gap-2 mb-6">
-                <div className="bg-blue-100 p-2 rounded-lg">
-                    <ShieldCheck className="w-5 h-5 text-blue-600" />
-                </div>
-                <h2 className="text-xl font-black text-slate-900">HACCP Plans</h2>
+        <section className="mb-10">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Active Drafts</h2>
+          {drafts.length === 0 ? (
+            <div className="text-sm text-gray-500">No active drafts.</div>
+          ) : (
+            <div className="overflow-x-auto border rounded-lg bg-white">
+              <table className="min-w-full text-sm">
+                <thead className="bg-gray-50 text-gray-600">
+                  <tr>
+                    <th className="text-left px-4 py-2 font-medium">Draft</th>
+                    <th className="text-left px-4 py-2 font-medium">Business</th>
+                    <th className="text-left px-4 py-2 font-medium">Updated</th>
+                    <th className="text-right px-4 py-2 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {drafts.map(draft => (
+                    <tr key={draft.id} className="border-t">
+                      <td className="px-4 py-2">
+                        {draft.name?.trim() || `HACCP Draft – ${new Date(draft.created_at).toLocaleDateString()}`}
+                      </td>
+                      <td className="px-4 py-2">{draft.business_name || 'Draft'}</td>
+                      <td className="px-4 py-2">{new Date(draft.created_at).toLocaleDateString()}</td>
+                      <td className="px-4 py-2 text-right space-x-2">
+                        <Link href={`/builder?draft=${draft.id}`} className="text-blue-600 hover:underline">
+                          Resume
+                        </Link>
+                        <button
+                          onClick={() => handleRenameDraft(draft.id, draft.name)}
+                          className="text-blue-600 hover:underline"
+                        >
+                          Rename
+                        </button>
+                        <button onClick={() => handleDeleteDraft(draft.id)} className="text-red-600 hover:underline">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+          )}
+        </section>
 
-            {generatedPlans.length === 0 ? (
-                <div className="bg-white rounded-xl border border-dashed border-gray-300 p-12 text-center">
-                    <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <FileText className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">No generated plans yet</h3>
-                    <p className="text-gray-500 mb-6">Complete the builder to generate your first professional plan.</p>
-                </div>
-            ) : (
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {generatedPlans.map((plan) => {
-                        const exportPermission = isExportAllowed(plan);
-                        return (
-                            <div key={plan.id} className="bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col border-slate-200">
-                                <div className="p-6 flex-1">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border ${
-                                            plan.payment_status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-blue-50 text-blue-700 border-blue-100'
-                                        }`}>
-                                            {plan.payment_status === 'paid' ? (plan.tier === 'expert' ? 'Expert' : 'Professional') : 'Free Draft'}
-                                        </div>
-                                        <button onClick={() => handleDelete(plan.id)} className="text-slate-300 hover:text-red-600"><Trash2 className="w-4 h-4"/></button>
-                                    </div>
-                                    <h3 className="font-bold text-lg mb-1">{plan.product_name || 'Untitled Plan'}</h3>
-                                    <p className="text-gray-500 text-sm mb-4">{plan.business_name}</p>
-                                    
-                                    <div className="space-y-3 mb-4">
-                                        <div className="flex items-center justify-between text-xs border-b border-slate-50 pb-2">
-                                            <span className="text-slate-400 font-bold uppercase tracking-tighter">Version</span>
-                                            <span className="font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded">v1</span>
-                                        </div>
-                                        
-                                        <div className="flex flex-col gap-1">
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Audit Readiness</span>
-                                            {(() => {
-                                                const status = plan.full_plan?.validation?.section_1_overall_assessment?.audit_readiness;
-                                                if (!status) return (
-                                                    <div className="flex items-center gap-2 text-slate-400 font-bold text-sm">
-                                                        <div className="w-2 h-2 rounded-full bg-slate-300"></div> Not Validated
-                                                    </div>
-                                                );
-                                                if (status === 'Major Gaps') return (
-                                                    <div className="flex items-center gap-2 text-red-600 font-black text-sm">
-                                                        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div> Major Gaps Found
-                                                    </div>
-                                                );
-                                                return (
-                                                    <div className="flex items-center gap-2 text-emerald-600 font-black text-sm">
-                                                        <div className="w-2 h-2 rounded-full bg-emerald-500"></div> Compliance OK
-                                                    </div>
-                                                );
-                                            })()}
-                                        </div>
-
-                                        {plan.tier === 'expert' && (
-                                            <div className="pt-2 border-t border-slate-50 mt-2">
-                                                <div className="flex items-center justify-between mb-1">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Expert Review</span>
-                                                    {plan.review_status === 'completed' ? (
-                                                        <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
-                                                            <CheckCircle2 className="w-3 h-3" /> Completed
-                                                        </span>
-                                                    ) : (
-                                                        <span className="text-[10px] text-amber-600 font-bold flex items-center gap-1 animate-pulse">
-                                                            <Clock className="w-3 h-3" /> In Queue
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                {plan.review_comments && (
-                                                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 mt-2">
-                                                        <p className="text-[11px] font-bold text-blue-900 mb-1 flex items-center gap-1">
-                                                            <ShieldCheck className="w-3 h-3" /> Reviewer Recommendations:
-                                                        </p>
-                                                        <p className="text-[11px] text-blue-800 leading-relaxed whitespace-pre-wrap italic">
-                                                            "{plan.review_comments}"
-                                                        </p>
-                                                        <p className="text-[9px] text-blue-400 mt-2">Note: Expert reviews are advisory and do not replace official audits or approvals.</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Upgrade Actions for Unpaid */}
-                                    {plan.payment_status !== 'paid' && (
-                                        <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
-                                            <p className="text-[10px] text-slate-400 font-medium mb-2 leading-tight">
-                                                Export is optional. Useful for sharing with inspectors or consultants.
-                                            </p>
-                                            <button 
-                                                onClick={() => handleUpgrade(plan, 'professional')}
-                                                className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 rounded-xl text-xs font-black transition-all"
-                                            >
-                                                Get Official Documents (€39)
-                                            </button>
-                                            <button 
-                                                onClick={() => handleUpgrade(plan, 'expert')}
-                                                className="w-full bg-slate-900 hover:bg-black text-white py-2 rounded-xl text-xs font-black transition-all"
-                                            >
-                                                Add Expert Review (€79)
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="border-t bg-gray-50 p-4 grid grid-cols-2 gap-2">
-                                    <Link 
-                                        href={`/builder?id=${plan.id}`}
-                                        className="flex items-center justify-center gap-1 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-xs font-bold hover:bg-gray-100 transition-colors"
-                                    >
-                                        <Edit className="h-3 w-3" /> Edit
-                                    </Link>
-                                    
-                                    {exportPermission.allowed ? (
-                                        <div className="relative group">
-                                            <button
-                                                onClick={() => handleDownloadPdf(plan)}
-                                                className="w-full flex items-center justify-center gap-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors"
-                                            >
-                                                <Download className="h-3 w-3" /> PDF
-                                            </button>
-                                            {plan.payment_status !== 'paid' && (
-                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-40 bg-slate-900 text-white text-[10px] p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity text-center pointer-events-none z-20">
-                                                    Includes Watermark. Upgrade to remove.
-                                                </div>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <button 
-                                            disabled 
-                                            className="flex items-center justify-center gap-1 bg-red-50 text-red-400 border border-red-100 py-2 rounded-lg text-xs font-bold cursor-not-allowed w-full"
-                                            title="Validation Failed: Fix Major Gaps to Unlock Export"
-                                        >
-                                            <Lock className="h-3 w-3" /> Blocked
-                                        </button>
-                                    )}
-
-                                    {plan.payment_status === 'paid' && exportPermission.allowed ? (
-                                        <button
-                                            onClick={() => handleDownloadWord(plan)}
-                                            className="col-span-2 flex items-center justify-center gap-1 bg-slate-900 text-white py-2 rounded-lg text-xs font-bold hover:bg-black transition-colors"
-                                        >
-                                            <FileText className="h-3 w-3" /> Download Word (.docx)
-                                        </button>
-                                    ) : plan.payment_status !== 'paid' ? (
-                                        <div className="col-span-2 text-center pt-1">
-                                            <span className="text-[9px] text-slate-400 font-medium">Upgrade to unlock Word export</span>
-                                        </div>
-                                    ) : null}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
+        <section>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Documents &amp; Reviews</h2>
+          {plans.length === 0 ? (
+            <div className="text-sm text-gray-500">No generated plans yet.</div>
+          ) : (
+            <div className="overflow-x-auto border rounded-lg bg-white">
+              <table className="min-w-full text-sm">
+                <thead className="bg-gray-50 text-gray-600">
+                  <tr>
+                    <th className="text-left px-4 py-2 font-medium">Plan</th>
+                    <th className="text-left px-4 py-2 font-medium">PDF</th>
+                    <th className="text-left px-4 py-2 font-medium">Word</th>
+                    <th className="text-left px-4 py-2 font-medium">Review Notes</th>
+                    <th className="text-left px-4 py-2 font-medium">Status</th>
+                    <th className="text-right px-4 py-2 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {plans.map(plan => {
+                    const draftName = plan.draft_id ? draftNamesByPlanId[plan.draft_id] : undefined;
+                    const planLabel = draftName?.trim() || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
+                    const pdfUrl = plan.pdf_url ?? plan.full_plan?.documents?.pdf_url ?? null;
+                    const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;
+                    const reviewStatus = plan.review_status === 'completed'
+                      ? 'Reviewed'
+                      : plan.review_requested
+                        ? 'Review Requested'
+                        : pdfUrl || docxUrl
+                          ? 'Exported'
+                          : 'Draft Exported';
+                    const hasReviewNotes = Boolean(plan.review_notes || plan.review_comments);
+                    return (
+                      <tr key={plan.id} className="border-t">
+                        <td className="px-4 py-2">{planLabel}</td>
+                        <td className="px-4 py-2">
+                          {pdfUrl ? (
+                            <a href={pdfUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
+                              PDF
+                            </a>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-2">
+                          {docxUrl ? (
+                            <a href={docxUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
+                              Word
+                            </a>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-2">
+                          {hasReviewNotes ? (
+                            <Link href={`/dashboard/plans/${plan.id}/review`} className="text-blue-600 hover:underline">
+                              View
+                            </Link>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-2">
+                          {reviewStatus}
+                        </td>
+                        <td className="px-4 py-2 text-right space-x-3">
+                          <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline">
+                            Upgrade Pro
+                          </button>
+                          <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline">
+                            Request Review
+                          </button>
+                          <button onClick={() => handleDeletePlan(plan.id)} className="text-red-600 hover:underline">
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
 
         <div className="mt-12 border-t pt-8">

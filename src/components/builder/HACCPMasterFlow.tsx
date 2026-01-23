@@ -33,10 +33,13 @@ export default function HACCPMasterFlow() {
   const [currentSection, setCurrentSection] = useState<SectionKey>('product');
   const [allAnswers, setAllAnswers] = useState<any>({});
   const [draftId, setDraftId] = useState<string | null>(null);
+  const [draftName, setDraftName] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isSavingRef = useRef(false);
   const pendingSaveRef = useRef<any>(null);
   const hasInitialized = useRef(false);
+  const stepSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // 1. Initialize Draft on Mount (AUDITOR-COMPLIANT)
   useEffect(() => {
@@ -44,6 +47,7 @@ export default function HACCPMasterFlow() {
         if (hasInitialized.current) return;
         hasInitialized.current = true;
 
+        const urlDraftId = searchParams.get('draft');
         const urlId = searchParams.get('id');
         const isNew = searchParams.get('new') === 'true';
 
@@ -58,6 +62,12 @@ export default function HACCPMasterFlow() {
         }
 
         // SCENARIO B: URL Parameter (Explicit Intent to specific document)
+        if (urlDraftId) {
+            console.log("Auditor Rule: Explicit draft URL load -> Bypassing resume logic");
+            await loadDraftFromId(urlDraftId);
+            return;
+        }
+
         if (urlId) {
             console.log("Auditor Rule: Explicit URL load -> Bypassing resume logic");
             await loadFromId(urlId);
@@ -141,16 +151,27 @@ export default function HACCPMasterFlow() {
                 return;
             }
 
+            const productName = dataToSave?.product?.product_name?.trim();
+            const isDefaultName = draftName ? draftName.startsWith('HACCP Draft –') : true;
+            const shouldSetName = Boolean(productName && isDefaultName);
+            const nextDraftName = shouldSetName ? `${productName} – HACCP Draft` : undefined;
+
             await fetch(`/api/drafts/${draftId}`, {
                 method: 'PATCH',
                 headers: { 
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${session.access_token}`
                 },
-                body: JSON.stringify({ answers: dataToSave })
+                body: JSON.stringify({
+                    answers: dataToSave,
+                    ...(nextDraftName ? { name: nextDraftName } : {})
+                })
             });
             // Update local timestamp
             localStorage.setItem('haccp_last_active', new Date().toISOString());
+            if (nextDraftName) {
+                setDraftName(nextDraftName);
+            }
 
             // If the pending data is what we just saved, clear it
             if (pendingSaveRef.current === dataToSave) {
@@ -172,7 +193,38 @@ export default function HACCPMasterFlow() {
     return () => {
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
-  }, [allAnswers, draftId]);
+  }, [allAnswers, draftId, draftName]);
+
+  useEffect(() => {
+    if (!draftId) return;
+    if (stepSyncTimeoutRef.current) {
+        clearTimeout(stepSyncTimeoutRef.current);
+    }
+
+    stepSyncTimeoutRef.current = setTimeout(async () => {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return;
+
+            await fetch(`/api/drafts/${draftId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({ current_step: currentSection })
+            });
+        } catch (e) {
+            console.error("Failed to persist current step", e);
+        }
+    }, 300);
+
+    return () => {
+        if (stepSyncTimeoutRef.current) {
+            clearTimeout(stepSyncTimeoutRef.current);
+        }
+    };
+  }, [currentSection, draftId]);
 
   // 3. Attach Anonymous Draft to User on Login
   useEffect(() => {
@@ -241,6 +293,7 @@ export default function HACCPMasterFlow() {
                 setAllAnswers(data.plan.full_plan?._original_inputs || {});
                 setValidationStatus(data.plan.full_plan?.validation ? 'completed' : 'idle');
                 setCurrentSection('complete');
+                setLoadError(null);
                 // Update local storage to match current focus
                 localStorage.setItem('haccp_plan_id', id);
                 return;
@@ -248,11 +301,14 @@ export default function HACCPMasterFlow() {
         }
     } catch (e) { console.error("Not a plan, checking draft..."); }
 
-    // Try as DRAFT
+    await loadDraftFromId(id);
+  };
+
+  const loadDraftFromId = async (id: string) => {
     try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-            const nextUrl = encodeURIComponent(`/builder?id=${id}`);
+            const nextUrl = encodeURIComponent(`/builder?draft=${id}`);
             window.location.href = `/login?next=${nextUrl}`;
             return;
         }
@@ -268,6 +324,24 @@ export default function HACCPMasterFlow() {
                 if (data.draft.answers) {
                     setAllAnswers(data.draft.answers);
                 }
+                const existingName = data.draft.name ?? null;
+                if (existingName) {
+                    setDraftName(existingName);
+                } else {
+                    const createdDate = data.draft.created_at
+                        ? new Date(data.draft.created_at).toISOString().split('T')[0]
+                        : new Date().toISOString().split('T')[0];
+                    const fallbackName = `HACCP Draft – ${createdDate}`;
+                    setDraftName(fallbackName);
+                    await fetch(`/api/drafts/${id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${session.access_token}`
+                        },
+                        body: JSON.stringify({ name: fallbackName })
+                    });
+                }
                 if (data.draft.plan_data) {
                     setGeneratedPlan(data.draft.plan_data);
                 }
@@ -276,13 +350,25 @@ export default function HACCPMasterFlow() {
                     setValidationStatus('completed');
                     setCurrentSection('complete');
                 }
+                if (data.draft.current_step) {
+                    setCurrentSection(data.draft.current_step);
+                } else {
+                    setCurrentSection('product');
+                }
+                setCurrentStepIndex(0);
+                setCurrentCCPIndex(0);
+                setLoadError(null);
                 // Update local storage
                 localStorage.setItem('haccp_draft_id', id);
                 
                 return;
             }
         }
-    } catch (e) { console.error("Failed to restore draft from URL"); }
+        setLoadError("We couldn’t load this draft. Please try again.");
+    } catch (e) {
+        console.error("Failed to restore draft from URL", e);
+        setLoadError("We couldn’t load this draft. Please try again.");
+    }
   };
 
   const createNewDraft = async (activeSession?: { access_token: string } | null) => {
@@ -300,6 +386,8 @@ export default function HACCPMasterFlow() {
           if (res.ok) {
               const data = await res.json();
               setDraftId(data.draftId);
+              setDraftName(null);
+              setLoadError(null);
               localStorage.setItem('haccp_draft_id', data.draftId);
           }
       } catch (e) {
@@ -326,6 +414,8 @@ export default function HACCPMasterFlow() {
       // ZERO STATE ENFORCEMENT
       localStorage.removeItem('haccp_plan_id');
       localStorage.removeItem('haccp_draft_id');
+      setDraftName(null);
+      setLoadError(null);
       localStorage.removeItem('haccp_last_active');
       
       setAllAnswers({});
@@ -956,7 +1046,9 @@ export default function HACCPMasterFlow() {
           const { data: { session } } = await supabase.auth.getSession();
           if (!session) {
               // Redirect to login with return URL
-              const nextUrl = encodeURIComponent(`/builder?id=${draftId || generatedPlan?.id || ''}`);
+              const nextUrl = encodeURIComponent(
+                  draftId ? `/builder?draft=${draftId}` : generatedPlan?.id ? `/builder?id=${generatedPlan.id}` : '/builder'
+              );
               window.location.href = `/login?next=${nextUrl}`;
               return;
           }
@@ -1460,14 +1552,14 @@ export default function HACCPMasterFlow() {
                   </p>
                   <button 
                       onClick={() => {
-                          const nextUrl = encodeURIComponent(draftId ? `/builder?id=${draftId}` : '/builder');
+                          const nextUrl = encodeURIComponent(draftId ? `/builder?draft=${draftId}` : '/builder');
                           window.location.href = `/signup?next=${nextUrl}`;
                       }}
                       className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 cursor-pointer"
                   >
                       Save & Continue
                   </button>
-                  <p className="text-sm text-slate-400 mt-4">Already have an account? <a href={`/login?next=${encodeURIComponent(draftId ? `/builder?id=${draftId}` : '/builder')}`} className="text-blue-600 hover:underline">Log In</a></p>
+                  <p className="text-sm text-slate-400 mt-4">Already have an account? <a href={`/login?next=${encodeURIComponent(draftId ? `/builder?draft=${draftId}` : '/builder')}`} className="text-blue-600 hover:underline">Log In</a></p>
               </div>
           </div>
       );
@@ -1952,6 +2044,14 @@ export default function HACCPMasterFlow() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
+        {loadError && (
+            <div className="max-w-3xl mx-auto px-6 pt-6">
+                <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900 text-sm">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span>{loadError}</span>
+                </div>
+            </div>
+        )}
         {/* Progress Bar */}
         <div className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
             <div className="max-w-3xl mx-auto px-6 py-4">

@@ -14,10 +14,12 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const today = new Date().toISOString().split('T')[0];
     const { data, error } = await supabaseService
         .from('drafts')
         .insert({ 
             user_id: user.id,
+            name: `HACCP Draft – ${today}`,
             answers: {} 
         })
         .select()
