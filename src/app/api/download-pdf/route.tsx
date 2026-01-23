@@ -52,7 +52,8 @@ export async function GET(req: Request) {
                 product_name: draft.answers?.product?.product_name || 'Draft Plan',
                 payment_status: 'unpaid', // Drafts are always unpaid
                 full_plan: draft.plan_data,
-                hazard_analysis: draft.answers?.hazard_analysis || []
+                hazard_analysis: draft.answers?.hazard_analysis || [],
+                answers: draft.answers || {}
             };
         } else {
             return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
@@ -84,8 +85,13 @@ export async function GET(req: Request) {
 
     // 5. Generate PDF
     const dict = getDictionary(lang).pdf;
-    const fullPlan = plan.full_plan || {};
-    const originalInputs = fullPlan._original_inputs || {};
+    const fullPlan =
+        plan.full_plan ||
+        ({
+            _original_inputs: plan.answers || {},
+            hazard_analysis: plan.hazard_analysis || []
+        } as any);
+    const originalInputs = fullPlan._original_inputs || plan.answers || {};
     const productInputs = originalInputs.product || {};
     
     const pdfData = {
@@ -114,10 +120,12 @@ export async function GET(req: Request) {
         />
     );
 
+    const safeBusinessName = String(plan.business_name || 'Draft').replace(/\s+/g, '_');
+
     return new NextResponse(pdfBuffer as any, {
         headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename="HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.pdf"`
+            'Content-Disposition': `attachment; filename="HACCP_Plan_${safeBusinessName}.pdf"`
         }
     });
 
