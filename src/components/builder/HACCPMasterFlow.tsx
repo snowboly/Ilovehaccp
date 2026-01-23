@@ -40,6 +40,78 @@ export default function HACCPMasterFlow() {
   const pendingSaveRef = useRef<any>(null);
   const hasInitialized = useRef(false);
   const stepSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const anonSnapshotKey = 'haccp_anon_snapshot';
+
+  const persistAnonymousSnapshot = () => {
+    try {
+        const payload = {
+            answers: allAnswers,
+            currentSection,
+            generatedPlan,
+            validationReport,
+            validationStatus
+        };
+        localStorage.setItem(anonSnapshotKey, JSON.stringify(payload));
+    } catch (e) {
+        console.warn("Failed to persist anonymous snapshot", e);
+    }
+  };
+
+  const hydrateAnonymousSnapshot = async (session: { access_token: string }) => {
+    const storedSnapshot = localStorage.getItem(anonSnapshotKey);
+    if (!storedSnapshot) return false;
+
+    try {
+        const parsed = JSON.parse(storedSnapshot);
+        const answers = parsed?.answers ?? {};
+        const nextSection: SectionKey = parsed?.currentSection || 'product';
+        const planData = parsed?.generatedPlan ?? null;
+        const validationData = parsed?.validationReport ?? null;
+        const nextValidationStatus = parsed?.validationStatus ?? 'idle';
+
+        const res = await fetch('/api/drafts', { 
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
+
+        if (!res.ok) {
+            return false;
+        }
+
+        const data = await res.json();
+        const newDraftId = data.draftId as string | undefined;
+        if (!newDraftId) {
+            return false;
+        }
+
+        await fetch(`/api/drafts/${newDraftId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({
+                answers,
+                current_step: nextSection,
+                ...(planData ? { plan_data: planData } : {}),
+                ...(validationData ? { validation: validationData } : {})
+            })
+        });
+
+        setDraftId(newDraftId);
+        setAllAnswers(answers);
+        setGeneratedPlan(planData);
+        setValidationReport(validationData);
+        setValidationStatus(nextValidationStatus);
+        setCurrentSection(nextSection);
+        localStorage.setItem('haccp_draft_id', newDraftId);
+        localStorage.removeItem(anonSnapshotKey);
+        return true;
+    } catch (e) {
+        console.warn("Failed to hydrate anonymous snapshot", e);
+        return false;
+    }
+  };
 
   // 1. Initialize Draft on Mount (AUDITOR-COMPLIANT)
   useEffect(() => {
@@ -87,6 +159,11 @@ export default function HACCPMasterFlow() {
 
         // SCENARIO D: Authenticated User (Managed Continuity)
         console.log("Auditor Rule: Authenticated User -> Checking Server-Side State");
+
+        const hydratedFromSnapshot = await hydrateAnonymousSnapshot(session);
+        if (hydratedFromSnapshot) {
+            return;
+        }
         
         // Query server for latest unfinished draft
         // Note: We use the 'drafts' table. Assuming 'updated_at' exists.
@@ -321,8 +398,11 @@ export default function HACCPMasterFlow() {
             if (data.draft) {
                 console.log("Restored DRAFT from URL:", id);
                 setDraftId(id);
-                if (data.draft.answers) {
-                    setAllAnswers(data.draft.answers);
+                const fallbackAnswers = (data.draft.answers && Object.keys(data.draft.answers).length > 0)
+                    ? data.draft.answers
+                    : (data.draft.plan_data?._original_inputs || data.draft.plan_data?.answers || {});
+                if (fallbackAnswers) {
+                    setAllAnswers(fallbackAnswers);
                 }
                 const existingName = data.draft.name ?? null;
                 if (existingName) {
@@ -376,7 +456,7 @@ export default function HACCPMasterFlow() {
           const session = activeSession || (await supabase.auth.getSession()).data.session;
           if (!session) {
               setDraftId(null);
-              return;
+              return null;
           }
 
           const res = await fetch('/api/drafts', { 
@@ -389,10 +469,12 @@ export default function HACCPMasterFlow() {
               setDraftName(null);
               setLoadError(null);
               localStorage.setItem('haccp_draft_id', data.draftId);
+              return data.draftId as string;
           }
       } catch (e) {
           console.error("Failed to create draft");
       }
+      return null;
   };
 
   const handleResume = async () => {
@@ -909,6 +991,7 @@ export default function HACCPMasterFlow() {
           if (session) {
               await savePlan(plan, data);
           } else {
+              persistAnonymousSnapshot();
               setShowAuthPrompt(true);
           }
       } catch (e) {
@@ -1552,6 +1635,7 @@ export default function HACCPMasterFlow() {
                   </p>
                   <button 
                       onClick={() => {
+                          persistAnonymousSnapshot();
                           const nextUrl = encodeURIComponent(draftId ? `/builder?draft=${draftId}` : '/builder');
                           window.location.href = `/signup?next=${nextUrl}`;
                       }}
