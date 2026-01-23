@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { HACCPQuestion, QuestionType } from '@/types/haccp';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { createClient } from '@/utils/supabase/client';
 import { 
   AlertCircle, 
   CheckCircle2, 
@@ -27,7 +26,6 @@ interface QuestionCardProps {
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onChange, error, context, customWarning }) => {
-  const supabase = createClient();
   const [isUploading, setIsUploading] = useState(false);
   
   const renderDescription = () => {
@@ -86,23 +84,29 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
         setIsUploading(false);
         return;
     }
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${crypto.randomUUID()}.${fileExt}`;
-    const filePath = `${fileName}`;
-
     try {
-        const { error: uploadError } = await supabase.storage
-            .from('logos')
-            .upload(filePath, file);
+        const formData = new FormData();
+        formData.append('file', file);
 
-        if (uploadError) {
-            console.error(uploadError);
-            alert(uploadError.message || "Upload failed. Please try again.");
+        const response = await fetch('/api/upload-logo', {
+            method: 'POST',
+            body: formData
+        });
+
+        const payload = await response.json().catch(() => null);
+
+        if (!response.ok) {
+            const message = payload?.error || "Upload failed. Please try again.";
+            console.error(payload);
+            alert(message);
             return;
         }
 
-        const { data } = supabase.storage.from('logos').getPublicUrl(filePath);
-        onChange(question.id, data.publicUrl);
+        if (payload?.publicUrl) {
+            onChange(question.id, payload.publicUrl);
+        } else {
+            alert("Upload failed. Please try again.");
+        }
     } catch (err) {
         console.error(err);
         alert("An unexpected error occurred during upload.");
@@ -144,7 +148,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                             <span className="font-bold text-sm">
                                 {isUploading ? "Uploading..." : "Click to upload logo (PNG/JPG)"}
                             </span>
-                            <span className="text-xs text-slate-400">Max 2MB. Optional.</span>
+                            <span className="text-xs text-slate-400">
+                                Max 2MB. Recommended square (e.g. 512×512) for best PDF output.
+                            </span>
                         </div>
                     </div>
                 )}
