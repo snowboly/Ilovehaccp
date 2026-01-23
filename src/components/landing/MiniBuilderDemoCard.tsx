@@ -37,6 +37,7 @@ export default function MiniBuilderDemoCard() {
   const [hazards, setHazards] = useState(DEFAULT_STATE.hazards);
   const [newStep, setNewStep] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   const modalRef = useRef<HTMLDivElement | null>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
@@ -86,6 +87,7 @@ export default function MiniBuilderDemoCard() {
 
   const openModal = () => {
     lastFocusedRef.current = document.activeElement as HTMLElement;
+    setVideoError(false);
     setIsModalOpen(true);
   };
 
@@ -323,10 +325,31 @@ export default function MiniBuilderDemoCard() {
                 ×
               </button>
             </div>
-            <video className={styles.video} controls poster="/demo-poster.jpg">
-              <source src="/demo.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            {videoError ? (
+              <div className={styles.videoFallback} role="status" aria-live="polite">
+                <p className={styles.videoFallbackTitle}>Video temporarily unavailable</p>
+                <p className={styles.videoFallbackCopy}>
+                  We couldn’t load the 20s demo video just now. Please try again in a moment, or jump straight into
+                  the full builder.
+                </p>
+                <a className={styles.videoFallbackLink} href="/builder">
+                  Open full builder
+                </a>
+              </div>
+            ) : (
+              <video
+                className={styles.video}
+                controls
+                preload="metadata"
+                playsInline
+                poster="/demo-poster.svg"
+                onError={() => setVideoError(true)}
+                onLoadedData={() => setVideoError(false)}
+              >
+                <source src="/demo.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )}
           </div>
         </div>
       )}
