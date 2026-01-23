@@ -9,6 +9,15 @@ import CookieConsent from "@/components/layout/CookieConsent";
 import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/next";
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (typeof window === "undefined") {
+  const anonKeyPrefix = supabaseAnonKey ? supabaseAnonKey.slice(0, 6) : "missing";
+  console.log("[startup] NEXT_PUBLIC_SUPABASE_URL:", supabaseUrl ?? "missing");
+  console.log("[startup] NEXT_PUBLIC_SUPABASE_ANON_KEY prefix:", anonKeyPrefix);
+}
+
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const merriweather = Merriweather({ 
   weight: ['300', '400', '700', '900'],
