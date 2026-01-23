@@ -78,6 +78,9 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'payment',
+      consent_collection: {
+        terms_of_service: 'required',
+      },
       custom_text: {
         submit: {
             message: "One-time payment. No subscription. No automatic renewal."

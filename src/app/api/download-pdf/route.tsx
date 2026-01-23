@@ -114,10 +114,12 @@ export async function GET(req: Request) {
         />
     );
 
+    const safeBusinessName = String(plan.business_name || 'Draft').replace(/\s+/g, '_');
+
     return new NextResponse(pdfBuffer as any, {
         headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename="HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.pdf"`
+            'Content-Disposition': `attachment; filename="HACCP_Plan_${safeBusinessName}.pdf"`
         }
     });
 
