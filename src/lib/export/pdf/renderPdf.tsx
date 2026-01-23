@@ -198,7 +198,13 @@ export const HACCPDocumentModular = ({ data, dict, logo, theme }: any) => {
       paddingBottom: 2,
     },
     label: { fontWeight: 'bold' },
-    text: { marginBottom: 10 }
+    text: { marginBottom: 10 },
+    logo: {
+      width: 100,
+      height: 100,
+      marginBottom: 20,
+      objectFit: 'contain'
+    }
   });
 
   return (
@@ -206,7 +212,7 @@ export const HACCPDocumentModular = ({ data, dict, logo, theme }: any) => {
       {/* COVER PAGE */}
       <Page size="A4" style={styles.coverPage}>
         <Watermark isPaid={isPaid} />
-        {logo && <Image src={logo} style={{ width: 100, height: 100, marginBottom: 20 }} />}
+        {logo && <Image src={logo} style={styles.logo} />}
         <Text style={styles.title}>HACCP PLAN</Text>
         <Text style={styles.subtitle}>{data.businessName}</Text>
         
