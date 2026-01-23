@@ -95,13 +95,23 @@ export async function GET(req: Request) {
     const planVersion = latestVersion?.version_number || 1;
 
     // 4. Generate Doc
-    const fullPlan =
+    const baseFullPlan =
         plan.full_plan ||
         ({
             _original_inputs: plan.answers || {},
             hazard_analysis: plan.hazard_analysis || []
         } as any);
-    const originalInputs = fullPlan._original_inputs || plan.answers || {};
+    const originalInputs = {
+        ...(baseFullPlan?._original_inputs || {}),
+        ...(plan.answers || {})
+    };
+    const fullPlan = {
+        ...baseFullPlan,
+        _original_inputs: originalInputs,
+        hazard_analysis: Array.isArray(baseFullPlan?.hazard_analysis)
+            ? baseFullPlan.hazard_analysis
+            : plan.hazard_analysis || []
+    };
     const productInputs = originalInputs.product || {};
 
     const { wordLogo } = await fetchLogoAssets(productInputs.logo_url);
