@@ -92,8 +92,8 @@ export async function GET(req: Request) {
             hazard_analysis: plan.hazard_analysis || []
         } as any);
     const originalInputs = {
-        ...(plan.answers || {}),
-        ...(baseFullPlan?._original_inputs || {})
+        ...(baseFullPlan?._original_inputs || {}),
+        ...(plan.answers || {})
     };
     const fullPlan = {
         ...baseFullPlan,
