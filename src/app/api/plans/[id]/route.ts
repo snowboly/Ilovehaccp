@@ -1,6 +1,7 @@
 
 import { NextResponse } from 'next/server';
-import { supabaseService } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 import { checkAdminRole } from '@/lib/admin-auth';
 
 export async function GET(
@@ -14,36 +15,51 @@ export async function GET(
   }
 
   try {
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // 1. Initialize RLS-enabled client (uses Cookies)
+    const supabase = await createClient();
 
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabaseService.auth.getUser(token);
+    // 2. Authenticate
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: plan, error } = await supabaseService
-      .from('plans')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
-      }
-      throw error;
-    }
-    if (!plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
-
+    // 3. Check Admin Status
+    // Note: checkAdminRole internally uses the service role, which is correct for permission checks.
     const isAdmin = await checkAdminRole(user.id, user.email);
 
-    if (plan.user_id && plan.user_id !== user.id && !isAdmin) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // 4. Fetch Data (Branching Logic)
+    let plan;
+    let fetchError;
+
+    if (isAdmin) {
+      // Admin: Use Service Role (Bypass RLS) to ensure access to any plan
+      const res = await supabaseAdmin
+        .from('plans')
+        .select('*')
+        .eq('id', id)
+        .single();
+      plan = res.data;
+      fetchError = res.error;
+    } else {
+      // User: Use RLS Client (Enforce RLS)
+      // IDOR Protection: DB will return null/error if user doesn't own the plan
+      const res = await supabase
+        .from('plans')
+        .select('*')
+        .eq('id', id)
+        .single();
+      plan = res.data;
+      fetchError = res.error;
     }
+
+    if (fetchError) {
+      if (fetchError.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+      }
+      throw fetchError;
+    }
+    if (!plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
 
     return NextResponse.json({ plan });
   } catch (error: any) {
@@ -69,12 +85,12 @@ export async function DELETE(
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabaseService.auth.getUser(token);
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: plan, error: fetchError } = await supabaseService
+    const { data: plan, error: fetchError } = await supabaseAdmin
       .from('plans')
       .select('id, user_id')
       .eq('id', id)
@@ -90,7 +106,7 @@ export async function DELETE(
     }
 
     // Remove version history first to avoid FK conflicts
-    const { error: versionsError } = await supabaseService
+    const { error: versionsError } = await supabaseAdmin
       .from('haccp_plan_versions')
       .delete()
       .eq('plan_id', id);
@@ -100,7 +116,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Failed to delete plan versions' }, { status: 500 });
     }
 
-    const { error: deleteError } = await supabaseService
+    const { error: deleteError } = await supabaseAdmin
       .from('plans')
       .delete()
       .eq('id', id);
