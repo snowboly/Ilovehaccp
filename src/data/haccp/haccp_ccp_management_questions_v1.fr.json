@@ -3,131 +3,129 @@
   "locked": true,
   "section": "CCP Management",
   "scope": "per_ccp",
-  "questions": {
-    "translation": [
-      {
-        "id": "critical_limits",
-        "text": "Limites critiques",
-        "tooltip": "Une limite critique est la valeur minimale ou maximale qui doit être respectée pour garantir que le CCP est sous contrôle. Elle doit être mesurable.",
-        "type": "group",
-        "questions": [
-          {
-            "id": "critical_limit_value",
-            "text": "Quel est la limite critique pour ce CCP?",
-            "tooltip": "Une valeur précise (par exemple > 75°C, < 4°C, pH < 4,6) qui sépare le sûr de l'insur. Elle doit être mesurable en temps réel.",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "critical_limit_basis",
-            "text": "Base scientifique ou réglementaire (facultatif)",
-            "tooltip": "Citez la source de votre limite (par exemple, lignes directrices de l'FSA, Règlement 852/2004) si connue.",
-            "type": "text",
-            "required": false
-          }
-        ]
-      },
-      {
-        "id": "monitoring",
-        "text": "Surveillance",
-        "tooltip": "La surveillance est la mesure ou l'observation en temps réel d'un CCP pour garantir qu'il est dans les limites critiques.",
-        "type": "group",
-        "questions": [
-          {
-            "id": "monitoring_parameter",
-            "text": "Quel paramètre est surveillé ?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "monitoring_method",
-            "text": "Comment la surveillance est-elle effectuée ?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "monitoring_frequency",
-            "text": "Fréquence de surveillance",
-            "type": "single_select",
-            "options": [
-              "Continue",
-              "Chaque lot",
-              "Hebdomadaire",
-              "Horaire",
-              "Quotidien",
-              "Autre"
-            ],
-            "required": true
-          },
-          {
-            "id": "monitoring_responsibility",
-            "text": "Qui est responsable de la surveillance ?",
-            "type": "text",
-            "required": true
-          }
-        ]
-      },
-      {
-        "id": "corrective_actions",
-        "text": "Mesures correctives",
-        "tooltip": "Les mesures correctives décrivent ce qui se passe lorsque la surveillance montre qu'une limite critique a été dépassée, y compris la façon dont le contrôle est rétabli.",
-        "type": "group",
-        "questions": [
-          {
-            "id": "deviation_action",
-            "text": "Quelle action est prise si la limite critique est dépassée ?",
-            "tooltip": "Action immédiate pour ramener le processus sous contrôle (par exemple, poursuivre la cuisson, éliminer le produit).",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "product_handling",
-            "text": "Comment le produit affecté est-il géré ?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "root_cause_correction",
-            "text": "Comment la cause de l'écart est-elle corrigée ?",
-            "tooltip": "Expliquez comment vous réparez le problème sous-jacent (par exemple, réparation du réfrigérateur, formation du personnel) pour éviter les récidives.",
-            "type": "text",
-            "required": true
-          }
-        ]
-      },
-      {
-        "id": "verification",
-        "text": "Vérification",
-        "tooltip": "La vérification confirme que le système HACCP fonctionne comme prévu (par exemple, examen des dossiers, étalonnage, tests).",
-        "type": "group",
-        "questions": [
-          {
-            "id": "verification_activities",
-            "text": "Quelles activités de vérification sont effectuées ?",
-            "type": "text",
-            "required": true
-          },
-          {
-            "id": "verification_frequency",
-            "text": "Fréquence de vérification",
-            "type": "text",
-            "required": true
-          }
-        ]
-      },
-      {
-        "id": "records",
-        "text": "Dossiers",
-        "type": "group",
-        "questions": [
-          {
-            "id": "ccp_records",
-            "text": "Quels dossiers sont conservés pour ce CCP ?",
-            "type": "text",
-            "required": true
-          }
-        ]
-      }
-    ]
-  }
+  "questions": [
+    {
+      "id": "critical_limits",
+      "text": "Limites critiques",
+      "tooltip": "Une limite critique est la valeur minimale ou maximale qui doit être respectée pour garantir que le CCP est sous contrôle. Elle doit être mesurable.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "critical_limit_value",
+          "text": "Quel est la limite critique pour ce CCP?",
+          "tooltip": "Une valeur précise (par exemple > 75°C, < 4°C, pH < 4,6) qui sépare le sûr de l'insur. Elle doit être mesurable en temps réel.",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "critical_limit_basis",
+          "text": "Base scientifique ou réglementaire (facultatif)",
+          "tooltip": "Citez la source de votre limite (par exemple, lignes directrices de l'FSA, Règlement 852/2004) si connue.",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "monitoring",
+      "text": "Surveillance",
+      "tooltip": "La surveillance est la mesure ou l'observation en temps réel d'un CCP pour garantir qu'il est dans les limites critiques.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "monitoring_parameter",
+          "text": "Quel paramètre est surveillé ?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "monitoring_method",
+          "text": "Comment la surveillance est-elle effectuée ?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "monitoring_frequency",
+          "text": "Fréquence de surveillance",
+          "type": "single_select",
+          "options": [
+            "Continue",
+            "Chaque lot",
+            "Hebdomadaire",
+            "Horaire",
+            "Quotidien",
+            "Autre"
+          ],
+          "required": true
+        },
+        {
+          "id": "monitoring_responsibility",
+          "text": "Qui est responsable de la surveillance ?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "corrective_actions",
+      "text": "Mesures correctives",
+      "tooltip": "Les mesures correctives décrivent ce qui se passe lorsque la surveillance montre qu'une limite critique a été dépassée, y compris la façon dont le contrôle est rétabli.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "deviation_action",
+          "text": "Quelle action est prise si la limite critique est dépassée ?",
+          "tooltip": "Action immédiate pour ramener le processus sous contrôle (par exemple, poursuivre la cuisson, éliminer le produit).",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "product_handling",
+          "text": "Comment le produit affecté est-il géré ?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "root_cause_correction",
+          "text": "Comment la cause de l'écart est-elle corrigée ?",
+          "tooltip": "Expliquez comment vous réparez le problème sous-jacent (par exemple, réparation du réfrigérateur, formation du personnel) pour éviter les récidives.",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "verification",
+      "text": "Vérification",
+      "tooltip": "La vérification confirme que le système HACCP fonctionne comme prévu (par exemple, examen des dossiers, étalonnage, tests).",
+      "type": "group",
+      "questions": [
+        {
+          "id": "verification_activities",
+          "text": "Quelles activités de vérification sont effectuées ?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "verification_frequency",
+          "text": "Fréquence de vérification",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "records",
+      "text": "Dossiers",
+      "type": "group",
+      "questions": [
+        {
+          "id": "ccp_records",
+          "text": "Quels dossiers sont conservés pour ce CCP ?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    }
+  ]
 }
