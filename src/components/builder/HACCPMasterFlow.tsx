@@ -1395,7 +1395,7 @@ export default function HACCPMasterFlow() {
 
     if (currentSection === 'product') {
         return (
-            <div className="space-y-12">
+            <div className="space-y-12 pb-32">
                 <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />
                 
                 <div className="max-w-3xl mx-auto pt-4 border-t border-slate-200">
