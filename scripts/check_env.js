@@ -4,7 +4,10 @@ const keys = [
     'NEXT_PUBLIC_SUPABASE_URL',
     'NEXT_PUBLIC_SUPABASE_ANON_KEY',
     'SUPABASE_SERVICE_ROLE_KEY',
-    'RESEND_API_KEY'
+    'RESEND_API_KEY',
+    'RESEND_FROM',
+    'ADMIN_REVIEW_INBOX',
+    'APP_URL'
 ];
 
 console.log("🔍 Checking Environment Variables...");

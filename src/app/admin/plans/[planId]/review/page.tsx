@@ -1,8 +1,9 @@
 import { redirect, notFound } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
-import { Resend } from 'resend';
 import { checkAdminRole } from '@/lib/admin-auth';
 import { supabaseService } from '@/lib/supabase';
+import { sendEmail } from '@/lib/email/send';
+import { reviewAvailableEmailHtml } from '@/lib/email/templates/review-available';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -25,25 +26,7 @@ type ReviewRecord = {
   reviewer_id: string | null;
 };
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-
-const sendEmail = async (to: string, subject: string, body: string) => {
-  if (!resend) {
-    console.log('Email stub:', { to, subject, body });
-    return;
-  }
-
-  const { error } = await resend.emails.send({
-    from: 'iLoveHACCP <noreply@ilovehaccp.com>',
-    to: [to],
-    subject,
-    html: body,
-  });
-
-  if (error) {
-    console.error('Failed to send review email:', error);
-  }
-};
+const appUrl = process.env.APP_URL!;
 
 export default async function AdminPlanReviewPage({ params, searchParams }: ReviewPageProps) {
   const { planId } = await params;
@@ -140,7 +123,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
 
     const { data: currentPlan, error: currentPlanError } = await supabaseService
       .from('plans')
-      .select('review_status, user_id')
+      .select('review_status, user_id, product_name, business_name')
       .eq('id', planId)
       .maybeSingle();
 
@@ -186,23 +169,11 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
       if (ownerError) {
         console.error('Failed to fetch plan owner for review email:', ownerError);
       } else if (ownerEmail) {
-        const reviewLink = `https://www.ilovehaccp.com/dashboard/plans/${planId}/review`;
-        await sendEmail(
-          ownerEmail,
-          'Your HACCP Review Is Ready',
-          `
-            <div style="font-family: sans-serif; color: #333;">
-              <h2>Your HACCP Review Is Ready</h2>
-              <p>Your review has been completed and is available now.</p>
-              <p>
-                <a href="${reviewLink}" style="background-color: #2563eb; color: #fff; padding: 12px 18px; border-radius: 6px; text-decoration: none; display: inline-block;">
-                  View Review
-                </a>
-              </p>
-              <p style="font-size: 12px; color: #666;">Or copy this link: ${reviewLink}</p>
-            </div>
-          `
-        );
+        await sendEmail({
+          to: ownerEmail,
+          subject: 'Your iLoveHACCP review is available',
+          html: reviewAvailableEmailHtml({ appUrl, planId }),
+        });
       }
     }
 

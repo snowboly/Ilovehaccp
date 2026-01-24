@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { supabaseService } from '@/lib/supabase';
+import { sendEmail } from '@/lib/email/send';
+import { adminReviewRequestedEmailHtml } from '@/lib/email/templates/admin-review-requested';
 
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' as any })
   : null;
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const appUrl = process.env.APP_URL!;
 
 export async function POST(req: Request) {
   if (!stripe) {
@@ -35,7 +38,7 @@ export async function POST(req: Request) {
       // 1. Idempotency Check
       const { data: existingPlan, error: fetchError } = await supabaseService
           .from('plans')
-          .select('payment_status')
+          .select('payment_status, user_id, business_name, product_name')
           .eq('id', planId)
           .single();
 
@@ -72,6 +75,15 @@ export async function POST(req: Request) {
       if (error) {
         console.error('Supabase update error:', error);
         return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+      }
+
+      if (tier === 'expert') {
+        const adminInbox = process.env.ADMIN_REVIEW_INBOX!;
+        await sendEmail({
+          to: adminInbox,
+          subject: 'Review requested (iLoveHACCP)',
+          html: adminReviewRequestedEmailHtml({ appUrl, planId }),
+        });
       }
 
       // Trigger Email Notification (Awaited to ensure completion)
