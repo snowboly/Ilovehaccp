@@ -1,6 +1,14 @@
 import { supabaseAdmin } from '@/lib/supabase';
 
-export type AuditAction = 'EXPORT_PDF' | 'EXPORT_WORD' | 'VIEW' | 'LOGIN_FAILURE';
+export type AuditAction = 
+  | 'EXPORT_PDF' 
+  | 'EXPORT_WORD' 
+  | 'VIEW' 
+  | 'LOGIN_FAILURE'
+  | 'ATTACH_DRAFT_ATTEMPT'
+  | 'ATTACH_DRAFT_SUCCESS'
+  | 'ATTACH_DRAFT_FAILED'
+  | 'ATTACH_DRAFT_BLOCKED';
 export type EntityType = 'plan' | 'draft' | 'system';
 
 export async function logAccess(
