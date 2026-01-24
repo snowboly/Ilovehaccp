@@ -1,44 +1,78 @@
-import { Table, TableRow, TableCell, Paragraph, TextRun, WidthType, AlignmentType, BorderStyle } from "docx";
+import {
+  Table,
+  TableRow,
+  TableCell,
+  Paragraph,
+  TextRun,
+  WidthType,
+  AlignmentType,
+  BorderStyle,
+  ShadingType,
+} from "docx";
+import { HACCP_THEME as T } from "../theme";
+import { wrapIdForPdf } from "../wrap";
 
-export const renderWordTable = (headers: string[], rows: any[][], colWidths: number[], theme: any) => {
-  const padding = (theme.spacing.tablePadding || 6) * 20;
-  const isModern = theme.id === 'professional-modern';
-  
+const toTwips = (points: number) => Math.round(points * 20);
+
+export const renderWordTable = (headers: string[], rows: string[][], colWidths: number[]) => {
+  const padding = toTwips(6);
+  const border = { color: T.colors.border.replace("#", ""), style: BorderStyle.SINGLE, size: 1 };
+  const headerFill = T.colors.tableHeaderBg.replace("#", "");
+  const zebraFill = "FAFBFD";
+
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: [
-      // Header
       new TableRow({
         tableHeader: true,
-        children: headers.map((h, i) => new TableCell({
-          width: { size: colWidths[i], type: WidthType.PERCENTAGE },
-          shading: { fill: theme.colors.tableHeaderBg.replace('#', '') },
-          children: [new Paragraph({ children: [new TextRun({ text: h, font: theme.fonts.wordFont, size: theme.fonts.tableHeader * 2, bold: true, color: isModern ? theme.colors.primary.replace('#', '') : undefined })] })],
-          verticalAlign: AlignmentType.CENTER,
-          margins: { top: padding, bottom: padding, left: padding, right: padding },
-          borders: {
-              top: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 1 },
-              bottom: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 1 },
-              left: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 1 },
-              right: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 1 },
-          }
-        }))
+        children: headers.map((h, i) =>
+          new TableCell({
+            width: { size: colWidths[i], type: WidthType.PERCENTAGE },
+            shading: { type: ShadingType.CLEAR, fill: headerFill },
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: h,
+                    font: "Calibri",
+                    size: T.font.h2 * 2,
+                    bold: true,
+                    color: T.colors.text.replace("#", ""),
+                  }),
+                ],
+              }),
+            ],
+            verticalAlign: AlignmentType.CENTER,
+            margins: { top: padding, bottom: padding, left: padding, right: padding },
+            borders: { top: border, bottom: border, left: border, right: border },
+          })
+        ),
       }),
-      // Rows
-      ...rows.map(row => new TableRow({
-        children: row.map((cell, j) => new TableCell({
-          width: { size: colWidths[j], type: WidthType.PERCENTAGE },
-          children: [new Paragraph({ children: [new TextRun({ text: String(cell || "-"), font: theme.fonts.wordFont, size: theme.fonts.tableBody * 2 })] })],
-          verticalAlign: AlignmentType.CENTER,
-          margins: { top: padding, bottom: padding, left: padding, right: padding },
-          borders: {
-            top: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 1 },
-            bottom: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 1 },
-            left: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 1 },
-            right: { color: theme.colors.border.replace('#', ''), style: BorderStyle.SINGLE, size: 1 },
-          }
-        }))
-      }))
-    ]
+      ...rows.map((row, rowIndex) => {
+        const fill = rowIndex % 2 === 1 ? zebraFill : T.colors.white.replace("#", "");
+        return new TableRow({
+          children: row.map((cell, j) =>
+            new TableCell({
+              width: { size: colWidths[j], type: WidthType.PERCENTAGE },
+              shading: { type: ShadingType.CLEAR, fill },
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: wrapIdForPdf(String(cell || "-")),
+                      font: "Calibri",
+                      size: T.font.body * 2,
+                    }),
+                  ],
+                }),
+              ],
+              verticalAlign: AlignmentType.CENTER,
+              margins: { top: padding, bottom: padding, left: padding, right: padding },
+              borders: { top: border, bottom: border, left: border, right: border },
+            })
+          ),
+        });
+      }),
+    ],
   });
 };
