@@ -26,12 +26,12 @@ export async function POST(req: Request) {
         .gte('created_at', new Date(Date.now() - 60000).toISOString());
 
     if (count !== null && count >= 5) {
-        await logAccess({ email: user.email, role: 'user', id: user.id }, 'ATTACH_DRAFT_BLOCKED', { type: 'draft', id: draftId }, { reason: 'Rate Limit' });
+        await logAccess({ email: user.email || 'unknown', role: 'user', id: user.id }, 'ATTACH_DRAFT_BLOCKED', { type: 'draft', id: draftId }, { reason: 'Rate Limit' });
         return NextResponse.json({ error: 'Too many attempts. Please try again later.' }, { status: 429 });
     }
 
     // Log Attempt
-    await logAccess({ email: user.email, role: 'user', id: user.id }, 'ATTACH_DRAFT_ATTEMPT', { type: 'draft', id: draftId });
+    await logAccess({ email: user.email || 'unknown', role: 'user', id: user.id }, 'ATTACH_DRAFT_ATTEMPT', { type: 'draft', id: draftId });
 
     // 1. Verify Draft exists
     const { data: draft, error: fetchError } = await supabaseService
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
 
     const payload = verifyAccessToken(claimToken);
     if (!payload || payload.id !== draftId || payload.scope !== 'claim') {
-        await logAccess({ email: user.email, role: 'user', id: user.id }, 'ATTACH_DRAFT_FAILED', { type: 'draft', id: draftId }, { reason: 'Invalid Claim Token' });
+        await logAccess({ email: user.email || 'unknown', role: 'user', id: user.id }, 'ATTACH_DRAFT_FAILED', { type: 'draft', id: draftId }, { reason: 'Invalid Claim Token' });
         return NextResponse.json({ error: 'Invalid or expired claim token' }, { status: 403 });
     }
 
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
 
     if (updateError) throw updateError;
 
-    await logAccess({ email: user.email, role: 'user', id: user.id }, 'ATTACH_DRAFT_SUCCESS', { type: 'draft', id: draftId });
+    await logAccess({ email: user.email || 'unknown', role: 'user', id: user.id }, 'ATTACH_DRAFT_SUCCESS', { type: 'draft', id: draftId });
 
     return NextResponse.json({ success: true });
 

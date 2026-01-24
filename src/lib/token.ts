@@ -5,7 +5,7 @@ const SECRET = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_
 export interface AccessTokenPayload {
   id: string;      // Resource ID (plan_id or draft_id)
   type: 'plan' | 'draft';
-  scope: 'view' | 'export' | 'claim';;
+  scope: 'view' | 'export' | 'claim';
   email?: string;  // Optional: bind to email for audit
   exp: number;     // Unix timestamp
 }
@@ -13,7 +13,7 @@ export interface AccessTokenPayload {
 export function generateAccessToken(
   id: string, 
   type: 'plan' | 'draft', 
-  scope: 'view' | 'export' | 'claim';,
+  scope: 'view' | 'export' | 'claim',
   expiresInSeconds: number = 7 * 24 * 60 * 60 // Default 7 days
 ): string {
   const payload: AccessTokenPayload = {
