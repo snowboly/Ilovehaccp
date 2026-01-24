@@ -29,7 +29,7 @@ export async function GET() {
 
   const [{ data: roleRow }, { data: whitelistRow }] = await Promise.all([
     supabaseService.from("user_roles").select("role").eq("user_id", user.id).maybeSingle(),
-    supabaseService.from("admin_whitelist").select("email").eq("email", user.email ?? "").maybeSingle(),
+    supabaseService.from("admin_whitelist").select("email").ilike("email", user.email ?? "").maybeSingle(),
   ]);
 
   const isAdmin = roleRow?.role === "admin" && !!whitelistRow?.email;
