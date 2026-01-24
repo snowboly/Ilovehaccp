@@ -11,9 +11,11 @@ interface QuestionnaireProps {
   onComplete: (data: any) => void;
   initialData?: any;
   additionalContext?: any;
+  title?: string;
+  description?: string | React.ReactNode;
 }
 
-export default function HACCPQuestionnaire({ sectionData, onComplete, initialData, additionalContext }: QuestionnaireProps) {
+export default function HACCPQuestionnaire({ sectionData, onComplete, initialData, additionalContext, title, description }: QuestionnaireProps) {
   const [answers, setAnswers] = useState<any>(initialData || {});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -210,9 +212,11 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
             {sectionData.section}
         </span>
         <h2 className="text-3xl font-black text-slate-900">
-            {getTitle(sectionData.section)}
+            {title || getTitle(sectionData.section)}
         </h2>
-        <p className="text-slate-500 font-medium">Please answer accurately to ensure compliance.</p>
+        <div className="text-slate-500 font-medium">
+            {description || "Please answer accurately to ensure compliance."}
+        </div>
       </div>
 
       <div className="space-y-6">

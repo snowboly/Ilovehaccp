@@ -1436,7 +1436,7 @@ export default function HACCPMasterFlow() {
       const step = allAnswers.process?.process_steps?.[currentStepIndex];
       const dynamicSchema = { 
           ...getQuestions('hazards', language), 
-          section: `Hazard Analysis: ${step?.step_name || 'Unknown Step'}` 
+          section: 'Hazard Analysis'
       } as unknown as HACCPSectionData;
 
       const isGenericPattern = checkGenericRiskPattern();
@@ -1461,6 +1461,12 @@ export default function HACCPMasterFlow() {
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('hazards', d)} 
                 additionalContext={{ step_name: step?.step_name }}
+                title="Analyze Hazards"
+                description={
+                    <span className="font-bold text-slate-700">
+                        Analyzing Step: <span className="text-blue-600">{step?.step_name || 'Unknown Step'}</span>
+                    </span>
+                }
             />
         </div>
       );
@@ -1477,60 +1483,25 @@ export default function HACCPMasterFlow() {
 
       const dynamicSchema = { 
           ...questionsData, 
-          section: `CCP Determination: ${currentHazard.step_name}`,
-          questions: questionsData.questions.map((q: any) => {
-              let text = q.text;
-              let tooltip = q.tooltip;
-
-              // Allergen-specific override
-              if (currentHazard.hazard_type === 'allergen') {
-                  if (q.id === 'q2_step_designed_to_eliminate') {
-                      text = "Is this step specifically designed to REMOVE the allergen or ENSURE correct labeling?";
-                      tooltip = "Note: Allergens cannot be 'killed' by cooking. Answer YES only if this step is validated cleaning (to remove traces) or a label check (to ensure correct info).";
-                  }
-                  if (q.id === 'q4_subsequent_step') {
-                      text = "Will a subsequent step manage this allergen (e.g. final labeling)?";
-                      tooltip = "If a later step (like final packaging/labeling) ensures the allergen is declared, then THIS step might not be a CCP.";
-                  }
-              }
-
-              return {
-                ...q,
-                text,
-                tooltip,
-                description: q.id === 'q1_control_measure' 
-                    ? `For hazard: "${currentHazard.hazards}" at step "${currentHazard.step_name}"`
-                    : q.description
-              };
-          })
+          section: 'CCP Determination'
       } as unknown as HACCPSectionData;
 
-       return (
-        <div key={currentCCPIndex} className="animate-in fade-in slide-in-from-right-8 duration-500">
-            <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-r-xl mb-8 max-w-3xl mx-auto shadow-sm">
-                <div className="flex items-start gap-3">
-                    <Info className="w-6 h-6 text-blue-600 mt-1" />
-                    <div>
-                        <h3 className="font-black text-blue-900 text-lg mb-1">Hazard Context</h3>
-                        <p className="text-blue-800 font-medium text-sm">
-                            <strong>Process Step:</strong> {currentHazard.step_name}
-                        </p>
-                        <p className="text-blue-800 font-medium text-sm mt-1">
-                            <strong>Identified Hazard:</strong> {currentHazard.hazards}
-                        </p>
-                        <p className="text-blue-700 text-xs mt-2 italic">
-                            Control Measure: {currentHazard.control_measure || "None defined"}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
+      return (
+        <div className="space-y-6">
             <HACCPQuestionnaire 
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('ccp_determination', d)} 
+                additionalContext={{ step_name: currentHazard.step_name }}
+                title="Identify Critical Points"
+                description={
+                    <div className="bg-blue-50 border-blue-200 border p-4 rounded-xl inline-block text-left text-sm text-blue-800">
+                        <p><strong>Step:</strong> {currentHazard.step_name}</p>
+                        <p><strong>Hazard:</strong> {currentHazard.hazards} ({currentHazard.hazard_type})</p>
+                    </div>
+                }
             />
         </div>
-       );
+      );
   }
 
   if (currentSection === 'ccp_management') {
@@ -1555,25 +1526,12 @@ export default function HACCPMasterFlow() {
 
       const dynamicSchema = { 
           ...questionsData, 
-          section: `CCP Management (${ccpList.length} Critical Points)`,
+          section: 'CCP Management',
           questions: dynamicQuestions
       } as unknown as HACCPSectionData;
 
        return (
         <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-            <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-r-xl mb-8 max-w-3xl mx-auto shadow-sm">
-                <div className="flex items-start gap-3">
-                    <Info className="w-6 h-6 text-blue-600 mt-1" />
-                    <div>
-                        <h3 className="font-black text-blue-900 text-lg mb-1">CCP Management Strategy</h3>
-                        <p className="text-blue-800 font-medium text-sm">
-                            You have identified <strong>{ccpList.length} Critical Control Points</strong>. 
-                            Define the monitoring and control limits for each one below to ensure food safety.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
             <HACCPQuestionnaire 
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('ccp_management', d)} 
@@ -1585,6 +1543,13 @@ export default function HACCPMasterFlow() {
                         return acc;
                     }, {})
                     : {}
+                }
+                title="Manage Critical Points"
+                description={
+                    <span>
+                        You have identified <strong>{ccpList.length} Critical Control Points</strong>.<br/>
+                        Define the monitoring and control limits for each one below to ensure food safety.
+                    </span>
                 }
             />
         </div>
