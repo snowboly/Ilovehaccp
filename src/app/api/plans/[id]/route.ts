@@ -85,12 +85,12 @@ export async function DELETE(
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabaseService.auth.getUser(token);
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: plan, error: fetchError } = await supabaseService
+    const { data: plan, error: fetchError } = await supabaseAdmin
       .from('plans')
       .select('id, user_id')
       .eq('id', id)
@@ -106,7 +106,7 @@ export async function DELETE(
     }
 
     // Remove version history first to avoid FK conflicts
-    const { error: versionsError } = await supabaseService
+    const { error: versionsError } = await supabaseAdmin
       .from('haccp_plan_versions')
       .delete()
       .eq('plan_id', id);
@@ -116,7 +116,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Failed to delete plan versions' }, { status: 500 });
     }
 
-    const { error: deleteError } = await supabaseService
+    const { error: deleteError } = await supabaseAdmin
       .from('plans')
       .delete()
       .eq('id', id);
