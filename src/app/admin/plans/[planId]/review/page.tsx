@@ -18,7 +18,32 @@ type ReviewNotes = {
   general: string;
 };
 
-const resend = new Resend(process.env.RESEND_API_KEY || '');
+type ReviewRecord = {
+  id: string;
+  content: ReviewNotes | null;
+  created_at: string;
+  reviewer_id: string | null;
+};
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+const sendEmail = async (to: string, subject: string, body: string) => {
+  if (!resend) {
+    console.log('Email stub:', { to, subject, body });
+    return;
+  }
+
+  const { error } = await resend.emails.send({
+    from: 'iLoveHACCP <noreply@ilovehaccp.com>',
+    to: [to],
+    subject,
+    html: body,
+  });
+
+  if (error) {
+    console.error('Failed to send review email:', error);
+  }
+};
 
 export default async function AdminPlanReviewPage({ params, searchParams }: ReviewPageProps) {
   const { planId } = await params;
@@ -38,7 +63,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
 
   const { data: plan, error: planError } = await supabaseService
     .from('plans')
-    .select('id, created_at, user_id, draft_id, business_name, product_name, payment_status, tier, review_notes, review_status, reviewed_at')
+    .select('id, created_at, user_id, draft_id, product_name, review_status, reviewed_at')
     .eq('id', planId)
     .maybeSingle();
 
@@ -50,13 +75,20 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
     notFound();
   }
 
-  const [userResponse, draftResponse] = await Promise.all([
+  const [userResponse, draftResponse, reviewResponse] = await Promise.all([
     plan.user_id
       ? supabaseService.auth.admin.getUserById(plan.user_id)
       : Promise.resolve({ data: { user: null }, error: null }),
     plan.draft_id
-      ? supabaseService.from('drafts').select('id, name, created_at').eq('id', plan.draft_id).maybeSingle()
+      ? supabaseService.from('drafts').select('id, name, plan_data, created_at').eq('id', plan.draft_id).maybeSingle()
       : Promise.resolve({ data: null, error: null }),
+    supabaseService
+      .from('reviews')
+      .select('id, content, created_at, reviewer_id')
+      .eq('plan_id', planId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   const userEmail = userResponse.data?.user?.email ?? 'Unknown';
@@ -64,11 +96,35 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
   const fallbackDraftLabel = draftResponse.data
     ? `Draft – ${new Date(draftResponse.data.created_at).toLocaleDateString()}`
     : 'Not linked';
-  const existingNotes = plan.review_notes as ReviewNotes | null;
+  const latestReview = reviewResponse.data as ReviewRecord | null;
+  const latestNotes = latestReview?.content ?? null;
+  const draftProductName =
+    (draftResponse.data?.plan_data as { product_name?: string; productName?: string } | null)?.product_name
+    ?? (draftResponse.data?.plan_data as { product_name?: string; productName?: string } | null)?.productName
+    ?? null;
+  const productName = plan.product_name || draftProductName || 'Not provided';
   const isReviewed = plan.review_status === 'reviewed';
   const isReadOnly = isReviewed && !isEditing;
 
-  const handleSubmitReview = async (formData: FormData) => {
+  const parseNotes = (formData: FormData): ReviewNotes => {
+    const major = formData
+      .get('major')
+      ?.toString()
+      .split('\n')
+      .map((entry) => entry.trim())
+      .filter(Boolean) ?? [];
+    const minor = formData
+      .get('minor')
+      ?.toString()
+      .split('\n')
+      .map((entry) => entry.trim())
+      .filter(Boolean) ?? [];
+    const general = formData.get('general')?.toString().trim() ?? '';
+
+    return { major, minor, general };
+  };
+
+  const handleSaveReview = async (formData: FormData) => {
     'use server';
 
     const formSupabase = await createClient();
@@ -98,30 +154,23 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
       throw new Error('Review is locked. Enable edit mode to update notes.');
     }
 
-    const major = formData
-      .get('major')
-      ?.toString()
-      .split('\n')
-      .map((entry) => entry.trim())
-      .filter(Boolean) ?? [];
-    const minor = formData
-      .get('minor')
-      ?.toString()
-      .split('\n')
-      .map((entry) => entry.trim())
-      .filter(Boolean) ?? [];
-    const general = formData.get('general')?.toString().trim() ?? '';
+    const reviewNotes = parseNotes(formData);
 
-    const reviewNotes: ReviewNotes = {
-      major,
-      minor,
-      general,
-    };
+    const { error: reviewInsertError } = await supabaseService
+      .from('reviews')
+      .insert({
+        plan_id: planId,
+        reviewer_id: formUser.id,
+        content: reviewNotes,
+      });
+
+    if (reviewInsertError) {
+      throw reviewInsertError;
+    }
 
     const { error: updateError } = await supabaseService
       .from('plans')
       .update({
-        review_notes: reviewNotes,
         review_status: 'reviewed',
         reviewed_at: new Date().toISOString(),
       })
@@ -131,52 +180,93 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
       throw updateError;
     }
 
-    if (!wasReviewed && currentPlan?.user_id && process.env.RESEND_API_KEY) {
+    if (!wasReviewed && currentPlan?.user_id) {
       const { data: ownerData, error: ownerError } = await supabaseService.auth.admin.getUserById(currentPlan.user_id);
       const ownerEmail = ownerData?.user?.email;
-
       if (ownerError) {
         console.error('Failed to fetch plan owner for review email:', ownerError);
       } else if (ownerEmail) {
         const reviewLink = `https://www.ilovehaccp.com/dashboard/plans/${planId}/review`;
-        const { error: emailError } = await resend.emails.send({
-          from: 'iLoveHACCP <noreply@ilovehaccp.com>',
-          to: [ownerEmail],
-          subject: 'Your HACCP Review Is Available',
-          html: `
+        await sendEmail(
+          ownerEmail,
+          'Your HACCP Review Is Ready',
+          `
             <div style="font-family: sans-serif; color: #333;">
-              <h2>Your HACCP Review Is Available</h2>
-              <p>Your review has been completed and is ready for you.</p>
+              <h2>Your HACCP Review Is Ready</h2>
+              <p>Your review has been completed and is available now.</p>
               <p>
                 <a href="${reviewLink}" style="background-color: #2563eb; color: #fff; padding: 12px 18px; border-radius: 6px; text-decoration: none; display: inline-block;">
-                  View Your Review
+                  View Review
                 </a>
               </p>
               <p style="font-size: 12px; color: #666;">Or copy this link: ${reviewLink}</p>
             </div>
-          `,
-        });
-
-        if (emailError) {
-          console.error('Failed to send review available email:', emailError);
-        }
+          `
+        );
       }
     }
 
     redirect(`/admin/plans/${planId}/review?submitted=1`);
   };
 
+  const handleSaveDraft = async (formData: FormData) => {
+    'use server';
+
+    const formSupabase = await createClient();
+    const { data: { user: formUser } } = await formSupabase.auth.getUser();
+    if (!formUser) {
+      redirect(`/login?next=/admin/plans/${planId}/review`);
+    }
+
+    const formIsAdmin = await checkAdminRole(formUser.id, formUser.email);
+    if (!formIsAdmin) {
+      redirect('/dashboard');
+    }
+
+    const { data: currentPlan, error: currentPlanError } = await supabaseService
+      .from('plans')
+      .select('review_status')
+      .eq('id', planId)
+      .maybeSingle();
+
+    if (currentPlanError) {
+      throw currentPlanError;
+    }
+
+    const editMode = formData.get('edit_mode') === 'true';
+    const wasReviewed = currentPlan?.review_status === 'reviewed';
+    if (wasReviewed && !editMode) {
+      throw new Error('Review is locked. Enable edit mode to update notes.');
+    }
+
+    const reviewNotes = parseNotes(formData);
+
+    const { error: reviewInsertError } = await supabaseService
+      .from('reviews')
+      .insert({
+        plan_id: planId,
+        reviewer_id: formUser.id,
+        content: reviewNotes,
+      });
+
+    if (reviewInsertError) {
+      throw reviewInsertError;
+    }
+
+    redirect(`/admin/plans/${planId}/review?draft=1`);
+  };
+
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <header className="space-y-2">
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Admin Review</p>
-        <h1 className="text-3xl font-black text-slate-900">Plan Review – Step 1</h1>
-        <p className="text-sm text-slate-500">Confirm core metadata before starting the review workflow.</p>
+        <h1 className="text-3xl font-black text-slate-900">HACCP Draft Review</h1>
+        <p className="text-sm text-slate-500">Review the plan context and capture feedback.</p>
       </header>
 
       <section className="bg-white rounded-2xl border border-slate-200 shadow-sm">
         <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-bold text-slate-900">Plan Metadata</h2>
+          <h2 className="text-lg font-bold text-slate-900">Context</h2>
         </div>
         <div className="p-6 grid gap-6 md:grid-cols-2">
           <div>
@@ -201,20 +291,8 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
             )}
           </div>
           <div>
-            <p className="text-xs text-slate-400 uppercase tracking-wide">Business Name</p>
-            <p className="text-sm text-slate-700">{plan.business_name || 'Untitled'}</p>
-          </div>
-          <div>
             <p className="text-xs text-slate-400 uppercase tracking-wide">Product Name</p>
-            <p className="text-sm text-slate-700">{plan.product_name || 'Not provided'}</p>
-          </div>
-          <div>
-            <p className="text-xs text-slate-400 uppercase tracking-wide">Payment Status</p>
-            <p className="text-sm text-slate-700">{plan.payment_status || 'unknown'}</p>
-          </div>
-          <div>
-            <p className="text-xs text-slate-400 uppercase tracking-wide">Tier</p>
-            <p className="text-sm text-slate-700">{plan.tier || 'standard'}</p>
+            <p className="text-sm text-slate-700">{productName}</p>
           </div>
         </div>
       </section>
@@ -224,7 +302,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
           <h2 className="text-lg font-bold text-slate-900">Review Form</h2>
           <p className="text-sm text-slate-500">Capture structured feedback before finalizing the review.</p>
         </div>
-        <form action={handleSubmitReview} className="p-6 space-y-6">
+        <form action={handleSaveReview} className="p-6 space-y-6">
           <input type="hidden" name="edit_mode" value={isEditing ? 'true' : 'false'} />
           <div className="space-y-2">
             <label htmlFor="major" className="text-sm font-semibold text-slate-700">Major Gaps</label>
@@ -233,7 +311,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
               id="major"
               name="major"
               rows={4}
-              defaultValue={existingNotes?.major?.join('\n') ?? ''}
+              defaultValue={latestNotes?.major?.join('\n') ?? ''}
               readOnly={isReadOnly}
               className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isReadOnly ? 'border-slate-100 bg-slate-50 text-slate-500' : 'border-slate-200'}`}
               placeholder="List major gaps..."
@@ -246,7 +324,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
               id="minor"
               name="minor"
               rows={4}
-              defaultValue={existingNotes?.minor?.join('\n') ?? ''}
+              defaultValue={latestNotes?.minor?.join('\n') ?? ''}
               readOnly={isReadOnly}
               className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isReadOnly ? 'border-slate-100 bg-slate-50 text-slate-500' : 'border-slate-200'}`}
               placeholder="List minor gaps..."
@@ -258,7 +336,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
               id="general"
               name="general"
               rows={5}
-              defaultValue={existingNotes?.general ?? ''}
+              defaultValue={latestNotes?.general ?? ''}
               readOnly={isReadOnly}
               className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isReadOnly ? 'border-slate-100 bg-slate-50 text-slate-500' : 'border-slate-200'}`}
               placeholder="Add general review comments..."
@@ -267,8 +345,8 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
           <div className="flex items-center justify-between">
             <p className="text-xs text-slate-500">
               Current status: <span className="font-semibold text-slate-700">{plan.review_status || 'unreviewed'}</span>
-              {plan.reviewed_at && (
-                <span className="ml-2 text-slate-400">Last updated {new Date(plan.reviewed_at).toLocaleString()}</span>
+              {latestReview?.created_at && (
+                <span className="ml-2 text-slate-400">Last review {new Date(latestReview.created_at).toLocaleString()}</span>
               )}
             </p>
             <div className="flex items-center gap-3">
@@ -289,12 +367,21 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
                 </a>
               )}
               {!isReadOnly && (
-                <button
-                  type="submit"
-                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
-                >
-                  Save Review Notes
-                </button>
+                <>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+                  >
+                    Save Review
+                  </button>
+                  <button
+                    type="submit"
+                    formAction={handleSaveDraft}
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300"
+                  >
+                    Save Draft
+                  </button>
+                </>
               )}
             </div>
           </div>

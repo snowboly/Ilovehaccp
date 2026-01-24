@@ -1,129 +1,125 @@
-"use client";
+import { notFound, redirect } from 'next/navigation';
+import Link from 'next/link';
+import { createClient } from '@/utils/supabase/server';
+import { supabaseService } from '@/lib/supabase';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
-import Link from "next/link";
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
-interface PlanReview {
+type ReviewNotes = {
+  major?: string[];
+  minor?: string[];
+  general?: string;
+};
+
+type ReviewRecord = {
   id: string;
-  user_id?: string | null;
-  review_notes?: {
-    major?: string[];
-    minor?: string[];
-    general?: string;
-    major_gaps?: string[];
-    minor_gaps?: string[];
-    general_notes?: string;
-  } | null;
-  review_comments?: string | null;
-  review_status?: string | null;
-  reviewed_at?: string | null;
-}
+  content: ReviewNotes | null;
+  created_at: string;
+};
 
-export default function PlanReviewPage({ params }: { params: { planId: string } }) {
-  const supabase = createClient();
-  const router = useRouter();
-  const [plan, setPlan] = useState<PlanReview | null>(null);
-  const [error, setError] = useState<string | null>(null);
+type PlanRow = {
+  id: string;
+  user_id: string | null;
+};
 
-  useEffect(() => {
-    const loadPlan = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push("/login");
-        return;
-      }
+const formatDateTime = (value?: string | null) => {
+  if (!value) return '—';
+  return new Date(value).toLocaleString();
+};
 
-      try {
-        const res = await fetch(`/api/plans/${params.planId}`, {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        });
-        if (!res.ok) {
-          const data = await res.json().catch(() => null);
-          throw new Error(data?.error || "Failed to load review notes.");
-        }
-        const data = await res.json();
-        setPlan(data.plan || null);
-      } catch (err: any) {
-        setError(err.message || "Failed to load review notes.");
-      }
-    };
+export default async function PlanReviewPage({ params }: { params: Promise<{ planId: string }> }) {
+  const { planId } = await params;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-    loadPlan();
-  }, [params.planId, router, supabase]);
+  if (!user) {
+    redirect(`/login?next=/dashboard/plans/${planId}/review`);
+  }
+
+  const { data: plan, error: planError } = await supabaseService
+    .from('plans')
+    .select('id, user_id')
+    .eq('id', planId)
+    .maybeSingle();
+
+  if (planError) {
+    throw planError;
+  }
+
+  if (!plan) {
+    notFound();
+  }
+
+  if (plan.user_id && plan.user_id !== user.id) {
+    redirect('/dashboard');
+  }
+
+  const { data: review } = await supabaseService
+    .from('reviews')
+    .select('id, content, created_at')
+    .eq('plan_id', planId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const latestReview = review as ReviewRecord | null;
+  const notes = latestReview?.content ?? null;
+  const major = notes?.major ?? [];
+  const minor = notes?.minor ?? [];
+  const general = notes?.general ?? '';
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-6 py-10">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Review Notes</h1>
+      <div className="max-w-3xl mx-auto px-6 py-10 space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">Review Feedback</h1>
           <Link href="/dashboard" className="text-blue-600 hover:underline">
             Back to Dashboard
           </Link>
         </div>
 
-        {error && (
-          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800 text-sm">
-            {error}
+        {!latestReview && (
+          <div className="rounded-lg border border-dashed border-gray-200 bg-white p-6 text-sm text-gray-500">
+            No review has been shared yet.
           </div>
         )}
 
-        {!error && !plan && (
-          <div className="text-sm text-gray-500">Loading review notes…</div>
-        )}
-
-        {plan && (
-          <div className="rounded-lg border bg-white p-6 shadow-sm space-y-4">
+        {latestReview && (
+          <div className="rounded-lg border bg-white p-6 shadow-sm space-y-5">
             <div className="text-sm text-gray-500">
-              Status: <span className="font-semibold text-gray-900">{plan.review_status || "Not available"}</span>
+              Reviewed on: <span className="font-semibold text-gray-900">{formatDateTime(latestReview.created_at)}</span>
             </div>
-            {plan.reviewed_at && (
-              <div className="text-sm text-gray-500">
-                Reviewed at: <span className="font-semibold text-gray-900">{new Date(plan.reviewed_at).toLocaleString()}</span>
-              </div>
-            )}
             <div>
-              <h2 className="text-sm font-semibold text-gray-900 mb-2">Notes</h2>
-              {plan.review_notes ? (
-                <div className="space-y-4 text-sm text-gray-700">
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">Major gaps</div>
-                    {(plan.review_notes.major ?? plan.review_notes.major_gaps ?? []).length ? (
-                      <ul className="list-disc list-inside space-y-1">
-                        {(plan.review_notes.major ?? plan.review_notes.major_gaps ?? []).map((gap, index) => (
-                          <li key={index}>{gap}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div className="text-gray-500">None</div>
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">Minor gaps</div>
-                    {(plan.review_notes.minor ?? plan.review_notes.minor_gaps ?? []).length ? (
-                      <ul className="list-disc list-inside space-y-1">
-                        {(plan.review_notes.minor ?? plan.review_notes.minor_gaps ?? []).map((gap, index) => (
-                          <li key={index}>{gap}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div className="text-gray-500">None</div>
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">General comments</div>
-                    {plan.review_notes.general ?? plan.review_notes.general_notes ? (
-                      <p className="whitespace-pre-wrap">{plan.review_notes.general ?? plan.review_notes.general_notes}</p>
-                    ) : (
-                      <div className="text-gray-500">None</div>
-                    )}
-                  </div>
-                </div>
-              ) : plan.review_comments ? (
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{plan.review_comments}</p>
+              <h2 className="text-sm font-semibold text-gray-900 mb-2">Major gaps</h2>
+              {major.length > 0 ? (
+                <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                  {major.map((gap, index) => (
+                    <li key={index}>{gap}</li>
+                  ))}
+                </ul>
               ) : (
-                <p className="text-sm text-gray-500">No review available.</p>
+                <p className="text-sm text-gray-500">None</p>
+              )}
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900 mb-2">Minor gaps</h2>
+              {minor.length > 0 ? (
+                <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                  {minor.map((gap, index) => (
+                    <li key={index}>{gap}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-gray-500">None</p>
+              )}
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900 mb-2">General comments</h2>
+              {general ? (
+                <p className="whitespace-pre-wrap text-sm text-gray-700">{general}</p>
+              ) : (
+                <p className="text-sm text-gray-500">None</p>
               )}
             </div>
             <p className="text-xs text-gray-400">Feedback only — not approval.</p>
