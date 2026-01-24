@@ -198,7 +198,186 @@ export default function HACCPMasterFlow() {
     initSession();
   }, [searchParams]);
 
-  // 2. Autosave with Debounce & Serial Queue
+  // ... (Autosave Logic remains same) ...
+
+  const loadFromId = async (id: string) => {
+    // Try as PLAN first (Paid/Generated)
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            const nextUrl = encodeURIComponent(`/builder?id=${id}`);
+            window.location.href = `/login?next=${nextUrl}`;
+            return;
+        }
+
+        const planRes = await fetch(`/api/plans/${id}`, {
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
+        if (planRes.ok) {
+            const data = await planRes.json();
+            if (data.plan) {
+                console.log("Restored PLAN from URL:", id);
+                setGeneratedPlan(data.plan);
+                setValidationReport(data.plan.full_plan?.validation);
+                setAllAnswers(data.plan.full_plan?._original_inputs || {});
+                setValidationStatus(data.plan.full_plan?.validation ? 'completed' : 'idle');
+                setCurrentSection('complete');
+                setLoadError(null);
+                // Update local storage to match current focus
+                localStorage.setItem('haccp_plan_id', id);
+                return;
+            }
+        }
+    } catch (e) { console.error("Not a plan, checking draft..."); }
+
+    await loadDraftFromId(id);
+  };
+
+  const loadDraftFromId = async (id: string) => {
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            const nextUrl = encodeURIComponent(`/builder?draft=${id}`);
+            window.location.href = `/login?next=${nextUrl}`;
+            return;
+        }
+
+        const draftRes = await fetch(`/api/drafts/${id}`, {
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
+        
+        if (!draftRes.ok) {
+             throw new Error("Draft fetch failed");
+        }
+        
+        const data = await draftRes.json();
+        
+        if (data.draft) {
+            console.log(`[Builder] Draft Loaded: ${id}. Steps: ${data.draft.current_step}, Keys: ${Object.keys(data.draft.answers || {}).length}`);
+            setDraftId(id);
+            const fallbackAnswers = (data.draft.answers && Object.keys(data.draft.answers).length > 0)
+                ? data.draft.answers
+                : (data.draft.plan_data?._original_inputs || data.draft.plan_data?.answers || {});
+            
+            if (fallbackAnswers) {
+                setAllAnswers(fallbackAnswers);
+            }
+            
+            const existingName = data.draft.name ?? null;
+            if (existingName) {
+                setDraftName(existingName);
+            } else {
+                // If no name, set one but don't block
+                const createdDate = data.draft.created_at
+                    ? new Date(data.draft.created_at).toISOString().split('T')[0]
+                    : new Date().toISOString().split('T')[0];
+                const fallbackName = `HACCP Draft – ${createdDate}`;
+                setDraftName(fallbackName);
+                
+                // Fire and forget rename
+                fetch(`/api/drafts/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ name: fallbackName })
+                });
+            }
+            
+            if (data.draft.plan_data) {
+                setGeneratedPlan(data.draft.plan_data);
+            }
+            if (data.draft.validation) {
+                setValidationReport(data.draft.validation);
+                setValidationStatus('completed');
+                setCurrentSection('complete');
+            }
+            if (data.draft.current_step) {
+                setCurrentSection(data.draft.current_step);
+            } else {
+                setCurrentSection('product');
+            }
+            setCurrentStepIndex(0);
+            setCurrentCCPIndex(0);
+            setLoadError(null);
+            // Update local storage
+            localStorage.setItem('haccp_draft_id', id);
+            return;
+        }
+        throw new Error("Draft data invalid");
+    } catch (e) {
+        console.error("Failed to restore draft from URL", e);
+        setLoadError("We couldn’t find this draft. It may have been deleted or you don't have permission to view it.");
+    }
+  };
+
+  const createNewDraft = async (activeSession?: { access_token: string } | null) => {
+      try {
+          const session = activeSession || (await supabase.auth.getSession()).data.session;
+          if (!session) {
+              setDraftId(null);
+              return null;
+          }
+
+          const res = await fetch('/api/drafts', { 
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${session.access_token}` }
+          });
+          if (res.ok) {
+              const data = await res.json();
+              setDraftId(data.draftId);
+              setDraftName(null);
+              setLoadError(null);
+              localStorage.setItem('haccp_draft_id', data.draftId);
+              return data.draftId as string;
+          }
+      } catch (e) {
+          console.error("Failed to create draft");
+      }
+      return null;
+  };
+
+  const handleResume = async () => {
+      setShowResumePrompt(false);
+      setIsResumed(true);
+      // Prioritize DRAFT over Plan (Work in Progress > Finished Work)
+      const idToLoad = resumeIds.draftId || resumeIds.planId;
+      if (idToLoad) {
+          setIsInitializing(true);
+          try {
+              await loadFromId(idToLoad);
+          } finally {
+              setIsInitializing(false);
+          }
+      } else {
+          await createNewDraft();
+      }
+  };
+
+  const handleStartNew = async () => {
+      setShowResumePrompt(false);
+      setIsResumed(false);
+      
+      // ZERO STATE ENFORCEMENT
+      localStorage.removeItem('haccp_plan_id');
+      localStorage.removeItem('haccp_draft_id');
+      setDraftName(null);
+      setLoadError(null);
+      localStorage.removeItem('haccp_last_active');
+      
+      setAllAnswers({});
+      setGeneratedPlan(null);
+      setValidationReport(null);
+      setDraftId(null);
+      setIdentifiedCCPs([]);
+      setCurrentStepIndex(0);
+      setCurrentCCPIndex(0);
+      setValidationStatus('idle');
+      
+      setCurrentSection('product');
+      await createNewDraft();
+  };
   useEffect(() => {
     if (!draftId || Object.keys(allAnswers).length === 0) return;
 
@@ -346,171 +525,97 @@ export default function HACCPMasterFlow() {
   // Resume / Start New Logic
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [resumeIds, setResumeIds] = useState<{planId: string | null, draftId: string | null}>({planId: null, draftId: null});
+  const [isInitializing, setIsInitializing] = useState(true);
 
-  const loadFromId = async (id: string) => {
-    // Try as PLAN first (Paid/Generated)
-    try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            const nextUrl = encodeURIComponent(`/builder?id=${id}`);
-            window.location.href = `/login?next=${nextUrl}`;
-            return;
-        }
+  // 1. Initialize Draft on Mount (AUDITOR-COMPLIANT)
+  useEffect(() => {
+    const initSession = async () => {
+        if (hasInitialized.current) return;
+        hasInitialized.current = true;
+        setIsInitializing(true);
+        setLoadError(null);
 
-        const planRes = await fetch(`/api/plans/${id}`, {
-            headers: { 'Authorization': `Bearer ${session.access_token}` }
-        });
-        if (planRes.ok) {
-            const data = await planRes.json();
-            if (data.plan) {
-                console.log("Restored PLAN from URL:", id);
-                setGeneratedPlan(data.plan);
-                setValidationReport(data.plan.full_plan?.validation);
-                setAllAnswers(data.plan.full_plan?._original_inputs || {});
-                setValidationStatus(data.plan.full_plan?.validation ? 'completed' : 'idle');
-                setCurrentSection('complete');
-                setLoadError(null);
-                // Update local storage to match current focus
-                localStorage.setItem('haccp_plan_id', id);
+        console.log(`[Builder] Initializing. Params: draft=${searchParams.get('draft')}, id=${searchParams.get('id')}`);
+
+        try {
+            const urlDraftId = searchParams.get('draft');
+            const urlId = searchParams.get('id');
+            const isNew = searchParams.get('new') === 'true';
+
+            // 1. Check Authentication State
+            const { data: { session } } = await supabase.auth.getSession();
+
+            // SCENARIO A: Explicit New Session
+            if (isNew) {
+                console.log("Auditor Rule: Explicit 'New Plan' requested -> Zero State");
+                await handleStartNew(); 
                 return;
             }
-        }
-    } catch (e) { console.error("Not a plan, checking draft..."); }
 
-    await loadDraftFromId(id);
-  };
-
-  const loadDraftFromId = async (id: string) => {
-    try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            const nextUrl = encodeURIComponent(`/builder?draft=${id}`);
-            window.location.href = `/login?next=${nextUrl}`;
-            return;
-        }
-
-        const draftRes = await fetch(`/api/drafts/${id}`, {
-            headers: { 'Authorization': `Bearer ${session.access_token}` }
-        });
-        if (draftRes.ok) {
-            const data = await draftRes.json();
-            if (data.draft) {
-                console.log("Restored DRAFT from URL:", id);
-                setDraftId(id);
-                const fallbackAnswers = (data.draft.answers && Object.keys(data.draft.answers).length > 0)
-                    ? data.draft.answers
-                    : (data.draft.plan_data?._original_inputs || data.draft.plan_data?.answers || {});
-                if (fallbackAnswers) {
-                    setAllAnswers(fallbackAnswers);
-                }
-                const existingName = data.draft.name ?? null;
-                if (existingName) {
-                    setDraftName(existingName);
-                } else {
-                    const createdDate = data.draft.created_at
-                        ? new Date(data.draft.created_at).toISOString().split('T')[0]
-                        : new Date().toISOString().split('T')[0];
-                    const fallbackName = `HACCP Draft – ${createdDate}`;
-                    setDraftName(fallbackName);
-                    await fetch(`/api/drafts/${id}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${session.access_token}`
-                        },
-                        body: JSON.stringify({ name: fallbackName })
-                    });
-                }
-                if (data.draft.plan_data) {
-                    setGeneratedPlan(data.draft.plan_data);
-                }
-                if (data.draft.validation) {
-                    setValidationReport(data.draft.validation);
-                    setValidationStatus('completed');
-                    setCurrentSection('complete');
-                }
-                if (data.draft.current_step) {
-                    setCurrentSection(data.draft.current_step);
-                } else {
-                    setCurrentSection('product');
-                }
-                setCurrentStepIndex(0);
-                setCurrentCCPIndex(0);
-                setLoadError(null);
-                // Update local storage
-                localStorage.setItem('haccp_draft_id', id);
-                
+            // SCENARIO B: URL Parameter (Explicit Intent to specific document)
+            if (urlDraftId) {
+                console.log(`Auditor Rule: Explicit draft URL load -> ${urlDraftId}`);
+                await loadDraftFromId(urlDraftId);
                 return;
             }
+
+            if (urlId) {
+                console.log(`Auditor Rule: Explicit URL load -> ${urlId}`);
+                await loadFromId(urlId);
+                return;
+            }
+
+            // SCENARIO C: Anonymous User (Strict Zero State)
+            if (!session) {
+                console.log("Auditor Rule: Anonymous User -> Force Clean Slate (No Resume)");
+                localStorage.removeItem('haccp_plan_id');
+                localStorage.removeItem('haccp_draft_id');
+                localStorage.removeItem('haccp_last_active');
+                setDraftId(null);
+                await createNewDraft(); 
+                return;
+            }
+
+            // SCENARIO D: Authenticated User (Managed Continuity)
+            console.log("Auditor Rule: Authenticated User -> Checking Server-Side State");
+
+            const hydratedFromSnapshot = await hydrateAnonymousSnapshot(session);
+            if (hydratedFromSnapshot) {
+                return;
+            }
+            
+            // Query server for latest unfinished draft
+            try {
+                const { data: drafts } = await supabase
+                    .from('drafts')
+                    .select('id, updated_at, plan_data')
+                    .eq('user_id', session.user.id)
+                    .eq('status', 'active')
+                    .order('updated_at', { ascending: false })
+                    .limit(1);
+
+                if (drafts && drafts.length > 0) {
+                    const latest = drafts[0];
+                    setResumeIds({ planId: null, draftId: latest.id });
+                    setShowResumePrompt(true);
+                } else {
+                    console.log("No server-side drafts found -> Starting New");
+                    await createNewDraft(session);
+                }
+            } catch (err) {
+                console.error("Failed to check server drafts", err);
+                await createNewDraft(session);
+            }
+        } catch (error) {
+            console.error("Initialization error:", error);
+            setLoadError("An unexpected error occurred while loading the builder.");
+        } finally {
+            setIsInitializing(false);
         }
-        setLoadError("We couldn’t load this draft. Please try again.");
-    } catch (e) {
-        console.error("Failed to restore draft from URL", e);
-        setLoadError("We couldn’t load this draft. Please try again.");
-    }
-  };
-
-  const createNewDraft = async (activeSession?: { access_token: string } | null) => {
-      try {
-          const session = activeSession || (await supabase.auth.getSession()).data.session;
-          if (!session) {
-              setDraftId(null);
-              return null;
-          }
-
-          const res = await fetch('/api/drafts', { 
-              method: 'POST',
-              headers: { 'Authorization': `Bearer ${session.access_token}` }
-          });
-          if (res.ok) {
-              const data = await res.json();
-              setDraftId(data.draftId);
-              setDraftName(null);
-              setLoadError(null);
-              localStorage.setItem('haccp_draft_id', data.draftId);
-              return data.draftId as string;
-          }
-      } catch (e) {
-          console.error("Failed to create draft");
-      }
-      return null;
-  };
-
-  const handleResume = async () => {
-      setShowResumePrompt(false);
-      setIsResumed(true);
-      // Prioritize DRAFT over Plan (Work in Progress > Finished Work)
-      const idToLoad = resumeIds.draftId || resumeIds.planId;
-      if (idToLoad) {
-          await loadFromId(idToLoad);
-      } else {
-          await createNewDraft();
-      }
-  };
-
-  const handleStartNew = async () => {
-      setShowResumePrompt(false);
-      setIsResumed(false);
-      
-      // ZERO STATE ENFORCEMENT
-      localStorage.removeItem('haccp_plan_id');
-      localStorage.removeItem('haccp_draft_id');
-      setDraftName(null);
-      setLoadError(null);
-      localStorage.removeItem('haccp_last_active');
-      
-      setAllAnswers({});
-      setGeneratedPlan(null);
-      setValidationReport(null);
-      setDraftId(null);
-      setIdentifiedCCPs([]);
-      setCurrentStepIndex(0);
-      setCurrentCCPIndex(0);
-      setValidationStatus('idle');
-      
-      setCurrentSection('product');
-      await createNewDraft();
-  };
+    };
+    
+    initSession();
+  }, [searchParams]);
 
   // Helper: Calculate Risk Flags
   const riskFlags = React.useMemo(() => {
@@ -1243,6 +1348,37 @@ export default function HACCPMasterFlow() {
   
 
     const renderContent = () => {
+
+      // 1. Loading State (Highest Priority)
+      if (isInitializing) {
+          return (
+              <div className="min-h-[60vh] flex flex-col items-center justify-center animate-in fade-in duration-300">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4" />
+                  <h2 className="text-xl font-bold text-slate-700">Loading your plan...</h2>
+              </div>
+          );
+      }
+
+      // 2. Error State
+      if (loadError) {
+          return (
+              <div className="max-w-2xl mx-auto p-10 text-center mt-20 animate-in fade-in zoom-in duration-300">
+                  <div className="bg-red-50 p-10 rounded-3xl border border-red-200">
+                      <AlertTriangle className="w-16 h-16 text-red-600 mx-auto mb-6" />
+                      <h2 className="text-3xl font-black text-red-900 mb-4">Unable to Load Draft</h2>
+                      <p className="text-red-800 text-lg mb-8 leading-relaxed">{loadError}</p>
+                      <div className="flex justify-center gap-4">
+                          <a href="/dashboard" className="bg-white border border-slate-200 text-slate-600 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all cursor-pointer">
+                              Back to Dashboard
+                          </a>
+                          <button onClick={() => window.location.reload()} className="bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-500/20 cursor-pointer">
+                              Try Again
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          );
+      }
 
       if (transition.show) {
 
