@@ -162,6 +162,9 @@
 }
 
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 6px 10px;
   border-radius: 999px;
   background: #f1f5f9;
@@ -169,6 +172,14 @@
   font-size: 12px;
   font-weight: 700;
   color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #cbd5e1;
 }
 
 .inlineForm {

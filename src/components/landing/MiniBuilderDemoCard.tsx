@@ -56,6 +56,10 @@ export default function MiniBuilderDemoCard() {
     hazards: selectedHazards.length > 0,
   };
 
+  const handleRemoveStep = (indexToRemove: number) => {
+    setProcessSteps((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
   const handleNext = () => {
     if (isReview) {
       window.location.href = "/builder";
@@ -196,9 +200,16 @@ export default function MiniBuilderDemoCard() {
               <p className={styles.label}>Process flow</p>
               <div className={styles.chips}>
                 {processSteps.map((step, idx) => (
-                  <span key={`${step}-${idx}`} className={styles.chip}>
-                    {step}
-                  </span>
+                  <button 
+                    key={`${step}-${idx}`} 
+                    className={styles.chip}
+                    onClick={() => handleRemoveStep(idx)}
+                    type="button"
+                    title="Remove step"
+                  >
+                    {step} 
+                    <span style={{ opacity: 0.5, fontSize: '1.1em', lineHeight: 1 }}>×</span>
+                  </button>
                 ))}
               </div>
               <div className={styles.inlineForm}>
