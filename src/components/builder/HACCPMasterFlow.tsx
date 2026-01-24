@@ -204,15 +204,23 @@ export default function HACCPMasterFlow() {
     // Try as PLAN first (Paid/Generated)
     try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
+        const token = searchParams.get('token');
+        
+        if (!session && !token) {
             const nextUrl = encodeURIComponent(`/builder?id=${id}`);
             window.location.href = `/login?next=${nextUrl}`;
             return;
         }
 
-        const planRes = await fetch(`/api/plans/${id}`, {
-            headers: { 'Authorization': `Bearer ${session.access_token}` }
+        const headers: HeadersInit = {};
+        if (session?.access_token) {
+            headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+
+        const planRes = await fetch(`/api/plans/${id}${token ? `?token=${token}` : ''}`, {
+            headers
         });
+
         if (planRes.ok) {
             const data = await planRes.json();
             if (data.plan) {
@@ -236,14 +244,21 @@ export default function HACCPMasterFlow() {
   const loadDraftFromId = async (id: string) => {
     try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
+        const token = searchParams.get('token');
+
+        if (!session && !token) {
             const nextUrl = encodeURIComponent(`/builder?draft=${id}`);
             window.location.href = `/login?next=${nextUrl}`;
             return;
         }
 
-        const draftRes = await fetch(`/api/drafts/${id}`, {
-            headers: { 'Authorization': `Bearer ${session.access_token}` }
+        const headers: HeadersInit = {};
+        if (session?.access_token) {
+            headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+
+        const draftRes = await fetch(`/api/drafts/${id}${token ? `?token=${token}` : ''}`, {
+            headers
         });
         
         if (!draftRes.ok) {
@@ -266,7 +281,7 @@ export default function HACCPMasterFlow() {
             const existingName = data.draft.name ?? null;
             if (existingName) {
                 setDraftName(existingName);
-            } else {
+            } else if (session) { // Only attempt rename if authenticated
                 // If no name, set one but don't block
                 const createdDate = data.draft.created_at
                     ? new Date(data.draft.created_at).toISOString().split('T')[0]

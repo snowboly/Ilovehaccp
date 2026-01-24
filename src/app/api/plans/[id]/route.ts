@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { createClient } from '@/utils/supabase/server';
 import { checkAdminRole } from '@/lib/admin-auth';
+import { verifyAccessToken } from '@/lib/token';
 
 export async function GET(
   request: Request,
@@ -15,25 +16,43 @@ export async function GET(
   }
 
   try {
-    // 1. Initialize RLS-enabled client (uses Cookies)
-    const supabase = await createClient();
+    const { searchParams } = new URL(request.url);
+    const tokenParam = searchParams.get('token');
+    
+    let user = null;
+    let accessPayload = null;
+    let isAdmin = false;
 
-    // 2. Authenticate
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    // 1. Token Auth
+    if (tokenParam) {
+        accessPayload = verifyAccessToken(tokenParam);
+        if (accessPayload) {
+            if (accessPayload.id !== id || accessPayload.type !== 'plan' || accessPayload.scope !== 'view') {
+                return NextResponse.json({ error: 'Invalid token scope' }, { status: 403 });
+            }
+        }
+    }
+
+    // 2. Session Auth (if no valid token)
+    if (!accessPayload) {
+        const supabase = await createClient();
+        const { data, error } = await supabase.auth.getUser();
+        if (!error && data.user) {
+            user = data.user;
+            isAdmin = await checkAdminRole(user.id, user.email);
+        }
+    }
+
+    if (!user && !accessPayload) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 3. Check Admin Status
-    // Note: checkAdminRole internally uses the service role, which is correct for permission checks.
-    const isAdmin = await checkAdminRole(user.id, user.email);
-
-    // 4. Fetch Data (Branching Logic)
+    // 3. Data Fetching
     let plan;
     let fetchError;
 
-    if (isAdmin) {
-      // Admin: Use Service Role (Bypass RLS) to ensure access to any plan
+    if (accessPayload || isAdmin) {
+      // Use Admin Client (Bypass RLS)
       const res = await supabaseAdmin
         .from('plans')
         .select('*')
@@ -42,8 +61,8 @@ export async function GET(
       plan = res.data;
       fetchError = res.error;
     } else {
-      // User: Use RLS Client (Enforce RLS)
-      // IDOR Protection: DB will return null/error if user doesn't own the plan
+      // User: Use RLS Client
+      const supabase = await createClient();
       const res = await supabase
         .from('plans')
         .select('*')
