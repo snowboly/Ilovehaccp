@@ -334,7 +334,6 @@ export default function HACCPMasterFlow() {
   const [generatedPlan, setGeneratedPlan] = useState<any>(null);
   const [validationReport, setValidationReport] = useState<any>(null);
   const [validationStatus, setValidationStatus] = useState<'idle' | 'running' | 'completed'>('idle');
-  const [exportTemplate, setExportTemplate] = useState('Audit Classic');
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [isSavingPlan, setIsSavingPlan] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -1826,21 +1825,6 @@ export default function HACCPMasterFlow() {
                                 <p className="text-slate-600 text-sm">
                                     Free users can download a watermarked draft. Paid users can check out and unlock full exports from this page.
                                 </p>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                {['Audit Classic', 'Professional Modern'].map(style => (
-                                    <button
-                                        key={style}
-                                        onClick={() => setExportTemplate(style)}
-                                        className={`px-4 py-2 rounded-xl font-bold text-xs transition-all border-2 cursor-pointer ${
-                                            exportTemplate === style 
-                                            ? 'bg-blue-600 border-blue-600 text-white' 
-                                            : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'
-                                        }`}
-                                    >
-                                        {style}
-                                    </button>
-                                ))}
                             </div>
                         </div>
 
