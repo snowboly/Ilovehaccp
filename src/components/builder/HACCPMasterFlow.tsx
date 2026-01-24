@@ -807,7 +807,8 @@ export default function HACCPMasterFlow() {
         // Save
         newAnswers.ccp_management = flattenedManagement;
         setAllAnswers(newAnswers);
-        setCurrentSection('review_validation'); // No transition here, validation logic runs next
+        setCurrentSection('review_validation');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         break;
 
       case 'review_validation':
