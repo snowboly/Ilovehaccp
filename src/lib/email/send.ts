@@ -30,10 +30,9 @@ export async function sendEmail(args: SendEmailArgs) {
 
   // If Resend returns an error, surface it clearly
   // (Codex-friendly debugging)
-  // @ts-expect-error - Resend response typing varies by version
-  if (result?.error) {
-    // @ts-expect-error
-    throw new Error(`Resend error: ${result.error.message || JSON.stringify(result.error)}`);
+  const resultWithError = result as { error?: { message?: string } } | undefined;
+  if (resultWithError?.error) {
+    throw new Error(`Resend error: ${resultWithError.error.message || JSON.stringify(resultWithError.error)}`);
   }
 
   return result;
