@@ -13,10 +13,9 @@
         "questions": [
           {
             "id": "critical_limit_value",
-            "text": "Qual é o limite crítico para este PCC?",
-            "tooltip": "Um valor preciso (por exemplo, >75°C, <5°C, pH <4,6) que separa o seguro do inseguro. Ele deve ser mensurável em tempo real.",
-            "type": "text",
-            "required": true
+                      "text": "Qual é o limite crítico para este PCC?",
+                      "tooltip": "Um valor preciso (por exemplo, >75°C, <4°C, pH <4,6) que separa o seguro do inseguro. Ele deve ser mensurável em tempo real.",
+                      "type": "text",            "required": true
           },
           {
             "id": "critical_limit_basis",

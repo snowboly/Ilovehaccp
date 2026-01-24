@@ -215,7 +215,7 @@ export const articles: Article[] = [
     <li><strong>Parasites</strong> that can be introduced through raw or undercooked foods.</li>
 </ul>
 
-<p>Temperature control is critical; food must be kept at safe temperatures to inhibit microbial growth. The <strong>Codex Alimentarius</strong> recommends maintaining hot foods above 140°F (60°C) and cold foods below 41°F (5°C). Regular monitoring and documentation of temperatures are essential to mitigate risks.</p>
+<p>Temperature control is critical; food must be kept at safe temperatures to inhibit microbial growth. The <strong>Codex Alimentarius</strong> recommends maintaining hot foods above 60°C and cold foods below 4°C. Regular monitoring and documentation of temperatures are essential to mitigate risks.</p>
 
 <h4>Chemical and Physical Hazards Specific to Food Trucks</h4>
 
@@ -464,7 +464,7 @@ export const articles: Article[] = [
 
 <ul>
     <li><strong>Thermal containers:</strong> Utilize insulated containers for hot and cold foods during transport to maintain safe temperature levels.</li>
-    <li><strong>Regular temperature checks:</strong> Use calibrated thermometers to monitor food temperatures at regular intervals, ensuring they remain within the safe zone (below 41°F for cold foods and above 135°F for hot foods).</li>
+    <li><strong>Regular temperature checks:</strong> Use calibrated thermometers to monitor food temperatures at regular intervals, ensuring they remain within the safe zone (below 4°C for cold foods and above 57°C for hot foods).</li>
     <li><strong>Quick service:</strong> Streamline operations to minimize the time food spends at unsafe temperatures, especially during peak service hours.</li>
 </ul>
 
@@ -1100,7 +1100,7 @@ export const articles: Article[] = [
 <p>For each identified CCP, it is crucial to establish <strong>critical limits</strong>. These limits are measurable values that must be adhered to in order to ensure that hazards are effectively controlled. Examples of critical limits include:</p>
 
 <ul>
-    <li>Temperature thresholds for hot holding (e.g., above 140°F or 60°C)</li>
+    <li>Temperature thresholds for hot holding (e.g., above 60°C)</li>
     <li>Time limits for food storage (e.g., maximum of 4 hours for prepared items at room temperature)</li>
     <li>pH levels for certain food items (e.g., ensuring acidity levels are sufficient to inhibit bacterial growth)</li>
 </ul>
@@ -2101,7 +2101,7 @@ export const articles: Article[] = [
 <p>At this stage, it is imperative to establish critical limits for each Critical Control Point (CCP) identified during the hazard analysis. Critical limits are the thresholds that must not be exceeded to ensure food safety. Examples include:</p>
 
 <ul>
-    <li><strong>Temperature Control:</strong> Storing meat at temperatures below 40°F (4°C) to inhibit bacterial growth.</li>
+    <li><strong>Temperature Control:</strong> Storing meat at temperatures below 4°C to inhibit bacterial growth.</li>
     <li><strong>Time Limits:</strong> Ensuring that meat is not stored beyond its use-by date.</li>
 </ul>
 
@@ -3393,7 +3393,7 @@ export const articles: Article[] = [
 <p>To ensure the effectiveness of a HACCP plan, it is crucial to establish critical limits for Critical Control Points (CCPs) and implement monitoring procedures.</p><p> This section will delve into the specifics of defining critical limits, monitoring procedures, frequency and methods of monitoring, and record-keeping for monitoring activities.  As a food business, it is essential to align your HACCP plan with regulatory requirements, such as those outlined in Standard Operating Procedures and EC 852/2004, to ensure compliance and pass audits.</p>
 <h3>Defining Critical Limits for CCPs</h3>
 
-<p>Critical limits are the maximum or minimum values to which a biological, chemical, or physical parameter must be controlled at a CCP to prevent, eliminate, or reduce to an acceptable level the occurrence of a food safety hazard.  When defining critical limits, consider factors such as the type of hazard, the severity of the hazard, and the likelihood of occurrence.</p><p> For example, in a meat processing facility, the critical limit for cooking temperature might be 165°F (74°C) to ensure the elimination of Salmonella.  It is essential to document the rationale behind the establishment of critical limits, as this will be reviewed during audits.  Ensure that your critical limits are specific, measurable, achievable, relevant, and time-bound (SMART) to facilitate effective monitoring and control.</p>
+<p>Critical limits are the maximum or minimum values to which a biological, chemical, or physical parameter must be controlled at a CCP to prevent, eliminate, or reduce to an acceptable level the occurrence of a food safety hazard.  When defining critical limits, consider factors such as the type of hazard, the severity of the hazard, and the likelihood of occurrence.</p><p> For example, in a meat processing facility, the critical limit for cooking temperature might be 74°C to ensure the elimination of Salmonella.  It is essential to document the rationale behind the establishment of critical limits, as this will be reviewed during audits.  Ensure that your critical limits are specific, measurable, achievable, relevant, and time-bound (SMART) to facilitate effective monitoring and control.</p>
 <h3>Monitoring Procedures for CCPs</h3>
 
 <p>Monitoring procedures are essential to ensure that CCPs are operating within established critical limits.  These procedures should be designed to detect any deviations from the critical limits and trigger corrective actions when necessary.  Monitoring procedures may include visual inspections, temperature measurements, or microbiological testing.</p><p> According to Standard Operating Procedures. 140, monitoring procedures must be able to detect loss of control at the CCP.  It is crucial to document all monitoring activities, including the method of monitoring, the frequency of monitoring, and the results of monitoring.  This documentation will serve as evidence of compliance during audits.</p>
@@ -4014,13 +4014,13 @@ export const articles: Article[] = [
 <h3>Critical Control Points in Butcher Shops</h3>
 <p>The following are some critical control points in a butcher shop setting:</p>
 <ul>
-    <li><b>Receiving and Storage</b>: Ensuring that all meat and meat products are received at a temperature below 7°C (45°F) and stored at a consistent refrigerated temperature below 5°C (41°F).</li>
+    <li><b>Receiving and Storage</b>: Ensuring that all meat and meat products are received at a temperature below 7°C and stored at a consistent refrigerated temperature below 4°C.</li>
     <li><b>Handling and Preparation</b>: Implementing proper handwashing and sanitizing procedures for all staff handling meat products, as well as ensuring that all utensils and equipment are sanitized regularly.</li>
     <li><b>Temperature Control</b>: Controlling the temperature of meat products during processing, storage, and display. Examples include:
         <ul>
-            <li>Cooking temperature above 75°C (167°F) for cooked meat products</li>
-            <li>Cooling cooked meat products to below 21°C (70°F) within 2 hours</li>
-            <li>Maintaining a refrigerated temperature below 5°C (41°F) for raw and ready-to-eat meat products</li>
+            <li>Cooking temperature above 75°C for cooked meat products</li>
+            <li>Cooling cooked meat products to below 21°C within 2 hours</li>
+            <li>Maintaining a refrigerated temperature below 4°C for raw and ready-to-eat meat products</li>
         </ul>
     </li>
     <li><b>Cross-Contamination Prevention</b>: Preventing cross-contamination between raw and ready-to-eat meat products by using separate equipment, utensils, and storage areas.</li>
@@ -4140,13 +4140,13 @@ export const articles: Article[] = [
 <h3>Examples of Critical Control Points</h3>
 <p>Some key CCPs for fishmongers include:</p>
 <ul>
-<li><b>Receiving and Storage</b>: Ensuring that seafood is stored at a temperature below 4°C (39°F) immediately upon receipt to prevent bacterial growth.</li>
-<li><b>Display</b>: Maintaining display cases at a consistent temperature below 4°C (39°F) to keep products chilled and safe for consumption.</li>
+<li><b>Receiving and Storage</b>: Ensuring that seafood is stored at a temperature below 4°C immediately upon receipt to prevent bacterial growth.</li>
+<li><b>Display</b>: Maintaining display cases at a consistent temperature below 4°C to keep products chilled and safe for consumption.</li>
 <li><b>Handling</b>: Ensuring that all staff wash their hands thoroughly with soap and warm water for at least 20 seconds before and after handling seafood.</li>
-<li><b>Freezing</b>: For products that are to be frozen, ensuring that the freezing process occurs promptly and that the products are stored at a temperature of -18°C (0°F) or below.</li>
-<li><b>Thawing</b>: Implementing a controlled thawing process, such as thawing under refrigeration at a temperature below 4°C (39°F), to prevent bacterial growth.</li>
-<li><b>Cooking (for cooked products)</b>: Cooking seafood to an internal temperature above 75°C (167°F) to ensure that pathogens are killed.</li>
-<li><b>Cooling (for cooked products)</b>: Cooling cooked seafood from 60°C (140°F) to 21°C (70°F) within two hours, and then to 4°C (39°F) within the next four hours, to prevent bacterial growth.</li>
+<li><b>Freezing</b>: For products that are to be frozen, ensuring that the freezing process occurs promptly and that the products are stored at a temperature of -18°C or below.</li>
+<li><b>Thawing</b>: Implementing a controlled thawing process, such as thawing under refrigeration at a temperature below 4°C, to prevent bacterial growth.</li>
+<li><b>Cooking (for cooked products)</b>: Cooking seafood to an internal temperature above 75°C to ensure that pathogens are killed.</li>
+<li><b>Cooling (for cooked products)</b>: Cooling cooked seafood from 60°C to 21°C within two hours, and then to 4°C within the next four hours, to prevent bacterial growth.</li>
 </ul>
 
 <h3>Implementing Critical Control Points</h3>
@@ -4294,8 +4294,8 @@ export const articles: Article[] = [
 <ol>
 <li><strong>Temperature Control</strong>:
 	* Cooking temperature > 75°C for high-risk foods like chicken and beef.
-	* Cooling temperature < 21°C within 2 hours and < 5°C within 4 hours for cooked foods.
-	* Refrigeration temperature < 5°C for stored foods.</li>
+	* Cooling temperature < 21°C within 2 hours and < 4°C within 4 hours for cooked foods.
+	* Refrigeration temperature < 4°C for stored foods.</li>
 <li><strong>Personal Hygiene</strong>:
 	* Handwashing with soap and water for at least 20 seconds before starting work and after using the toilet.
 	* Wearing clean uniforms and gloves when handling food.</li>
@@ -4433,19 +4433,19 @@ export const articles: Article[] = [
 <ul>
 <li><b>Receiving and Storage</b>: Ensuring that all ingredients, including meat, dairy products, and vegetables, are received and stored at the correct temperature to prevent bacterial growth.</li>
 <li><b>Preparation</b>: Implementing proper handwashing and sanitizing procedures for staff handling food, as well as ensuring that all utensils and equipment are cleaned and sanitized regularly.</li>
-<li><b>Cooking</b>: Cooking pizzas at a temperature above 75°C (167°F) to ensure that all harmful bacteria are killed.</li>
-<li><b>Cooling</b>: Cooling cooked pizzas to a temperature below 20°C (68°F) within a certain time frame (usually 2 hours) to prevent bacterial growth.</li>
-<li><b>Reheating</b>: Reheating cooked pizzas to a temperature above 75°C (167°F) to ensure that all harmful bacteria are killed.</li>
+<li><b>Cooking</b>: Cooking pizzas at a temperature above 75°C to ensure that all harmful bacteria are killed.</li>
+<li><b>Cooling</b>: Cooling cooked pizzas to a temperature below 20°C within a certain time frame (usually 2 hours) to prevent bacterial growth.</li>
+<li><b>Reheating</b>: Reheating cooked pizzas to a temperature above 75°C to ensure that all harmful bacteria are killed.</li>
 </ul>
 
 <h3>Examples of CCPs</h3>
 <p>Some detailed practical examples of CCPs in a pizza takeaway setting include:</p>
 <ol>
-<li><b>Cooking Temperature</b>: Ensuring that the oven temperature is above 220°C (428°F) and the pizza is cooked for a minimum of 12-15 minutes to achieve an internal temperature of above 75°C (167°F).</li>
-<li><b>Cooling Time and Temperature</b>: Ensuring that cooked pizzas are cooled to a temperature below 20°C (68°F) within 2 hours, using shallow containers and ice baths if necessary.</li>
-<li><b>Reheating Temperature and Time</b>: Ensuring that reheated pizzas reach an internal temperature of above 75°C (167°F) within a certain time frame (usually 30 minutes).</li>
-<li><b>Chiller Temperature</b>: Ensuring that the chiller temperature is below 5°C (41°F) to prevent bacterial growth in perishable ingredients.</li>
-<li><b>Freezer Temperature</b>: Ensuring that the freezer temperature is below -18°C (0°F) to prevent bacterial growth in frozen ingredients.</li>
+<li><b>Cooking Temperature</b>: Ensuring that the oven temperature is above 220°C and the pizza is cooked for a minimum of 12-15 minutes to achieve an internal temperature of above 75°C.</li>
+<li><b>Cooling Time and Temperature</b>: Ensuring that cooked pizzas are cooled to a temperature below 20°C within 2 hours, using shallow containers and ice baths if necessary.</li>
+<li><b>Reheating Temperature and Time</b>: Ensuring that reheated pizzas reach an internal temperature of above 75°C within a certain time frame (usually 30 minutes).</li>
+<li><b>Chiller Temperature</b>: Ensuring that the chiller temperature is below 4°C to prevent bacterial growth in perishable ingredients.</li>
+<li><b>Freezer Temperature</b>: Ensuring that the freezer temperature is below -18°C to prevent bacterial growth in frozen ingredients.</li>
 </ol>
 
 <p>By identifying and managing these CCPs, pizza takeaways can ensure that the food being served is safe and of high quality, reducing the risk of foodborne illness and maintaining customer trust.</p>
@@ -4675,12 +4675,12 @@ export const articles: Article[] = [
 <h3>Examples of Critical Control Points</h3>
 <p>The following are detailed, practical examples of CCPs in a food truck setting:</p>
 <ul>
-<li><strong>Cooking Temperature</strong>: Ensuring that food is cooked to a temperature above 75°C (167°F) to kill harmful bacteria. This is particularly important for proteins like chicken, beef, and fish.</li>
+<li><strong>Cooking Temperature</strong>: Ensuring that food is cooked to a temperature above 75°C to kill harmful bacteria. This is particularly important for proteins like chicken, beef, and fish.</li>
 <li><strong>Cooling</strong>: After cooking, food must be cooled from 60°C to 21°C within two hours and then to 5°C within a further four hours to prevent bacterial growth.</li>
-<li><strong>Reheating</strong>: When reheating food, it must be heated to at least 75°C (167°F) to ensure that any bacteria that may have grown during storage are killed.</li>
+<li><strong>Reheating</strong>: When reheating food, it must be heated to at least 75°C to ensure that any bacteria that may have grown during storage are killed.</li>
 <li><strong>Cross-Contamination Prevention</strong>: Implementing practices to prevent cross-contamination between raw and ready-to-eat foods. This includes using separate utensils, cutting boards, and storage containers.</li>
 <li><strong>Personal Hygiene</strong>: Ensuring that all food handlers practice good personal hygiene, including frequent hand washing with soap and warm water, especially after using the restroom and before starting work or returning to work after a break.</li>
-<li><strong>Food Storage</strong>: Storing food at the correct temperature. Perishable foods should be stored at 5°C (41°F) or below, and frozen foods should be stored at -18°C (0°F) or below.</li>
+<li><strong>Food Storage</strong>: Storing food at the correct temperature. Perishable foods should be stored at 4°C or below, and frozen foods should be stored at -18°C or below.</li>
 <li><strong>Water Quality</strong>: Ensuring that water used for cooking, cleaning, and personal hygiene is safe and of good quality.</li>
 </ul>
 
@@ -4972,10 +4972,10 @@ export const articles: Article[] = [
 <h3>Examples of Critical Control Points</h3>
 <p>Some specific examples of CCPs in a sushi bar setting include:</p>
 <blockquote>
-1. <b>Cooking Temperature</b>: Cooking rice and other ingredients to an internal temperature of >75°C (167°F) to kill pathogens.<br>
-2. <b>Cooling</b>: Cooling cooked rice and other ingredients to <21°C (70°F) within 2 hours to prevent bacterial growth.<br>
-3. <b>Reheating</b>: Reheating cooked food to an internal temperature of >75°C (167°F) before serving to ensure food safety.<br>
-4. <b>Raw Fish Storage</b>: Storing raw fish at a temperature of <4°C (39°F) to prevent bacterial growth and ensure food safety.<br>
+1. <b>Cooking Temperature</b>: Cooking rice and other ingredients to an internal temperature of >75°C to kill pathogens.<br>
+2. <b>Cooling</b>: Cooling cooked rice and other ingredients to <21°C within 2 hours to prevent bacterial growth.<br>
+3. <b>Reheating</b>: Reheating cooked food to an internal temperature of >75°C before serving to ensure food safety.<br>
+4. <b>Raw Fish Storage</b>: Storing raw fish at a temperature of <4°C to prevent bacterial growth and ensure food safety.<br>
 5. <b>Cross-Contamination Prevention</b>: Preventing cross-contamination between raw and cooked foods by using separate cutting boards, utensils, and storage containers.<br>
 6. <b>Employee Hygiene</b>: Ensuring that all employees wash their hands frequently and properly to prevent the spread of pathogens.<br>
 7. <b>Cleaning and Sanitizing</b>: Cleaning and sanitizing all equipment, utensils, and surfaces regularly to prevent the spread of pathogens.
@@ -5475,9 +5475,9 @@ By establishing and monitoring these CCPs, food businesses can significantly red
 <p>Critical limits vary based on the nature of the food product and the specific CCP. Below are examples of critical limits for commonly monitored parameters:</p>
 
 <ul>
-    <li><strong>Temperature:</strong> For cooked meat products, a critical limit may be set at a minimum internal temperature of 74°C (165°F) for at least 15 seconds to ensure the inactivation of pathogens such as Salmonella and Listeria monocytogenes.</li>
+    <li><strong>Temperature:</strong> For cooked meat products, a critical limit may be set at a minimum internal temperature of 74°C for at least 15 seconds to ensure the inactivation of pathogens such as Salmonella and Listeria monocytogenes.</li>
     <li><strong>pH:</strong> For acidified foods, a critical limit might be established at a pH of 4.6 or lower to inhibit the growth of Clostridium botulinum.</li>
-    <li><strong>Time:</strong> In a cooling process, a critical limit may specify that food must be cooled from 60°C to 21°C (140°F to 70°F) within two hours to minimize the risk of bacterial growth.</li>
+    <li><strong>Time:</strong> In a cooling process, a critical limit may specify that food must be cooled from 60°C to 21°C within two hours to minimize the risk of bacterial growth.</li>
 </ul>
 
 <blockquote><strong>Expert Insight:</strong> "Establishing scientifically validated critical limits is not merely a regulatory requirement; it is a fundamental aspect of food safety management that protects consumers from foodborne illnesses." – Dr. Joao, PhD in Food Microbiology</blockquote>
@@ -6349,9 +6349,9 @@ In summary, the determination of CCPs is a multifaceted process involving rigoro
 <p>Different food sectors have diverse critical limits tailored to their specific hazards. Here are some illustrative examples:</p>
 
 <ol>
-    <li><strong>Meat Processing:</strong> Cooked poultry must reach an internal temperature of at least 74°C (165°F) for 15 seconds to ensure the destruction of Salmonella.</li>
-    <li><strong>Dairy Production:</strong> Pasteurization must achieve a minimum temperature of 72°C (161°F) for at least 15 seconds to eliminate pathogens like Listeria monocytogenes.</li>
-    <li><strong>Seafood Handling:</strong> Fish must be kept at a temperature below -18°C (0°F) to control the growth of Vibrio species.</li>
+    <li><strong>Meat Processing:</strong> Cooked poultry must reach an internal temperature of at least 74°C for 15 seconds to ensure the destruction of Salmonella.</li>
+    <li><strong>Dairy Production:</strong> Pasteurization must achieve a minimum temperature of 72°C for at least 15 seconds to eliminate pathogens like Listeria monocytogenes.</li>
+    <li><strong>Seafood Handling:</strong> Fish must be kept at a temperature below -18°C to control the growth of Vibrio species.</li>
 </ol>
 
 <blockquote><strong>Expert Insight:</strong> "Establishing critical limits is not merely a regulatory requirement; it is a scientific imperative that directly influences the safety and quality of food products." - Dr. Joao, PhD in Food Microbiology</blockquote>
@@ -6845,7 +6845,7 @@ By fostering a proactive approach to hazard analysis and food safety management,
 
 <h4>The Role of CCPs in Preventing Foodborne Illnesses</h4>
 
-<p>CCPs are instrumental in the prevention of foodborne illnesses, which affect millions of individuals worldwide each year.  By establishing critical limits at these points, food safety professionals can ensure that hazards are controlled effectively.</p><p> For instance, during the cooking process, maintaining a temperature of at least 74°C (165°F) is crucial to eliminate pathogens such as Salmonella and E.  coli.</p>
+<p>CCPs are instrumental in the prevention of foodborne illnesses, which affect millions of individuals worldwide each year.  By establishing critical limits at these points, food safety professionals can ensure that hazards are controlled effectively.</p><p> For instance, during the cooking process, maintaining a temperature of at least 74°C is crucial to eliminate pathogens such as Salmonella and E.  coli.</p>
 
 <p>Furthermore, the biological mechanisms underlying foodborne illnesses highlight the importance of CCPs:</p>
 <ul>
@@ -7107,7 +7107,7 @@ Critical limits are defined as the maximum or minimum values to which a biologic
 
 Examples of critical limits include:
 <ul>
-    <li><strong>Temperature:</strong> For cooked meat products, a critical limit may be a minimum internal temperature of 74°C (165°F) to ensure the destruction of pathogenic microorganisms such as Salmonella and Listeria monocytogenes.</li>
+    <li><strong>Temperature:</strong> For cooked meat products, a critical limit may be a minimum internal temperature of 74°C to ensure the destruction of pathogenic microorganisms such as Salmonella and Listeria monocytogenes.</li>
     <li><strong>pH Level:</strong> In the production of fermented foods, a critical limit could be a pH of 4.6 or lower to inhibit the growth of Clostridium botulinum.</li>
     <li><strong>Water Activity:</strong> For dried fruits, a critical limit might be an a_w value of 0.60 or lower to prevent the growth of spoilage organisms.</li>
 </ul>
@@ -7358,11 +7358,11 @@ Temperature and time are pivotal parameters in the control of microbial growth. 
 
 <ul>
     <li><strong>Thermal Death Time (TDT):</strong> The time required at a specific temperature to kill a defined number of pathogens.</li>
-    <li><strong>Temperature Danger Zone:</strong> The range of 41°F to 135°F (5°C to 57°C) where pathogens proliferate rapidly.</li>
+    <li><strong>Temperature Danger Zone:</strong> The range of 4°C to 57°C where pathogens proliferate rapidly.</li>
     <li><strong>Cooling and Reheating:</strong> Proper cooling and reheating protocols are critical to maintaining food safety.</li>
 </ul>
 
-Establishing critical limits based on these factors is essential for effective CCP management. For example, cooking poultry to an internal temperature of 165°F (74°C) for at least 15 seconds is a critical limit that effectively reduces Salmonella and Campylobacter risks.
+Establishing critical limits based on these factors is essential for effective CCP management. For example, cooking poultry to an internal temperature of 74°C for at least 15 seconds is a critical limit that effectively reduces Salmonella and Campylobacter risks.
 
 <blockquote><strong>Expert Insight:</strong> "Understanding the molecular mechanisms of microbial resistance and growth is crucial for establishing effective CCPs that align with both regulatory standards and consumer safety." - Dr. Joao, PhD in Food Microbiology</blockquote>
 
@@ -7896,9 +7896,9 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <p>Critical limits can vary significantly depending on the food process involved. Here are a few examples:</p>
 
 <ol>
-    <li><strong>Cooking:</strong> Poultry must reach an internal temperature of at least 165°F (73.9°C) for at least 15 seconds.</li>
-    <li><strong>Cooling:</strong> Cooked food must be cooled from 135°F (57°C) to 70°F (21°C) within two hours and to 41°F (5°C) within an additional four hours.</li>
-    <li><strong>Storage:</strong> Refrigerated foods must be maintained at or below 41°F (5°C).</li>
+    <li><strong>Cooking:</strong> Poultry must reach an internal temperature of at least 74°C for at least 15 seconds.</li>
+    <li><strong>Cooling:</strong> Cooked food must be cooled from 57°C to 21°C within two hours and to 4°C within an additional four hours.</li>
+    <li><strong>Storage:</strong> Refrigerated foods must be maintained at or below 4°C.</li>
 </ol>
 
 <h4>Challenges in Setting and Monitoring Critical Limits</h4>
@@ -8625,7 +8625,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <h3>Controls for Biological Hazards</h3>
 
       <p>Effective controls for biological hazards include proper <strong>temperature control</strong>, <strong>personal hygiene</strong>, <strong>cleanliness and sanitation</strong>, and <strong>supply chain management</strong>. For example, cooking food to the appropriate internal temperature can kill harmful bacteria, while regular handwashing and proper cleaning of equipment and surfaces can prevent the spread of pathogens.</p>
-      <p>According to the Codex Alimentarius Commission, a food should be heated to an internal temperature of at least <strong>74°C (165°F)</strong> to ensure the destruction of pathogens. Similarly, the Regulatory Authorities recommends that foods be stored at temperatures below <strong>5°C (41°F)</strong> or above <strong>60°C (140°F)</strong> to prevent bacterial growth.</p>
+      <p>According to the Codex Alimentarius Commission, a food should be heated to an internal temperature of at least <strong>74°C</strong> to ensure the destruction of pathogens. Similarly, the Regulatory Authorities recommends that foods be stored at temperatures below <strong>4°C</strong> or above <strong>60°C</strong> to prevent bacterial growth.</p>
       <h2>Conclusion</h2>
 
       <p>In conclusion, biological hazards are a significant threat to food safety, and their control is essential for protecting public health.</p><p> By understanding the types of biological hazards, implementing HACCP principles, and applying effective controls, food businesses can significantly reduce the risk of foodborne illnesses.  It is crucial for food business owners, chefs, and quality managers to stay informed about the latest scientific research and regulatory guidelines to ensure the safest possible food supply chain.</p>`,
@@ -8717,7 +8717,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
    <p>Ready-to-eat foods, such as sandwiches, salads, and cooked meats, pose a higher risk of foodborne illness due to the potential for contamination during handling and preparation.</p><p> The application of HACCP in ready-to-eat food production is critical to ensuring the safety and quality of these products.  This includes controlling temperature, preventing cross-contamination, and ensuring proper handling and storage.</p>
    <h3>Temperature Control</h3>
 
-   <p>Temperature control is a critical aspect of HACCP in ready-to-eat food production. Foods must be stored and displayed at temperatures that prevent the growth of microorganisms, such as bacteria and viruses. The Regulatory Authorities recommends that ready-to-eat foods be stored at a temperature of 40°F (4°C) or below, and that hot foods be maintained at a temperature of 145°F (63°C) or above.</p>
+   <p>Temperature control is a critical aspect of HACCP in ready-to-eat food production. Foods must be stored and displayed at temperatures that prevent the growth of microorganisms, such as bacteria and viruses. The Regulatory Authorities recommends that ready-to-eat foods be stored at a temperature of 4°C or below, and that hot foods be maintained at a temperature of 63°C or above.</p>
    <h3>Prevention of Cross-Contamination</h3>
 
    <p>Cross-contamination is a major risk factor in ready-to-eat food production, as it can lead to the transfer of microorganisms from one food to another. To prevent cross-contamination, businesses must implement proper handling and sanitation procedures, including the use of separate equipment and utensils for raw and ready-to-eat foods.</p>
@@ -8974,7 +8974,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <p>A critical control point (CCP) is a step in a food process where control can be applied to prevent, eliminate, or reduce a food safety hazard to an acceptable level.</p><p> The concept of CCPs is central to the Hazard Analysis and Critical Control Points (HACCP) system, a preventive approach to food safety that is widely recognized and adopted by the food industry globally.  According to the Codex Alimentarius Commission, HACCP is a systematic approach to identifying and controlling hazards in the food production process.</p>
       <h3>Cooking as a Control Measure</h3>
 
-      <p>Cooking is a common control measure used to kill pathogens and reduce the risk of foodborne illness.  Heat treatment, in particular, is effective against a wide range of microorganisms, including bacteria, viruses, and parasites.</p><p> The Regulatory Authorities's Food Code recommends cooking foods to specific internal temperatures to ensure food safety.  For example, ground meats should be cooked to an internal temperature of at least 160°F (71°C) to prevent <strong>E.  coli</strong> and <strong>Salmonella</strong> contamination.</p>
+      <p>Cooking is a common control measure used to kill pathogens and reduce the risk of foodborne illness.  Heat treatment, in particular, is effective against a wide range of microorganisms, including bacteria, viruses, and parasites.</p><p> The Regulatory Authorities's Food Code recommends cooking foods to specific internal temperatures to ensure food safety.  For example, ground meats should be cooked to an internal temperature of at least 71°C to prevent <strong>E.  coli</strong> and <strong>Salmonella</strong> contamination.</p>
       <h3>When is Cooking a CCP?</h3>
 
       <p>Cooking is considered a CCP when it is the only step in the process that can control a specific food safety hazard.</p><p> For instance, if a food product is not going to be further processed or treated after cooking, then cooking is the last opportunity to kill pathogens and prevent foodborne illness.  In such cases, cooking must be carefully controlled to ensure that the food is heated to a temperature that is sufficient to kill pathogens.</p>
@@ -9009,14 +9009,14 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <p>Cooling and reheating are fundamental processes in the food industry that, if not managed properly, can lead to the proliferation of harmful bacteria, posing serious health risks to consumers. The Hazard Analysis and Critical Control Points (HACCP) system, widely adopted globally, identifies these steps as critical control points (CCPs) where significant hazards can be controlled, thereby preventing foodborne illnesses.</p>
       <h3>Cooling: A Critical Control Point</h3>
 
-      <p>Cooling is a high-risk step because it involves reducing the temperature of cooked foods to a level that is not favorable for bacterial growth.</p><p> According to the Codex Alimentarius, cooked foods should be cooled from 135°F (57°C) to 70°F (21°C) within two hours and to 40°F (4°C) or below within four hours.  This guideline is crucial because the temperature range between 40°F and 140°F (4°C and 60°C) is known as the danger zone, where bacterial growth is most rapid.</p>
+      <p>Cooling is a high-risk step because it involves reducing the temperature of cooked foods to a level that is not favorable for bacterial growth.</p><p> According to the Codex Alimentarius, cooked foods should be cooled from 57°C to 21°C within two hours and to 4°C or below within four hours.  This guideline is crucial because the temperature range between 4°C and 60°C is known as the danger zone, where bacterial growth is most rapid.</p>
       <ul>
          <li><strong>Rapid Cooling Techniques:</strong> Techniques such as using shallow metal pans, ice baths, or blast chillers can help cool foods quickly and safely.</li>
          <li><strong>Monitoring Temperatures:</strong> Regular temperature checks with food thermometers are essential to ensure that foods are cooled to a safe temperature within the recommended time frame.</li>
       </ul>
       <h3>Reheating: Preventing Bacterial Regrowth</h3>
 
-      <p>Reheating is another critical step where food safety can be compromised if not done correctly.</p><p> The goal of reheating is to heat the food to a temperature that is high enough to kill any bacteria that may have grown during storage, typically to an internal temperature of at least 165°F (74°C).  The Codex Alimentarius Commission provides guidelines on reheating, emphasizing the importance of achieving this minimum temperature to ensure food safety.</p>
+      <p>Reheating is another critical step where food safety can be compromised if not done correctly.</p><p> The goal of reheating is to heat the food to a temperature that is high enough to kill any bacteria that may have grown during storage, typically to an internal temperature of at least 74°C.  The Codex Alimentarius Commission provides guidelines on reheating, emphasizing the importance of achieving this minimum temperature to ensure food safety.</p>
       <ul>
          <li><strong>Reheating Methods:</strong> Methods such as using a microwave, oven, or stovetop should be chosen based on the type of food and the equipment available, ensuring that the food is heated evenly and to the required temperature.</li>
          <li><strong>Temperature Control:</strong> Using thermometers to verify that the food has reached a safe internal temperature is crucial, as is avoiding overheating, which can lead to food quality issues and potential safety hazards.</li>
@@ -9050,7 +9050,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <p>Temperature control is one of the most crucial factors in food safety, as it affects the growth and survival of microorganisms in food products.</p><p> The Hazard Analysis and Critical Control Points (HACCP) system, recognized internationally as the standard for food safety management, emphasizes the importance of temperature control in preventing foodborne illnesses.  According to the Codex Alimentarius Commission, temperature control is a critical control point (CCP) in many food processing operations.</p>
       <h3>Temperature Limits for Food Safety</h3>
 
-      <p>The safe handling, storage, and transportation of food require adherence to specific temperature limits.  The general guideline is to keep hot foods above 63°C (145°F) and cold foods below 5°C (41°F).</p><p> The Codex Alimentarius specifies that potentially hazardous foods must be maintained at 57°C (135°F) or above, or at 5°C (41°F) or below, with some exceptions for specific food types.  Understanding these limits is vital for preventing the proliferation of pathogens such as <strong>Salmonella</strong>, <strong>E.  coli</strong>, and <strong>Staphylococcus aureus</strong>.</p>
+      <p>The safe handling, storage, and transportation of food require adherence to specific temperature limits.  The general guideline is to keep hot foods above 63°C and cold foods below 4°C.</p><p> The Codex Alimentarius specifies that potentially hazardous foods must be maintained at 57°C or above, or at 4°C or below, with some exceptions for specific food types.  Understanding these limits is vital for preventing the proliferation of pathogens such as <strong>Salmonella</strong>, <strong>E.  coli</strong>, and <strong>Staphylococcus aureus</strong>.</p>
       
       <h2>Monitoring Temperature in Food Operations</h2>
 
@@ -9223,7 +9223,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
       <ul>
          <li>Hazard analysis: Identify the potential hazards associated with cooking and handling chicken, such as <strong>Salmonella</strong> and <strong>Campylobacter</strong></li>
          <li>CCP identification: Identify the critical control points, such as cooking and cooling</li>
-         <li>Critical limits: Establish critical limits, such as a minimum cooking temperature of 165°F (74°C) and a maximum cooling temperature of 40°F (4°C)</li>
+         <li>Critical limits: Establish critical limits, such as a minimum cooking temperature of 74°C and a maximum cooling temperature of 4°C</li>
          <li>Monitoring and control: Establish a system to monitor and control the CCPs, such as using thermometers to check cooking temperatures and timers to ensure proper cooling times</li>
          <li>Corrective actions: Establish corrective actions, such as re-cooking or discarding chicken that is not cooked to the minimum temperature</li>
          <li>Verification: Establish a system to verify that the HACCP plan is working effectively, such as conducting regular audits and testing</li>
@@ -10141,7 +10141,7 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
     <li>Test and validate the limits within the operational environment to ensure they are realistic.</li>
 </ol>
 
-<p>For example, a critical limit for cooking ground beef might be set at a minimum internal temperature of 71°C (160°F) for at least 15 seconds, as this ensures the inactivation of pathogens such as <i>Escherichia coli O157:H7</i>.</p>
+<p>For example, a critical limit for cooking ground beef might be set at a minimum internal temperature of 71°C for at least 15 seconds, as this ensures the inactivation of pathogens such as <i>Escherichia coli O157:H7</i>.</p>
 
 <h4>Examples of Critical Limits for Common Food Products</h4>
 
@@ -10149,8 +10149,8 @@ In conclusion, the intersection of emerging technologies, big data, and evolving
 <p>Understanding specific critical limits for various food products enhances compliance and consumer safety. Here are some examples:</p>
 
 <ul>
-    <li><strong>Frozen Foods:</strong> Maintain temperature below -18°C (-0.4°F).</li>
-    <li><strong>Pasteurized Milk:</strong> Must be held at or above 72°C (161°F) for at least 15 seconds.</li>
+    <li><strong>Frozen Foods:</strong> Maintain temperature below -18°C.</li>
+    <li><strong>Pasteurized Milk:</strong> Must be held at or above 72°C for at least 15 seconds.</li>
     <li><strong>Canned Vegetables:</strong> pH must be below 4.6 to inhibit <i>Clostridium botulinum</i> growth.</li>
 </ul>
 
@@ -13142,7 +13142,7 @@ In summary, the responsibility for HACCP in a food business is shared across all
       <h2>Principle 3: Establish Critical Limits</h2>
 
       
-      <p>Critical limits are the non-negotiable boundaries. These are often measurable values like <strong>temperature, time, moisture level, or pH</strong>. For instance, the critical limit for egg pasteurization might be <strong>60°C (140°F) for 3.5 minutes</strong>.</p>
+      <p>Critical limits are the non-negotiable boundaries. These are often measurable values like <strong>temperature, time, moisture level, or pH</strong>. For instance, the critical limit for egg pasteurization might be <strong>60°C for 3.5 minutes</strong>.</p>
       <p>These limits must be scientifically validated. Citing <strong>Standard Operating Procedures</strong> or specific industry guidance is essential here to satisfy an auditor's scrutiny.</p>
 
       <h2>Principle 4: Establish Monitoring Procedures</h2>
@@ -14174,7 +14174,7 @@ Addressing the challenges of HACCP implementation in small businesses requires a
 <p>When developing critical limits, it is essential to tailor them to specific operations. Here are examples across various food processing sectors:</p>
 
 <ol>
-    <li><strong>Temperature Control:</strong> For cooked meats, a critical limit may be a minimum internal temperature of <strong>165°F (74°C)</strong> for at least <strong>15 seconds</strong> to eliminate pathogens.</li>
+    <li><strong>Temperature Control:</strong> For cooked meats, a critical limit may be a minimum internal temperature of <strong>74°C</strong> for at least <strong>15 seconds</strong> to eliminate pathogens.</li>
     <li><strong>pH Levels:</strong> In acidified foods, a critical limit could be a pH of <strong>4.6 or lower</strong> to prevent the growth of harmful bacteria.</li>
     <li><strong>Water Activity:</strong> For dry foods, maintaining a water activity level below <strong>0.85</strong> is critical to inhibit microbial growth.</li>
 </ol>
@@ -14753,7 +14753,7 @@ Red flags, such as inadequate documentation or insufficient training, can indica
 <p>Understanding the types of critical limits is essential for comprehensive food safety management. The primary categories include:</p>
 
 <ol>
-    <li><strong>Physical Critical Limits:</strong> These include parameters such as temperature, time, and pH levels that must be monitored and controlled. For instance, cooking temperatures must reach a minimum of <strong>165°F</strong> to ensure pathogen destruction.</li>
+    <li><strong>Physical Critical Limits:</strong> These include parameters such as temperature, time, and pH levels that must be monitored and controlled. For instance, cooking temperatures must reach a minimum of <strong>74°C</strong> to ensure pathogen destruction.</li>
     <li><strong>Chemical Critical Limits:</strong> These limits pertain to the allowable levels of chemical contaminants, such as pesticide residues or food additives, as regulated by authorities. Compliance with <strong>Standard Operating Procedures</strong> is critical here.</li>
     <li><strong>Biological Critical Limits:</strong> These limits focus on pathogen levels, particularly in high-risk food products. Establishing a zero-tolerance limit for pathogens like Salmonella is a common practice.</li>
 </ol>
@@ -14954,8 +14954,8 @@ Red flags, such as inadequate documentation or insufficient training, can indica
 <p>Understanding practical applications of critical limits is vital for food businesses:</p>
 
 <ol>
-    <li><strong>Meat Products:</strong> The critical limit for cooking poultry is an internal temperature of <strong>165°F (74°C)</strong> for at least <strong>15 seconds</strong> to eliminate pathogens.</li>
-    <li><strong>Dairy Products:</strong> Pasteurization of milk requires a minimum temperature of <strong>161°F (72°C)</strong> for <strong>15 seconds</strong>.</li>
+    <li><strong>Meat Products:</strong> The critical limit for cooking poultry is an internal temperature of <strong>74°C</strong> for at least <strong>15 seconds</strong> to eliminate pathogens.</li>
+    <li><strong>Dairy Products:</strong> Pasteurization of milk requires a minimum temperature of <strong>72°C</strong> for <strong>15 seconds</strong>.</li>
     <li><strong>Canned Foods:</strong> A critical limit includes achieving a processing temperature that ensures a 12D reduction of Clostridium botulinum.</li>
 </ol>
 
@@ -15572,8 +15572,8 @@ Red flags, such as inadequate documentation or insufficient training, can indica
 <ol>
     <li><strong>Biological Hazards:</strong> 
         <ul>
-            <li>Cooking temperature for poultry: Minimum 165°F (74°C) for 15 seconds.</li>
-            <li>Cooling temperature: Must reduce from 135°F (57°C) to 70°F (21°C) within 2 hours.</li>
+            <li>Cooking temperature for poultry: Minimum 74°C for 15 seconds.</li>
+            <li>57°C to 21°C within 2 hours.</li>
         </ul>
     </li>
     <li><strong>Chemical Hazards:</strong> 

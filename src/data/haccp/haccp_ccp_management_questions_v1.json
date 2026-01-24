@@ -11,10 +11,10 @@
       "type": "group",
       "questions": [
         {
-          "id": "critical_limit_value",
-          "text": "What is the critical limit for this CCP?",
-          "tooltip": "A precise value (e.g. >75°C, <5°C, pH <4.6) that separates safe from unsafe. It must be measurable in real-time.",
-          "type": "text",
+        "title": "Critical Limits",
+        "description": "What is the critical limit for this CCP?",
+        "tooltip": "A precise value (e.g. >75°C, <4°C, pH <4.6) that separates safe from unsafe. It must be measurable in real-time.",
+        "type": "text",
           "required": true,
           "placeholder": "e.g., Core temperature >75°C for 30s, pH < 4.5"
         },

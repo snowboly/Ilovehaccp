@@ -418,7 +418,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                             onChange(question.id, newItems);
                                         }}
                                         className={`w-full p-2 rounded-lg border text-sm font-bold ${isCritical ? 'border-amber-300 bg-amber-50 focus:border-amber-500' : 'border-slate-200'}`}
-                                        placeholder={isCritical ? "e.g. 75°C for 2 mins, <5°C" : "e.g. Visual check"}
+                                        placeholder={isCritical ? "e.g. 75°C for 2 mins, <4°C" : "e.g. Visual check"}
                                     />
                                 </div>
                             </>

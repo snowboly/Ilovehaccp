@@ -12,12 +12,10 @@
         "type": "group",
         "questions": [
           {
-            "id": "critical_limit_value",
-            "text": "Quelle est la limite critique pour ce CCP ?",
-            "tooltip": "Une valeur précise (par exemple > 75°C, < 5°C, pH < 4,6) qui sépare le sûr de l'insur. Elle doit être mesurable en temps réel.",
-            "type": "text",
-            "required": true
-          },
+                    "title": "Limites Critiques",
+                    "description": "Quel est la limite critique pour ce CCP?",
+                    "tooltip": "Une valeur précise (par exemple > 75°C, < 4°C, pH < 4,6) qui sépare le sûr de l'insur. Elle doit être mesurable en temps réel.",
+                    "type": "text",          },
           {
             "id": "critical_limit_basis",
             "text": "Base scientifique ou réglementaire (facultatif)",

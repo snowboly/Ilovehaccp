@@ -7,10 +7,10 @@ const sampleData = {
   productName: "Sourdough Breads & Pastries",
   productDescription: "Traditional fermented sourdough breads and fresh cream-filled pastries.",
   intendedUse: "General Public including vulnerable groups (children/elderly)",
-  storageType: "Ambient and Refrigerated (< 5°C)",
+  storageType: "Ambient and Refrigerated (< 4°C)",
   analysis: [
     { step_name: "Receiving", hazards: "Biological: Pathogens on raw eggs. Physical: Pests.", is_ccp: false, control_measure: "Check supplier logs & packaging integrity." },
-    { step_name: "Cold Storage", hazards: "Biological: Growth of Listeria.", is_ccp: true, control_measure: "Daily temperature logs (< 5°C).", critical_limit: "< 5°C" },
+    { step_name: "Cold Storage", hazards: "Biological: Growth of Listeria.", is_ccp: true, control_measure: "Daily temperature logs (< 4°C).", critical_limit: "< 4°C" },
     { step_name: "Baking", hazards: "Biological: Survival of pathogens.", is_ccp: true, control_measure: "Check internal temp > 90°C.", critical_limit: "> 90°C" },
     { step_name: "Cooling", hazards: "Biological: Spore germination.", is_ccp: true, control_measure: "Cool to < 10°C in < 2 hours.", critical_limit: "< 2 hours" }
   ],
@@ -25,7 +25,7 @@ const sampleData = {
     hazard_analysis: [], // Analysis is handled in the top-level property
     ccp_summary: [
         { ccp_step: "Baking", hazard: "Pathogen survival", critical_limit: "90°C internal", monitoring: "Probe core of largest loaf every batch", corrective_action: "Continue baking until target reached" },
-        { ccp_step: "Cold Storage", hazard: "Bacterial growth", critical_limit: "< 5°C", monitoring: "Twice daily digital thermometer check", corrective_action: "Move to backup fridge; discard if > 2 hours" }
+        { ccp_step: "Cold Storage", hazard: "Bacterial growth", critical_limit: "< 4°C", monitoring: "Twice daily digital thermometer check", corrective_action: "Move to backup fridge; discard if > 2 hours" }
     ]
   }
 };

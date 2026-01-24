@@ -22,7 +22,7 @@ export const HACCP_STANDARDS = {
   frozen_storage: {
     limit: "Air temperature ≤ -18°C.",
     monitoring: "Check freezer display temperature daily.",
-    corrective_action: "Adjust dial. Move food. If thawed but <5°C, use immediately. If >4°C, discard."
+    corrective_action: "Adjust dial. Move food. If thawed but <4°C, use immediately. If >4°C, discard."
   },
   hot_holding: {
     limit: "Core temperature ≥ 63°C.",
