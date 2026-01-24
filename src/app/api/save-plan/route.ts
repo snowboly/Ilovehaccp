@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { sendEmail } from '@/lib/email/send';
+import { documentsReadyEmailHtml } from '@/lib/email/templates/documents-ready';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const appUrl = process.env.APP_URL!;
 
 export async function POST(req: Request) {
   if (!supabaseUrl || !supabaseKey) {
@@ -50,7 +53,7 @@ export async function POST(req: Request) {
         // Ownership Check
         const { data: existingPlan, error: fetchError } = await supabaseAdmin
             .from('plans')
-            .select('user_id')
+            .select('user_id, pdf_url, docx_url')
             .eq('id', planId)
             .single();
 
@@ -81,6 +84,16 @@ export async function POST(req: Request) {
             
         if (error) throw error;
         result = data;
+
+        const hadDocuments = Boolean(existingPlan.pdf_url || existingPlan.docx_url);
+        const hasDocuments = Boolean(pdfUrl || docxUrl);
+        if (!hadDocuments && hasDocuments && user.email) {
+            await sendEmail({
+                to: user.email,
+                subject: 'Your iLoveHACCP documents are ready',
+                html: documentsReadyEmailHtml({ appUrl }),
+            });
+        }
     } else {
         // Create New Plan
         const { data, error } = await supabaseAdmin
@@ -102,6 +115,15 @@ export async function POST(req: Request) {
         if (error) throw error;
         result = data;
         savedPlanId = result.id;
+
+        const hasDocuments = Boolean(data.pdf_url || data.docx_url);
+        if (hasDocuments && user.email) {
+            await sendEmail({
+                to: user.email,
+                subject: 'Your iLoveHACCP documents are ready',
+                html: documentsReadyEmailHtml({ appUrl }),
+            });
+        }
     }
 
     // 2.5 Mark Draft as Generated
