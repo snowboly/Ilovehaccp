@@ -4,6 +4,8 @@ import { checkAdminRole } from '@/lib/admin-auth';
 import { generateWordDocument } from '@/lib/word-generator';
 import { isExportAllowed } from '@/lib/export/permissions';
 import { fetchLogoAssets } from '@/lib/export/logo';
+import { verifyExportToken } from '@/lib/export/auth';
+import { logAccess } from '@/lib/audit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -12,75 +14,96 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const planId = searchParams.get('planId');
+    const tokenParam = searchParams.get('token');
     const lang = (searchParams.get('lang') || 'en') as 'en' | 'es' | 'fr' | 'pt';
 
-    if (!planId) {
-      return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
-    }
+    if (!planId) return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
 
-    // 1. Auth Check
-    const authHeader = req.headers.get('Authorization');
     let user = null;
-    
-    if (authHeader) {
+    let tokenPayload = null;
+    let isAdmin = false;
+
+    // 1. Auth Resolution
+    if (tokenParam) {
+      tokenPayload = verifyExportToken(tokenParam);
+      if (!tokenPayload || tokenPayload.id !== planId) {
+        await logAccess({ email: 'unknown', role: 'anon' }, 'LOGIN_FAILURE', { type: 'system', id: planId }, { reason: 'Invalid Token' });
+        return NextResponse.json({ error: 'Invalid or expired token' }, { status: 403 });
+      }
+    } else {
+      const authHeader = req.headers.get('Authorization');
+      if (authHeader) {
         const token = authHeader.replace('Bearer ', '');
         const { data, error } = await supabaseService.auth.getUser(token);
-        if (!error && data.user) user = data.user;
-    }
-
-    if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // 2. Fetch Plan (with fallback to Drafts)
-    let { data: plan, error } = await supabaseService
-        .from('plans')
-        .select('*')
-        .eq('id', planId)
-        .single();
-
-    // Fallback to Drafts if not found in Plans
-    if (!plan || error) {
-        const { data: draft, error: draftError } = await supabaseService
-            .from('drafts')
-            .select('*')
-            .eq('id', planId)
-            .single();
-
-        if (draft && !draftError) {
-            // Construct a virtual plan from draft data
-            plan = {
-                id: draft.id,
-                user_id: draft.user_id,
-                business_name: draft.answers?.product?.businessLegalName || 'Draft',
-                product_name: draft.answers?.product?.product_name || 'Draft Plan',
-                payment_status: 'unpaid', // Drafts are always unpaid
-                full_plan: draft.plan_data,
-                hazard_analysis: draft.answers?.hazard_analysis || [],
-                answers: draft.answers || {}
-            };
-        } else {
-            return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+        if (!error && data.user) {
+          user = data.user;
+          isAdmin = await checkAdminRole(user.id, user.email);
         }
+      }
     }
 
-    // 2.5 Validation Gate (Audit Safe - Single Source of Truth)
+    if (!user && !tokenPayload) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // 2. Fetch Plan (Strict Scoping)
+    let plan = null;
+    let resourceType: 'plan' | 'draft' = 'plan';
+
+    if (tokenPayload) {
+      resourceType = tokenPayload.type;
+      const table = resourceType === 'draft' ? 'drafts' : 'plans';
+      const { data } = await supabaseService.from(table).select('*').eq('id', planId).single();
+      
+      if (resourceType === 'draft' && data) {
+         plan = transformDraftToPlan(data);
+      } else {
+         plan = data;
+      }
+    } else {
+      // Trust User (Scoped)
+      let planQuery = supabaseService.from('plans').select('*').eq('id', planId);
+      if (!isAdmin && user) planQuery = planQuery.eq('user_id', user.id);
+      
+      const { data: p } = await planQuery.single();
+      
+      if (p) {
+        plan = p;
+        resourceType = 'plan';
+      } else {
+        let draftQuery = supabaseService.from('drafts').select('*').eq('id', planId);
+        if (!isAdmin && user) draftQuery = draftQuery.eq('user_id', user.id);
+        
+        const { data: d } = await draftQuery.single();
+        if (d) {
+          plan = transformDraftToPlan(d);
+          resourceType = 'draft';
+        }
+      }
+    }
+
+    if (!plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+
+    // 2.5 Validation Gate
     const permission = isExportAllowed(plan);
     if (!permission.allowed) {
         return NextResponse.json({ error: permission.reason }, { status: 422 });
     }
 
-    // 3. Permission Check
-    const isOwner = plan.user_id === user.id;
-    const isPaid = plan.payment_status === 'paid';
-    const isAdmin = await checkAdminRole(user.id, user.email);
+    // 3. Permission & Payment Check
+    if (!tokenPayload && !isAdmin && user && plan.user_id !== user.id) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
 
-    if (isAdmin) {
-        // Admin Access Granted
-    } else if (isOwner && isPaid) {
-        // Customer Access Granted
-    } else {
-         return NextResponse.json({ error: 'Forbidden: Payment required or Unauthorized' }, { status: 403 });
+    const isPaid = plan.payment_status === 'paid';
+    if (!isPaid && !isAdmin) {
+         await logAccess(
+           { email: user?.email || 'token-user', role: isAdmin ? 'admin' : 'user' }, 
+           'LOGIN_FAILURE', // Using login failure to denote access failure
+           { type: resourceType, id: planId }, 
+           { reason: 'Unpaid Word Export Attempt' }
+         );
+         return NextResponse.json({ error: 'Forbidden: Payment required' }, { status: 403 });
     }
 
     // 3.5 Fetch Plan Version
@@ -130,7 +153,14 @@ export async function GET(req: Request) {
         logoBuffer: wordLogo
     }, lang);
 
-    // 5. Return Stream
+    // 5. Audit Log
+    await logAccess(
+      { email: user?.email || 'token-user', role: isAdmin ? 'admin' : (user ? 'user' : 'anon'), id: user?.id },
+      'EXPORT_WORD',
+      { type: resourceType, id: planId },
+      { lang, method: tokenPayload ? 'token' : 'auth' }
+    );
+
     const safeBusinessName = String(plan.business_name || 'Draft').replace(/\s+/g, '_');
 
     return new NextResponse(buffer as any, {
@@ -144,4 +174,17 @@ export async function GET(req: Request) {
     console.error('Word Gen Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+function transformDraftToPlan(draft: any) {
+  return {
+      id: draft.id,
+      user_id: draft.user_id,
+      business_name: draft.answers?.product?.businessLegalName || 'Draft',
+      product_name: draft.answers?.product?.product_name || 'Draft Plan',
+      payment_status: 'unpaid',
+      full_plan: draft.plan_data,
+      hazard_analysis: draft.answers?.hazard_analysis || [],
+      answers: draft.answers || {}
+  };
 }

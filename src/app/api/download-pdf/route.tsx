@@ -6,6 +6,8 @@ import { checkAdminRole } from '@/lib/admin-auth';
 import { getDictionary } from '@/lib/locales';
 import { isExportAllowed } from '@/lib/export/permissions';
 import { fetchLogoAssets } from '@/lib/export/logo';
+import { verifyExportToken } from '@/lib/export/auth';
+import { logAccess } from '@/lib/audit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -14,62 +16,91 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const planId = searchParams.get('planId');
+    const tokenParam = searchParams.get('token');
     const lang = (searchParams.get('lang') || 'en') as 'en' | 'es' | 'fr' | 'pt';
 
     if (!planId) return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
 
-    // 1. Auth Check
-    const authHeader = req.headers.get('Authorization');
     let user = null;
-    if (authHeader) {
+    let tokenPayload = null;
+    let isAdmin = false;
+
+    // 1. Auth Resolution
+    if (tokenParam) {
+      tokenPayload = verifyExportToken(tokenParam);
+      // Validate token authorizes THIS resource
+      if (!tokenPayload || tokenPayload.id !== planId) {
+        await logAccess({ email: 'unknown', role: 'anon' }, 'LOGIN_FAILURE', { type: 'system', id: planId }, { reason: 'Invalid Token' });
+        return NextResponse.json({ error: 'Invalid or expired token' }, { status: 403 });
+      }
+    } else {
+      const authHeader = req.headers.get('Authorization');
+      if (authHeader) {
         const token = authHeader.replace('Bearer ', '');
         const { data, error } = await supabaseService.auth.getUser(token);
-        if (!error && data.user) user = data.user;
-    }
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    // 2. Fetch Plan (with fallback to Drafts)
-    let { data: plan, error } = await supabaseService
-        .from('plans')
-        .select('*')
-        .eq('id', planId)
-        .single();
-
-    // Fallback to Drafts if not found in Plans
-    if (!plan || error) {
-        const { data: draft, error: draftError } = await supabaseService
-            .from('drafts')
-            .select('*')
-            .eq('id', planId)
-            .single();
-
-        if (draft && !draftError) {
-            // Construct a virtual plan from draft data
-            plan = {
-                id: draft.id,
-                user_id: draft.user_id,
-                business_name: draft.answers?.product?.businessLegalName || 'Draft',
-                product_name: draft.answers?.product?.product_name || 'Draft Plan',
-                payment_status: 'unpaid', // Drafts are always unpaid
-                full_plan: draft.plan_data,
-                hazard_analysis: draft.answers?.hazard_analysis || [],
-                answers: draft.answers || {}
-            };
-        } else {
-            return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+        if (!error && data.user) {
+          user = data.user;
+          isAdmin = await checkAdminRole(user.id, user.email);
         }
+      }
     }
 
-    // 3. Ownership & Permission Check
-    const isAdmin = await checkAdminRole(user.id, user.email);
-    if (plan.user_id !== user.id && !isAdmin) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!user && !tokenPayload) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 4. Hardened Validation Gate (Single Source of Truth)
+    // 2. Fetch Plan (Strict Scoping)
+    let plan = null;
+    let resourceType: 'plan' | 'draft' = 'plan';
+
+    if (tokenPayload) {
+      // Trust Token Type
+      resourceType = tokenPayload.type;
+      const table = resourceType === 'draft' ? 'drafts' : 'plans';
+      const { data } = await supabaseService.from(table).select('*').eq('id', planId).single();
+      
+      if (resourceType === 'draft' && data) {
+         plan = transformDraftToPlan(data);
+      } else {
+         plan = data;
+      }
+    } else {
+      // Trust User (Scoped)
+      // Attempt 1: Plans
+      let planQuery = supabaseService.from('plans').select('*').eq('id', planId);
+      if (!isAdmin && user) planQuery = planQuery.eq('user_id', user.id);
+      
+      const { data: p } = await planQuery.single();
+      
+      if (p) {
+        plan = p;
+        resourceType = 'plan';
+      } else {
+        // Attempt 2: Drafts (Scoped)
+        let draftQuery = supabaseService.from('drafts').select('*').eq('id', planId);
+        if (!isAdmin && user) draftQuery = draftQuery.eq('user_id', user.id);
+        
+        const { data: d } = await draftQuery.single();
+        if (d) {
+          plan = transformDraftToPlan(d);
+          resourceType = 'draft';
+        }
+      }
+    }
+
+    if (!plan) {
+      return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+    }
+
+    // 3. Validation Gate
     const permission = isExportAllowed(plan);
     if (!permission.allowed) {
         return NextResponse.json({ error: permission.reason }, { status: 422 });
+    }
+
+    // 4. Permission Check (Double Check for sanity, though query scoping handles it)
+    if (!tokenPayload && !isAdmin && user && plan.user_id !== user.id) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     // 4.5 Fetch Plan Version
@@ -116,7 +147,7 @@ export async function GET(req: Request) {
         fullPlan: fullPlan,
         planVersion,
         lang,
-        isPaid: plan.payment_status === 'paid' || isAdmin // Admin gets clean copy
+        isPaid: plan.payment_status === 'paid' || isAdmin
     };
 
     const { pdfLogo } = await fetchLogoAssets(originalInputs.product?.logo_url);
@@ -132,6 +163,14 @@ export async function GET(req: Request) {
 
     const safeBusinessName = String(plan.business_name || 'Draft').replace(/\s+/g, '_');
 
+    // 6. Audit Log
+    await logAccess(
+      { email: user?.email || 'token-user', role: isAdmin ? 'admin' : (user ? 'user' : 'anon'), id: user?.id },
+      'EXPORT_PDF',
+      { type: resourceType, id: planId },
+      { lang, method: tokenPayload ? 'token' : 'auth' }
+    );
+
     return new NextResponse(pdfBuffer as any, {
         headers: {
             'Content-Type': 'application/pdf',
@@ -143,4 +182,17 @@ export async function GET(req: Request) {
     console.error('PDF Gen Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
+}
+
+function transformDraftToPlan(draft: any) {
+  return {
+      id: draft.id,
+      user_id: draft.user_id,
+      business_name: draft.answers?.product?.businessLegalName || 'Draft',
+      product_name: draft.answers?.product?.product_name || 'Draft Plan',
+      payment_status: 'unpaid',
+      full_plan: draft.plan_data,
+      hazard_analysis: draft.answers?.hazard_analysis || [],
+      answers: draft.answers || {}
+  };
 }
