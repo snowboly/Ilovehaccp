@@ -13,6 +13,15 @@
     - **Frontend:** Strict Client-Side Gating via `AdminGuard`. No server-side auth in `layout.tsx` or `page.tsx`.
     - **Backend:** API routes continue to use server-side `validateAdminRequest` from `src/lib/admin-auth.ts`.
 
+- v3.33 Resume Functionality Fix (Jan 24, 2026):
+- **Problem:** Clicking "Resume" on any draft (Dashboard, Builder) would redirect the user to the start of the Builder with an empty state due to a race condition between component render and async draft fetching.
+- **Fix:**
+    1.  **State Management:** Introduced `isInitializing` state to `HACCPMasterFlow.tsx` to block rendering until the draft is fully loaded.
+    2.  **Logic:** Wrapped initialization logic in `try/finally` to ensure the loader clears.
+    3.  **Guards:** Added explicit `isInitializing` and `loadError` views to `renderContent`.
+    4.  **Testing:** Added E2E tests (`tests/resume.spec.ts`) covering resume success, invalid IDs, logged-out redirects, and persistence.
+- **PDF Architecture:** Confirmed usage of **Direct PDF Generation** via `@react-pdf/renderer` (not DOCX-to-PDF conversion).
+
 - v3.32 HACCP Builder Audit Hardening & Results Page Overhaul (Jan 20, 2026):
 - **Goal:** Align with strict auditor requirements, remove "HACCP Lite" branding, and enforce data integrity.
 - **Key Changes:**
