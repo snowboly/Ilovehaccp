@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { supabaseService } from '@/lib/supabase';
+import { generateAccessToken } from '@/lib/token';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -23,7 +24,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Draft not found' }, { status: 404 });
     }
 
-    const magicLink = `${new URL(req.url).origin}/builder?id=${draftId}`;
+    // Generate Signed Token (7 days validity)
+    const token = generateAccessToken(draftId, 'draft', 'view', 7 * 24 * 60 * 60);
+    const magicLink = `${new URL(req.url).origin}/builder?id=${draftId}&token=${token}`;
 
     const { error: emailError } = await resend.emails.send({
       from: 'iLoveHACCP <noreply@ilovehaccp.com>',
@@ -35,6 +38,7 @@ export async function POST(req: Request) {
           <p>Click the button below to resume your work on <strong>${draft.product_name || 'your plan'}</strong>.</p>
           <a href="${magicLink}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin-top: 10px;">Resume Draft</a>
           <p style="margin-top: 20px; font-size: 12px; color: #666;">Or copy this link: ${magicLink}</p>
+          <p style="margin-top: 10px; font-size: 11px; color: #999;">This link expires in 7 days.</p>
         </div>
       `
     });
