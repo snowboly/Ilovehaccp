@@ -1,65 +1,103 @@
-import React from 'react';
-import { View, Text, StyleSheet } from '@react-pdf/renderer';
+import React from "react";
+import { View, Text } from "@react-pdf/renderer";
+import { HACCP_THEME as T } from "../theme";
+import { wrapIdForPdf } from "../wrap";
 
-export const renderTable = (headers: string[], rows: any[][], colWidths: string[], theme: any) => {
-  const styles = StyleSheet.create({
-    table: {
-      display: 'flex',
-      width: 'auto',
-      borderStyle: 'solid',
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      marginBottom: theme.spacing.sectionBottom,
-      ...(theme.radius?.table ? { borderRadius: theme.radius.table } : {}),
-    },
-    headerRow: {
-      flexDirection: 'row',
-      backgroundColor: theme.colors.tableHeaderBg,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border,
-      minHeight: 20,
-      alignItems: 'center',
-    },
-    row: {
-      flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border,
-      minHeight: 20,
-      alignItems: 'center',
-    },
-    cell: {
-      padding: theme.spacing.tablePadding || 6,
-      fontSize: theme.fonts.tableBody,
-      color: theme.colors.text,
-      borderRightWidth: 1,
-      borderRightColor: theme.colors.border,
-    },
-    headerText: {
-      fontWeight: 'bold',
-      fontSize: theme.fonts.tableHeader,
-      color: theme.id === 'professional-modern' ? theme.colors.primary : '#000000',
-    }
-  });
+const rowBase = {
+  flexDirection: "row" as const,
+  borderLeftWidth: T.borders.width,
+  borderRightWidth: T.borders.width,
+  borderColor: T.colors.border,
+};
 
+function normalizeCellValue(cell: React.ReactNode) {
+  if (cell === null || cell === undefined || cell === "") {
+    return "-";
+  }
+  if (React.isValidElement(cell)) {
+    return cell;
+  }
+  if (typeof cell === "string") {
+    return wrapIdForPdf(cell);
+  }
+  return wrapIdForPdf(String(cell));
+}
+
+function TableRow({
+  cells,
+  isHeader,
+  zebra,
+  colWidths,
+}: {
+  cells: React.ReactNode[];
+  isHeader?: boolean;
+  zebra?: boolean;
+  colWidths: string[];
+}) {
   return (
-    <View style={styles.table}>
-      {/* Header */}
-      <View style={styles.headerRow}>
-        {headers.map((h, i) => (
-          <View key={i} style={{ ...styles.cell, width: colWidths[i], borderRightWidth: i === headers.length - 1 ? 0 : 1 }}>
-            <Text style={styles.headerText}>{h}</Text>
-          </View>
-        ))}
-      </View>
-      {/* Rows */}
-      {rows.map((row, i) => (
-        <View key={i} style={{ ...styles.row, borderBottomWidth: i === rows.length - 1 ? 0 : 1 }}>
-          {row.map((cell, j) => (
-            <View key={j} style={{ ...styles.cell, width: colWidths[j], borderRightWidth: j === row.length - 1 ? 0 : 1 }}>
-              <Text>{cell || '-'}</Text>
-            </View>
-          ))}
+    <View
+      style={{
+        ...rowBase,
+        backgroundColor: isHeader
+          ? T.colors.tableHeaderBg
+          : zebra
+          ? "#FAFBFD"
+          : T.colors.white,
+        borderTopWidth: T.borders.width,
+      }}
+    >
+      {cells.map((cell, idx) => (
+        <View
+          key={idx}
+          style={{
+            flex: 1,
+            padding: 6,
+            width: colWidths[idx],
+          }}
+        >
+          {cell}
         </View>
+      ))}
+    </View>
+  );
+}
+
+export const renderTable = (
+  headers: string[],
+  rows: any[][],
+  colWidths: string[],
+  theme: any
+) => {
+  return (
+    <View
+      style={{
+        display: "flex",
+        width: "auto",
+        marginBottom: theme.spacing.sectionBottom,
+        borderBottomWidth: T.borders.width,
+        borderBottomColor: T.colors.border,
+      }}
+    >
+      <TableRow
+        cells={headers.map((header) => (
+          <Text style={{ fontWeight: 700, fontSize: T.font.h2, color: T.colors.text }}>
+            {header}
+          </Text>
+        ))}
+        isHeader
+        colWidths={colWidths}
+      />
+      {rows.map((row, rowIndex) => (
+        <TableRow
+          key={rowIndex}
+          cells={row.map((cell) => (
+            <Text style={{ fontSize: T.font.body, color: T.colors.text }}>
+              {normalizeCellValue(cell)}
+            </Text>
+          ))}
+          zebra={rowIndex % 2 === 1}
+          colWidths={colWidths}
+        />
       ))}
     </View>
   );

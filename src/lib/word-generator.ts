@@ -1,12 +1,11 @@
 import { Packer } from "docx";
-import { getTheme } from "./export/getTheme";
 import { generateModularWordDocument } from "./export/word/renderDocx";
+import { buildExportDoc } from "./export/exportDoc";
+import { getDictionary } from "./locales";
 
 export async function generateWordDocument(data: any, lang: string = 'en'): Promise<Buffer> {
-  const originalInputs = data.full_plan?._original_inputs || {};
-  const themeId = originalInputs.template || originalInputs.validation?.document_style;
-  const theme = getTheme(themeId);
-  
-  const doc = await generateModularWordDocument(data, theme, lang);
+  const dict = getDictionary(lang as any).pdf;
+  const exportDoc = buildExportDoc({ data, dict, lang });
+  const doc = await generateModularWordDocument(exportDoc);
   return Packer.toBuffer(doc);
 }

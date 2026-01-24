@@ -1,29 +1,27 @@
-import React from 'react';
-import { View, Text, StyleSheet } from '@react-pdf/renderer';
+import React from "react";
+import { View, Text } from "@react-pdf/renderer";
+import { HACCP_THEME as T } from "../theme";
 
-export const renderSectionHeader = (text: string, theme: any) => {
-  const styles = StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.sectionBg,
-      paddingVertical: 7,
-      paddingHorizontal: 10,
-      marginBottom: theme.spacing.sectionBottom,
-      marginTop: theme.spacing.sectionTop,
-      width: '100%',
-      ...(theme.radius?.section ? { borderRadius: theme.radius.section } : {}),
-      borderLeftWidth: theme.id === 'professional-modern' ? 4 : 0,
-    },
-    text: {
-      fontSize: theme.fonts.section,
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      color: theme.id === 'professional-modern' ? theme.colors.primary : theme.colors.text,
-    },
-  });
-
+export function SectionBand({ title }: { title: string }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>{text}</Text>
+    <View
+      style={{
+        backgroundColor: T.colors.lightBg,
+        paddingVertical: 6,
+        paddingHorizontal: 8,
+        marginTop: 12,
+        marginBottom: 8,
+        borderWidth: T.borders.width,
+        borderColor: T.colors.border,
+      }}
+    >
+      <Text style={{ fontSize: 12, fontWeight: 700, color: T.colors.primary }}>
+        {title}
+      </Text>
     </View>
   );
+}
+
+export const renderSectionHeader = (text: string) => {
+  return <SectionBand title={text} />;
 };
