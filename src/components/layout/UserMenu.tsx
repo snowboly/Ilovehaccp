@@ -62,7 +62,7 @@ export default function UserMenu({ mobile = false }: { mobile?: boolean }) {
               href="/signup"
               className="bg-blue-600 text-white px-5 py-3 rounded-xl font-bold text-center shadow-lg shadow-blue-500/20"
             >
-              Get Started
+              Registration
             </Link>
         </div>
       );
@@ -79,7 +79,7 @@ export default function UserMenu({ mobile = false }: { mobile?: boolean }) {
           href="/signup"
           className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 hover:-translate-y-0.5"
         >
-          Get Started
+          Registration
         </Link>
       </>
     );

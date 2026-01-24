@@ -10,7 +10,7 @@ export const translations = {
       about: "About",
       contact: "Contact",
       login: "Log In",
-      getStarted: "Register an account"
+      getStarted: "Registration"
     },
     landing: {
       hero: {
@@ -364,7 +364,7 @@ export const translations = {
       about: "Sobre nosotros",
       contact: "Contacto",
       login: "Iniciar Sesión",
-      getStarted: "Registrar una cuenta"
+      getStarted: "Registro"
     },
     landing: {
       hero: {
@@ -716,7 +716,7 @@ export const translations = {
       about: "À propos",
       contact: "Contact",
       login: "Connexion",
-      getStarted: "Créer un compte"
+      getStarted: "Inscription"
     },
     landing: {
       hero: {
@@ -1078,7 +1078,7 @@ export const translations = {
       about: "Sobre",
       contact: "Contato",
       login: "Entrar",
-      getStarted: "Registrar uma conta"
+      getStarted: "Registro"
     },
     landing: {
       hero: {
