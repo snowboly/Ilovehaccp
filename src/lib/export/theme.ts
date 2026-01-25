@@ -9,7 +9,7 @@ export const HACCP_THEME = {
     white: "#FFFFFF",
   },
   font: {
-    family: "Helvetica",
+    family: "Roboto",
     body: 10,
     small: 8,
     h1: 16,

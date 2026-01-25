@@ -171,15 +171,24 @@ export async function GET(req: Request) {
       { lang, method: tokenPayload ? 'token' : 'auth' }
     );
 
-    return new NextResponse(pdfBuffer as any, {
+    // FIX: Robust Buffer handling for Node.js
+    const finalBuffer = Buffer.isBuffer(pdfBuffer)
+      ? pdfBuffer
+      : Buffer.from((pdfBuffer as any) instanceof ArrayBuffer ? new Uint8Array(pdfBuffer as any) : pdfBuffer as any);
+
+    return new NextResponse(finalBuffer, {
         headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename="HACCP_Plan_${safeBusinessName}.pdf"`
+            'Content-Disposition': `attachment; filename="HACCP_Plan_${safeBusinessName}.pdf"`,
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
         }
     });
 
   } catch (error: any) {
-    console.error('PDF Gen Error:', error);
+    console.error('[download-pdf] error', error);
+    if (error instanceof Error) {
+       console.error(error.stack);
+    }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
