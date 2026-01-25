@@ -7,12 +7,16 @@ import { PdfFooter } from "../components/PdfFooter";
 import { HACCP_THEME as T } from "../theme";
 import { ExportBlock, ExportDoc, resolveExportText } from "../exportDoc";
 
-// Register Font (Fixes "random spaces" issue)
+// IMPORT LOCAL FONTS
+import fontRegular from "./fonts/Roboto-Regular.ttf";
+import fontBold from "./fonts/Roboto-Bold.ttf";
+
+// REGISTER LOCAL FONTS
 Font.register({
   family: "Roboto",
   fonts: [
-    { src: "https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.ttf", fontWeight: "normal" },
-    { src: "https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4.ttf", fontWeight: "bold" }
+    { src: fontRegular, fontWeight: "normal" },
+    { src: fontBold, fontWeight: "bold" }
   ]
 });
 
@@ -94,8 +98,10 @@ const renderBlock = (block: ExportBlock) => {
 
 const styles = StyleSheet.create({
   page: {
-    padding: T.spacing.pagePadding,
-    fontFamily: T.font.family,
+    paddingTop: 80, // Header space
+    paddingBottom: 60, // Footer space
+    paddingHorizontal: T.spacing.pagePadding,
+    fontFamily: "Roboto",
     fontSize: T.font.body,
     color: T.colors.text,
   },
@@ -104,6 +110,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: T.spacing.pagePadding,
+    fontFamily: "Roboto",
   },
   title: {
     fontSize: 22,
@@ -168,20 +175,29 @@ export const HACCPDocumentModular = ({ doc }: { doc: ExportDoc }) => {
         </View>
       </Page>
 
-      {/* CONTENT PAGE */}
+      {/* CONTENT PAGES */}
       <Page size="A4" style={styles.page}>
         <Watermark isPaid={doc.meta.isPaid} />
-        <PdfHeader
-          logoDataUri={doc.meta.logoDataUri ?? undefined}
-          versionId={doc.meta.versionId}
-          generatedDate={doc.meta.generatedDate}
-        />
+        
+        {/* HEADER: Fixed & Absolute to ensure repetition */}
+        <View fixed style={{ position: 'absolute', top: 20, left: 0, right: 0, paddingHorizontal: T.spacing.pagePadding }}>
+            <PdfHeader
+              logoDataUri={doc.meta.logoDataUri ?? undefined}
+              versionId={doc.meta.versionId}
+              generatedDate={doc.meta.generatedDate}
+            />
+        </View>
+
         <View style={styles.body}>
           {doc.content.map((block, index) => (
             <View key={index}>{renderBlock(block)}</View>
           ))}
         </View>
-        <PdfFooter />
+
+        {/* FOOTER: Fixed & Absolute */}
+        <View fixed style={{ position: 'absolute', bottom: 20, left: 0, right: 0, paddingHorizontal: T.spacing.pagePadding }}>
+            <PdfFooter />
+        </View>
       </Page>
     </Document>
   );
