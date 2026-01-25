@@ -19,7 +19,7 @@ export async function validateAdminRequest(req: Request) {
     supabaseService
       .from('admin_whitelist')
       .select('email')
-      .eq('email', user.email ?? '')
+      .ilike('email', user.email ?? '')
       .maybeSingle(),
   ]);
 
@@ -40,7 +40,7 @@ export async function checkAdminRole(userId: string, email?: string | null) {
     supabaseService
       .from('admin_whitelist')
       .select('email')
-      .eq('email', email ?? '')
+      .ilike('email', email ?? '')
       .maybeSingle(),
   ]);
 

@@ -34,7 +34,7 @@ export default async function AdminLayout({
     supabaseService
       .from('admin_whitelist')
       .select('email')
-      .eq('email', user.email ?? '')
+      .ilike('email', user.email ?? '')
       .maybeSingle(),
   ]);
 

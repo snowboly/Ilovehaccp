@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { HACCPSectionData } from '@/types/haccp';
 import { QuestionCard } from './QuestionCard';
 import { ChevronRight } from 'lucide-react';
@@ -18,6 +18,38 @@ interface QuestionnaireProps {
 export default function HACCPQuestionnaire({ sectionData, onComplete, initialData, additionalContext, title, description }: QuestionnaireProps) {
   const [answers, setAnswers] = useState<any>(initialData || {});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  // TRACKING REF: Prevents scrolling when errors are cleared or updated during typing
+  const isSubmittingRef = useRef(false);
+
+  // FIX: Handle Scroll & Focus in useEffect dependent on 'errors'
+  useEffect(() => {
+    // Only run if we just tried to submit and there are errors
+    if (isSubmittingRef.current && Object.keys(errors).length > 0) {
+      
+      // Small timeout ensures DOM is fully painted with error classes
+      const timer = setTimeout(() => {
+        const firstErrorElement = document.querySelector('.text-red-500');
+        
+        if (firstErrorElement) {
+          // 1. Scroll into view
+          firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // 2. Attempt to focus the nearest input
+          // We look for an input/button inside the closest QuestionCard parent or nearby
+          const card = firstErrorElement.closest('.bg-white, .bg-slate-50');
+          const input = card?.querySelector('input, button, textarea, select') as HTMLElement;
+          if (input) {
+            input.focus({ preventScroll: true }); // Prevent fighting with scrollIntoView
+          }
+        }
+      }, 100);
+
+      // Reset submission flag
+      isSubmittingRef.current = false;
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
 
   // Sync state if initialData changes (e.g. when switching steps in a loop)
   useEffect(() => {
@@ -102,13 +134,13 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
   };
 
   const handleSubmit = () => {
+    isSubmittingRef.current = true; // Mark intent
+    
     if (validate()) {
+      isSubmittingRef.current = false; // Valid, so no need to scroll
       onComplete(answers);
-    } else {
-        // Scroll to first error
-        const firstError = document.querySelector('.text-red-500');
-        firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    } 
+    // If invalid, validate() has called setErrors(), triggering the useEffect above
   };
 
   const getTitle = (section: string) => {
