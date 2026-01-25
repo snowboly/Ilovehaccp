@@ -66,3 +66,37 @@ APP_URL=...
 1. **Env Vars:** `STRIPE_SECRET_KEY`, `GROQ_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
 2. **Build:** `npm run build`.
 3. **Pushed:** Changes are synced to GitHub `main` branch.
+
+## 🔐 Security Hardening (Baseline)
+
+### Response Headers (Middleware)
+The middleware applies a minimal, compatibility-friendly security header set:
+
+- **Content-Security-Policy (CSP)**: allows same-origin content plus common HTTPS assets, inline scripts/styles, and Stripe frames.
+  - `default-src 'self'`
+  - `script-src 'self' 'unsafe-inline' 'unsafe-eval' https:`
+  - `style-src 'self' 'unsafe-inline' https:`
+  - `img-src 'self' data: https:`
+  - `font-src 'self' data: https:`
+  - `connect-src 'self' https:`
+  - `frame-src https://js.stripe.com https://hooks.stripe.com`
+  - `frame-ancestors 'self'`
+  - `base-uri 'self'`
+  - `form-action 'self'`
+  - `object-src 'none'`
+- **Strict-Transport-Security (HSTS)**: `max-age=63072000; includeSubDomains; preload` (production only).
+- **Referrer-Policy**: `strict-origin-when-cross-origin`.
+
+### CSRF Assumptions (POST Routes)
+- **Stripe webhook**: Verified via `stripe-signature` and does not rely on cookies, so CSRF is not applicable.
+- **Admin APIs**: Use `Authorization: Bearer` tokens, which are not sent automatically by browsers; CSRF exposure is limited to token leakage.
+- **User-authenticated routes** (e.g., claim/import flows and dashboard actions) rely on Supabase session cookies. CSRF protection is expected to come from:
+  - `SameSite=Lax` or stricter on auth cookies.
+  - `HttpOnly` + `Secure` in production.
+  - Server-side checks that the user is authenticated for any state-changing action.
+
+If new POST endpoints are introduced that mutate user state and rely solely on cookies, consider adding explicit CSRF tokens or origin checking.
+
+### Cookie Security Expectations
+- Auth/session cookies should be `HttpOnly`, `Secure` (in production), and `SameSite=Lax` or `SameSite=Strict`.
+- Any non-essential cookies must be opt-in and kept separate from authentication.

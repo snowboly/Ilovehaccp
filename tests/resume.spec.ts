@@ -44,6 +44,7 @@ test.describe('Resume Functionality', () => {
   test('Invalid draft ID shows error UI', async ({ page }) => {
     await page.goto('/builder?draft=00000000-0000-0000-0000-000000000000'); // Valid UUID format but fake
     await expect(page.getByText('Unable to Load Draft')).toBeVisible();
+    await expect(page.getByText('Loading your plan')).toBeHidden();
     await expect(page.getByText('Describe Your Product')).toBeHidden(); 
   });
 

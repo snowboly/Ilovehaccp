@@ -11,6 +11,7 @@ import { AlertTriangle, Info, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
+import { fetchWithTimeout } from '@/lib/builder/utils/withTimeoutFetch';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -41,6 +42,8 @@ export default function HACCPMasterFlow() {
   const hasInitialized = useRef(false);
   const stepSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const anonSnapshotKey = 'haccp_anon_snapshot';
+  const isValidUuid = (value: string) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 
   const persistAnonymousSnapshot = () => {
     try {
@@ -113,97 +116,14 @@ export default function HACCPMasterFlow() {
     }
   };
 
-  // 1. Initialize Draft on Mount (AUDITOR-COMPLIANT)
-  useEffect(() => {
-    const initSession = async () => {
-        if (hasInitialized.current) return;
-        hasInitialized.current = true;
-
-        const urlDraftId = searchParams.get('draft');
-        const urlId = searchParams.get('id');
-        const isNew = searchParams.get('new') === 'true';
-
-        // 1. Check Authentication State
-        const { data: { session } } = await supabase.auth.getSession();
-
-        // SCENARIO A: Explicit New Session (Reset everything)
-        if (isNew) {
-            console.log("Auditor Rule: Explicit 'New Plan' requested -> Zero State");
-            await handleStartNew(); // Reuse the cleanup logic
-            return;
-        }
-
-        // SCENARIO B: URL Parameter (Explicit Intent to specific document)
-        if (urlDraftId) {
-            console.log("Auditor Rule: Explicit draft URL load -> Bypassing resume logic");
-            await loadDraftFromId(urlDraftId);
-            return;
-        }
-
-        if (urlId) {
-            console.log("Auditor Rule: Explicit URL load -> Bypassing resume logic");
-            await loadFromId(urlId);
-            return;
-        }
-
-        // SCENARIO C: Anonymous User (Strict Zero State)
-        if (!session) {
-            console.log("Auditor Rule: Anonymous User -> Force Clean Slate (No Resume)");
-            // Clear any lingering local state to prevent "Shadow IT"
-            localStorage.removeItem('haccp_plan_id');
-            localStorage.removeItem('haccp_draft_id');
-            localStorage.removeItem('haccp_last_active');
-            setDraftId(null);
-            return;
-        }
-
-        // SCENARIO D: Authenticated User (Managed Continuity)
-        console.log("Auditor Rule: Authenticated User -> Checking Server-Side State");
-
-        const hydratedFromSnapshot = await hydrateAnonymousSnapshot(session);
-        if (hydratedFromSnapshot) {
-            return;
-        }
-        
-        // Query server for latest unfinished draft
-        // Note: We use the 'drafts' table. Assuming 'updated_at' exists.
-        // We filter for drafts that are NOT converted to plans yet? 
-        // Or just the latest one. Let's look for the latest.
-        try {
-            const { data: drafts, error } = await supabase
-                .from('drafts')
-                .select('id, updated_at, plan_data')
-                .eq('user_id', session.user.id)
-                .order('updated_at', { ascending: false })
-                .limit(1);
-
-            if (drafts && drafts.length > 0) {
-                const latest = drafts[0];
-                // Check if it's already a completed plan? 
-                // Usually drafts are WIP.
-                // We prompt to resume.
-                setResumeIds({ planId: null, draftId: latest.id });
-                setShowResumePrompt(true);
-            } else {
-                // No drafts found for user -> Start New
-                console.log("No server-side drafts found -> Starting New");
-                await createNewDraft(session);
-            }
-        } catch (err) {
-            console.error("Failed to check server drafts", err);
-            await createNewDraft(session); // Fallback to safe state
-        }
-    };
-    
-    initSession();
-  }, [searchParams]);
-
   // ... (Autosave Logic remains same) ...
 
   const loadFromId = async (id: string) => {
     // Try as PLAN first (Paid/Generated)
     try {
+        console.info(`[Builder] loadFromId:start`, { id });
         const { data: { session } } = await supabase.auth.getSession();
+        console.info(`[Builder] loadFromId:session`, { id, hasSession: Boolean(session) });
         const token = searchParams.get('token');
         
         if (!session && !token) {
@@ -217,7 +137,9 @@ export default function HACCPMasterFlow() {
             headers['Authorization'] = `Bearer ${session.access_token}`;
         }
 
-        const planRes = await fetch(`/api/plans/${id}${token ? `?token=${token}` : ''}`, {
+        const planUrl = `/api/plans/${id}${token ? `?token=${token}` : ''}`;
+        console.info(`[Builder] loadFromId:fetch`, { planUrl, id });
+        const planRes = await fetch(planUrl, {
             headers
         });
 
@@ -243,7 +165,14 @@ export default function HACCPMasterFlow() {
 
   const loadDraftFromId = async (id: string) => {
     try {
+        console.info(`[Builder] loadDraftFromId:start`, { id });
+        if (!isValidUuid(id)) {
+            console.info(`[Builder] loadDraftFromId:invalid`, { id });
+            setLoadError("We couldn’t find this draft. It may have been deleted or you don't have permission to view it.");
+            return;
+        }
         const { data: { session } } = await supabase.auth.getSession();
+        console.info(`[Builder] loadDraftFromId:session`, { id, hasSession: Boolean(session) });
         const token = searchParams.get('token');
 
         if (!session && !token) {
@@ -257,9 +186,10 @@ export default function HACCPMasterFlow() {
             headers['Authorization'] = `Bearer ${session.access_token}`;
         }
 
-        const draftRes = await fetch(`/api/drafts/${id}${token ? `?token=${token}` : ''}`, {
-            headers
-        });
+        const draftUrl = `/api/drafts/${id}${token ? `?token=${token}` : ''}`;
+        console.info(`[Builder] loadDraftFromId:fetch`, { draftUrl, id });
+        const { response: draftRes } = await fetchWithTimeout(draftUrl, { headers }, 12000);
+        console.info(`[Builder] loadDraftFromId:response`, { id, status: draftRes.status });
         
         if (!draftRes.ok) {
              throw new Error("Draft fetch failed");
@@ -268,6 +198,8 @@ export default function HACCPMasterFlow() {
         const data = await draftRes.json();
         
         if (data.draft) {
+            const answerCount = Object.keys(data.draft.answers || {}).length;
+            console.info(`[Builder] loadDraftFromId:loaded`, { id, currentStep: data.draft.current_step, answerCount });
             console.log(`[Builder] Draft Loaded: ${id}. Steps: ${data.draft.current_step}, Keys: ${Object.keys(data.draft.answers || {}).length}`);
             setDraftId(id);
             const fallbackAnswers = (data.draft.answers && Object.keys(data.draft.answers).length > 0)
@@ -323,6 +255,10 @@ export default function HACCPMasterFlow() {
         throw new Error("Draft data invalid");
     } catch (e) {
         console.error("Failed to restore draft from URL", e);
+        if (e instanceof Error && e.name === 'FetchTimeout') {
+            setLoadError("Draft load timed out. Please try again.");
+            return;
+        }
         setLoadError("We couldn’t find this draft. It may have been deleted or you don't have permission to view it.");
     }
   };
@@ -550,7 +486,11 @@ export default function HACCPMasterFlow() {
         setIsInitializing(true);
         setLoadError(null);
 
-        console.log(`[Builder] Initializing. Params: draft=${searchParams.get('draft')}, id=${searchParams.get('id')}`);
+        console.info(`[Builder] init:start`, {
+            draftId: searchParams.get('draft'),
+            planId: searchParams.get('id'),
+            isNew: searchParams.get('new') === 'true'
+        });
 
         try {
             const urlDraftId = searchParams.get('draft');
@@ -558,11 +498,14 @@ export default function HACCPMasterFlow() {
             const isNew = searchParams.get('new') === 'true';
 
             // 1. Check Authentication State
+            console.info(`[Builder] init:session:fetch`);
             const { data: { session } } = await supabase.auth.getSession();
+            console.info(`[Builder] init:session:done`, { hasSession: Boolean(session) });
 
             // SCENARIO A: Explicit New Session
             if (isNew) {
                 console.log("Auditor Rule: Explicit 'New Plan' requested -> Zero State");
+                console.info(`[Builder] init:start-new`);
                 await handleStartNew(); 
                 return;
             }
@@ -570,12 +513,14 @@ export default function HACCPMasterFlow() {
             // SCENARIO B: URL Parameter (Explicit Intent to specific document)
             if (urlDraftId) {
                 console.log(`Auditor Rule: Explicit draft URL load -> ${urlDraftId}`);
+                console.info(`[Builder] init:load-draft`, { draftId: urlDraftId });
                 await loadDraftFromId(urlDraftId);
                 return;
             }
 
             if (urlId) {
                 console.log(`Auditor Rule: Explicit URL load -> ${urlId}`);
+                console.info(`[Builder] init:load-plan-or-draft`, { id: urlId });
                 await loadFromId(urlId);
                 return;
             }
@@ -587,6 +532,7 @@ export default function HACCPMasterFlow() {
                 localStorage.removeItem('haccp_draft_id');
                 localStorage.removeItem('haccp_last_active');
                 setDraftId(null);
+                console.info(`[Builder] init:create-new:anonymous`);
                 await createNewDraft(); 
                 return;
             }
@@ -594,13 +540,16 @@ export default function HACCPMasterFlow() {
             // SCENARIO D: Authenticated User (Managed Continuity)
             console.log("Auditor Rule: Authenticated User -> Checking Server-Side State");
 
+            console.info(`[Builder] init:hydrate-snapshot`);
             const hydratedFromSnapshot = await hydrateAnonymousSnapshot(session);
             if (hydratedFromSnapshot) {
+                console.info(`[Builder] init:hydrated-snapshot`);
                 return;
             }
             
             // Query server for latest unfinished draft
             try {
+                console.info(`[Builder] init:fetch-latest-draft`);
                 const { data: drafts } = await supabase
                     .from('drafts')
                     .select('id, updated_at, plan_data')
@@ -613,18 +562,22 @@ export default function HACCPMasterFlow() {
                     const latest = drafts[0];
                     setResumeIds({ planId: null, draftId: latest.id });
                     setShowResumePrompt(true);
+                    console.info(`[Builder] init:resume-prompt`, { draftId: latest.id });
                 } else {
                     console.log("No server-side drafts found -> Starting New");
+                    console.info(`[Builder] init:create-new:authenticated`);
                     await createNewDraft(session);
                 }
             } catch (err) {
                 console.error("Failed to check server drafts", err);
+                console.info(`[Builder] init:create-new:fallback`);
                 await createNewDraft(session);
             }
         } catch (error) {
             console.error("Initialization error:", error);
             setLoadError("An unexpected error occurred while loading the builder.");
         } finally {
+            console.info(`[Builder] init:end`);
             setIsInitializing(false);
         }
     };
