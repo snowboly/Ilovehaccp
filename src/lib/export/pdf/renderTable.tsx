@@ -19,7 +19,7 @@ function formatCellValue(cell: unknown): string {
   if (typeof cell === "object") {
     try {
       str = JSON.stringify(cell, null, 2);
-    } catch (e) {
+    } catch {
       str = String(cell);
     }
   } else {
@@ -99,9 +99,9 @@ function TableRow({
 
 export const renderTable = (
   headers: string[],
-  rows: any[][],
+  rows: any[][], // eslint-disable-line @typescript-eslint/no-explicit-any
   colWidths: string[],
-  theme: any
+  theme: any // eslint-disable-line @typescript-eslint/no-explicit-any
 ) => {
   return (
     <View
