@@ -1468,8 +1468,52 @@ export default function HACCPMasterFlow() {
 
       }
 
+      if (showScopeConfirmation) {
+          return (
+              <div className="max-w-2xl mx-auto p-10 text-center space-y-8 mt-20 animate-in fade-in zoom-in duration-300">
+                  <div className="bg-amber-50 p-10 rounded-3xl border-2 border-amber-200 shadow-xl">
+                      <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                          <AlertTriangle className="w-8 h-8 text-amber-600" />
+                      </div>
+                      <h2 className="text-3xl font-black text-amber-900 mb-4">Grouped Scope Confirmation</h2>
+                      <p className="text-amber-800 font-bold text-lg mb-4">
+                          You are creating a plan for a "Group" or "Process Category".
+                      </p>
+                      <p className="text-amber-800 mb-8 leading-relaxed">
+                          This assumes that <strong>all products</strong> in this group share identical hazards, ingredients, and processing steps. 
+                          <br/><br/>
+                          If specific products have unique allergens or risks, they should have their own separate plans.
+                      </p>
+                      
+                      <div className="flex justify-center gap-4">
+                          <button 
+                              onClick={() => setShowScopeConfirmation(false)} 
+                              className="px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors"
+                          >
+                              Go Back
+                          </button>
+                          <button 
+                              onClick={() => {
+                                  setShowScopeConfirmation(false);
+                                  // Replicate the logic from handleSectionComplete('prp')
+                                  setTransition({ show: true, message: "Starting Hazard Analysis..." });
+                                  setTimeout(() => {
+                                      setTransition({ show: false, message: '' });
+                                      setCurrentSection('hazards');
+                                      setCurrentStepIndex(0);
+                                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                                  }, 1500);
+                              }} 
+                              className="bg-amber-600 text-white px-8 py-3 rounded-xl font-black hover:bg-amber-700 transition-all shadow-lg shadow-amber-500/20"
+                          >
+                              I Understand, Proceed
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          );
+      }
       
-
       if (showResumePrompt) {
 
   
