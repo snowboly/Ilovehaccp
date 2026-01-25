@@ -2,6 +2,18 @@
 
 ## Implementation Status
 
+- v3.35 Builder UX & PDF Stability (Jan 25, 2026):
+- **PDF Engine Overhaul:**
+    - **Reliability:** Enforced Node.js runtime and implemented robust buffer normalization to eliminate 500 errors during export.
+    - **Visuals:** Fixed "random spaces" in text by replacing remote Google Fonts with locally registered **Roboto** TTF files (served from `/public/fonts`).
+    - **Layout:** Prevented table collisions by enforcing strict column widths and sanitizing cell content (truncating long strings, wrapping IDs).
+- **Checkout UX:**
+    - **Popup Safety:** Refactored Stripe Checkout to open in a new tab synchronously (`window.open` before fetch) to bypass browser popup blockers.
+    - **Feedback:** Added immediate tactile feedback (pulse animation) and "Opening..." spinners to all export/checkout buttons.
+- **Builder Fixes:**
+    - **Validation:** Fixed "Next" button silence by moving error scrolling to a `useEffect` hook to handle DOM updates reliably.
+    - **PRP Step:** Resolved a "stuck" state by adding the missing **Grouped Scope Confirmation** modal to the render loop.
+
 - v3.31 Admin Auth Hydration Fix (Jan 20, 2026):
 - **Problem:** `/admin` was briefly loading then redirecting to `/login` due to a Supabase auth hydration race condition (getUser() running before session restoration).
 - **Fix:** Updated `src/components/admin/AdminGuard.tsx` to:
