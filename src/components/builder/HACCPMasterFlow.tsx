@@ -7,7 +7,7 @@ import HACCPQuestionnaire from './HACCPQuestionnaire';
 import { getQuestions } from '@/data/haccp/loader';
 import { useLanguage } from '@/lib/i18n';
 
-import { AlertTriangle, Info, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, Info, ShieldAlert, CheckCircle2, Loader2 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
@@ -44,6 +44,26 @@ export default function HACCPMasterFlow() {
   const anonSnapshotKey = 'haccp_anon_snapshot';
   const isValidUuid = (value: string) =>
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+
+  // UX State for Review Actions
+  const [busyAction, setBusyAction] = useState<string | null>(null);
+  const [pulseAction, setPulseAction] = useState<string | null>(null);
+
+  const triggerPulse = (action: string) => {
+      setPulseAction(action);
+      setTimeout(() => setPulseAction(null), 400);
+  };
+
+  const runWithBusy = async (action: string, fn: () => Promise<void>) => {
+      if (busyAction) return;
+      triggerPulse(action);
+      setBusyAction(action);
+      try {
+          await fn();
+      } finally {
+          setTimeout(() => setBusyAction(null), 300);
+      }
+  };
 
   const persistAnonymousSnapshot = () => {
     try {
@@ -947,83 +967,91 @@ export default function HACCPMasterFlow() {
     }
   };
 
-  const handleDownloadPdf = async () => {
-      const exportId = generatedPlan?.id || draftId;
-      if (!exportId) return;
-      try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session) return;
+  const handleDownloadPdf = async (isPaidContext = false) => {
+      const actionKey = isPaidContext ? 'pdf_paid' : 'pdf_free';
+      if (busyAction) return;
 
-          const fetchPdf = async (id: string) => {
-              const response = await fetch(`/api/download-pdf?planId=${id}&lang=${language}`, {
-                  headers: { Authorization: `Bearer ${session.access_token}` }
-              });
-              return response;
-          };
+      await runWithBusy(actionKey, async () => {
+          const exportId = generatedPlan?.id || draftId;
+          if (!exportId) return;
+          try {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session) return;
 
-          let res = await fetchPdf(exportId);
-          if (!res.ok && draftId && draftId !== exportId) {
-              const err = await res.json().catch(() => null);
-              if (err?.error === 'Plan not found') {
-                  res = await fetchPdf(draftId);
+              const fetchPdf = async (id: string) => {
+                  const response = await fetch(`/api/download-pdf?planId=${id}&lang=${language}`, {
+                      headers: { Authorization: `Bearer ${session.access_token}` }
+                  });
+                  return response;
+              };
+
+              let res = await fetchPdf(exportId);
+              if (!res.ok && draftId && draftId !== exportId) {
+                  const err = await res.json().catch(() => null);
+                  if (err?.error === 'Plan not found') {
+                      res = await fetchPdf(draftId);
+                  }
               }
-          }
 
-          if (!res.ok) {
-              const err = await res.json().catch(() => null);
-              alert(err?.error || 'Download failed');
-              return;
+              if (!res.ok) {
+                  const err = await res.json().catch(() => null);
+                  alert(err?.error || 'Download failed');
+                  return;
+              }
+              
+              const blob = await res.blob();
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.pdf`;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              window.URL.revokeObjectURL(url);
+          } catch (e) {
+              console.error(e);
+              alert('Failed to download PDF.');
           }
-          
-          const blob = await res.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.pdf`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          window.URL.revokeObjectURL(url);
-      } catch (e) {
-          console.error(e);
-          alert('Failed to download PDF.');
-      }
+      });
   };
 
   const handleDownloadWord = async () => {
-      const exportId = generatedPlan?.id;
-      if (!exportId) {
-          alert('Please save your plan before downloading the Word document.');
-          return;
-      }
-
-      try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session) return;
-
-          const res = await fetch(`/api/download-word?planId=${exportId}&lang=${language}`, {
-              headers: { Authorization: `Bearer ${session.access_token}` }
-          });
-
-          if (!res.ok) {
-              const err = await res.json().catch(() => null);
-              alert(err?.error || 'Download failed');
+      if (busyAction) return;
+      await runWithBusy('word', async () => {
+          const exportId = generatedPlan?.id;
+          if (!exportId) {
+              alert('Please save your plan before downloading the Word document.');
               return;
           }
 
-          const blob = await res.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.docx`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          window.URL.revokeObjectURL(url);
-      } catch (e) {
-          console.error(e);
-          alert('Failed to download Word document.');
-      }
+          try {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session) return;
+
+              const res = await fetch(`/api/download-word?planId=${exportId}&lang=${language}`, {
+                  headers: { Authorization: `Bearer ${session.access_token}` }
+              });
+
+              if (!res.ok) {
+                  const err = await res.json().catch(() => null);
+                  alert(err?.error || 'Download failed');
+                  return;
+              }
+
+              const blob = await res.blob();
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.docx`;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              window.URL.revokeObjectURL(url);
+          } catch (e) {
+              console.error(e);
+              alert('Failed to download Word document.');
+          }
+      });
   };
 
   const handleRunValidation = async () => {
@@ -1197,11 +1225,16 @@ export default function HACCPMasterFlow() {
       }
   }, [currentSection]);
 
-  const handleCheckout = async (tier: 'professional' | 'expert') => {
+  const openCheckoutInNewTab = async (tier: 'professional' | 'expert') => {
+      const actionKey = tier === 'professional' ? 'checkout_professional' : 'checkout_expert';
+      if (busyAction) return;
+      
+      triggerPulse(actionKey);
+      setBusyAction(actionKey);
+
       try {
           const { data: { session } } = await supabase.auth.getSession();
           if (!session) {
-              // Redirect to login with return URL
               const nextUrl = encodeURIComponent(
                   draftId ? `/builder?draft=${draftId}` : generatedPlan?.id ? `/builder?id=${generatedPlan.id}` : '/builder'
               );
@@ -1211,8 +1244,19 @@ export default function HACCPMasterFlow() {
 
           if (!generatedPlan?.id) {
               alert("Please wait for the plan to finish saving...");
+              setBusyAction(null);
               return;
           }
+
+          // Open Tab PRE-FETCH (Popup Blocker Bypass)
+          const w = window.open("about:blank", "_blank", "noopener,noreferrer");
+          if (!w) {
+              alert("Please allow popups for this site to open the checkout.");
+              setBusyAction(null);
+              return;
+          }
+          
+          w.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;">Opening Secure Checkout...</body></html>');
 
           const res = await fetch('/api/create-checkout', {
               method: 'POST',
@@ -1229,13 +1273,16 @@ export default function HACCPMasterFlow() {
 
           const data = await res.json();
           if (data.url) {
-              window.location.href = data.url;
+              w.location.href = data.url;
           } else {
+              w.close();
               alert(data.error || "Failed to start checkout");
           }
       } catch (e) {
           console.error(e);
           alert("System error starting checkout.");
+      } finally {
+          setTimeout(() => setBusyAction(null), 500);
       }
   };
 
@@ -1953,10 +2000,11 @@ export default function HACCPMasterFlow() {
                                 </div>
                                 <div className="mt-6 space-y-3">
                                     <button 
-                                        onClick={handleDownloadPdf}
-                                        className="bg-white text-slate-900 border border-slate-300 px-4 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all w-full"
+                                        onClick={() => handleDownloadPdf(false)}
+                                        disabled={!!busyAction}
+                                        className={`bg-white text-slate-900 border border-slate-300 px-4 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all w-full flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'pdf_free' ? 'animate-pulse' : ''}`}
                                     >
-                                        Download Watermarked PDF
+                                        {busyAction === 'pdf_free' ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing PDF...</> : 'Download Watermarked PDF'}
                                     </button>
                                     <p className="text-[11px] text-slate-500">
                                         Drafts are for internal review only and are not intended for operational implementation.
@@ -1989,34 +2037,34 @@ export default function HACCPMasterFlow() {
                                         <div className="grid sm:grid-cols-2 gap-3">
                                             <button 
                                                 onClick={handleDownloadWord}
-                                                disabled={exportBlocked}
-                                                className="bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled={exportBlocked || !!busyAction}
+                                                className={`bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'word' ? 'animate-pulse' : ''}`}
                                             >
-                                                Download Word
+                                                {busyAction === 'word' ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Word...</> : 'Download Word'}
                                             </button>
                                             <button 
-                                                onClick={handleDownloadPdf}
-                                                disabled={exportBlocked}
-                                                className="bg-white text-emerald-900 px-4 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-all border border-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                onClick={() => handleDownloadPdf(true)}
+                                                disabled={exportBlocked || !!busyAction}
+                                                className={`bg-white text-emerald-900 px-4 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-all border border-emerald-200 flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'pdf_paid' ? 'animate-pulse' : ''}`}
                                             >
-                                                Download PDF
+                                                {busyAction === 'pdf_paid' ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing PDF...</> : 'Download PDF'}
                                             </button>
                                         </div>
                                     ) : (
                                         <div className="grid sm:grid-cols-2 gap-3">
                                             <button 
-                                                onClick={() => handleCheckout('professional')}
-                                                disabled={isSavingPlan}
-                                                className="bg-slate-900 text-white px-4 py-3 rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                onClick={() => openCheckoutInNewTab('professional')}
+                                                disabled={isSavingPlan || !!busyAction}
+                                                className={`bg-slate-900 text-white px-4 py-3 rounded-xl font-bold hover:bg-black transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_professional' ? 'animate-pulse' : ''}`}
                                             >
-                                                {isSavingPlan ? 'Saving...' : 'Self-Service Export (€39)'}
+                                                {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening checkout...</> : (isSavingPlan ? 'Saving...' : 'Self-Service Export (€39)')}
                                             </button>
                                             <button 
-                                                onClick={() => handleCheckout('expert')}
-                                                disabled={isSavingPlan}
-                                                className="bg-blue-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                onClick={() => openCheckoutInNewTab('expert')}
+                                                disabled={isSavingPlan || !!busyAction}
+                                                className={`bg-blue-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_expert' ? 'animate-pulse' : ''}`}
                                             >
-                                                {isSavingPlan ? 'Saving...' : 'Professional Review (€79)'}
+                                                {busyAction === 'checkout_expert' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening checkout...</> : (isSavingPlan ? 'Saving...' : 'Professional Review (€79)')}
                                             </button>
                                         </div>
                                     )}
@@ -2182,18 +2230,18 @@ export default function HACCPMasterFlow() {
                                     </div>
                                     <div className="flex flex-col sm:flex-row gap-2">
                                         <button
-                                            onClick={() => handleCheckout('professional')}
-                                            disabled={isSavingPlan}
-                                            className="bg-white text-blue-800 border border-blue-200 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onClick={() => openCheckoutInNewTab('professional')}
+                                            disabled={isSavingPlan || !!busyAction}
+                                            className={`bg-white text-blue-800 border border-blue-200 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_professional' ? 'animate-pulse' : ''}`}
                                         >
-                                            {isSavingPlan ? 'Saving...' : 'Export Draft'}
+                                            {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : 'Export Draft')}
                                         </button>
                                         <button
-                                            onClick={() => handleCheckout('expert')}
-                                            disabled={isSavingPlan}
-                                            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onClick={() => openCheckoutInNewTab('expert')}
+                                            disabled={isSavingPlan || !!busyAction}
+                                            className={`bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_expert' ? 'animate-pulse' : ''}`}
                                         >
-                                            {isSavingPlan ? 'Saving...' : 'Request Professional Review'}
+                                            {busyAction === 'checkout_expert' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : 'Request Professional Review')}
                                         </button>
                                     </div>
                                 </div>
