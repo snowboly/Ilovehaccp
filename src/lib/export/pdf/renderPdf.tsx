@@ -1,11 +1,20 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
 import { renderSectionHeader } from "./renderSectionHeader";
 import { renderTable } from "./renderTable";
 import { PdfHeader } from "../components/PdfHeader";
 import { PdfFooter } from "../components/PdfFooter";
 import { HACCP_THEME as T } from "../theme";
 import { ExportBlock, ExportDoc, resolveExportText } from "../exportDoc";
+
+// Register Font (Fixes "random spaces" issue)
+Font.register({
+  family: "Roboto",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.ttf", fontWeight: "normal" },
+    { src: "https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4.ttf", fontWeight: "bold" }
+  ]
+});
 
 const Watermark = ({ isPaid }: { isPaid: boolean }) => {
   if (isPaid) return null;
