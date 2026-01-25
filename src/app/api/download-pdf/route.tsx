@@ -174,7 +174,7 @@ export async function GET(req: Request) {
     // FIX: Robust Buffer handling for Node.js
     const finalBuffer = Buffer.isBuffer(pdfBuffer)
       ? pdfBuffer
-      : Buffer.from(pdfBuffer instanceof ArrayBuffer ? new Uint8Array(pdfBuffer) : pdfBuffer as any);
+      : Buffer.from((pdfBuffer as any) instanceof ArrayBuffer ? new Uint8Array(pdfBuffer as any) : pdfBuffer as any);
 
     return new NextResponse(finalBuffer, {
         headers: {
