@@ -6,17 +6,17 @@ import { PdfHeader } from "../components/PdfHeader";
 import { PdfFooter } from "../components/PdfFooter";
 import { HACCP_THEME as T } from "../theme";
 import { ExportBlock, ExportDoc, resolveExportText } from "../exportDoc";
-
-// IMPORT LOCAL FONTS
-import fontRegular from "./fonts/Roboto-Regular.ttf";
-import fontBold from "./fonts/Roboto-Bold.ttf";
+import path from "path";
 
 // REGISTER LOCAL FONTS
+// We use absolute paths for Node.js environment stability (Vercel/Next.js API routes)
+const fontsDir = path.join(process.cwd(), "public/fonts");
+
 Font.register({
   family: "Roboto",
   fonts: [
-    { src: fontRegular, fontWeight: "normal" },
-    { src: fontBold, fontWeight: "bold" }
+    { src: path.join(fontsDir, "Roboto-Regular.ttf"), fontWeight: "normal" },
+    { src: path.join(fontsDir, "Roboto-Bold.ttf"), fontWeight: "bold" }
   ]
 });
 
