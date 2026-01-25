@@ -2277,18 +2277,18 @@ export default function HACCPMasterFlow() {
                                     </div>
                                     <div className="flex flex-col sm:flex-row gap-2">
                                         <button
-                                            onClick={() => handleCheckout('professional')}
-                                            disabled={isSavingPlan}
-                                            className="bg-white text-blue-800 border border-blue-200 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onClick={() => openCheckoutInNewTab('professional')}
+                                            disabled={isSavingPlan || !!busyAction}
+                                            className={`bg-white text-blue-800 border border-blue-200 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_professional' ? 'animate-pulse' : ''}`}
                                         >
-                                            {isSavingPlan ? 'Saving...' : 'Export Draft'}
+                                            {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : 'Export Draft')}
                                         </button>
                                         <button
-                                            onClick={() => handleCheckout('expert')}
-                                            disabled={isSavingPlan}
-                                            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onClick={() => openCheckoutInNewTab('expert')}
+                                            disabled={isSavingPlan || !!busyAction}
+                                            className={`bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_expert' ? 'animate-pulse' : ''}`}
                                         >
-                                            {isSavingPlan ? 'Saving...' : 'Request Professional Review'}
+                                            {busyAction === 'checkout_expert' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : 'Request Professional Review')}
                                         </button>
                                     </div>
                                 </div>
