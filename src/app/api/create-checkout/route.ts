@@ -8,9 +8,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
 
 export async function POST(req: Request) {
   try {
-    if (!stripe) {
-        throw new Error('Stripe API key is not configured');
-    }
+    if (!stripe) throw new Error('Stripe API key is not configured');
 
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -30,6 +28,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
     }
 
+    // Validate Plan Ownership
     const { data: plan, error: planError } = await supabaseService
       .from('plans')
       .select('id, user_id')
@@ -44,22 +43,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const prices: Record<string, { amount: number, name: string, desc: string }> = {
+    // --- FEATURE & PRICING DEFINITION ---
+    // Source of truth for features. Prices updated to new requirements.
+    const prices: Record<string, { amount: number, name: string, desc: string, features: { export: boolean, review: boolean } }> = {
       professional: { 
-          amount: 3900, 
+          amount: 3900, // €39
           name: `Export Unlock: ${businessName}`,
-          desc: "Includes Word & PDF export. Self-service document only. Regulatory approval not included."
+          desc: "Includes Word & PDF export. Self-service document only.",
+          features: { export: true, review: false }
       },
       expert: { 
-          amount: 7900, 
+          amount: 9900, // €99 (Updated from €79)
           name: `Expert Review: ${businessName}`,
-          desc: "Advisory review by food safety professional. Does not replace official audits or approvals."
+          desc: "Professional review & feedback + Export Unlock.",
+          features: { export: true, review: true } // Review implies Export
       },
     };
 
     if (!prices[tier]) {
       throw new Error('Invalid tier selected');
     }
+
+    const selectedPrice = prices[tier];
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -69,10 +74,13 @@ export async function POST(req: Request) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: prices[tier].name,
-              description: prices[tier].desc,
+              name: selectedPrice.name,
+              description: selectedPrice.desc,
+              metadata: {
+                  tier_debug: tier // For debugging only, NOT for logic
+              }
             },
-            unit_amount: prices[tier].amount,
+            unit_amount: selectedPrice.amount,
           },
           quantity: 1,
         },
@@ -83,18 +91,20 @@ export async function POST(req: Request) {
       },
       custom_text: {
         submit: {
-            message: "One-time payment. No subscription. No automatic renewal."
-        },
-        terms_of_service_acceptance: {
-            message: "This service provides document preparation and review support only. It does not constitute certification, approval, or regulatory authorization."
+            message: "One-time payment. No subscription."
         }
       },
       success_url: `${new URL(req.url).origin}/dashboard?session_id={CHECKOUT_SESSION_ID}&plan_id=${planId}`,
       cancel_url: `${new URL(req.url).origin}/builder?id=${planId}`,
       allow_promotion_codes: true,
       metadata: {
+        // --- CRITICAL: FEATURE FLAGS ---
+        // These boolean-strings are the SOURCE OF TRUTH for the webhook.
+        // We do NOT rely on tier names or prices in the webhook.
+        features_export: selectedPrice.features.export ? 'true' : 'false',
+        features_review: selectedPrice.features.review ? 'true' : 'false',
+        
         planId,
-        tier,
         userId: user.id,
         businessName
       }

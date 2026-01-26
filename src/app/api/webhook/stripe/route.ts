@@ -12,12 +12,10 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const appUrl = process.env.APP_URL!;
 
 export async function POST(req: Request) {
-  if (!stripe) {
-      return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
-  }
+  if (!stripe) return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
+  
   const body = await req.text();
   const sig = req.headers.get('stripe-signature') || '';
-
   let event: Stripe.Event;
 
   try {
@@ -27,46 +25,72 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
-  // Handle the event
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
-    const planId = session.metadata?.planId;
+    
+    // 1. Strict Payment Status Check
+    if (session.payment_status !== 'paid') {
+        console.log(`[Webhook] Session ${session.id} not paid yet. Ignoring.`);
+        return NextResponse.json({ received: true });
+    }
 
-    if (planId) {
-      const tier = session.metadata?.tier; // professional or expert
+    const { planId, userId, features_export, features_review, businessName } = session.metadata || {};
 
-      // 1. Idempotency Check
-      const { data: existingPlan, error: fetchError } = await supabaseService
+    if (planId && userId) {
+      console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}`);
+
+      // 2. Fetch current state & Idempotency Check
+      const { data: currentPlan, error: fetchError } = await supabaseService
           .from('plans')
-          .select('payment_status, user_id, business_name, product_name')
+          .select('export_paid, review_paid, review_requested, checkout_session_id')
           .eq('id', planId)
+          .eq('user_id', userId) // Security check
           .single();
 
-      if (fetchError) {
-          console.error("Failed to fetch plan for idempotency check:", fetchError);
-          // We proceed cautiously or fail? If DB is down, we fail.
-          return NextResponse.json({ error: 'Database error' }, { status: 500 });
+      if (fetchError || !currentPlan) {
+          console.error("Plan not found or DB error:", fetchError);
+          return NextResponse.json({ error: 'Plan lookup failed' }, { status: 500 });
       }
 
-      if (existingPlan?.payment_status === 'paid') {
-          console.log(`[Idempotency] Skipping duplicate webhook for plan ${planId}`);
+      // STRICT IDEMPOTENCY: Check if this specific session was already processed
+      if (currentPlan.checkout_session_id === session.id) {
+          console.log(`[Webhook] Session ${session.id} already processed. Skipping.`);
           return NextResponse.json({ received: true });
       }
 
-      console.log(`Processing payment for Plan: ${planId} (${tier})`);
-      
+      // 3. Prepare Upgrade-Only Update
       const updateData: any = { 
-          payment_status: 'paid',
-          status: 'completed',
-          tier: tier
+          payment_status: 'paid', 
+          updated_at: new Date().toISOString(),
+          checkout_session_id: session.id // Lock this transaction
       };
+      
+      let shouldSendAdminEmail = false;
+      let shouldSendUserEmail = false;
 
-      // If Expert tier, trigger the review workflow
-      if (tier === 'expert') {
-          updateData.review_requested = true;
-          updateData.review_status = 'pending';
+      // Handle Export Feature
+      if (features_export === 'true') {
+          updateData.export_paid = true;
+          // If it wasn't paid before, we might want to send user confirmation
+          if (!currentPlan.export_paid) shouldSendUserEmail = true;
       }
 
+      // Handle Review Feature
+      if (features_review === 'true') {
+          updateData.review_paid = true;
+          updateData.review_requested = true;
+          updateData.review_status = 'pending'; 
+          
+          if (!currentPlan.review_paid) {
+              shouldSendAdminEmail = true;
+              shouldSendUserEmail = true; 
+          } else {
+              // Re-purchase logic (redundant but safe)
+              shouldSendAdminEmail = true;
+          }
+      }
+
+      // 4. Execute Update
       const { error } = await supabaseService
         .from('plans')
         .update(updateData)
@@ -77,36 +101,29 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
       }
 
-      if (tier === 'expert') {
+      // 5. Notifications
+      if (shouldSendAdminEmail) {
         const adminInbox = process.env.ADMIN_REVIEW_INBOX!;
         await sendEmail({
           to: adminInbox,
           subject: 'Review requested (iLoveHACCP)',
           html: adminReviewRequestedEmailHtml({ appUrl, planId }),
-        });
+        }).catch(e => console.error("Failed to send admin email", e));
       }
 
-      // Trigger Email Notification (Awaited to ensure completion)
+      // Send User Confirmation
       const customerEmail = session.customer_details?.email || session.customer_email;
-      if (customerEmail) {
-          try {
-              const emailRes = await fetch(`${new URL(req.url).origin}/api/send-payment-confirmation`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                      email: customerEmail,
-                      businessName: session.metadata?.businessName || 'Your Business',
-                      planId: planId,
-                      amount: session.amount_total ? session.amount_total / 100 : 79
-                  })
-              });
-              if (!emailRes.ok) {
-                  const errorText = await emailRes.text();
-                  console.error(`Email API failed with status ${emailRes.status}: ${errorText}`);
-              }
-          } catch (err) {
-              console.error("Failed to trigger email fetch:", err);
-          }
+      if (customerEmail && shouldSendUserEmail) {
+          fetch(`${new URL(req.url).origin}/api/send-payment-confirmation`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  email: customerEmail,
+                  businessName: businessName || 'Your Business',
+                  planId: planId,
+                  amount: session.amount_total ? session.amount_total / 100 : 0
+              })
+          }).catch(err => console.error("Failed to trigger confirmation email:", err));
       }
     }
   }
