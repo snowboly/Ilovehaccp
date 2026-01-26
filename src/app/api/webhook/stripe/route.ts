@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       // 2. Fetch current state
       const { data: currentPlan, error: fetchError } = await supabaseService
           .from('plans')
-          .select('export_paid, review_paid, review_requested')
+          .select('export_paid, review_paid, review_requested, checkout_session_id')
           .eq('id', planId)
           .eq('user_id', userId) // Security check
           .single();
@@ -81,13 +81,21 @@ export async function POST(req: Request) {
           checkout_session_id: session.id
       };
       
-      let shouldSendAdminEmail = false;
-      let shouldSendUserEmail = false;
+      const isNewPaidSession = currentPlan.checkout_session_id !== session.id;
+      
+      console.log(`[Webhook] Session Check:`, { 
+          planId, 
+          sessionId: session.id, 
+          prevSessionId: currentPlan.checkout_session_id, 
+          isNewSession: isNewPaidSession 
+      });
+
+      let shouldSendUserEmail = isNewPaidSession;
+      let shouldSendAdminEmail = isNewPaidSession && features_review === 'true';
 
       // Handle Export Feature
       if (features_export === 'true') {
           updateData.export_paid = true;
-          if (!currentPlan.export_paid) shouldSendUserEmail = true;
       }
 
       // Handle Review Feature (Implies Export)
@@ -96,11 +104,6 @@ export async function POST(req: Request) {
           updateData.export_paid = true; // BUSINESS RULE: Review unlocks Export
           updateData.review_requested = true;
           updateData.review_status = 'pending'; 
-          
-          if (!currentPlan.review_paid) {
-              shouldSendAdminEmail = true;
-              shouldSendUserEmail = true; 
-          }
       }
 
       // 4. Execute Update WITH Ownership Guard
