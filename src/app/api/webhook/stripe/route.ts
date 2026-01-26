@@ -82,6 +82,14 @@ export async function POST(req: Request) {
       };
       
       const isNewPaidSession = currentPlan.checkout_session_id !== session.id;
+      
+      console.log(`[Webhook] Session Check:`, { 
+          planId, 
+          sessionId: session.id, 
+          prevSessionId: currentPlan.checkout_session_id, 
+          isNewSession: isNewPaidSession 
+      });
+
       let shouldSendUserEmail = isNewPaidSession;
       let shouldSendAdminEmail = isNewPaidSession && features_review === 'true';
 
