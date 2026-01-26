@@ -73,33 +73,36 @@ export const translations = {
         free: {
           title: "Free Draft",
           price: "€0",
-          desc: "Build and preview your plan logic for free.",
+          desc: "Build and preview your HACCP plan draft.",
           f1: "Full HACCP Builder",
-          f2: "Draft Autosave",
-          f3: "Review plan completeness",
-          f4: "Download Draft Preview",
-          cta: "Start Building"
+          f2: "Draft autosave",
+          f3: "Plan completeness checklist",
+          f4: "Watermarked preview download",
+          cta: "Start building",
+          note: "Draft only — not an audit or approval."
         },
         starter: {
           badge: "Most Popular",
           title: "Document Export",
           price: "€39",
-          desc: "Export your generated HACCP documentation as a clean PDF or Word document. No watermark. Instant download.",
-          f1: "Unlocks Word & PDF",
-          f2: "Removes Draft Watermark",
-          f3: "Your generated HACCP documentation",
-          f4: "Instant Download",
-          cta: "Download Unwatermarked Document"
+          desc: "Get clean PDF + Word files (no watermark).",
+          f1: "PDF + Word export",
+          f2: "Removes watermark",
+          f3: "Ready to print and share",
+          f4: "Instant download",
+          cta: "Download PDF & Word",
+          note: "Document export only — no review, audit, verification, or approval."
         },
         review: {
           title: "Plan Review & Feedback",
           price: "€79",
-          desc: "A human review of your HACCP plan draft, focused on clarity, structure, and common documentation issues.",
-          f1: "Completeness check",
-          f2: "Gap identification",
-          f3: "Written feedback",
-          f4: "Written feedback on critical limits",
-          cta: "Request plan review"
+          desc: "Human feedback on your HACCP plan draft.",
+          f1: "Completeness & consistency check",
+          f2: "Gaps and unclear sections flagged",
+          f3: "Written feedback & suggested edits",
+          f4: "Notes on critical limits (where relevant)",
+          cta: "Request review",
+          note: "Advisory feedback only. Not an official audit, certification, regulatory approval, or guarantee of inspection outcome. Responsibility remains with the food business operator."
         },
       },
       finalCta: {

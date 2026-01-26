@@ -228,6 +228,9 @@ export default function Home() {
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-slate-900 font-black text-center transition-all hover:bg-slate-100 shadow-xl">
                   {t('landing.pricing.free.cta')}
                 </Link>
+                <p className="text-center text-xs text-slate-500 mt-4 px-2 leading-tight">
+                  {t('landing.pricing.free.note')}
+                </p>
               </div>
 
               {/* Starter Review */}
@@ -260,8 +263,8 @@ export default function Home() {
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-black text-center transition-all shadow-xl">
                   {t('landing.pricing.starter.cta')}
                 </Link>
-                <p className="text-center text-xs text-blue-100 mt-4 px-2 leading-tight">
-                  Document export only. No review, audit, verification, or approval is performed.
+                <p className="text-center text-xs text-blue-100/70 mt-4 px-2 leading-tight">
+                  {t('landing.pricing.starter.note')}
                 </p>
               </div>
 
@@ -277,7 +280,7 @@ export default function Home() {
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-center gap-3 text-sm text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500" /> <strong>{t('landing.pricing.review.f1')}</strong>
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" /> {t('landing.pricing.review.f1')}
                   </li>
                   <li className="flex items-center gap-3 text-sm text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500" /> {t('landing.pricing.review.f2')}
@@ -292,8 +295,8 @@ export default function Home() {
                 <Link href="/contact?subject=Review" className="w-full py-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-center transition-all border border-slate-700">
                   {t('landing.pricing.review.cta')}
                 </Link>
-                <p className="text-center text-xs text-slate-500 mt-4 px-2 leading-tight">
-                  Important: This service provides advisory feedback only. It is not an official audit, certification, regulatory approval, or guarantee of inspection outcome. Responsibility for compliance remains with the food business operator.
+                <p className="text-center text-xs text-slate-500/70 mt-4 px-2 leading-tight">
+                  {t('landing.pricing.review.note')}
                 </p>
               </div>
             </div>
