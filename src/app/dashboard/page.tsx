@@ -26,7 +26,7 @@ interface Plan {
   name?: string | null;
   status: string;
   payment_status: string;
-  tier?: 'professional' | 'expert';
+  tier?: string | null;
   hazard_analysis: any;
   full_plan: any;
   intended_use: string;
@@ -330,9 +330,12 @@ function DashboardContent() {
         {showSuccess && (
           <div className="mb-6 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-lg flex items-center justify-between">
             <span className="text-sm font-medium">
-              {plans.find(p => p.id === searchParams.get('plan_id'))?.tier === 'expert'
-                ? 'Review requested successfully.'
-                : 'Export unlocked successfully.'}
+              {(() => {
+                const plan = plans.find(p => p.id === searchParams.get('plan_id'));
+                if (plan?.review_paid) return 'Review requested successfully.';
+                if (plan?.export_paid) return 'Export unlocked successfully.';
+                return 'Payment processed successfully.';
+              })()}
             </span>
             <button onClick={() => setShowSuccess(false)} className="text-emerald-600">
               <XCircle className="w-5 h-5" />
@@ -474,15 +477,34 @@ function DashboardContent() {
                              </button>
                           )}
 
-                          {plan.review_paid ? (
-                             <span className="text-purple-700 bg-purple-50 px-2 py-1 rounded text-xs font-bold border border-purple-100">
-                               IN REVIEW
-                             </span>
-                          ) : (
-                             <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
-                               Request Review
-                             </button>
-                          )}
+                          {(() => {
+                            if (plan.review_status === 'completed') {
+                              return (
+                                <span className="text-emerald-700 bg-emerald-50 px-2 py-1 rounded text-xs font-bold border border-emerald-100">
+                                  REVIEWED
+                                </span>
+                              );
+                            }
+                            if (plan.review_requested || plan.review_status === 'pending') {
+                              return (
+                                <span className="text-purple-700 bg-purple-50 px-2 py-1 rounded text-xs font-bold border border-purple-100">
+                                  IN REVIEW
+                                </span>
+                              );
+                            }
+                            if (plan.review_paid) {
+                              return (
+                                <span className="text-emerald-700 bg-emerald-50 px-2 py-1 rounded text-xs font-bold border border-emerald-100">
+                                  PAID
+                                </span>
+                              );
+                            }
+                            return (
+                              <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
+                                Request Review
+                              </button>
+                            );
+                          })()}
                           
                           <button onClick={() => handleDeletePlan(plan.id)} className="text-red-600 hover:underline text-sm">
                             Delete
