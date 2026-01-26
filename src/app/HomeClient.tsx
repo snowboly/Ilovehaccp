@@ -290,7 +290,7 @@ export default function Home() {
                   {t('landing.pricing.review.cta')}
                 </Link>
                 <p className="text-center text-xs text-slate-500 mt-4 px-2 leading-tight">
-                  Reviews are advisory and do not replace official audits or approvals.
+                  Important: This service provides advisory feedback only. It is not an official audit, certification, regulatory approval, or guarantee of inspection outcome. Responsibility for compliance remains with the food business operator.
                 </p>
               </div>
             </div>
