@@ -40,6 +40,8 @@ interface Plan {
   review_notes?: string | null;
   reviewed_at?: string;
   is_locked?: boolean;
+  export_paid?: boolean;
+  review_paid?: boolean;
 }
 
 function DashboardContent() {
@@ -461,14 +463,28 @@ function DashboardContent() {
                         <td className="px-4 py-2">
                           {reviewStatus}
                         </td>
-                        <td className="px-4 py-2 text-right space-x-3">
-                          <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline">
-                            Upgrade Pro
-                          </button>
-                          <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline">
-                            Request Review
-                          </button>
-                          <button onClick={() => handleDeletePlan(plan.id)} className="text-red-600 hover:underline">
+                        <td className="px-4 py-2 text-right flex justify-end items-center gap-2">
+                          {plan.export_paid ? (
+                             <span className="text-emerald-700 bg-emerald-50 px-2 py-1 rounded text-xs font-bold border border-emerald-100">
+                               PAID
+                             </span>
+                          ) : (
+                             <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline text-sm font-medium">
+                               Upgrade Pro
+                             </button>
+                          )}
+
+                          {plan.review_paid ? (
+                             <span className="text-purple-700 bg-purple-50 px-2 py-1 rounded text-xs font-bold border border-purple-100">
+                               IN REVIEW
+                             </span>
+                          ) : (
+                             <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
+                               Request Review
+                             </button>
+                          )}
+                          
+                          <button onClick={() => handleDeletePlan(plan.id)} className="text-red-600 hover:underline text-sm">
                             Delete
                           </button>
                         </td>
