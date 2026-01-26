@@ -76,7 +76,7 @@ export const translations = {
           desc: "Build and preview your plan logic for free.",
           f1: "Full HACCP Builder",
           f2: "Draft Autosave",
-          f3: "Check Audit Readiness",
+          f3: "Review plan completeness",
           f4: "Download Draft Preview",
           cta: "Start Building"
         },
@@ -84,7 +84,7 @@ export const translations = {
           badge: "Most Popular",
           title: "Document Export",
           price: "€39",
-          desc: "Export your generated HACCP documentation as a clean PDF or Word document. No watermark. No review included. Document export only. No validation, audit, verification, or approval is performed.",
+          desc: "Export your generated HACCP documentation as a clean PDF or Word document. No watermark. Instant download.",
           f1: "Unlocks Word & PDF",
           f2: "Removes Draft Watermark",
           f3: "Your generated HACCP documentation",
@@ -92,14 +92,14 @@ export const translations = {
           cta: "Download Unwatermarked Document"
         },
         review: {
-          title: "Optional expert review",
+          title: "Plan Review & Feedback",
           price: "€79",
-          desc: "If you would like an experienced food safety professional to review your HACCP plan, you can request an expert review.",
+          desc: "A human review of your HACCP plan draft, focused on clarity, structure, and common documentation issues.",
           f1: "Completeness check",
           f2: "Gap identification",
           f3: "Written feedback",
-          f4: "Guidance on critical limits",
-          cta: "Request expert review"
+          f4: "Written feedback on critical limits",
+          cta: "Request plan review"
         },
       },
       finalCta: {
