@@ -13,16 +13,34 @@ const appUrl = process.env.APP_URL!;
 
 export async function POST(req: Request) {
   if (!stripe) return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
+  if (!endpointSecret) return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
   
   const body = await req.text();
   const sig = req.headers.get('stripe-signature') || '';
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, endpointSecret || '');
+    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
   } catch (err: any) {
     console.error('Webhook signature verification failed:', err.message);
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+  }
+
+  // GLOBAL IDEMPOTENCY CHECK (Event ID)
+  // We attempt to insert the event ID. If it exists, we skip processing.
+  // This is the strongest possible protection against retry duplications.
+  const { error: idempotencyError } = await supabaseService
+      .from('stripe_processed_events')
+      .insert({ event_id: event.id });
+
+  if (idempotencyError) {
+      if (idempotencyError.code === '23505') { // Unique violation
+          console.log(`[Webhook] Event ${event.id} already processed. Skipping.`);
+          return NextResponse.json({ received: true });
+      }
+      console.error('Idempotency check failed:', idempotencyError);
+      // If DB is down, fail hard so Stripe retries
+      return NextResponse.json({ error: 'Database error' }, { status: 500 });
   }
 
   if (event.type === 'checkout.session.completed') {
@@ -39,10 +57,10 @@ export async function POST(req: Request) {
     if (planId && userId) {
       console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}`);
 
-      // 2. Fetch current state & Idempotency Check
+      // 2. Fetch current state
       const { data: currentPlan, error: fetchError } = await supabaseService
           .from('plans')
-          .select('export_paid, review_paid, review_requested, checkout_session_id')
+          .select('export_paid, review_paid, review_requested')
           .eq('id', planId)
           .eq('user_id', userId) // Security check
           .single();
@@ -52,17 +70,10 @@ export async function POST(req: Request) {
           return NextResponse.json({ error: 'Plan lookup failed' }, { status: 500 });
       }
 
-      // STRICT IDEMPOTENCY: Check if this specific session was already processed
-      if (currentPlan.checkout_session_id === session.id) {
-          console.log(`[Webhook] Session ${session.id} already processed. Skipping.`);
-          return NextResponse.json({ received: true });
-      }
-
       // 3. Prepare Upgrade-Only Update
       const updateData: any = { 
           payment_status: 'paid', 
-          updated_at: new Date().toISOString(),
-          checkout_session_id: session.id // Lock this transaction
+          checkout_session_id: session.id
       };
       
       let shouldSendAdminEmail = false;
@@ -71,30 +82,28 @@ export async function POST(req: Request) {
       // Handle Export Feature
       if (features_export === 'true') {
           updateData.export_paid = true;
-          // If it wasn't paid before, we might want to send user confirmation
           if (!currentPlan.export_paid) shouldSendUserEmail = true;
       }
 
-      // Handle Review Feature
+      // Handle Review Feature (Implies Export)
       if (features_review === 'true') {
           updateData.review_paid = true;
+          updateData.export_paid = true; // BUSINESS RULE: Review unlocks Export
           updateData.review_requested = true;
           updateData.review_status = 'pending'; 
           
           if (!currentPlan.review_paid) {
               shouldSendAdminEmail = true;
               shouldSendUserEmail = true; 
-          } else {
-              // Re-purchase logic (redundant but safe)
-              shouldSendAdminEmail = true;
           }
       }
 
-      // 4. Execute Update
+      // 4. Execute Update WITH Ownership Guard
       const { error } = await supabaseService
         .from('plans')
         .update(updateData)
-        .eq('id', planId);
+        .eq('id', planId)
+        .eq('user_id', userId); 
 
       if (error) {
         console.error('Supabase update error:', error);
@@ -111,7 +120,6 @@ export async function POST(req: Request) {
         }).catch(e => console.error("Failed to send admin email", e));
       }
 
-      // Send User Confirmation
       const customerEmail = session.customer_details?.email || session.customer_email;
       if (customerEmail && shouldSendUserEmail) {
           fetch(`${new URL(req.url).origin}/api/send-payment-confirmation`, {

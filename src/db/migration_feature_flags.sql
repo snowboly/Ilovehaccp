@@ -16,6 +16,15 @@ SET review_paid = TRUE
 WHERE payment_status = 'paid' AND tier = 'expert';
 
 -- 3. Optimization Index for Dashboard
--- Helps efficiently filter plans for a user based on their payment status
 CREATE INDEX IF NOT EXISTS idx_plans_user_status 
 ON public.plans (user_id, export_paid, review_paid);
+
+-- 4. Strict Webhook Idempotency
+CREATE TABLE IF NOT EXISTS public.stripe_processed_events (
+    event_id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS for processed events (admin only)
+ALTER TABLE public.stripe_processed_events ENABLE ROW LEVEL SECURITY;
+-- No public access policies needed as this is backend-only
