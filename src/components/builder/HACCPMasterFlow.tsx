@@ -298,6 +298,9 @@ export default function HACCPMasterFlow() {
           if (res.ok) {
               const data = await res.json();
               setDraftId(data.draftId);
+              if (data.claimToken) {
+                  localStorage.setItem('haccp_claim_token', data.claimToken);
+              }
               setDraftName(null);
               setLoadError(null);
               localStorage.setItem('haccp_draft_id', data.draftId);
@@ -458,14 +461,16 @@ export default function HACCPMasterFlow() {
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           if (event === 'SIGNED_IN' && session && draftId) {
               try {
+                  const claimToken = localStorage.getItem('haccp_claim_token');
                   await fetch('/api/drafts/attach', {
                       method: 'POST',
                       headers: {
                           'Content-Type': 'application/json',
                           'Authorization': `Bearer ${session.access_token}`
                       },
-                      body: JSON.stringify({ draftId })
+                      body: JSON.stringify({ draftId, claimToken })
                   });
+                  if (claimToken) localStorage.removeItem('haccp_claim_token');
               } catch (e) {
                   console.error("Failed to attach draft to user", e);
               }

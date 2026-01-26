@@ -10,7 +10,12 @@ export async function POST(req: Request) {
     if (authHeader) {
         const token = authHeader.replace('Bearer ', '');
         const { data, error: authError } = await supabaseService.auth.getUser(token);
-        if (!authError && data.user) user = data.user;
+        
+        if (authError || !data.user) {
+            console.error('Draft Creation Auth Failed:', authError);
+            return NextResponse.json({ error: 'Invalid Session' }, { status: 401 });
+        }
+        user = data.user;
     }
 
     const today = new Date().toISOString().split('T')[0];
