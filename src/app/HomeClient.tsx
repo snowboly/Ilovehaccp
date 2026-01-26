@@ -260,6 +260,9 @@ export default function Home() {
                 <Link href="/builder" className="w-full py-4 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-black text-center transition-all shadow-xl">
                   {t('landing.pricing.starter.cta')}
                 </Link>
+                <p className="text-center text-xs text-blue-100 mt-4 px-2 leading-tight">
+                  Document export only. No review, audit, verification, or approval is performed.
+                </p>
               </div>
 
               {/* Expert Review (New Card) */}
