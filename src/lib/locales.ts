@@ -82,14 +82,14 @@ export const translations = {
         },
         starter: {
           badge: "Most Popular",
-          title: "Official Document Export",
+          title: "Document Export",
           price: "€39",
-          desc: "Self-service document export. Regulatory approval not included.",
+          desc: "Export your generated HACCP documentation as a clean PDF or Word document. No watermark. No review included. Document export only. No validation, audit, verification, or approval is performed.",
           f1: "Unlocks Word & PDF",
           f2: "Removes Draft Watermark",
-          f3: "Your completed HACCP content",
+          f3: "Your generated HACCP documentation",
           f4: "Instant Download",
-          cta: "Start Building"
+          cta: "Download Unwatermarked Document"
         },
         review: {
           title: "Optional expert review",
