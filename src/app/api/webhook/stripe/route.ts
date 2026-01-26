@@ -27,11 +27,16 @@ export async function POST(req: Request) {
   }
 
   // GLOBAL IDEMPOTENCY CHECK (Event ID)
-  // We attempt to insert the event ID. If it exists, we skip processing.
-  // This is the strongest possible protection against retry duplications.
+  // We extract session ID for debugging if available
+  const session = event.data.object as any; // Safe generic access
+  const sessionId = session?.id || null;
+
   const { error: idempotencyError } = await supabaseService
       .from('stripe_processed_events')
-      .insert({ event_id: event.id });
+      .insert({ 
+          event_id: event.id,
+          session_id: sessionId 
+      });
 
   if (idempotencyError) {
       if (idempotencyError.code === '23505') { // Unique violation
