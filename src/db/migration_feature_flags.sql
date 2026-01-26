@@ -22,6 +22,7 @@ ON public.plans (user_id, export_paid, review_paid);
 -- 4. Strict Webhook Idempotency
 CREATE TABLE IF NOT EXISTS public.stripe_processed_events (
     event_id TEXT PRIMARY KEY,
+    session_id TEXT, -- Added for debugging
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
