@@ -45,7 +45,12 @@ export async function POST(req: Request) {
 
     // --- FEATURE & PRICING DEFINITION ---
     // Source of truth for features. Prices updated to new requirements.
-    const prices: Record<string, { amount: number, name: string, desc: string, features: { export: boolean, review: boolean } }> = {
+    const prices: Record<string, { 
+        amount: number; 
+        name: string; 
+        desc: string; 
+        features: { export: boolean; review: boolean };
+    }> = {
       professional: { 
           amount: 3900, // €39
           name: `Export Unlock: ${businessName}`,
@@ -103,7 +108,9 @@ export async function POST(req: Request) {
         // We do NOT rely on tier names or prices in the webhook.
         features_export: selectedPrice.features.export ? 'true' : 'false',
         features_review: selectedPrice.features.review ? 'true' : 'false',
+        purchase_type: selectedPrice.features.review ? 'review_service' : 'export_unlock',
         
+        tier, // debug/legacy only
         planId,
         userId: user.id,
         businessName
