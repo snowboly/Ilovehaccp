@@ -934,6 +934,16 @@ export default function HACCPMasterFlow() {
   const generatePlan = async (answers: any) => {
     if (isGeneratingRef.current) return;
     isGeneratingRef.current = true;
+
+    const requiredSections = ['product', 'process', 'prp', 'hazards'] as const;
+    const missing = requiredSections.filter(s => !answers[s] || Object.keys(answers[s]).length === 0);
+    if (missing.length > 0) {
+        isGeneratingRef.current = false;
+        setCurrentSection(missing[0] as SectionKey);
+        alert(`Please complete: ${missing.join(', ')}`);
+        return;
+    }
+
     try {
         const payload = {
             ...answers,
@@ -951,11 +961,22 @@ export default function HACCPMasterFlow() {
             }
         };
 
-        const res = await fetch('/api/generate-plan', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        const body = JSON.stringify(payload);
+        let res: Response | null = null;
+        for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+                res = await fetch('/api/generate-plan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body
+                });
+                if (res.ok || res.status < 500) break;
+            } catch (fetchErr) {
+                if (attempt === 1) throw fetchErr;
+            }
+            await new Promise(r => setTimeout(r, (attempt + 1) * 2000));
+        }
+        if (!res) throw new Error('Network error after retries');
         const data = await res.json();
         setGeneratedPlan(data);
         setCurrentSection('complete'); 
