@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -56,8 +56,16 @@ function DashboardContent() {
   const [importId, setImportId] = useState('');
   const [importing, setImporting] = useState(false);
   const [importConfirmation, setImportConfirmation] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const toastTimer = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const notify = (type: 'success' | 'error', message: string) => {
+    setToast({ type, message });
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 5000);
+  };
 
   useEffect(() => {
     if (searchParams.get('session_id')) {
@@ -162,9 +170,9 @@ function DashboardContent() {
     } catch (err: any) {
       console.error('Error deleting draft:', err);
       if (err.code === '23503') {
-        alert('Cannot delete: It has active dependencies. Please contact support.');
+        notify('error', 'Cannot delete: It has active dependencies. Please contact support.');
       } else {
-        alert(err.message || 'Failed to delete. Please try again.');
+        notify('error', err.message || 'Failed to delete. Please try again.');
       }
     }
   };
@@ -174,7 +182,7 @@ function DashboardContent() {
     if (nextName === null) return;
     const trimmedName = nextName.trim();
     if (!trimmedName) {
-      alert('Draft name cannot be empty.');
+      notify('error', 'Draft name cannot be empty.');
       return;
     }
 
@@ -189,7 +197,7 @@ function DashboardContent() {
       setDrafts(drafts.map(draft => (draft.id === id ? { ...draft, name: trimmedName } : draft)));
     } catch (err: any) {
       console.error('Error renaming draft:', err);
-      alert(err.message || 'Failed to rename draft. Please try again.');
+      notify('error', err.message || 'Failed to rename draft. Please try again.');
     }
   };
 
@@ -216,9 +224,9 @@ function DashboardContent() {
     } catch (err: any) {
       console.error('Error deleting plan:', err);
       if (err.code === '23503') {
-        alert('Cannot delete: It has active dependencies. Please contact support.');
+        notify('error', 'Cannot delete: It has active dependencies. Please contact support.');
       } else {
-        alert(err.message || 'Failed to delete. Please try again.');
+        notify('error', err.message || 'Failed to delete. Please try again.');
       }
     }
   };
@@ -245,11 +253,11 @@ function DashboardContent() {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert(data.error || "Failed to start checkout");
+            notify('error', data.error || "Failed to start checkout");
         }
     } catch (e) {
         console.error(e);
-        alert("System error starting checkout.");
+        notify('error', "System error starting checkout.");
     }
   };
 
@@ -284,12 +292,12 @@ function DashboardContent() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to import');
         
-        alert('Plan imported successfully!');
+        notify('success', 'Plan imported successfully!');
         setImportId('');
         setImportConfirmation(null);
         fetchPlans();
     } catch (err: any) {
-        alert(err.message);
+        notify('error', err.message || 'Import failed.');
     } finally {
         setImporting(false);
     }
@@ -339,6 +347,19 @@ function DashboardContent() {
               })()}
             </span>
             <button onClick={() => setShowSuccess(false)} className="text-emerald-600">
+              <XCircle className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
+        {toast && (
+          <div className={`mb-6 px-4 py-3 rounded-lg flex items-center justify-between text-sm font-medium border ${
+            toast.type === 'success'
+              ? 'border-emerald-200 text-emerald-800 bg-emerald-50'
+              : 'border-red-200 text-red-800 bg-red-50'
+          }`}>
+            <span>{toast.message}</span>
+            <button onClick={() => setToast(null)} className={toast.type === 'success' ? 'text-emerald-600' : 'text-red-600'}>
               <XCircle className="w-5 h-5" />
             </button>
           </div>
