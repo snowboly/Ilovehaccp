@@ -241,7 +241,7 @@ export default function AdminDashboard() {
                   <LayoutDashboard className="w-5 h-5" /> Overview
               </button>
               <button onClick={() => { setActiveView('reviews'); setPage(1); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'reviews' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
-                  <FileCheck className="w-5 h-5" /> Expert Reviews
+                  <FileCheck className="w-5 h-5" /> Plan Reviews
                   {stats?.pendingReviews > 0 && <span className="ml-auto bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{stats.pendingReviews}</span>}
               </button>
               <button onClick={() => { setActiveView('plans'); setPage(1); setSelectedReviewPlan(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'plans' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800'}`}>
@@ -386,7 +386,7 @@ export default function AdminDashboard() {
 
   const renderReviewsList = () => (
       <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900">Expert Reviews</h2>
+          <h2 className="text-2xl font-bold text-slate-900">Plan Reviews</h2>
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
               <table className="w-full text-left text-sm">
                   <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">

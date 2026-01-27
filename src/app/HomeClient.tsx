@@ -233,7 +233,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Starter Review */}
+              {/* Document Export */}
               <div className="bg-blue-600 rounded-[2.5rem] p-8 border-2 border-blue-400 shadow-2xl relative flex flex-col transform lg:scale-110 z-10">
                 <div className="absolute top-0 right-0 bg-yellow-400 text-slate-900 text-[10px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-[0.2em]">
                   {t('landing.pricing.starter.badge')}
@@ -268,7 +268,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Expert Review (New Card) */}
+              {/* Plan Review & Feedback */}
               <div className="bg-slate-900 rounded-[2.5rem] p-8 border border-slate-700 hover:border-slate-600 transition-all flex flex-col shadow-lg">
                 <div className="mb-8">
                   <h3 className="text-xl font-black text-white mb-2">{t('landing.pricing.review.title')}</h3>
