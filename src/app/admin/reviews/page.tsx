@@ -16,7 +16,7 @@ export default async function AdminReviewsPage() {
   
   return (
     <div className="max-w-6xl mx-auto space-y-8">
-      <h1 className="text-3xl font-black text-slate-900">Expert Review Requests</h1>
+      <h1 className="text-3xl font-black text-slate-900">Plan Review Requests</h1>
 
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <table className="w-full text-left text-sm">

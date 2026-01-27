@@ -56,7 +56,7 @@ export default async function AdminLayout({
                 <Activity className="w-5 h-5" /> Overview
             </Link>
             <Link href="/admin/reviews" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 transition-colors">
-                <UserCheck className="w-5 h-5" /> Expert Reviews
+                <UserCheck className="w-5 h-5" /> Plan Reviews
             </Link>
             <Link href="/admin/plans" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 transition-colors">
                 <Files className="w-5 h-5" /> All Plans

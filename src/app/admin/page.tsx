@@ -196,7 +196,7 @@ export default async function AdminPage() {
                       <div className="text-xs font-mono text-slate-400">{plan.id}</div>
                     </td>
                     <td className="p-4 text-sm text-slate-600">{userEmail ?? '—'}</td>
-                    <td className="p-4 text-sm text-slate-600">{plan.review_requested ? '€79' : '—'}</td>
+                    <td className="p-4 text-sm text-slate-600">{plan.review_requested ? '€99' : '—'}</td>
                     <td className="p-4 text-sm text-slate-600">{formatDate(plan.created_at)}</td>
                     <td className="p-4">
                       <span className="rounded-full bg-amber-50 px-2 py-1 text-xs font-semibold uppercase text-amber-600">
