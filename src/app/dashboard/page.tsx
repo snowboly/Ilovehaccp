@@ -16,34 +16,7 @@ import {
   Ban
 } from 'lucide-react';
 import { Suspense } from 'react';
-type Draft = Plan & { name?: string | null };
-
-interface Plan {
-  id: string;
-  draft_id?: string | null;
-  product_name: string;
-  business_name: string;
-  created_at: string;
-  name?: string | null;
-  status: string;
-  payment_status: string;
-  tier?: string | null;
-  hazard_analysis: any;
-  full_plan: any;
-  intended_use: string;
-  storage_type: string;
-  business_type: string;
-  pdf_url?: string | null;
-  docx_url?: string | null;
-  review_requested?: boolean;
-  review_status?: 'pending' | 'completed';
-  review_comments?: string;
-  review_notes?: string | null;
-  reviewed_at?: string;
-  is_locked?: boolean;
-  export_paid?: boolean;
-  review_paid?: boolean;
-}
+import type { Plan, Draft } from '@/types/plan';
 
 function DashboardContent() {
   const supabase = createClient();
@@ -159,6 +132,8 @@ function DashboardContent() {
 
   const handleDeleteDraft = async (id: string) => {
     if (!confirm('Are you sure you want to delete this draft? This cannot be undone.')) return;
+    const prev = drafts;
+    setDrafts(drafts.filter(draft => draft.id !== id));
     try {
       const { error } = await supabase
         .from('drafts')
@@ -166,9 +141,9 @@ function DashboardContent() {
         .eq('id', id);
 
       if (error) throw error;
-      setDrafts(drafts.filter(draft => draft.id !== id));
     } catch (err: any) {
       console.error('Error deleting draft:', err);
+      setDrafts(prev);
       if (err.code === '23503') {
         notify('error', 'Cannot delete: It has active dependencies. Please contact support.');
       } else {
@@ -203,9 +178,12 @@ function DashboardContent() {
 
   const handleDeletePlan = async (id: string) => {
     if (!confirm('Are you sure you want to delete this plan? This cannot be undone.')) return;
+    const prev = plans;
+    setPlans(plans.filter(plan => plan.id !== id));
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
+        setPlans(prev);
         router.push('/login');
         return;
       }
@@ -219,10 +197,9 @@ function DashboardContent() {
         const err = await res.json().catch(() => null);
         throw new Error(err?.error || 'Failed to delete plan');
       }
-
-      setPlans(plans.filter(plan => plan.id !== id));
     } catch (err: any) {
       console.error('Error deleting plan:', err);
+      setPlans(prev);
       if (err.code === '23503') {
         notify('error', 'Cannot delete: It has active dependencies. Please contact support.');
       } else {
@@ -497,7 +474,17 @@ function DashboardContent() {
                           )}
                         </td>
                         <td className="px-4 py-2">
-                          {reviewStatus}
+                          {exportBlocked ? (
+                            <span className="text-xs font-semibold text-red-500">Export Blocked</span>
+                          ) : plan.review_status === 'completed' ? (
+                            <span className="text-xs font-semibold text-emerald-600">Reviewed — ready to use</span>
+                          ) : plan.review_requested || plan.review_status === 'pending' ? (
+                            <span className="text-xs font-semibold text-purple-600">Review in progress</span>
+                          ) : plan.export_paid ? (
+                            <span className="text-xs font-semibold text-emerald-600">Exports unlocked — download below</span>
+                          ) : (
+                            <span className="text-xs text-slate-500">Upgrade to unlock clean exports</span>
+                          )}
                         </td>
                         <td className="px-4 py-2 text-right flex justify-end items-center gap-2">
                           {plan.export_paid ? (
