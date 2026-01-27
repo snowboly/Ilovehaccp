@@ -30,7 +30,7 @@ type SectionKey =
 
 export default function HACCPMasterFlow() {
   const supabase = createClient();
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const searchParams = useSearchParams();
   const [currentSection, setCurrentSection] = useState<SectionKey>('product');
   const [allAnswers, setAllAnswers] = useState<any>({});
@@ -76,7 +76,8 @@ export default function HACCPMasterFlow() {
             currentSection,
             generatedPlan,
             validationReport,
-            validationStatus
+            validationStatus,
+            language
         };
         localStorage.setItem(anonSnapshotKey, JSON.stringify(payload));
     } catch (e) {
@@ -95,6 +96,10 @@ export default function HACCPMasterFlow() {
         const planData = parsed?.generatedPlan ?? null;
         const validationData = parsed?.validationReport ?? null;
         const nextValidationStatus = parsed?.validationStatus ?? 'idle';
+        const savedLanguage = parsed?.language;
+        if (savedLanguage && savedLanguage !== language) {
+            setLanguage(savedLanguage);
+        }
 
         const res = await fetch('/api/drafts', { 
             method: 'POST',
@@ -949,6 +954,7 @@ export default function HACCPMasterFlow() {
         const payload = {
             ...answers,
             ...riskFlags,
+            language,
             metadata: {
                 framework_version: "1.0.0",
                 question_set_versions: {
