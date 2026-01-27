@@ -15,6 +15,7 @@ import { fetchWithTimeout } from '@/lib/builder/utils/withTimeoutFetch';
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { PLAN_TIERS, TIER_PRICE } from '@/lib/constants';
 
 type SectionKey = 
   | 'product' 
@@ -1265,7 +1266,10 @@ export default function HACCPMasterFlow() {
   }, [searchParams]);
 
   useEffect(() => {
-      if (currentSection !== 'complete') {
+      if (currentSection === 'complete') {
+        // Reset scroll so review summary opens at top, not mid-page
+        window.scrollTo(0, 0);
+      } else {
         updateStepInUrl(currentSection);
       }
   }, [currentSection]);
@@ -1857,11 +1861,26 @@ export default function HACCPMasterFlow() {
   if (currentSection === 'complete') {
       const isPaid = generatedPlan?.payment_status === 'paid';
       const exportBlocked = validationReport?.block_export || validationReport?.section_1_overall_assessment?.audit_readiness === "Major Gaps";
-      const editUrl = draftId
-          ? `/builder?draft=${draftId}&step=product`
-          : generatedPlan?.id
-              ? `/builder?id=${generatedPlan.id}&step=product`
-              : '/builder?step=product';
+      /** Map validation section names to builder step keys. */
+      const sectionToStep = (section: string): SectionKey => {
+          const s = section.toLowerCase();
+          if (s.includes('product') || s.includes('scope') || s.includes('team') || s.includes('intended use')) return 'product';
+          if (s.includes('process') || s.includes('flow')) return 'process';
+          if (s.includes('prerequisite') || s.includes('prp')) return 'prp';
+          if (s.includes('hazard')) return 'hazards';
+          if (s.includes('ccp') && s.includes('management')) return 'ccp_management';
+          if (s.includes('ccp') || s.includes('critical control')) return 'ccp_determination';
+          if (s.includes('verification') || s.includes('record') || s.includes('review') || s.includes('validation')) return 'review_validation';
+          return 'product';
+      };
+
+      const editUrlForStep = (step: SectionKey) => {
+          if (draftId) return `/builder?draft=${draftId}&step=${step}`;
+          if (generatedPlan?.id) return `/builder?id=${generatedPlan.id}&step=${step}`;
+          return `/builder?step=${step}`;
+      };
+
+      const editUrl = editUrlForStep('product');
       return (
           <div className="max-w-4xl mx-auto p-10 space-y-8">
               <div className="bg-slate-50 border border-slate-200 p-8 rounded-3xl text-center space-y-4">
@@ -2107,14 +2126,14 @@ export default function HACCPMasterFlow() {
                                                 disabled={isSavingPlan || !!busyAction}
                                                 className={`bg-slate-900 text-white px-4 py-3 rounded-xl font-bold hover:bg-black transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_professional' ? 'animate-pulse' : ''}`}
                                             >
-                                                {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening checkout...</> : (isSavingPlan ? 'Saving...' : 'Self-Service Export (€39)')}
+                                                {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening checkout...</> : (isSavingPlan ? 'Saving...' : `${PLAN_TIERS.professional.label} (${TIER_PRICE.professional})`)}
                                             </button>
                                             <button 
                                                 onClick={() => openCheckoutInNewTab('expert')}
                                                 disabled={isSavingPlan || !!busyAction}
                                                 className={`bg-blue-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_expert' ? 'animate-pulse' : ''}`}
                                             >
-                                                {busyAction === 'checkout_expert' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening checkout...</> : (isSavingPlan ? 'Saving...' : 'Professional Review (€99)')}
+                                                {busyAction === 'checkout_expert' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening checkout...</> : (isSavingPlan ? 'Saving...' : `${PLAN_TIERS.expert.label} (${TIER_PRICE.expert})`)}
                                             </button>
                                         </div>
                                     )}
@@ -2134,7 +2153,7 @@ export default function HACCPMasterFlow() {
                                     {!isPaid && (
                                         <div className="grid md:grid-cols-2 gap-4 text-xs">
                                             <div className="bg-white border border-slate-200 rounded-xl p-4">
-                                                <p className="font-bold text-slate-500 uppercase mb-2">Self-service export</p>
+                                                <p className="font-bold text-slate-500 uppercase mb-2">{PLAN_TIERS.professional.label}</p>
                                                 <ul className="text-slate-600 space-y-1">
                                                     <li> Remove watermarks</li>
                                                     <li> Word + PDF downloads</li>
@@ -2142,7 +2161,7 @@ export default function HACCPMasterFlow() {
                                                 </ul>
                                             </div>
                                             <div className="bg-white border border-blue-200 rounded-xl p-4">
-                                                <p className="font-bold text-blue-500 uppercase mb-2">Professional review</p>
+                                                <p className="font-bold text-blue-500 uppercase mb-2">{PLAN_TIERS.expert.label}</p>
                                                 <ul className="text-blue-700 space-y-1">
                                                     <li> Expert feedback</li>
                                                     <li> Review notes in dashboard</li>
@@ -2180,59 +2199,103 @@ export default function HACCPMasterFlow() {
                             </div>
                         </div>
                         
-                        {/* Detailed Report */}
+                        {/* Detailed Report — free content (gaps & assumptions) */}
                         <div className="relative">
                             <div>
-                                {/* Strengths */}
+                                {/* Strengths (free) */}
                                 <div className="mt-6">
-                                    <h3 className="font-bold text-slate-900 mb-2">Draft checks</h3>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <h3 className="font-bold text-slate-900">Draft checks</h3>
+                                        <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-0.5 rounded">Included free</span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 mb-3">Automated completeness checks against the required HACCP sections.</p>
                                     <ul className="list-disc list-inside text-slate-600 space-y-1">
                                         {validationReport?.section_2_strengths?.map((s: string, i: number) => <li key={i}>{s}</li>)}
                                     </ul>
                                 </div>
-                                
-                                {/* Weaknesses */}
+
+                                {/* Gaps & assumptions (free) */}
                                 <div className="mt-6">
-                                    <h3 className="font-bold text-slate-900 mb-2">Identified gaps</h3>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <h3 className="font-bold text-slate-900">Gaps &amp; assumptions</h3>
+                                        <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-0.5 rounded">Included free</span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 mb-3">
+                                        Sections where information may be missing, unclear, or based on default assumptions. You can edit your answers to address each item.
+                                    </p>
                                     <ul className="list-none space-y-3">
-                                        {validationReport?.section_3_weaknesses_risks?.map((w: any, i: number) => (
-                                            <li key={i} className="flex items-start gap-2 text-slate-600">
-                                                <AlertTriangle className="w-4 h-4 text-slate-400 shrink-0 mt-1" />
-                                                <span>{w.weakness} <span className="text-slate-400 text-xs">({w.section})</span></span>
-                                            </li>
-                                        ))}
+                                        {validationReport?.section_3_weaknesses_risks?.map((w: any, i: number) => {
+                                            const step = sectionToStep(w.section || '');
+                                            return (
+                                                <li key={i} className="flex items-start gap-2 text-slate-600">
+                                                    <AlertTriangle className="w-4 h-4 text-slate-400 shrink-0 mt-1" />
+                                                    <span className="flex-1">{w.weakness} <span className="text-slate-400 text-xs">({w.section})</span></span>
+                                                    <Link
+                                                        href={editUrlForStep(step)}
+                                                        className="text-blue-600 hover:text-blue-800 text-xs font-bold whitespace-nowrap shrink-0"
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </div>
 
-                                {/* Professional Review Notes (Optional) */}
+                                {/* Professional Review Notes — paid only */}
                                 {isPaid && validationReport?.advisory_recommendations && validationReport.advisory_recommendations.length > 0 && (
                                     <div className="pt-6 border-t border-slate-100 mt-6">
                                         <div className="flex items-center gap-2 mb-4">
                                             <div className="bg-slate-100 p-2 rounded-lg">
                                                 <Info className="w-5 h-5 text-slate-600" />
                                             </div>
-                                            <h3 className="text-xl font-black text-slate-900">Professional Review Notes</h3>
+                                            <h3 className="text-xl font-black text-slate-900">{PLAN_TIERS.expert.shortLabel} Notes</h3>
                                         </div>
+                                        <p className="text-xs text-slate-500 mb-4">
+                                            Detailed expert feedback on each gap: why it matters, what to consider, and which HACCP principle applies.
+                                        </p>
                                         <div className="space-y-4">
-                                            {validationReport.advisory_recommendations.map((rec: any, i: number) => (
-                                                <div key={i} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 hover:border-blue-200 transition-colors">
-                                                    <div className="flex items-start justify-between gap-4 mb-2">
-                                                        <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">{rec.issue_summary}</h4>
-                                                        <span className="text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest bg-slate-200 text-slate-600">
-                                                            {rec.gap_type}
-                                                        </span>
+                                            {validationReport.advisory_recommendations.map((rec: any, i: number) => {
+                                                const recStep = sectionToStep(rec.related_builder_section || '');
+                                                return (
+                                                    <div key={i} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 hover:border-blue-200 transition-colors">
+                                                        <div className="flex items-start justify-between gap-4 mb-2">
+                                                            <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">{rec.issue_summary}</h4>
+                                                            <span className="text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest bg-slate-200 text-slate-600">
+                                                                {rec.gap_type}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-slate-600 text-sm mb-3 italic">&ldquo;{rec.why_it_matters}&rdquo;</p>
+                                                        <div className="bg-white p-3 rounded-xl border border-slate-100 mb-3">
+                                                            <p className="text-slate-700 font-medium text-sm">{rec.recommendation_text}</p>
+                                                        </div>
+                                                        <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+                                                            <span>{rec.related_haccp_principle}</span>
+                                                            <Link href={editUrlForStep(recStep)} className="bg-slate-200 px-2 py-1 rounded text-blue-600 hover:text-blue-800 font-bold">
+                                                                {rec.related_builder_section}
+                                                            </Link>
+                                                        </div>
                                                     </div>
-                                                    <p className="text-slate-600 text-sm mb-3 italic">"{rec.why_it_matters}"</p>
-                                                    <div className="bg-white p-3 rounded-xl border border-slate-100 mb-3">
-                                                        <p className="text-slate-700 font-medium text-sm">💡 {rec.recommendation_text}</p>
-                                                    </div>
-                                                    <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
-                                                        <span>{rec.related_haccp_principle}</span>
-                                                        <span className="bg-slate-200 px-2 py-1 rounded text-slate-600">{rec.related_builder_section}</span>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
+                                    </div>
+                                )}
+
+                                {/* Paid review teaser for free users */}
+                                {!isPaid && validationReport?.advisory_recommendations && validationReport.advisory_recommendations.length > 0 && (
+                                    <div className="pt-6 border-t border-slate-100 mt-6">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <div className="bg-blue-50 p-2 rounded-lg">
+                                                <Info className="w-5 h-5 text-blue-500" />
+                                            </div>
+                                            <h3 className="text-lg font-black text-slate-900">{PLAN_TIERS.expert.shortLabel} Notes</h3>
+                                            <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Paid</span>
+                                        </div>
+                                        <p className="text-sm text-slate-600 mb-4">
+                                            {validationReport.advisory_recommendations.length} detailed recommendation{validationReport.advisory_recommendations.length !== 1 ? 's' : ''} available.
+                                            Includes expert explanations, practical guidance, and links to the relevant HACCP principles for each gap.
+                                        </p>
                                     </div>
                                 )}
                             </div>
@@ -2241,7 +2304,7 @@ export default function HACCPMasterFlow() {
                                     <div>
                                         <p className="text-sm font-bold text-blue-900">Next Steps</p>
                                         <p className="text-xs text-blue-700">
-                                            Export your HACCP draft or request professional feedback to review identified gaps and assumptions.
+                                            Export your HACCP draft or request expert feedback on identified gaps and assumptions.
                                         </p>
                                     </div>
                                     <div className="flex flex-col sm:flex-row gap-2">
@@ -2250,14 +2313,14 @@ export default function HACCPMasterFlow() {
                                             disabled={isSavingPlan || !!busyAction}
                                             className={`bg-white text-blue-800 border border-blue-200 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_professional' ? 'animate-pulse' : ''}`}
                                         >
-                                            {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : 'Export Draft')}
+                                            {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : PLAN_TIERS.professional.upgradeLabel)}
                                         </button>
                                         <button
                                             onClick={() => openCheckoutInNewTab('expert')}
                                             disabled={isSavingPlan || !!busyAction}
                                             className={`bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_expert' ? 'animate-pulse' : ''}`}
                                         >
-                                            {busyAction === 'checkout_expert' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : 'Request Professional Review')}
+                                            {busyAction === 'checkout_expert' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : PLAN_TIERS.expert.upgradeLabel)}
                                         </button>
                                     </div>
                                 </div>
