@@ -15,6 +15,7 @@ import {
   Loader2,
   Ban
 } from 'lucide-react';
+import { PLAN_TIERS } from '@/lib/constants';
 import { Suspense } from 'react';
 import type { Plan, Draft } from '@/types/plan';
 
@@ -534,7 +535,7 @@ function DashboardContent() {
                              </span>
                           ) : (
                              <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline text-sm font-medium">
-                               Upgrade Pro
+                               {PLAN_TIERS.professional.upgradeLabel}
                              </button>
                           )}
 
@@ -562,7 +563,7 @@ function DashboardContent() {
                             }
                             return (
                               <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
-                                Request Review
+                                {PLAN_TIERS.expert.upgradeLabel}
                               </button>
                             );
                           })()}
