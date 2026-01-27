@@ -124,15 +124,14 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Remove version history first to avoid FK conflicts
-    const { error: versionsError } = await supabaseAdmin
-      .from('haccp_plan_versions')
-      .delete()
-      .eq('plan_id', id);
-
-    if (versionsError) {
-      console.error('Failed to delete plan versions:', versionsError);
-      return NextResponse.json({ error: 'Failed to delete plan versions' }, { status: 500 });
+    // Best-effort cleanup of version history (CASCADE handles this too)
+    try {
+      await supabaseAdmin
+        .from('haccp_plan_versions')
+        .delete()
+        .eq('plan_id', id);
+    } catch (e) {
+      console.warn('Non-critical: version cleanup skipped', e);
     }
 
     const { error: deleteError } = await supabaseAdmin
@@ -142,6 +141,9 @@ export async function DELETE(
 
     if (deleteError) {
       console.error('Failed to delete plan:', deleteError);
+      if (deleteError.code === '23503') {
+        return NextResponse.json({ error: 'Cannot delete: plan has active dependencies. Please contact support.' }, { status: 409 });
+      }
       return NextResponse.json({ error: 'Failed to delete plan' }, { status: 500 });
     }
 

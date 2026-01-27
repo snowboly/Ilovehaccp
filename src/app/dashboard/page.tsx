@@ -200,19 +200,48 @@ function DashboardContent() {
         const err = await res.json().catch(() => null);
         throw new Error(err?.error || 'Failed to delete plan');
       }
+
+      notify('success', 'Plan deleted successfully.');
     } catch (err: any) {
       console.error('Error deleting plan:', err);
       setPlans(prev);
-      if (err.code === '23503') {
-        notify('error', 'Cannot delete: It has active dependencies. Please contact support.');
-      } else {
-        notify('error', err.message || 'Failed to delete. Please try again.');
-      }
+      notify('error', err.message || 'Failed to delete. Please try again.');
     }
   };
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/');
+  };
+
+  const handleDownload = async (planId: string, format: 'pdf' | 'word', businessName?: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { router.push('/login'); return; }
+
+      const endpoint = format === 'pdf' ? 'download-pdf' : 'download-word';
+      const res = await fetch(`/api/${endpoint}?planId=${planId}`, {
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        notify('error', err?.error || `Failed to download ${format.toUpperCase()}`);
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const safeName = (businessName || 'HACCP_Plan').replace(/[^a-zA-Z0-9_-]/g, '_');
+      a.download = `${safeName}.${format === 'pdf' ? 'pdf' : 'docx'}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      notify('error', `Failed to download ${format.toUpperCase()}`);
+    }
   };
 
   const handleUpgrade = async (plan: Plan, tier: 'professional' | 'expert') => {
@@ -425,6 +454,7 @@ function DashboardContent() {
                   {plans.map(plan => {
                     const draftName = plan.draft_id ? draftNamesByPlanId[plan.draft_id] : undefined;
                     const planLabel = draftName?.trim() || plan.business_name || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
+                    const isPaid = plan.export_paid || plan.payment_status === 'paid';
                     const pdfUrl = plan.pdf_url ?? plan.full_plan?.documents?.pdf_url ?? null;
                     const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;
                     const validation = plan.full_plan?.validation;
@@ -446,6 +476,10 @@ function DashboardContent() {
                             <span className="inline-flex items-center gap-1 text-red-400 text-xs" title="Export blocked — critical compliance gaps detected">
                               <Ban className="w-3 h-3" /> Blocked
                             </span>
+                          ) : isPaid ? (
+                            <button onClick={() => handleDownload(plan.id, 'pdf', plan.business_name)} className="text-blue-600 hover:underline">
+                              PDF
+                            </button>
                           ) : pdfUrl ? (
                             <a href={pdfUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
                               PDF
@@ -459,6 +493,10 @@ function DashboardContent() {
                             <span className="inline-flex items-center gap-1 text-red-400 text-xs" title="Export blocked — critical compliance gaps detected">
                               <Ban className="w-3 h-3" /> Blocked
                             </span>
+                          ) : isPaid ? (
+                            <button onClick={() => handleDownload(plan.id, 'word', plan.business_name)} className="text-blue-600 hover:underline">
+                              Word
+                            </button>
                           ) : docxUrl ? (
                             <a href={docxUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
                               Word
