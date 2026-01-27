@@ -77,13 +77,16 @@ function DashboardContent() {
         .from('drafts')
         .select('*')
         .eq('user_id', user.id)
-        .eq('status', 'active')
+        .neq('status', 'abandoned')
         .is('deleted_at', null)
         .order('updated_at', { ascending: false });
 
       if (draftsError) throw draftsError;
 
-      setPlans((plansData || []) as any);
+      const paidPlans = (plansData || []).filter(plan =>
+        plan.export_paid || plan.review_paid || plan.payment_status === 'paid'
+      );
+      setPlans(paidPlans as any);
       setDrafts(
         (draftsData || []).map(d => ({
           id: d.id,
