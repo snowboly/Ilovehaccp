@@ -56,8 +56,8 @@ export const faqs: FAQItem[] = [
 
   // Pricing & Billing
   {
-    q: "What is included in the €79 Starter Review?",
-    a: "The Starter Review package includes full access to our builder tool, unlimited edits, PDF export, and a standard review of your plan by one of our food safety experts to ensure alignment with standards."
+    q: "What is included in the €99 Plan Review?",
+    a: "The Plan Review package includes full access to our builder tool, unlimited edits, PDF export, and a standard review of your plan by one of our food safety experts to ensure alignment with standards."
   },
   {
     q: "Do you offer refunds?",
@@ -65,7 +65,7 @@ export const faqs: FAQItem[] = [
   },
   {
     q: "Is there a monthly fee?",
-    a: "No. The €79 Starter Review is a one-time payment per plan. Enterprise/Pro clients may have custom billing arrangements."
+    a: "No. The €99 Plan Review is a one-time payment per plan. Enterprise/Pro clients may have custom billing arrangements."
   },
 
   // Specific Food Safety Topics

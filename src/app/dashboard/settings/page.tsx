@@ -18,14 +18,15 @@ import Link from 'next/link';
 export default function SettingsPage() {
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
+  const [billingMessage, setBillingMessage] = useState<{ type: 'info' | 'error'; text: string } | null>(null);
   const router = useRouter();
 
   const handleManageBilling = async () => {
     setLoading(true);
+    setBillingMessage(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        alert('Please log in again.');
         router.push('/login');
         return;
       }
@@ -39,12 +40,14 @@ export default function SettingsPage() {
       const data = await response.json();
       if (data.url) {
         window.location.href = data.url;
+      } else if (response.status === 404) {
+        setBillingMessage({ type: 'info', text: 'No purchases yet. Once you upgrade a plan, your invoices and billing details will appear here.' });
       } else {
-        alert(data.error || 'Failed to open billing portal');
+        setBillingMessage({ type: 'error', text: data.error || 'Failed to open billing portal. Please try again.' });
       }
     } catch (error) {
       console.error('Billing error:', error);
-      alert('Error accessing billing portal');
+      setBillingMessage({ type: 'error', text: 'Error accessing billing portal. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -112,8 +115,8 @@ export default function SettingsPage() {
                 </h2>
                 <p className="text-sm text-gray-500 mt-1">Manage your payment methods and download past invoices.</p>
             </div>
-            <div className="p-6 bg-gray-50/50">
-                <button 
+            <div className="p-6 bg-gray-50/50 space-y-3">
+                <button
                     onClick={handleManageBilling}
                     disabled={loading}
                     className="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm disabled:opacity-50"
@@ -121,6 +124,15 @@ export default function SettingsPage() {
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
                     Open Customer Portal
                 </button>
+                {billingMessage && (
+                    <p className={`text-sm px-4 py-3 rounded-lg border ${
+                        billingMessage.type === 'info'
+                            ? 'text-blue-700 bg-blue-50 border-blue-200'
+                            : 'text-red-700 bg-red-50 border-red-200'
+                    }`}>
+                        {billingMessage.text}
+                    </p>
+                )}
             </div>
         </section>
 

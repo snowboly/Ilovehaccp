@@ -95,7 +95,7 @@ export const translations = {
         },
         review: {
           title: "Plan Review & Feedback",
-          price: "€79",
+          price: "€99",
           desc: "Human feedback on your HACCP plan draft.",
           f1: "Completeness & consistency check",
           f2: "Gaps and unclear sections flagged",
@@ -448,8 +448,8 @@ export const translations = {
           cta: "Comenzar"
         },
         review: {
-          title: "Revisión de Expertos",
-          price: "€79",
+          title: "Revisión y Feedback del Plan",
+          price: "€99",
           desc: "Obtenga ayuda de expertos para interpretar los resultados de la validación.",
           f1: "Todo lo de Profesional",
           f2: "Revisión por Humano Experto",
@@ -800,8 +800,8 @@ export const translations = {
           cta: "Commencer"
         },
         review: {
-          title: "Révision d'Expert",
-          price: "€79",
+          title: "Révision et Retour du Plan",
+          price: "€99",
           desc: "Obtenez de l'aide pour interpréter les résultats de validation par des experts.",
           f1: "Tout ce qui est inclus dans Pro",
           f2: "Révision par un Expert Humain",
@@ -1162,8 +1162,8 @@ export const translations = {
           cta: "Começar"
         },
         review: {
-          title: "Revisão de Especialista",
-          price: "€79",
+          title: "Revisão e Feedback do Plano",
+          price: "€99",
           desc: "Obtenha ajuda de especialistas para interpretar os resultados da validação.",
           f1: "Tudo o que está incluído no Pro",
           f2: "Revisão por Especialista Humano",

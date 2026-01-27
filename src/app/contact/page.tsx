@@ -15,7 +15,7 @@ function ContactForm() {
 
   useEffect(() => {
     const sub = searchParams.get('subject');
-    if (sub === 'Review') setSelectedSubject('Expert Review');
+    if (sub === 'Review') setSelectedSubject('Plan Review');
     else if (sub === 'Enterprise') setSelectedSubject('Enterprise / Custom Plan');
   }, [searchParams]);
 
@@ -95,7 +95,7 @@ function ContactForm() {
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             >
               <option>General Inquiry</option>
-              <option>Expert Review</option>
+              <option>Plan Review</option>
               <option>Enterprise / Custom Plan</option>
               <option>Technical Support</option>
               <option>Partnership</option>

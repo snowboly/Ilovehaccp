@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -12,37 +12,12 @@ import {
   ShieldCheck,
   Settings,
   LogOut,
-  Loader2
+  Loader2,
+  Ban
 } from 'lucide-react';
+import { PLAN_TIERS } from '@/lib/constants';
 import { Suspense } from 'react';
-type Draft = Plan & { name?: string | null };
-
-interface Plan {
-  id: string;
-  draft_id?: string | null;
-  product_name: string;
-  business_name: string;
-  created_at: string;
-  name?: string | null;
-  status: string;
-  payment_status: string;
-  tier?: string | null;
-  hazard_analysis: any;
-  full_plan: any;
-  intended_use: string;
-  storage_type: string;
-  business_type: string;
-  pdf_url?: string | null;
-  docx_url?: string | null;
-  review_requested?: boolean;
-  review_status?: 'pending' | 'completed';
-  review_comments?: string;
-  review_notes?: string | null;
-  reviewed_at?: string;
-  is_locked?: boolean;
-  export_paid?: boolean;
-  review_paid?: boolean;
-}
+import type { Plan, Draft } from '@/types/plan';
 
 function DashboardContent() {
   const supabase = createClient();
@@ -55,8 +30,16 @@ function DashboardContent() {
   const [importId, setImportId] = useState('');
   const [importing, setImporting] = useState(false);
   const [importConfirmation, setImportConfirmation] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const toastTimer = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const notify = (type: 'success' | 'error', message: string) => {
+    setToast({ type, message });
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 5000);
+  };
 
   useEffect(() => {
     if (searchParams.get('session_id')) {
@@ -95,13 +78,16 @@ function DashboardContent() {
         .from('drafts')
         .select('*')
         .eq('user_id', user.id)
-        .eq('status', 'active')
+        .neq('status', 'abandoned')
         .is('deleted_at', null)
         .order('updated_at', { ascending: false });
 
       if (draftsError) throw draftsError;
 
-      setPlans((plansData || []) as any);
+      const paidPlans = (plansData || []).filter(plan =>
+        plan.export_paid || plan.review_paid || plan.payment_status === 'paid'
+      );
+      setPlans(paidPlans as any);
       setDrafts(
         (draftsData || []).map(d => ({
           id: d.id,
@@ -150,6 +136,8 @@ function DashboardContent() {
 
   const handleDeleteDraft = async (id: string) => {
     if (!confirm('Are you sure you want to delete this draft? This cannot be undone.')) return;
+    const prev = drafts;
+    setDrafts(drafts.filter(draft => draft.id !== id));
     try {
       const { error } = await supabase
         .from('drafts')
@@ -157,13 +145,13 @@ function DashboardContent() {
         .eq('id', id);
 
       if (error) throw error;
-      setDrafts(drafts.filter(draft => draft.id !== id));
     } catch (err: any) {
       console.error('Error deleting draft:', err);
+      setDrafts(prev);
       if (err.code === '23503') {
-        alert('Cannot delete: It has active dependencies. Please contact support.');
+        notify('error', 'Cannot delete: It has active dependencies. Please contact support.');
       } else {
-        alert(err.message || 'Failed to delete. Please try again.');
+        notify('error', err.message || 'Failed to delete. Please try again.');
       }
     }
   };
@@ -173,7 +161,7 @@ function DashboardContent() {
     if (nextName === null) return;
     const trimmedName = nextName.trim();
     if (!trimmedName) {
-      alert('Draft name cannot be empty.');
+      notify('error', 'Draft name cannot be empty.');
       return;
     }
 
@@ -188,15 +176,18 @@ function DashboardContent() {
       setDrafts(drafts.map(draft => (draft.id === id ? { ...draft, name: trimmedName } : draft)));
     } catch (err: any) {
       console.error('Error renaming draft:', err);
-      alert(err.message || 'Failed to rename draft. Please try again.');
+      notify('error', err.message || 'Failed to rename draft. Please try again.');
     }
   };
 
   const handleDeletePlan = async (id: string) => {
     if (!confirm('Are you sure you want to delete this plan? This cannot be undone.')) return;
+    const prev = plans;
+    setPlans(plans.filter(plan => plan.id !== id));
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
+        setPlans(prev);
         router.push('/login');
         return;
       }
@@ -211,19 +202,47 @@ function DashboardContent() {
         throw new Error(err?.error || 'Failed to delete plan');
       }
 
-      setPlans(plans.filter(plan => plan.id !== id));
+      notify('success', 'Plan deleted successfully.');
     } catch (err: any) {
       console.error('Error deleting plan:', err);
-      if (err.code === '23503') {
-        alert('Cannot delete: It has active dependencies. Please contact support.');
-      } else {
-        alert(err.message || 'Failed to delete. Please try again.');
-      }
+      setPlans(prev);
+      notify('error', err.message || 'Failed to delete. Please try again.');
     }
   };
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/');
+  };
+
+  const handleDownload = async (planId: string, format: 'pdf' | 'word', businessName?: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { router.push('/login'); return; }
+
+      const endpoint = format === 'pdf' ? 'download-pdf' : 'download-word';
+      const res = await fetch(`/api/${endpoint}?planId=${planId}`, {
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        notify('error', err?.error || `Failed to download ${format.toUpperCase()}`);
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const safeName = (businessName || 'HACCP_Plan').replace(/[^a-zA-Z0-9_-]/g, '_');
+      a.download = `${safeName}.${format === 'pdf' ? 'pdf' : 'docx'}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      notify('error', `Failed to download ${format.toUpperCase()}`);
+    }
   };
 
   const handleUpgrade = async (plan: Plan, tier: 'professional' | 'expert') => {
@@ -244,11 +263,11 @@ function DashboardContent() {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert(data.error || "Failed to start checkout");
+            notify('error', data.error || "Failed to start checkout");
         }
     } catch (e) {
         console.error(e);
-        alert("System error starting checkout.");
+        notify('error', "System error starting checkout.");
     }
   };
 
@@ -283,12 +302,12 @@ function DashboardContent() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to import');
         
-        alert('Plan imported successfully!');
+        notify('success', 'Plan imported successfully!');
         setImportId('');
         setImportConfirmation(null);
         fetchPlans();
     } catch (err: any) {
-        alert(err.message);
+        notify('error', err.message || 'Import failed.');
     } finally {
         setImporting(false);
     }
@@ -338,6 +357,19 @@ function DashboardContent() {
               })()}
             </span>
             <button onClick={() => setShowSuccess(false)} className="text-emerald-600">
+              <XCircle className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
+        {toast && (
+          <div className={`mb-6 px-4 py-3 rounded-lg flex items-center justify-between text-sm font-medium border ${
+            toast.type === 'success'
+              ? 'border-emerald-200 text-emerald-800 bg-emerald-50'
+              : 'border-red-200 text-red-800 bg-red-50'
+          }`}>
+            <span>{toast.message}</span>
+            <button onClick={() => setToast(null)} className={toast.type === 'success' ? 'text-emerald-600' : 'text-red-600'}>
               <XCircle className="w-5 h-5" />
             </button>
           </div>
@@ -422,9 +454,13 @@ function DashboardContent() {
                 <tbody>
                   {plans.map(plan => {
                     const draftName = plan.draft_id ? draftNamesByPlanId[plan.draft_id] : undefined;
-                    const planLabel = draftName?.trim() || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
+                    const planLabel = draftName?.trim() || plan.business_name || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
+                    const isPaid = plan.export_paid || plan.payment_status === 'paid';
                     const pdfUrl = plan.pdf_url ?? plan.full_plan?.documents?.pdf_url ?? null;
                     const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;
+                    const validation = plan.full_plan?.validation;
+                    const exportBlocked = validation?.block_export === true ||
+                      validation?.section_1_overall_assessment?.audit_readiness === 'Major Gaps';
                     const reviewStatus = plan.review_status === 'completed'
                       ? 'Reviewed'
                       : plan.review_requested
@@ -437,7 +473,15 @@ function DashboardContent() {
                       <tr key={plan.id} className="border-t">
                         <td className="px-4 py-2">{planLabel}</td>
                         <td className="px-4 py-2">
-                          {pdfUrl ? (
+                          {exportBlocked ? (
+                            <span className="inline-flex items-center gap-1 text-red-400 text-xs" title="Export blocked — critical compliance gaps detected">
+                              <Ban className="w-3 h-3" /> Blocked
+                            </span>
+                          ) : isPaid ? (
+                            <button onClick={() => handleDownload(plan.id, 'pdf', plan.business_name)} className="text-blue-600 hover:underline">
+                              PDF
+                            </button>
+                          ) : pdfUrl ? (
                             <a href={pdfUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
                               PDF
                             </a>
@@ -446,7 +490,15 @@ function DashboardContent() {
                           )}
                         </td>
                         <td className="px-4 py-2">
-                          {docxUrl ? (
+                          {exportBlocked ? (
+                            <span className="inline-flex items-center gap-1 text-red-400 text-xs" title="Export blocked — critical compliance gaps detected">
+                              <Ban className="w-3 h-3" /> Blocked
+                            </span>
+                          ) : isPaid ? (
+                            <button onClick={() => handleDownload(plan.id, 'word', plan.business_name)} className="text-blue-600 hover:underline">
+                              Word
+                            </button>
+                          ) : docxUrl ? (
                             <a href={docxUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
                               Word
                             </a>
@@ -464,7 +516,17 @@ function DashboardContent() {
                           )}
                         </td>
                         <td className="px-4 py-2">
-                          {reviewStatus}
+                          {exportBlocked ? (
+                            <span className="text-xs font-semibold text-red-500">Export Blocked</span>
+                          ) : plan.review_status === 'completed' ? (
+                            <span className="text-xs font-semibold text-emerald-600">Reviewed — ready to use</span>
+                          ) : plan.review_requested || plan.review_status === 'pending' ? (
+                            <span className="text-xs font-semibold text-purple-600">Review in progress</span>
+                          ) : plan.export_paid ? (
+                            <span className="text-xs font-semibold text-emerald-600">Exports unlocked — download below</span>
+                          ) : (
+                            <span className="text-xs text-slate-500">Upgrade to unlock clean exports</span>
+                          )}
                         </td>
                         <td className="px-4 py-2 text-right flex justify-end items-center gap-2">
                           {plan.export_paid ? (
@@ -473,7 +535,7 @@ function DashboardContent() {
                              </span>
                           ) : (
                              <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline text-sm font-medium">
-                               Upgrade Pro
+                               {PLAN_TIERS.professional.upgradeLabel}
                              </button>
                           )}
 
@@ -501,7 +563,7 @@ function DashboardContent() {
                             }
                             return (
                               <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
-                                Request Review
+                                {PLAN_TIERS.expert.upgradeLabel}
                               </button>
                             );
                           })()}
