@@ -41,6 +41,7 @@ export default function HACCPMasterFlow() {
   const pendingSaveRef = useRef<any>(null);
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const autoSaveFadeRef = useRef<NodeJS.Timeout | null>(null);
+  const isGeneratingRef = useRef(false);
   const hasInitialized = useRef(false);
   const stepSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const anonSnapshotKey = 'haccp_anon_snapshot';
@@ -931,6 +932,8 @@ export default function HACCPMasterFlow() {
   };
 
   const generatePlan = async (answers: any) => {
+    if (isGeneratingRef.current) return;
+    isGeneratingRef.current = true;
     try {
         const payload = {
             ...answers,
@@ -976,6 +979,8 @@ export default function HACCPMasterFlow() {
     } catch (e) {
         console.error(e);
         alert("Generation failed");
+    } finally {
+        isGeneratingRef.current = false;
     }
   };
 
@@ -2319,10 +2324,26 @@ export default function HACCPMasterFlow() {
                     </span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
+                    <div
                         className="h-full bg-blue-600 transition-all duration-500 ease-out rounded-full"
                         style={{ width: `${progress}%` }}
                     />
+                </div>
+                <div className="flex justify-between mt-2">
+                  {(['product','process','prp','hazards','ccp_determination','ccp_management','review_validation'] as const).map((step, i) => {
+                    const steps = ['product','process','prp','hazards','ccp_determination','ccp_management','review_validation'];
+                    const currentIdx = steps.indexOf(currentSection);
+                    const done = i < currentIdx || currentSection === 'generating' || currentSection === 'validating' || currentSection === 'complete';
+                    const active = step === currentSection;
+                    return (
+                      <div key={step} className="flex flex-col items-center" style={{ width: `${100/7}%` }}>
+                        <div className={`w-2 h-2 rounded-full ${active ? 'bg-blue-600 ring-2 ring-blue-200' : done ? 'bg-blue-400' : 'bg-slate-200'}`} />
+                        <span className={`text-[9px] mt-0.5 leading-tight text-center ${active ? 'text-blue-700 font-bold' : done ? 'text-slate-400' : 'text-slate-300'}`}>
+                          {['Product','Process','PRP','Hazards','CCP ID','CCP Mgmt','Review'][i]}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
             </div>
         </div>
