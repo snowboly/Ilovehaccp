@@ -12,7 +12,8 @@ import {
   ShieldCheck,
   Settings,
   LogOut,
-  Loader2
+  Loader2,
+  Ban
 } from 'lucide-react';
 import { Suspense } from 'react';
 type Draft = Plan & { name?: string | null };
@@ -422,9 +423,12 @@ function DashboardContent() {
                 <tbody>
                   {plans.map(plan => {
                     const draftName = plan.draft_id ? draftNamesByPlanId[plan.draft_id] : undefined;
-                    const planLabel = draftName?.trim() || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
+                    const planLabel = draftName?.trim() || plan.business_name || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
                     const pdfUrl = plan.pdf_url ?? plan.full_plan?.documents?.pdf_url ?? null;
                     const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;
+                    const validation = plan.full_plan?.validation;
+                    const exportBlocked = validation?.block_export === true ||
+                      validation?.section_1_overall_assessment?.audit_readiness === 'Major Gaps';
                     const reviewStatus = plan.review_status === 'completed'
                       ? 'Reviewed'
                       : plan.review_requested
@@ -437,7 +441,11 @@ function DashboardContent() {
                       <tr key={plan.id} className="border-t">
                         <td className="px-4 py-2">{planLabel}</td>
                         <td className="px-4 py-2">
-                          {pdfUrl ? (
+                          {exportBlocked ? (
+                            <span className="inline-flex items-center gap-1 text-red-400 text-xs" title="Export blocked — critical compliance gaps detected">
+                              <Ban className="w-3 h-3" /> Blocked
+                            </span>
+                          ) : pdfUrl ? (
                             <a href={pdfUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
                               PDF
                             </a>
@@ -446,7 +454,11 @@ function DashboardContent() {
                           )}
                         </td>
                         <td className="px-4 py-2">
-                          {docxUrl ? (
+                          {exportBlocked ? (
+                            <span className="inline-flex items-center gap-1 text-red-400 text-xs" title="Export blocked — critical compliance gaps detected">
+                              <Ban className="w-3 h-3" /> Blocked
+                            </span>
+                          ) : docxUrl ? (
                             <a href={docxUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
                               Word
                             </a>
