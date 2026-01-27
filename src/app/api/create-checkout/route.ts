@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { supabaseService } from '@/lib/supabase';
+import { PLAN_TIERS, TierKey } from '@/lib/constants';
 
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' as any })
@@ -44,32 +45,18 @@ export async function POST(req: Request) {
     }
 
     // --- FEATURE & PRICING DEFINITION ---
-    // Source of truth for features. Prices updated to new requirements.
-    const prices: Record<string, { 
-        amount: number; 
-        name: string; 
-        desc: string; 
-        features: { export: boolean; review: boolean };
-    }> = {
-      professional: { 
-          amount: 3900, // €39
-          name: `Export Unlock: ${businessName}`,
-          desc: "Includes Word & PDF export. Self-service document only.",
-          features: { export: true, review: false }
-      },
-      expert: { 
-          amount: 9900, // €99 (Updated from €79)
-          name: `Expert Review: ${businessName}`,
-          desc: "Professional review & feedback + Export Unlock.",
-          features: { export: true, review: true } // Review implies Export
-      },
-    };
-
-    if (!prices[tier]) {
+    // Source of truth: PLAN_TIERS in @/lib/constants.ts
+    if (!PLAN_TIERS[tier as TierKey]) {
       throw new Error('Invalid tier selected');
     }
 
-    const selectedPrice = prices[tier];
+    const t = PLAN_TIERS[tier as TierKey];
+    const selectedPrice = {
+      amount: t.amount,
+      name: `${t.label}: ${businessName}`,
+      desc: t.desc,
+      features: t.features,
+    };
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],

@@ -7,7 +7,7 @@ import HACCPQuestionnaire from './HACCPQuestionnaire';
 import { getQuestions } from '@/data/haccp/loader';
 import { useLanguage } from '@/lib/i18n';
 
-import { AlertTriangle, Info, ShieldAlert, CheckCircle2, Loader2 } from 'lucide-react';
+import { AlertTriangle, Info, ShieldAlert, CheckCircle2, Loader2, CloudOff, Check, CloudUpload } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
@@ -39,6 +39,8 @@ export default function HACCPMasterFlow() {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isSavingRef = useRef(false);
   const pendingSaveRef = useRef<any>(null);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const autoSaveFadeRef = useRef<NodeJS.Timeout | null>(null);
   const hasInitialized = useRef(false);
   const stepSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const anonSnapshotKey = 'haccp_anon_snapshot';
@@ -373,7 +375,8 @@ export default function HACCPMasterFlow() {
         if (!dataToSave) return;
 
         isSavingRef.current = true;
-        
+        setAutoSaveStatus('saving');
+
         try {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
@@ -407,8 +410,12 @@ export default function HACCPMasterFlow() {
             if (pendingSaveRef.current === dataToSave) {
                 pendingSaveRef.current = null;
             }
+            setAutoSaveStatus('saved');
+            if (autoSaveFadeRef.current) clearTimeout(autoSaveFadeRef.current);
+            autoSaveFadeRef.current = setTimeout(() => setAutoSaveStatus('idle'), 3000);
         } catch (e) {
             console.error("Autosave failed", e);
+            setAutoSaveStatus('error');
         } finally {
             isSavingRef.current = false;
             // If new data came in while saving, trigger another save immediately
@@ -2292,7 +2299,24 @@ export default function HACCPMasterFlow() {
             <div className="max-w-3xl mx-auto px-6 py-4">
                 <div className="flex justify-between items-end mb-2">
                     <span className="text-xs font-black text-slate-900 uppercase tracking-wider">{getSectionTitle(currentSection)}</span>
-                    <span className="text-xs font-bold text-slate-400">{progress}%</span>
+                    <span className="flex items-center gap-2">
+                      {autoSaveStatus === 'saving' && (
+                        <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                          <CloudUpload className="w-3 h-3 animate-pulse" /> Saving…
+                        </span>
+                      )}
+                      {autoSaveStatus === 'saved' && (
+                        <span className="inline-flex items-center gap-1 text-xs text-emerald-500">
+                          <Check className="w-3 h-3" /> Saved
+                        </span>
+                      )}
+                      {autoSaveStatus === 'error' && (
+                        <span className="inline-flex items-center gap-1 text-xs text-red-500">
+                          <CloudOff className="w-3 h-3" /> Save failed
+                        </span>
+                      )}
+                      <span className="text-xs font-bold text-slate-400">{progress}%</span>
+                    </span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div 
