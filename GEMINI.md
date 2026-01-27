@@ -2,6 +2,30 @@
 
 ## Implementation Status
 
+- v3.37 Auditor Alignment & Legal Hardening (Jan 27, 2026):
+- **Legal Copy Overhaul:**
+    - **Conservative Language:** Updated Terms of Service and Builder UI to use strictly non-authoritative language (e.g., "Drafting Aid" vs "Compliance Tool").
+    - **Explicit Disclaimers:** Added "Nature of Service", "No Reliance", and "AI Disclaimer" clauses to ToS to explicitly limit liability and define the service scope.
+    - **Review Scope:** Clarified "Professional Review" as advisory-only, explicitly stating it does not guarantee audit success or provide regulatory validation.
+- **Builder UI Updates:**
+    - **Summary Page:** Renamed "Draft Review Required" to "Automated Draft Summary" with a prominent disclaimer about system assumptions.
+    - **Transparency:** Updated "Gaps & Assumptions" intro to neutrally describe it as a record of information used.
+    - **Export Blocking:** Changed blocked export messaging to be neutral ("unavailable") rather than error-focused ("Major gaps").
+- **Conflict Resolution:**
+    - **Merge Fix:** Resolved conflict in `HACCPMasterFlow.tsx` preserving legally conservative descriptions while maintaining `PLAN_TIERS` constant consistency.
+
+- v3.36 Stripe Flow & Dashboard "PAID" State (Jan 26, 2026):
+- **Robust Entitlements:**
+    - **Metadata-Driven:** Eliminated fragile tier-name logic. Access is now controlled by explicit Stripe metadata flags (`features_export`, `features_review`).
+    - **Business Rule:** Enforced "Review implies Export" logic at the webhook level.
+- **Strict Idempotency:**
+    - **Event Tracking:** Introduced `stripe_processed_events` table to prevent duplicate processing of Stripe retries via `event.id` primary key.
+    - **Transaction Locking:** Stored `checkout_session_id` on plans to ensure "one email per unique payment" behavior.
+- **Dashboard UI Overhaul:**
+    - **Granular Badges:** Replaced generic upgrade buttons with authoritative "PAID", "IN REVIEW", and "REVIEWED" states driven by new boolean flags.
+    - **Rename-Proof:** Loosened the `Plan` type to accept any `tier` string, ensuring future Stripe product renames don't break the UI.
+- **Price Update:** Successfully transitioned "Expert Review" to **€99** (€79 legacy prices are still supported via metadata flags).
+
 - v3.35 Builder UX & PDF Stability (Jan 25, 2026):
 - **PDF Engine Overhaul:**
     - **Reliability:** Enforced Node.js runtime and implemented robust buffer normalization to eliminate 500 errors during export.
