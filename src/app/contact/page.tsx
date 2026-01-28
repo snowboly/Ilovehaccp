@@ -12,17 +12,50 @@ function ContactForm() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState('General Inquiry');
+  const [captchaQuestion, setCaptchaQuestion] = useState('');
+  const [captchaAnswer, setCaptchaAnswer] = useState('');
+  const [captchaLoading, setCaptchaLoading] = useState(true);
+  const [captchaError, setCaptchaError] = useState<string | null>(null);
 
   useEffect(() => {
     const sub = searchParams.get('subject');
-    if (sub === 'Review') setSelectedSubject('Plan Review');
-    else if (sub === 'Enterprise') setSelectedSubject('Enterprise / Custom Plan');
+    if (sub === 'Review') setSelectedSubject('Plan Review & Feedback');
+    else if (sub === 'Export') setSelectedSubject('Document Export');
   }, [searchParams]);
+
+  const fetchCaptcha = async () => {
+    setCaptchaLoading(true);
+    setCaptchaError(null);
+    try {
+      const response = await fetch('/api/contact-captcha');
+      if (!response.ok) {
+        throw new Error('Failed to load captcha.');
+      }
+      const payload = await response.json();
+      setCaptchaQuestion(payload.question);
+      setCaptchaAnswer('');
+    } catch (err) {
+      console.error('Captcha error:', err);
+      setCaptchaError('Unable to load captcha. Please refresh.');
+    } finally {
+      setCaptchaLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCaptcha();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    if (!captchaAnswer.trim()) {
+      setError('Please complete the captcha to continue.');
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
     const data = {
@@ -30,6 +63,7 @@ function ContactForm() {
       email: formData.get('email'),
       subject: formData.get('subject'),
       message: formData.get('message'),
+      captchaAnswer: captchaAnswer.trim(),
     };
 
     try {
@@ -39,17 +73,23 @@ function ContactForm() {
 
       if (submitError) throw submitError;
 
-      // Notify owner via email (don't block UI if it fails)
-      fetch('/api/send-contact-email', {
+      const emailResponse = await fetch('/api/send-contact-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
-      }).catch(console.error);
+      });
+
+      const emailPayload = await emailResponse.json();
+      if (!emailResponse.ok || !emailPayload.success) {
+        throw new Error(emailPayload.error || 'Failed to send email notification.');
+      }
 
       setSent(true);
+      fetchCaptcha();
     } catch (err: any) {
       console.error('Contact error:', err);
-      setError('Failed to send message. Please try again.');
+      setError(err?.message || 'Failed to send message. Please try again.');
+      fetchCaptcha();
     } finally {
       setLoading(false);
     }
@@ -95,8 +135,9 @@ function ContactForm() {
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             >
               <option>General Inquiry</option>
-              <option>Plan Review</option>
-              <option>Enterprise / Custom Plan</option>
+              <option>Free Draft</option>
+              <option>Document Export</option>
+              <option>Plan Review & Feedback</option>
               <option>Technical Support</option>
               <option>Partnership</option>
             </select>
@@ -104,6 +145,38 @@ function ContactForm() {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Message</label>
             <textarea name="message" required rows={4} className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="How can we help you?" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Captcha</label>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between text-sm text-slate-600">
+                <span>
+                  {captchaLoading ? 'Loading question…' : captchaQuestion || 'Captcha unavailable.'}
+                </span>
+                <button
+                  type="button"
+                  onClick={fetchCaptcha}
+                  className="text-blue-600 hover:underline text-sm font-medium"
+                >
+                  Refresh
+                </button>
+              </div>
+              <input
+                name="captcha"
+                type="text"
+                value={captchaAnswer}
+                onChange={(e) => setCaptchaAnswer(e.target.value)}
+                required
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="Answer the question"
+                aria-describedby={captchaError ? 'captcha-error' : undefined}
+              />
+              {captchaError && (
+                <p id="captcha-error" className="text-xs text-red-600">
+                  {captchaError}
+                </p>
+              )}
+            </div>
           </div>
           <button 
             type="submit" 
@@ -125,7 +198,7 @@ export default function ContactPage() {
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-slate-900">Get in Touch</h1>
           <p className="mt-4 text-lg text-slate-500">
-            Questions about our Enterprise plans or need audit support? We&apos;re here to help.
+            Questions about Free Draft, Document Export, or Plan Review &amp; Feedback? We&apos;re here to help.
           </p>
         </div>
 
