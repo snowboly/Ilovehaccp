@@ -58,6 +58,14 @@
           "required": true
         },
         {
+          "id": "monitoring_frequency_other",
+          "text": "Especifique a frequência de monitoramento",
+          "type": "text",
+          "required": true,
+          "placeholder": "ex., A cada 2 horas, Duas vezes por turno, Semanal",
+          "show_if": { "questionId": "monitoring_frequency", "value": "Outro" }
+        },
+        {
           "id": "monitoring_responsibility",
           "text": "Quem é responsável pelo monitoramento?",
           "type": "text",

@@ -506,11 +506,22 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                          if (!allFalse) return null;
                     }
 
+                    // Conditional visibility: show only when a sibling field matches the expected value
+                    if (subQ.show_if) {
+                        const siblingValue = value?.[subQ.show_if.questionId];
+                        const expected = subQ.show_if.value;
+                        if (Array.isArray(expected)) {
+                            if (!expected.includes(siblingValue)) return null;
+                        } else if (siblingValue !== expected) {
+                            return null;
+                        }
+                    }
+
                     return (
                         <div key={subQ.id} className="border-t border-slate-100 pt-4 first:border-0 first:pt-0">
-                            <QuestionCard 
-                                question={subQ} 
-                                value={value?.[subQ.id]} 
+                            <QuestionCard
+                                question={subQ}
+                                value={value?.[subQ.id]}
                                 onChange={(id, val) => onChange(question.id, { ...value, [id]: val })}
                             />
                         </div>

@@ -14,6 +14,7 @@
           "text": "¿Hay peligros biológicos razonablemente probables de ocurrir en este paso?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Los peligros biológicos incluyen bacterias (Salmonella, E. coli, Listeria), virus (Norovirus, Hepatitis A), parásitos (Anisakis en pescado) y mohos/levaduras. Considere la contaminación por materias primas, personal, plagas o el ambiente.",
           "conditional_questions": [
             {
               "id": "bio_hazards_description",
@@ -29,6 +30,7 @@
           "text": "¿Hay peligros químicos razonablemente probables de ocurrir en este paso?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Los peligros químicos incluyen agentes de limpieza, residuos de desinfectantes, pesticidas, metales pesados, aditivos alimentarios por encima de niveles seguros y lubricantes de maquinaria. También considere la migración desde materiales de embalaje.",
           "conditional_questions": [
             {
               "id": "chem_hazards_description",
@@ -44,6 +46,7 @@
           "text": "¿Hay peligros físicos razonablemente probables de ocurrir en este paso?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Los peligros físicos incluyen fragmentos de metal, vidrio roto, astillas de hueso, piedras, madera, trozos de plástico duro, joyas y plagas o partes de plagas. Considere riesgos por desgaste de equipos, embalaje o materias primas.",
           "conditional_questions": [
             {
               "id": "phys_hazards_description",
@@ -59,6 +62,7 @@
           "text": "¿Hay peligros de alérgenos razonablemente probables de ocurrir en este paso?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Los 14 alérgenos principales (UE/UK): apio, cereales con gluten, crustáceos, huevos, pescado, altramuces, leche, moluscos, mostaza, frutos secos, cacahuetes, sésamo, soja, dióxido de azufre. Considere el contacto cruzado por equipos, utensilios o superficies compartidas.",
           "conditional_questions": [
             {
               "id": "allergen_hazards_description",

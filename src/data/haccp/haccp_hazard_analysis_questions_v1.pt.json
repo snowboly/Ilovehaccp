@@ -14,6 +14,7 @@
           "text": "Existem riscos biológicos razoavelmente prováveis de ocorrer nesta etapa?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Os riscos biológicos incluem bactérias (Salmonella, E. coli, Listeria), vírus (Norovírus, Hepatite A), parasitas (Anisakis em peixes) e bolores/leveduras. Considere a contaminação por matérias-primas, pessoal, pragas ou o ambiente.",
           "conditional_questions": [
             {
               "id": "bio_hazards_description",
@@ -29,6 +30,7 @@
           "text": "Existem riscos químicos razoavelmente prováveis de ocorrer nesta etapa?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Os riscos químicos incluem agentes de limpeza, resíduos de desinfetantes, pesticidas, metais pesados, aditivos alimentares acima dos níveis seguros e lubrificantes de máquinas. Considere também a migração de materiais de embalagem.",
           "conditional_questions": [
             {
               "id": "chem_hazards_description",
@@ -44,6 +46,7 @@
           "text": "Existem riscos físicos razoavelmente prováveis de ocorrer nesta etapa?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Os riscos físicos incluem fragmentos de metal, estilhaços de vidro, lascas de osso, pedras, madeira, pedaços de plástico duro, joias e pragas ou partes de pragas. Considere riscos do desgaste de equipamentos, embalagem ou matérias-primas.",
           "conditional_questions": [
             {
               "id": "phys_hazards_description",
@@ -59,6 +62,7 @@
           "text": "Existem riscos de alérgenos razoavelmente prováveis de ocorrer nesta etapa?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Os 14 principais alérgenos (UE/UK): aipo, cereais com glúten, crustáceos, ovos, peixe, tremoço, leite, moluscos, mostarda, nozes, amendoins, sésamo, soja, dióxido de enxofre. Considere o contacto cruzado por equipamentos, utensílios ou superfícies partilhadas.",
           "conditional_questions": [
             {
               "id": "allergen_hazards_description",

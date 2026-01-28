@@ -14,6 +14,7 @@
           "text": "Are there BIOLOGICAL hazards reasonably likely to occur at this step?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Biological hazards include bacteria (Salmonella, E. coli, Listeria), viruses (Norovirus, Hepatitis A), parasites (Anisakis in fish), and moulds/yeasts. Consider contamination from raw materials, staff, pests, or the environment.",
           "conditional_questions": [
             {
               "id": "bio_hazards_description",
@@ -30,6 +31,7 @@
           "text": "Are there CHEMICAL hazards reasonably likely to occur at this step?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Chemical hazards include cleaning agents, sanitiser residues, pesticides, heavy metals, food additives above safe levels, and lubricants from machinery. Also consider migration from packaging materials.",
           "conditional_questions": [
             {
               "id": "chem_hazards_description",
@@ -46,6 +48,7 @@
           "text": "Are there PHYSICAL hazards reasonably likely to occur at this step?",
           "type": "boolean",
           "required": true,
+          "tooltip": "Physical hazards include metal fragments, glass shards, bone splinters, stones, wood, hard plastic pieces, jewellery, and pests or pest parts. Consider risks from equipment wear, packaging, or raw materials.",
           "conditional_questions": [
             {
               "id": "phys_hazards_description",
@@ -62,6 +65,7 @@
           "text": "Are there ALLERGEN hazards reasonably likely to occur at this step?",
           "type": "boolean",
           "required": true,
+          "tooltip": "The 14 major allergens (EU/UK): celery, cereals containing gluten, crustaceans, eggs, fish, lupin, milk, molluscs, mustard, nuts, peanuts, sesame, soybeans, sulphur dioxide. Consider cross-contact from shared equipment, utensils, or surfaces.",
           "conditional_questions": [
             {
               "id": "allergen_hazards_description",
