@@ -9,12 +9,13 @@ interface Props {
   dict: any;
 }
 
-const HACCPDocument = ({ data, dict, logo, template: _template }: Props) => {
+const HACCPDocument = ({ data, dict, logo, template }: Props) => {
   const doc = buildExportDoc({
     data,
     dict,
     lang: data?.lang || "en",
     logoDataUri: logo ?? null,
+    template,
   });
   return <HACCPDocumentModular doc={doc} />;
 };
