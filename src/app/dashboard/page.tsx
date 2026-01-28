@@ -12,8 +12,7 @@ import {
   ShieldCheck,
   Settings,
   LogOut,
-  Loader2,
-  Ban
+  Loader2
 } from 'lucide-react';
 import { PLAN_TIERS } from '@/lib/constants';
 import { Suspense } from 'react';
@@ -458,9 +457,6 @@ function DashboardContent() {
                     const isPaid = plan.export_paid || plan.payment_status === 'paid';
                     const pdfUrl = plan.pdf_url ?? plan.full_plan?.documents?.pdf_url ?? null;
                     const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;
-                    const validation = plan.full_plan?.validation;
-                    const exportBlocked = validation?.block_export === true ||
-                      validation?.section_1_overall_assessment?.audit_readiness === 'Major Gaps';
                     const reviewStatus = plan.review_status === 'completed'
                       ? 'Reviewed'
                       : plan.review_requested
@@ -473,11 +469,7 @@ function DashboardContent() {
                       <tr key={plan.id} className="border-t">
                         <td className="px-4 py-2">{planLabel}</td>
                         <td className="px-4 py-2">
-                          {exportBlocked ? (
-                            <span className="inline-flex items-center gap-1 text-red-400 text-xs" title="Export blocked — critical compliance gaps detected">
-                              <Ban className="w-3 h-3" /> Blocked
-                            </span>
-                          ) : isPaid ? (
+                          {isPaid ? (
                             <button onClick={() => handleDownload(plan.id, 'pdf', plan.business_name)} className="text-blue-600 hover:underline">
                               PDF
                             </button>
@@ -490,11 +482,7 @@ function DashboardContent() {
                           )}
                         </td>
                         <td className="px-4 py-2">
-                          {exportBlocked ? (
-                            <span className="inline-flex items-center gap-1 text-red-400 text-xs" title="Export blocked — critical compliance gaps detected">
-                              <Ban className="w-3 h-3" /> Blocked
-                            </span>
-                          ) : isPaid ? (
+                          {isPaid ? (
                             <button onClick={() => handleDownload(plan.id, 'word', plan.business_name)} className="text-blue-600 hover:underline">
                               Word
                             </button>
@@ -516,9 +504,7 @@ function DashboardContent() {
                           )}
                         </td>
                         <td className="px-4 py-2">
-                          {exportBlocked ? (
-                            <span className="text-xs font-semibold text-red-500">Export Blocked</span>
-                          ) : plan.review_status === 'completed' ? (
+                          {plan.review_status === 'completed' ? (
                             <span className="text-xs font-semibold text-emerald-600">Reviewed — ready to use</span>
                           ) : plan.review_requested || plan.review_status === 'pending' ? (
                             <span className="text-xs font-semibold text-purple-600">Review in progress</span>
