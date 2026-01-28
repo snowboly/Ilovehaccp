@@ -355,7 +355,13 @@ export const translations = {
       },
       tk_train_title: "Appendix C: Staff Training Record",
       col_employee: "Employee Name",
-      col_train_desc: "Training Description (e.g. HACCP Level 2)"
+      col_train_desc: "Training Description (e.g. HACCP Level 2)",
+      cover_created_by: "Created by",
+      cover_approved_by: "Approved by",
+      cover_date: "Date",
+      cover_version: "Version",
+      lbl_page: "Page",
+      lbl_of: "of"
     }
   },
   es: {
@@ -707,7 +713,13 @@ export const translations = {
       },
       tk_train_title: "Apéndice C: Registro de Capacitación",
       col_employee: "Nombre del Empleado",
-      col_train_desc: "Descripción de la Capacitación"
+      col_train_desc: "Descripción de la Capacitación",
+      cover_created_by: "Creado por",
+      cover_approved_by: "Aprobado por",
+      cover_date: "Fecha",
+      cover_version: "Versión",
+      lbl_page: "Página",
+      lbl_of: "de"
     }
   },
   fr: {
@@ -1069,7 +1081,13 @@ export const translations = {
       },
       tk_train_title: "Annexe C : Registre de Formation",
       col_employee: "Nom de l\'Employé",
-      col_train_desc: "Description de la Formation"
+      col_train_desc: "Description de la Formation",
+      cover_created_by: "Créé par",
+      cover_approved_by: "Approuvé par",
+      cover_date: "Date",
+      cover_version: "Version",
+      lbl_page: "Page",
+      lbl_of: "de"
     }
   },
   pt: {
@@ -1431,7 +1449,13 @@ export const translations = {
       },
       tk_train_title: "Apêndice C: Registro de Treinamento",
       col_employee: "Nome do Funcionário",
-      col_train_desc: "Descrição do Treinamento"
+      col_train_desc: "Descrição do Treinamento",
+      cover_created_by: "Criado por",
+      cover_approved_by: "Aprovado por",
+      cover_date: "Data",
+      cover_version: "Versão",
+      lbl_page: "Página",
+      lbl_of: "de"
     }
   }
 };

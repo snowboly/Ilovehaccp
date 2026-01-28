@@ -10,6 +10,17 @@ export type ExportBlock =
   | { type: "subheading"; text: ExportText }
   | { type: "signature"; left: ExportText; right: ExportText };
 
+export interface ExportDocLabels {
+  documentTitle: string;
+  createdBy: string;
+  approvedBy: string;
+  date: string;
+  version: string;
+  page: string;
+  of: string;
+  subtitle: string;
+}
+
 export interface ExportDoc {
   meta: {
     versionId: string;
@@ -17,6 +28,8 @@ export interface ExportDoc {
     isPaid: boolean;
     logoDataUri?: string | null;
     logoBuffer?: ArrayBuffer | Buffer | null;
+    template?: string;
+    labels: ExportDocLabels;
   };
   cover: {
     pdf: {
@@ -131,11 +144,13 @@ export function buildExportDoc({
   dict,
   lang,
   logoDataUri,
+  template,
 }: {
   data: any;
   dict: any;
   lang: string;
   logoDataUri?: string | null;
+  template?: string;
 }): ExportDoc {
   const fullPlan = data.fullPlan ?? data.full_plan ?? {};
   const businessName = data.businessName || fullPlan.businessName || "";
@@ -385,6 +400,17 @@ export function buildExportDoc({
       isPaid,
       logoDataUri: logoDataUri ?? null,
       logoBuffer: data.logoBuffer ?? null,
+      template,
+      labels: {
+        documentTitle: dict.title || "HACCP Plan",
+        createdBy: dict.cover_created_by || "Created by",
+        approvedBy: dict.cover_approved_by || "Approved by",
+        date: dict.cover_date || "Date",
+        version: dict.cover_version || "Version",
+        page: dict.lbl_page || "Page",
+        of: dict.lbl_of || "of",
+        subtitle: dict.subtitle || "Food Safety Management System",
+      },
     },
     cover: {
       pdf: {

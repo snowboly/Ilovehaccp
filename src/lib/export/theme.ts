@@ -26,4 +26,11 @@ export const HACCP_THEME = {
     width: 0.75,
     radius: 0,
   },
+  /** Docapesca-classic template tokens */
+  docapesca: {
+    navyDark: "#1B2A4A",
+    accentBlue: "#2E6DB4",
+    ribbonWidth: 38,
+    accentLineWidth: 3,
+  },
 };

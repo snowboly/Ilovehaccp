@@ -15,7 +15,7 @@ import {
   ShadingType,
 } from "docx";
 import { HACCP_THEME as T } from "../theme";
-import { ExportBlock, ExportDoc, resolveExportText } from "../exportDoc";
+import { ExportBlock, ExportDoc, ExportDocLabels, resolveExportText } from "../exportDoc";
 import { renderWordTable } from "./renderTable";
 import { wrapIdForPdf } from "../wrap";
 
@@ -61,7 +61,6 @@ const renderSectionBand = (title: string) =>
   });
 
 const createHeaderTable = (logoBuffer: ArrayBuffer | Buffer | null | undefined, versionId: string, generatedDate: string) => {
-  const border = { color: T.colors.border.replace("#", ""), style: BorderStyle.SINGLE, size: 1 };
   const versionTable = new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: [
@@ -292,7 +291,293 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
   }
 };
 
+/* =========================================================
+   DOCAPESCA-CLASSIC WORD HELPERS
+   ========================================================= */
+
+const DC = T.docapesca;
+const noBorder = { style: BorderStyle.NONE, color: "FFFFFF", size: 0 };
+const noBorders = { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder };
+
+function buildDocapescaHeader(labels: ExportDocLabels, generatedDate: string): Header {
+  return new Header({
+    children: [
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                width: { size: 70, type: WidthType.PERCENTAGE },
+                borders: {
+                  ...noBorders,
+                  bottom: { color: DC.accentBlue.replace("#", ""), style: BorderStyle.SINGLE, size: 6 },
+                },
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: labels.documentTitle,
+                        font: "Calibri",
+                        size: T.font.body * 2,
+                        bold: true,
+                        color: DC.navyDark.replace("#", ""),
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+              new TableCell({
+                width: { size: 30, type: WidthType.PERCENTAGE },
+                borders: {
+                  ...noBorders,
+                  bottom: { color: DC.accentBlue.replace("#", ""), style: BorderStyle.SINGLE, size: 6 },
+                },
+                children: [
+                  new Paragraph({
+                    alignment: AlignmentType.RIGHT,
+                    children: [
+                      new TextRun({
+                        text: generatedDate,
+                        font: "Calibri",
+                        size: T.font.small * 2,
+                        color: T.colors.muted.replace("#", ""),
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  });
+}
+
+function buildDocapescaFooter(labels: ExportDocLabels, versionId: string): Footer {
+  return new Footer({
+    children: [
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                width: { size: 50, type: WidthType.PERCENTAGE },
+                borders: noBorders,
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: `${labels.version}: ${versionId}`,
+                        font: "Calibri",
+                        size: T.font.small * 2,
+                        color: T.colors.muted.replace("#", ""),
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+              new TableCell({
+                width: { size: 50, type: WidthType.PERCENTAGE },
+                borders: noBorders,
+                children: [
+                  new Paragraph({
+                    alignment: AlignmentType.RIGHT,
+                    children: [
+                      new TextRun({
+                        text: `${labels.page} `,
+                        font: "Calibri",
+                        size: T.font.small * 2,
+                        color: T.colors.muted.replace("#", ""),
+                      }),
+                      new TextRun({ children: [PageNumber.CURRENT], size: T.font.small * 2 }),
+                      new TextRun({
+                        text: ` ${labels.of} `,
+                        font: "Calibri",
+                        size: T.font.small * 2,
+                        color: T.colors.muted.replace("#", ""),
+                      }),
+                      new TextRun({ children: [PageNumber.TOTAL_PAGES], size: T.font.small * 2 }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  });
+}
+
+function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
+  const { labels } = doc.meta;
+  const blocks: (Paragraph | Table)[] = [];
+
+  // Logo top-right (rendered as right-aligned paragraph)
+  if (doc.meta.logoBuffer) {
+    blocks.push(
+      new Paragraph({
+        children: [
+          new ImageRun({
+            data: doc.meta.logoBuffer,
+            transformation: { width: 120, height: 60 },
+          } as any),
+        ],
+        alignment: AlignmentType.RIGHT,
+        spacing: { before: 400, after: 200 },
+      })
+    );
+  }
+
+  // Left border band via a single-cell table with thick left border
+  blocks.push(
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              borders: {
+                left: { color: DC.navyDark.replace("#", ""), style: BorderStyle.SINGLE, size: 48 },
+                top: noBorder,
+                bottom: noBorder,
+                right: noBorder,
+              },
+              margins: {
+                top: toTwips(80),
+                bottom: toTwips(80),
+                left: toTwips(24),
+                right: toTwips(24),
+              },
+              children: [
+                // Title
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  spacing: { after: 300 },
+                  children: [
+                    new TextRun({
+                      text: labels.documentTitle.toUpperCase(),
+                      font: "Calibri",
+                      size: 52,
+                      bold: true,
+                      color: DC.navyDark.replace("#", ""),
+                    }),
+                  ],
+                }),
+                // Subtitle (business name or system subtitle)
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  spacing: { after: 200 },
+                  children: [
+                    new TextRun({
+                      text: doc.cover.docx.subtitle || labels.subtitle,
+                      font: "Calibri",
+                      size: 28,
+                      color: T.colors.text.replace("#", ""),
+                    }),
+                  ],
+                }),
+                // Business name
+                ...(doc.cover.docx.businessName
+                  ? [
+                      new Paragraph({
+                        alignment: AlignmentType.CENTER,
+                        spacing: { after: 400 },
+                        children: [
+                          new TextRun({
+                            text: doc.cover.docx.businessName,
+                            font: "Calibri",
+                            size: 24,
+                            bold: true,
+                            color: T.colors.text.replace("#", ""),
+                          }),
+                        ],
+                      }),
+                    ]
+                  : []),
+              ],
+            }),
+          ],
+        }),
+      ],
+    })
+  );
+
+  // Metadata lines
+  const metaLines: { label: string; value: string }[] = [
+    { label: labels.createdBy, value: "________________________________________" },
+    { label: labels.approvedBy, value: "________________________________________" },
+    { label: labels.date, value: doc.meta.generatedDate },
+    { label: labels.version, value: doc.meta.versionId },
+  ];
+
+  blocks.push(
+    new Paragraph({ text: "", spacing: { before: 600 } }),
+    ...metaLines.map(
+      (m) =>
+        new Paragraph({
+          spacing: { after: 80 },
+          children: [
+            new TextRun({
+              text: `${m.label}: `,
+              font: "Calibri",
+              size: T.font.body * 2,
+              bold: true,
+              color: DC.navyDark.replace("#", ""),
+            }),
+            new TextRun({
+              text: m.value,
+              font: "Calibri",
+              size: T.font.body * 2,
+              color: T.colors.text.replace("#", ""),
+            }),
+          ],
+        })
+    ),
+    new Paragraph({ text: "", pageBreakBefore: true })
+  );
+
+  return blocks;
+}
+
+/* =========================================================
+   MAIN EXPORT FUNCTION
+   ========================================================= */
+
 export async function generateModularWordDocument(doc: ExportDoc): Promise<Document> {
+  const isDocapesca = doc.meta.template === "docapesca-classic";
+
+  if (isDocapesca) {
+    const dcHeader = buildDocapescaHeader(doc.meta.labels, doc.meta.generatedDate);
+    const dcFooter = buildDocapescaFooter(doc.meta.labels, doc.meta.versionId);
+    const dcCover = buildDocapescaCoverBlocks(doc);
+    const contentBlocks = doc.content.flatMap((block) => renderDocxBlock(block));
+
+    return new Document({
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: toTwips(T.spacing.pagePadding),
+                right: toTwips(T.spacing.pagePadding),
+                bottom: toTwips(T.spacing.pagePadding),
+                left: toTwips(T.spacing.pagePadding),
+              },
+            },
+          },
+          headers: { default: dcHeader },
+          footers: { default: dcFooter },
+          children: [...dcCover, ...contentBlocks],
+        },
+      ],
+    });
+  }
+
+  /* DEFAULT template (unchanged) */
   const header = new Header({
     children: [
       createHeaderTable(doc.meta.logoBuffer ?? null, doc.meta.versionId, doc.meta.generatedDate),
