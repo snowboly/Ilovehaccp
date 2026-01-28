@@ -46,6 +46,7 @@ export default function HACCPMasterFlow() {
   const isGeneratingRef = useRef(false);
   const hasInitialized = useRef(false);
   const stepSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const returnToCompleteRef = useRef(false);
   const anonSnapshotKey = 'haccp_anon_snapshot';
   const isValidUuid = (value: string) =>
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
@@ -775,6 +776,20 @@ export default function HACCPMasterFlow() {
         }, 1500);
     };
 
+    // If editing from complete section, save and return there instead of continuing flow
+    if (returnToCompleteRef.current) {
+        returnToCompleteRef.current = false;
+        // Clear the returnTo param from URL
+        const params = new URLSearchParams(window.location.search);
+        params.delete('returnTo');
+        params.delete('step');
+        window.history.replaceState({}, '', `?${params.toString()}`);
+        // Trigger auto-save with new answers
+        setAllAnswers(newAnswers);
+        triggerTransition("Changes saved! Returning to summary...", 'complete');
+        return;
+    }
+
     // Navigation Logic
     switch (sectionKey) {
       case 'product':
@@ -1256,11 +1271,18 @@ export default function HACCPMasterFlow() {
 
   useEffect(() => {
       const urlStep = searchParams.get('step') as SectionKey;
+      const returnTo = searchParams.get('returnTo');
+
+      // Track if we should return to complete after this edit
+      if (returnTo === 'complete') {
+          returnToCompleteRef.current = true;
+      }
+
       if (urlStep && urlStep !== currentSection) {
           // Verify we have data to support this jump (pessimistic)
           if (urlStep === 'process' && !allAnswers.product) return;
           if (urlStep === 'hazards' && !allAnswers.process) return;
-          
+
           setCurrentSection(urlStep);
       }
   }, [searchParams]);
@@ -1274,10 +1296,10 @@ export default function HACCPMasterFlow() {
       }
   }, [currentSection]);
 
-  const openCheckoutInNewTab = async (tier: 'professional' | 'expert') => {
+  const openCheckout = async (tier: 'professional' | 'expert') => {
       const actionKey = tier === 'professional' ? 'checkout_professional' : 'checkout_expert';
       if (busyAction) return;
-      
+
       triggerPulse(actionKey);
       setBusyAction(actionKey);
 
@@ -1297,41 +1319,31 @@ export default function HACCPMasterFlow() {
               return;
           }
 
-          // Open Tab PRE-FETCH (Popup Blocker Bypass)
-          const w = window.open("about:blank", "_blank", "noopener,noreferrer");
-          if (!w) {
-              alert("Please allow popups for this site to open the checkout.");
-              setBusyAction(null);
-              return;
-          }
-          
-          w.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;">Opening Secure Checkout...</body></html>');
-
           const res = await fetch('/api/create-checkout', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${session.access_token}`
               },
-              body: JSON.stringify({ 
-                  tier, 
-                  planId: generatedPlan.id, 
-                  businessName: allAnswers.product?.businessLegalName || "My Business" 
+              body: JSON.stringify({
+                  tier,
+                  planId: generatedPlan.id,
+                  businessName: allAnswers.product?.businessLegalName || "My Business"
               })
           });
 
           const data = await res.json();
           if (data.url) {
-              w.location.href = data.url;
+              // Navigate in same tab - back button returns to Stripe cancel URL (/builder?id=...)
+              window.location.href = data.url;
           } else {
-              w.close();
               alert(data.error || "Failed to start checkout");
+              setBusyAction(null);
           }
       } catch (e) {
           console.error(e);
           alert("System error starting checkout.");
-      } finally {
-          setTimeout(() => setBusyAction(null), 500);
+          setBusyAction(null);
       }
   };
 
@@ -1875,9 +1887,9 @@ export default function HACCPMasterFlow() {
       };
 
       const editUrlForStep = (step: SectionKey) => {
-          if (draftId) return `/builder?draft=${draftId}&step=${step}`;
-          if (generatedPlan?.id) return `/builder?id=${generatedPlan.id}&step=${step}`;
-          return `/builder?step=${step}`;
+          if (draftId) return `/builder?draft=${draftId}&step=${step}&returnTo=complete`;
+          if (generatedPlan?.id) return `/builder?id=${generatedPlan.id}&step=${step}&returnTo=complete`;
+          return `/builder?step=${step}&returnTo=complete`;
       };
 
       const editUrl = editUrlForStep('product');
@@ -2121,14 +2133,14 @@ export default function HACCPMasterFlow() {
                                     ) : (
                                         <div className="grid sm:grid-cols-2 gap-3">
                                             <button 
-                                                onClick={() => openCheckoutInNewTab('professional')}
+                                                onClick={() => openCheckout('professional')}
                                                 disabled={isSavingPlan || !!busyAction}
                                                 className={`bg-slate-900 text-white px-4 py-3 rounded-xl font-bold hover:bg-black transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_professional' ? 'animate-pulse' : ''}`}
                                             >
                                                 {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening checkout...</> : (isSavingPlan ? 'Saving...' : `${PLAN_TIERS.professional.label} (${TIER_PRICE.professional})`)}
                                             </button>
                                             <button 
-                                                onClick={() => openCheckoutInNewTab('expert')}
+                                                onClick={() => openCheckout('expert')}
                                                 disabled={isSavingPlan || !!busyAction}
                                                 className={`bg-blue-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_expert' ? 'animate-pulse' : ''}`}
                                             >
@@ -2306,14 +2318,14 @@ export default function HACCPMasterFlow() {
                                     </div>
                                     <div className="flex flex-col sm:flex-row gap-2">
                                         <button
-                                            onClick={() => openCheckoutInNewTab('professional')}
+                                            onClick={() => openCheckout('professional')}
                                             disabled={isSavingPlan || !!busyAction}
                                             className={`bg-white text-blue-800 border border-blue-200 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_professional' ? 'animate-pulse' : ''}`}
                                         >
                                             {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : PLAN_TIERS.professional.upgradeLabel)}
                                         </button>
                                         <button
-                                            onClick={() => openCheckoutInNewTab('expert')}
+                                            onClick={() => openCheckout('expert')}
                                             disabled={isSavingPlan || !!busyAction}
                                             className={`bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_expert' ? 'animate-pulse' : ''}`}
                                         >
