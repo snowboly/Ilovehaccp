@@ -26,9 +26,9 @@ export default function Navbar() {
             <Image
               src="/logo.png"
               alt="iLoveHACCP"
-              width={120}
-              height={36}
-              className="h-9 w-auto group-hover:scale-105 transition-transform"
+              width={150}
+              height={44}
+              className="h-11 w-auto group-hover:scale-105 transition-transform"
               priority
             />
           </Link>
