@@ -10,10 +10,21 @@ UPDATE public.plans
 SET export_paid = TRUE 
 WHERE payment_status = 'paid';
 
--- If tier was 'expert' and paid, they have review access.
-UPDATE public.plans 
-SET review_paid = TRUE 
-WHERE payment_status = 'paid' AND tier = 'expert';
+-- If tier was 'expert' and paid, they have review access (only if column exists).
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'plans'
+      AND column_name = 'tier'
+  ) THEN
+    UPDATE public.plans
+    SET review_paid = TRUE
+    WHERE payment_status = 'paid' AND tier = 'expert';
+  END IF;
+END $$;
 
 -- 3. Optimization Index for Dashboard
 CREATE INDEX IF NOT EXISTS idx_plans_user_status 
