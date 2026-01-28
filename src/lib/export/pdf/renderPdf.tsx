@@ -20,13 +20,18 @@ const robotoFonts: FontSource[] = [
   { src: path.join(fontsDir, "Roboto-BoldItalic.ttf"), fontWeight: "bold", fontStyle: "italic" },
 ];
 const hasAllRobotoFonts = robotoFonts.every((font) => fs.existsSync(font.src));
-const baseFontFamily = hasAllRobotoFonts ? "Roboto" : "Helvetica";
+let baseFontFamily: "Roboto" | "Helvetica" = "Helvetica";
 
 if (hasAllRobotoFonts) {
-  Font.register({
-    family: "Roboto",
-    fonts: robotoFonts,
-  });
+  try {
+    Font.register({
+      family: "Roboto",
+      fonts: robotoFonts,
+    });
+    baseFontFamily = "Roboto";
+  } catch (error) {
+    console.error("[pdf] Font register failed, falling back to Helvetica:", error);
+  }
 }
 
 const Watermark = ({ isPaid }: { isPaid: boolean }) => {
