@@ -43,9 +43,15 @@ export async function POST(req: Request) {
           console.log(`[Webhook] Event ${event.id} already processed. Skipping.`);
           return NextResponse.json({ received: true });
       }
-      console.error('Idempotency check failed:', idempotencyError);
-      // If DB is down, fail hard so Stripe retries
-      return NextResponse.json({ error: 'Database error' }, { status: 500 });
+      // PGRST205: Table not in schema cache - PostgREST needs schema refresh
+      // Continue processing to avoid blocking payments; idempotency is best-effort
+      if (idempotencyError.code === 'PGRST205') {
+          console.warn(`[Webhook] Idempotency table not in schema cache (PGRST205). Continuing without idempotency check. Run: SELECT pg_notify('pgrst', 'reload schema'); in Supabase SQL Editor to fix.`);
+      } else {
+          console.error('Idempotency check failed:', idempotencyError);
+          // If DB is down, fail hard so Stripe retries
+          return NextResponse.json({ error: 'Database error' }, { status: 500 });
+      }
   }
 
   if (event.type === 'checkout.session.completed') {

@@ -15,8 +15,10 @@ const fontsDir = path.join(process.cwd(), "public/fonts");
 Font.register({
   family: "Roboto",
   fonts: [
-    { src: path.join(fontsDir, "Roboto-Regular.ttf"), fontWeight: "normal" },
-    { src: path.join(fontsDir, "Roboto-Bold.ttf"), fontWeight: "bold" }
+    { src: path.join(fontsDir, "Roboto-Regular.ttf"), fontWeight: "normal", fontStyle: "normal" },
+    { src: path.join(fontsDir, "Roboto-Bold.ttf"), fontWeight: "bold", fontStyle: "normal" },
+    { src: path.join(fontsDir, "Roboto-Italic.ttf"), fontWeight: "normal", fontStyle: "italic" },
+    { src: path.join(fontsDir, "Roboto-BoldItalic.ttf"), fontWeight: "bold", fontStyle: "italic" }
   ]
 });
 

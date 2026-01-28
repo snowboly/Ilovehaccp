@@ -160,6 +160,12 @@ export async function POST(req: Request) {
             .limit(1)
             .single();
 
+        // Handle schema cache miss - skip versioning gracefully
+        if (verError && verError.code === 'PGRST205') {
+            console.warn("Version table not in schema cache (PGRST205). Skipping version snapshot. Run: SELECT pg_notify('pgrst', 'reload schema'); in Supabase SQL Editor to fix.");
+            return NextResponse.json({ success: true, plan: result });
+        }
+
         const newVersionNumber = (latestVersion?.version_number || 0) + 1;
 
         const { error: insertError } = await supabaseAdmin
@@ -174,7 +180,12 @@ export async function POST(req: Request) {
             });
             
         if (insertError) {
-            console.error("Failed to save version snapshot:", insertError);
+            // PGRST205: Table not in schema cache - PostgREST needs schema refresh
+            if (insertError.code === 'PGRST205') {
+                console.warn("Version snapshot table not in schema cache (PGRST205). Run: SELECT pg_notify('pgrst', 'reload schema'); in Supabase SQL Editor to fix.");
+            } else {
+                console.error("Failed to save version snapshot:", insertError);
+            }
         } else {
             // OPTIONAL: Return the new version number to the client?
             // Currently we return 'result' (the plan). We could attach version.
