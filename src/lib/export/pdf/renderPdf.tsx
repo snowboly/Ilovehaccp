@@ -1,5 +1,6 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
+import type { FontSource } from "@react-pdf/font";
 import { renderSectionHeader } from "./renderSectionHeader";
 import { renderTable } from "./renderTable";
 import { PdfHeader } from "../components/PdfHeader";
@@ -12,7 +13,7 @@ import path from "path";
 // REGISTER LOCAL FONTS
 // We use absolute paths for Node.js environment stability (Vercel/Next.js API routes)
 const fontsDir = path.join(process.cwd(), "public/fonts");
-const robotoFonts = [
+const robotoFonts: FontSource[] = [
   { src: path.join(fontsDir, "Roboto-Regular.ttf"), fontWeight: "normal", fontStyle: "normal" },
   { src: path.join(fontsDir, "Roboto-Bold.ttf"), fontWeight: "bold", fontStyle: "normal" },
   { src: path.join(fontsDir, "Roboto-Italic.ttf"), fontWeight: "normal", fontStyle: "italic" },
