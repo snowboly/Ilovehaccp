@@ -59,88 +59,108 @@ export async function POST(req: Request) {
 
     const { planId, userId, features_export, features_review, businessName } = session.metadata || {};
 
-    if (planId && userId) {
-      console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}`);
+    if (!planId || !userId) {
+      console.error(`[Webhook] Missing metadata for session ${session.id}:`, { planId, userId, features_export, features_review });
+      return NextResponse.json({ received: true, warning: 'Missing planId or userId metadata' });
+    }
 
-      // 2. Fetch current state
-      const { data: currentPlan, error: fetchError } = await supabaseService
-          .from('plans')
-          .select('export_paid, review_paid, review_requested, checkout_session_id')
-          .eq('id', planId)
-          .eq('user_id', userId) // Security check
-          .single();
+    console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}`);
 
-      if (fetchError || !currentPlan) {
-          console.error("Plan not found or DB error:", fetchError);
-          return NextResponse.json({ error: 'Plan lookup failed' }, { status: 500 });
-      }
-
-      // 3. Prepare Upgrade-Only Update
-      const updateData: any = { 
-          payment_status: 'paid', 
-          checkout_session_id: session.id
-      };
-      
-      const isNewPaidSession = currentPlan.checkout_session_id !== session.id;
-      
-      console.log(`[Webhook] Session Check:`, { 
-          planId, 
-          sessionId: session.id, 
-          prevSessionId: currentPlan.checkout_session_id, 
-          isNewSession: isNewPaidSession 
-      });
-
-      let shouldSendUserEmail = isNewPaidSession;
-      let shouldSendAdminEmail = isNewPaidSession && features_review === 'true';
-
-      // Handle Export Feature
-      if (features_export === 'true') {
-          updateData.export_paid = true;
-      }
-
-      // Handle Review Feature (Implies Export)
-      if (features_review === 'true') {
-          updateData.review_paid = true;
-          updateData.export_paid = true; // BUSINESS RULE: Review unlocks Export
-          updateData.review_requested = true;
-          updateData.review_status = 'pending'; 
-      }
-
-      // 4. Execute Update WITH Ownership Guard
-      const { error } = await supabaseService
+    // 2. Fetch current state
+    const { data: currentPlan, error: fetchError } = await supabaseService
         .from('plans')
-        .update(updateData)
+        .select('export_paid, review_paid, review_requested, checkout_session_id')
         .eq('id', planId)
-        .eq('user_id', userId); 
+        .eq('user_id', userId) // Security check
+        .single();
 
-      if (error) {
-        console.error('Supabase update error:', error);
-        return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
-      }
+    if (fetchError || !currentPlan) {
+        console.error("[Webhook] Plan not found or DB error:", fetchError);
+        return NextResponse.json({ error: 'Plan lookup failed' }, { status: 500 });
+    }
 
-      // 5. Notifications
-      if (shouldSendAdminEmail) {
-        const adminInbox = process.env.ADMIN_REVIEW_INBOX!;
+    // 3. Prepare Upgrade-Only Update
+    const updateData: any = {
+        payment_status: 'paid',
+        checkout_session_id: session.id
+    };
+
+    const isNewPaidSession = currentPlan.checkout_session_id !== session.id;
+
+    console.log(`[Webhook] Session Check:`, {
+        planId,
+        sessionId: session.id,
+        prevSessionId: currentPlan.checkout_session_id,
+        isNewSession: isNewPaidSession
+    });
+
+    const shouldSendUserEmail = isNewPaidSession;
+    const shouldSendAdminEmail = isNewPaidSession && features_review === 'true';
+
+    // Handle Export Feature
+    if (features_export === 'true') {
+        updateData.export_paid = true;
+    }
+
+    // Handle Review Feature (Implies Export)
+    if (features_review === 'true') {
+        updateData.review_paid = true;
+        updateData.export_paid = true; // BUSINESS RULE: Review unlocks Export
+        updateData.review_requested = true;
+        updateData.review_status = 'pending';
+    }
+
+    // 4. Execute Update WITH Ownership Guard
+    const { error } = await supabaseService
+      .from('plans')
+      .update(updateData)
+      .eq('id', planId)
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('[Webhook] Supabase update error:', error);
+      return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+    }
+
+    console.log(`[Webhook] Plan ${planId} updated successfully:`, updateData);
+
+    // 5. Notifications
+    if (shouldSendAdminEmail) {
+      const adminInbox = process.env.ADMIN_REVIEW_INBOX;
+      if (adminInbox) {
         await sendEmail({
           to: adminInbox,
           subject: 'Review requested (iLoveHACCP)',
           html: adminReviewRequestedEmailHtml({ appUrl, planId }),
-        }).catch(e => console.error("Failed to send admin email", e));
+        }).catch(e => console.error("[Webhook] Failed to send admin email:", e));
+      } else {
+        console.error("[Webhook] ADMIN_REVIEW_INBOX not configured - admin notification skipped");
       }
+    }
 
-      const customerEmail = session.customer_details?.email || session.customer_email;
-      if (customerEmail && shouldSendUserEmail) {
-          fetch(`${new URL(req.url).origin}/api/send-payment-confirmation`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                  email: customerEmail,
-                  businessName: businessName || 'Your Business',
-                  planId: planId,
-                  amount: session.amount_total ? session.amount_total / 100 : 0
-              })
-          }).catch(err => console.error("Failed to trigger confirmation email:", err));
-      }
+    const customerEmail = session.customer_details?.email || session.customer_email;
+    if (customerEmail && shouldSendUserEmail) {
+        try {
+            const emailRes = await fetch(`${new URL(req.url).origin}/api/send-payment-confirmation`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: customerEmail,
+                    businessName: businessName || 'Your Business',
+                    planId: planId,
+                    amount: session.amount_total ? session.amount_total / 100 : 0
+                })
+            });
+
+            if (!emailRes.ok) {
+                const errBody = await emailRes.json().catch(() => ({}));
+                console.error(`[Webhook] User email failed (${emailRes.status}):`, errBody);
+            } else {
+                console.log(`[Webhook] User confirmation email sent to ${customerEmail}`);
+            }
+        } catch (err) {
+            console.error("[Webhook] Failed to trigger confirmation email:", err);
+        }
     }
   }
 
