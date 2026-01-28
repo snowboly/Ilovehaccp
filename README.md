@@ -67,6 +67,13 @@ APP_URL=...
 2. **Build:** `npm run build`.
 3. **Pushed:** Changes are synced to GitHub `main` branch.
 
+## 🗄️ Production DB Checklist (Quick)
+1. **Run migrations:** Apply new SQL in `src/db/*.sql` to production (Supabase SQL editor or your migration pipeline).
+2. **Verify critical tables exist:** `public.stripe_processed_events`, `public.haccp_plan_versions`, and any new tables referenced by API routes.
+3. **Reload PostgREST schema cache:** `NOTIFY pgrst, 'reload schema';` or use the Supabase dashboard “Reload schema” button.
+4. **RLS sanity check:** Ensure RLS policies exist for user-facing tables and that service-role access is restricted to backend routes.
+5. **Smoke test:** Create a checkout session and confirm webhook idempotency + version snapshot writes succeed.
+
 ## 🔐 Security Hardening (Baseline)
 
 ### Response Headers (Middleware)
