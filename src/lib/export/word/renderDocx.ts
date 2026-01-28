@@ -13,17 +13,21 @@ import {
   PageNumber,
   ImageRun,
   ShadingType,
+  TableLayoutType,
+  VerticalAlign,
 } from "docx";
 import { HACCP_THEME as T } from "../theme";
 import { ExportBlock, ExportDoc, ExportDocLabels, resolveExportText } from "../exportDoc";
 import { renderWordTable } from "./renderTable";
-import { wrapIdForPdf } from "../wrap";
+import { getImageDimensions, scaleToFit } from "./image";
+import { sanitizeDocxText } from "./text";
 
 const toTwips = (points: number) => Math.round(points * 20);
 
 const renderSectionBand = (title: string) =>
   new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
     rows: [
       new TableRow({
         children: [
@@ -45,151 +49,150 @@ const renderSectionBand = (title: string) =>
               new Paragraph({
                 children: [
                   new TextRun({
-                    text: title,
+                    text: sanitizeDocxText(title),
                     font: "Calibri",
                     size: T.font.h2 * 2,
                     bold: true,
                     color: T.colors.primary.replace("#", ""),
                   }),
                 ],
+                spacing: { before: 0, after: 0 },
               }),
             ],
+            verticalAlign: VerticalAlign.TOP,
           }),
         ],
       }),
     ],
   });
 
-const createHeaderTable = (logoBuffer: ArrayBuffer | Buffer | null | undefined, versionId: string, generatedDate: string) => {
-  const versionTable = new Table({
+const createHeaderTable = (labels: ExportDocLabels, generatedDate: string) =>
+  new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
     rows: [
       new TableRow({
         children: [
           new TableCell({
-            width: { size: 45, type: WidthType.PERCENTAGE },
+            width: { size: 50, type: WidthType.PERCENTAGE },
+            borders: { top: { style: BorderStyle.NONE, color: "FFFFFF" }, bottom: { style: BorderStyle.NONE, color: "FFFFFF" }, left: { style: BorderStyle.NONE, color: "FFFFFF" }, right: { style: BorderStyle.NONE, color: "FFFFFF" } },
             children: [
               new Paragraph({
                 children: [
                   new TextRun({
-                    text: "Version",
+                    text: sanitizeDocxText(labels.documentTitle),
                     font: "Calibri",
-                    size: T.font.small * 2,
-                    color: T.colors.muted.replace("#", ""),
-                  }),
-                ],
-              }),
-            ],
-          }),
-          new TableCell({
-            width: { size: 55, type: WidthType.PERCENTAGE },
-            children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: wrapIdForPdf(versionId),
-                    font: "Calibri",
-                    size: T.font.small * 2,
-                    color: T.colors.text.replace("#", ""),
-                  }),
-                ],
-              }),
-            ],
-          }),
-        ],
-      }),
-      new TableRow({
-        children: [
-          new TableCell({
-            width: { size: 45, type: WidthType.PERCENTAGE },
-            children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "Generated",
-                    font: "Calibri",
-                    size: T.font.small * 2,
-                    color: T.colors.muted.replace("#", ""),
-                  }),
-                ],
-              }),
-            ],
-          }),
-          new TableCell({
-            width: { size: 55, type: WidthType.PERCENTAGE },
-            children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: generatedDate,
-                    font: "Calibri",
-                    size: T.font.small * 2,
-                    color: T.colors.text.replace("#", ""),
-                  }),
-                ],
-              }),
-            ],
-          }),
-        ],
-      }),
-    ],
-  });
-
-  return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
-    rows: [
-      new TableRow({
-        children: [
-          new TableCell({
-            width: { size: 60, type: WidthType.PERCENTAGE },
-            children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "HACCP PLAN – DRAFT",
-                    font: "Calibri",
-                    size: T.font.h1 * 2,
+                    size: T.font.body * 2,
                     bold: true,
                     color: T.colors.text.replace("#", ""),
                   }),
                 ],
+                spacing: { before: 0, after: 0 },
               }),
+            ],
+          }),
+          new TableCell({
+            width: { size: 50, type: WidthType.PERCENTAGE },
+            borders: { top: { style: BorderStyle.NONE, color: "FFFFFF" }, bottom: { style: BorderStyle.NONE, color: "FFFFFF" }, left: { style: BorderStyle.NONE, color: "FFFFFF" }, right: { style: BorderStyle.NONE, color: "FFFFFF" } },
+            children: [
               new Paragraph({
+                alignment: AlignmentType.RIGHT,
                 children: [
                   new TextRun({
-                    text: "Generated HACCP Documentation",
+                    text: sanitizeDocxText(generatedDate),
                     font: "Calibri",
                     size: T.font.small * 2,
                     color: T.colors.muted.replace("#", ""),
                   }),
                 ],
+                spacing: { before: 0, after: 0 },
               }),
             ],
-          }),
-          new TableCell({
-            width: { size: 20, type: WidthType.PERCENTAGE },
-            children: [
-              new Paragraph({
-                alignment: AlignmentType.CENTER,
-                children: logoBuffer
-                  ? [
-                      new ImageRun({
-                        data: logoBuffer,
-                        transformation: { width: 80, height: 28 },
-                      } as any),
-                    ]
-                  : [],
-              }),
-            ],
-          }),
-          new TableCell({
-            width: { size: 20, type: WidthType.PERCENTAGE },
-            children: [versionTable],
           }),
         ],
       }),
     ],
   });
+
+const buildPageFooterTable = (labels: ExportDocLabels, versionId: string) =>
+  new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 50, type: WidthType.PERCENTAGE },
+            borders: {
+              top: { color: T.colors.border.replace("#", ""), style: BorderStyle.SINGLE, size: 1 },
+              bottom: { style: BorderStyle.NONE, color: "FFFFFF" },
+              left: { style: BorderStyle.NONE, color: "FFFFFF" },
+              right: { style: BorderStyle.NONE, color: "FFFFFF" },
+            },
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `${sanitizeDocxText(labels.version)}: ${sanitizeDocxText(versionId)}`,
+                    font: "Calibri",
+                    size: T.font.small * 2,
+                    color: T.colors.muted.replace("#", ""),
+                  }),
+                ],
+                spacing: { before: 0, after: 0 },
+              }),
+            ],
+          }),
+          new TableCell({
+            width: { size: 50, type: WidthType.PERCENTAGE },
+            borders: {
+              top: { color: T.colors.border.replace("#", ""), style: BorderStyle.SINGLE, size: 1 },
+              bottom: { style: BorderStyle.NONE, color: "FFFFFF" },
+              left: { style: BorderStyle.NONE, color: "FFFFFF" },
+              right: { style: BorderStyle.NONE, color: "FFFFFF" },
+            },
+            children: [
+              new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                children: [
+                  new TextRun({
+                    text: `${sanitizeDocxText(labels.page)} `,
+                    font: "Calibri",
+                    size: T.font.small * 2,
+                    color: T.colors.muted.replace("#", ""),
+                  }),
+                  new TextRun({ children: [PageNumber.CURRENT], size: T.font.small * 2 }),
+                  new TextRun({
+                    text: ` ${sanitizeDocxText(labels.of)} `,
+                    font: "Calibri",
+                    size: T.font.small * 2,
+                    color: T.colors.muted.replace("#", ""),
+                  }),
+                  new TextRun({ children: [PageNumber.TOTAL_PAGES], size: T.font.small * 2 }),
+                ],
+                spacing: { before: 0, after: 0 },
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  });
+
+const getLogoTransformation = (logoBuffer: ArrayBuffer | Buffer, maxWidth: number, maxHeight: number) => {
+  const dimensions = getImageDimensions(logoBuffer);
+  if (!dimensions) {
+    return { width: maxWidth, height: maxHeight };
+  }
+  return scaleToFit(dimensions, maxWidth, maxHeight);
+};
+
+const resolveDocxColumnWidths = (headers: string[], colWidths: number[]) => {
+  if (headers.length === 2) return [30, 70];
+  if (headers.length === 3) return [10, 30, 60];
+  if (headers.length === 6) return [18, 28, 10, 10, 10, 24];
+  if (colWidths.length === headers.length) return colWidths;
+  return headers.map(() => Math.floor(100 / headers.length));
 };
 
 const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
@@ -201,7 +204,7 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
         new Paragraph({
           children: [
             new TextRun({
-              text: resolveExportText(block.text, "docx"),
+              text: sanitizeDocxText(resolveExportText(block.text, "docx")),
               font: "Calibri",
               size: T.font.body * 2,
               italics: block.italic,
@@ -212,19 +215,17 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
         }),
       ];
     case "table":
+      const headers = block.headers.map((header) => resolveExportText(header, "docx"));
+      const rows = block.rows.map((row) => row.map((cell) => resolveExportText(cell, "docx")));
       return [
-        renderWordTable(
-          block.headers.map((header) => resolveExportText(header, "docx")),
-          block.rows.map((row) => row.map((cell) => resolveExportText(cell, "docx"))),
-          block.colWidths
-        ),
+        renderWordTable(headers, rows, resolveDocxColumnWidths(headers, block.colWidths)),
       ];
     case "subheading":
       return [
         new Paragraph({
           children: [
             new TextRun({
-              text: resolveExportText(block.text, "docx"),
+              text: sanitizeDocxText(resolveExportText(block.text, "docx")),
               font: "Calibri",
               size: T.font.body * 2,
               bold: true,
@@ -238,6 +239,7 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
       return [
         new Table({
           width: { size: 100, type: WidthType.PERCENTAGE },
+          layout: TableLayoutType.FIXED,
           rows: [
             new TableRow({
               children: [
@@ -253,13 +255,15 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
                     new Paragraph({
                       children: [
                         new TextRun({
-                          text: `${resolveExportText(block.left, "docx")}: ________________`,
+                          text: `${sanitizeDocxText(resolveExportText(block.left, "docx"))}: ________________`,
                           font: "Calibri",
                           size: T.font.body * 2,
                         }),
                       ],
+                      spacing: { before: 0, after: 0 },
                     }),
                   ],
+                  verticalAlign: VerticalAlign.TOP,
                 }),
                 new TableCell({
                   width: { size: 50, type: WidthType.PERCENTAGE },
@@ -273,13 +277,15 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
                     new Paragraph({
                       children: [
                         new TextRun({
-                          text: `${resolveExportText(block.right, "docx")}: ________________`,
+                          text: `${sanitizeDocxText(resolveExportText(block.right, "docx"))}: ________________`,
                           font: "Calibri",
                           size: T.font.body * 2,
                         }),
                       ],
+                      spacing: { before: 0, after: 0 },
                     }),
                   ],
+                  verticalAlign: VerticalAlign.TOP,
                 }),
               ],
             }),
@@ -304,6 +310,7 @@ function buildDocapescaHeader(labels: ExportDocLabels, generatedDate: string): H
     children: [
       new Table({
         width: { size: 100, type: WidthType.PERCENTAGE },
+        layout: TableLayoutType.FIXED,
         rows: [
           new TableRow({
             children: [
@@ -317,13 +324,14 @@ function buildDocapescaHeader(labels: ExportDocLabels, generatedDate: string): H
                   new Paragraph({
                     children: [
                       new TextRun({
-                        text: labels.documentTitle,
+                        text: sanitizeDocxText(labels.documentTitle),
                         font: "Calibri",
                         size: T.font.body * 2,
                         bold: true,
                         color: DC.navyDark.replace("#", ""),
                       }),
                     ],
+                    spacing: { before: 0, after: 0 },
                   }),
                 ],
               }),
@@ -338,12 +346,13 @@ function buildDocapescaHeader(labels: ExportDocLabels, generatedDate: string): H
                     alignment: AlignmentType.RIGHT,
                     children: [
                       new TextRun({
-                        text: generatedDate,
+                        text: sanitizeDocxText(generatedDate),
                         font: "Calibri",
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
                     ],
+                    spacing: { before: 0, after: 0 },
                   }),
                 ],
               }),
@@ -360,6 +369,7 @@ function buildDocapescaFooter(labels: ExportDocLabels, versionId: string): Foote
     children: [
       new Table({
         width: { size: 100, type: WidthType.PERCENTAGE },
+        layout: TableLayoutType.FIXED,
         rows: [
           new TableRow({
             children: [
@@ -370,12 +380,13 @@ function buildDocapescaFooter(labels: ExportDocLabels, versionId: string): Foote
                   new Paragraph({
                     children: [
                       new TextRun({
-                        text: `${labels.version}: ${versionId}`,
+                        text: `${sanitizeDocxText(labels.version)}: ${sanitizeDocxText(versionId)}`,
                         font: "Calibri",
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
                     ],
+                    spacing: { before: 0, after: 0 },
                   }),
                 ],
               }),
@@ -387,20 +398,21 @@ function buildDocapescaFooter(labels: ExportDocLabels, versionId: string): Foote
                     alignment: AlignmentType.RIGHT,
                     children: [
                       new TextRun({
-                        text: `${labels.page} `,
+                        text: `${sanitizeDocxText(labels.page)} `,
                         font: "Calibri",
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
                       new TextRun({ children: [PageNumber.CURRENT], size: T.font.small * 2 }),
                       new TextRun({
-                        text: ` ${labels.of} `,
+                        text: ` ${sanitizeDocxText(labels.of)} `,
                         font: "Calibri",
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
                       new TextRun({ children: [PageNumber.TOTAL_PAGES], size: T.font.small * 2 }),
                     ],
+                    spacing: { before: 0, after: 0 },
                   }),
                 ],
               }),
@@ -418,12 +430,13 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
 
   // Logo top-right (rendered as right-aligned paragraph)
   if (doc.meta.logoBuffer) {
+    const logoTransform = getLogoTransformation(doc.meta.logoBuffer, 140, 70);
     blocks.push(
       new Paragraph({
         children: [
           new ImageRun({
             data: doc.meta.logoBuffer,
-            transformation: { width: 120, height: 60 },
+            transformation: logoTransform,
           } as any),
         ],
         alignment: AlignmentType.RIGHT,
@@ -459,7 +472,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
                   spacing: { after: 300 },
                   children: [
                     new TextRun({
-                      text: labels.documentTitle.toUpperCase(),
+                      text: sanitizeDocxText(labels.documentTitle).toUpperCase(),
                       font: "Calibri",
                       size: 52,
                       bold: true,
@@ -473,7 +486,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
                   spacing: { after: 200 },
                   children: [
                     new TextRun({
-                      text: doc.cover.docx.subtitle || labels.subtitle,
+                      text: sanitizeDocxText(doc.cover.docx.subtitle || labels.subtitle),
                       font: "Calibri",
                       size: 28,
                       color: T.colors.text.replace("#", ""),
@@ -488,7 +501,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
                         spacing: { after: 400 },
                         children: [
                           new TextRun({
-                            text: doc.cover.docx.businessName,
+                            text: sanitizeDocxText(doc.cover.docx.businessName),
                             font: "Calibri",
                             size: 24,
                             bold: true,
@@ -522,14 +535,14 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
           spacing: { after: 80 },
           children: [
             new TextRun({
-              text: `${m.label}: `,
+              text: `${sanitizeDocxText(m.label)}: `,
               font: "Calibri",
               size: T.font.body * 2,
               bold: true,
               color: DC.navyDark.replace("#", ""),
             }),
             new TextRun({
-              text: m.value,
+              text: sanitizeDocxText(m.value),
               font: "Calibri",
               size: T.font.body * 2,
               color: T.colors.text.replace("#", ""),
@@ -580,79 +593,26 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
   /* DEFAULT template (unchanged) */
   const header = new Header({
     children: [
-      createHeaderTable(doc.meta.logoBuffer ?? null, doc.meta.versionId, doc.meta.generatedDate),
+      createHeaderTable(doc.meta.labels, doc.meta.generatedDate),
     ],
   });
 
   const footer = new Footer({
     children: [
-      new Table({
-        width: { size: 100, type: WidthType.PERCENTAGE },
-        rows: [
-          new TableRow({
-            children: [
-              new TableCell({
-                width: { size: 70, type: WidthType.PERCENTAGE },
-                children: [
-                  new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: "Generated by iLoveHACCP — Draft document for review purposes only",
-                        font: "Calibri",
-                        size: T.font.small * 2,
-                        color: T.colors.muted.replace("#", ""),
-                      }),
-                    ],
-                  }),
-                ],
-                borders: {
-                  top: { color: T.colors.border.replace("#", ""), style: BorderStyle.SINGLE, size: 1 },
-                  bottom: { style: BorderStyle.NONE, color: "FFFFFF" },
-                  left: { style: BorderStyle.NONE, color: "FFFFFF" },
-                  right: { style: BorderStyle.NONE, color: "FFFFFF" },
-                },
-              }),
-              new TableCell({
-                width: { size: 30, type: WidthType.PERCENTAGE },
-                children: [
-                  new Paragraph({
-                    alignment: AlignmentType.RIGHT,
-                    children: [
-                      new TextRun({
-                        text: "Page ",
-                        font: "Calibri",
-                        size: T.font.small * 2,
-                        color: T.colors.muted.replace("#", ""),
-                      }),
-                      new TextRun({ children: [PageNumber.CURRENT], size: T.font.small * 2 }),
-                      new TextRun({ text: " of ", size: T.font.small * 2 }),
-                      new TextRun({ children: [PageNumber.TOTAL_PAGES], size: T.font.small * 2 }),
-                    ],
-                  }),
-                ],
-                borders: {
-                  top: { color: T.colors.border.replace("#", ""), style: BorderStyle.SINGLE, size: 1 },
-                  bottom: { style: BorderStyle.NONE, color: "FFFFFF" },
-                  left: { style: BorderStyle.NONE, color: "FFFFFF" },
-                  right: { style: BorderStyle.NONE, color: "FFFFFF" },
-                },
-              }),
-            ],
-          }),
-        ],
-      }),
+      buildPageFooterTable(doc.meta.labels, doc.meta.versionId),
     ],
   });
 
   const coverBlocks: (Paragraph | Table)[] = [];
 
   if (doc.meta.logoBuffer) {
+    const logoTransform = getLogoTransformation(doc.meta.logoBuffer, 140, 140);
     coverBlocks.push(
       new Paragraph({
         children: [
           new ImageRun({
             data: doc.meta.logoBuffer,
-            transformation: { width: 100, height: 100 },
+            transformation: logoTransform,
           } as any),
         ],
         alignment: AlignmentType.CENTER,
@@ -665,7 +625,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
     new Paragraph({
       children: [
         new TextRun({
-          text: doc.cover.docx.title,
+          text: sanitizeDocxText(doc.cover.docx.title),
           font: "Calibri",
           size: 32,
           bold: true,
@@ -678,7 +638,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
     new Paragraph({
       children: [
         new TextRun({
-          text: doc.cover.docx.subtitle,
+          text: sanitizeDocxText(doc.cover.docx.subtitle),
           font: "Calibri",
           size: 24,
           color: T.colors.text.replace("#", ""),
@@ -690,7 +650,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
     new Paragraph({
       children: [
         new TextRun({
-          text: doc.cover.docx.businessName,
+          text: sanitizeDocxText(doc.cover.docx.businessName),
           font: "Calibri",
           size: 28,
           bold: true,
@@ -704,7 +664,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
         new Paragraph({
           children: [
             new TextRun({
-              text: `${m.label}: ${m.value}`,
+              text: `${sanitizeDocxText(m.label)}: ${sanitizeDocxText(m.value)}`,
               font: "Calibri",
               size: T.font.body * 2,
             }),
