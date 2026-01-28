@@ -1,26 +1,33 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
+import type { FontSource } from "@react-pdf/font";
 import { renderSectionHeader } from "./renderSectionHeader";
 import { renderTable } from "./renderTable";
 import { PdfHeader } from "../components/PdfHeader";
 import { PdfFooter } from "../components/PdfFooter";
 import { HACCP_THEME as T } from "../theme";
 import { ExportBlock, ExportDoc, ExportDocLabels, resolveExportText } from "../exportDoc";
+import fs from "fs";
 import path from "path";
 
 // REGISTER LOCAL FONTS
 // We use absolute paths for Node.js environment stability (Vercel/Next.js API routes)
 const fontsDir = path.join(process.cwd(), "public/fonts");
+const robotoFonts: FontSource[] = [
+  { src: path.join(fontsDir, "Roboto-Regular.ttf"), fontWeight: "normal", fontStyle: "normal" },
+  { src: path.join(fontsDir, "Roboto-Bold.ttf"), fontWeight: "bold", fontStyle: "normal" },
+  { src: path.join(fontsDir, "Roboto-Italic.ttf"), fontWeight: "normal", fontStyle: "italic" },
+  { src: path.join(fontsDir, "Roboto-BoldItalic.ttf"), fontWeight: "bold", fontStyle: "italic" },
+];
+const hasAllRobotoFonts = robotoFonts.every((font) => fs.existsSync(font.src));
+const baseFontFamily = hasAllRobotoFonts ? "Roboto" : "Helvetica";
 
-Font.register({
-  family: "Roboto",
-  fonts: [
-    { src: path.join(fontsDir, "Roboto-Regular.ttf"), fontWeight: "normal", fontStyle: "normal" },
-    { src: path.join(fontsDir, "Roboto-Bold.ttf"), fontWeight: "bold", fontStyle: "normal" },
-    { src: path.join(fontsDir, "Roboto-Italic.ttf"), fontWeight: "normal", fontStyle: "italic" },
-    { src: path.join(fontsDir, "Roboto-BoldItalic.ttf"), fontWeight: "bold", fontStyle: "italic" }
-  ]
-});
+if (hasAllRobotoFonts) {
+  Font.register({
+    family: "Roboto",
+    fonts: robotoFonts,
+  });
+}
 
 const Watermark = ({ isPaid }: { isPaid: boolean }) => {
   if (isPaid) return null;
@@ -103,7 +110,7 @@ const styles = StyleSheet.create({
     paddingTop: 80, // Header space
     paddingBottom: 60, // Footer space
     paddingHorizontal: T.spacing.pagePadding,
-    fontFamily: "Roboto",
+    fontFamily: baseFontFamily,
     fontSize: T.font.body,
     color: T.colors.text,
   },
@@ -112,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: T.spacing.pagePadding,
-    fontFamily: "Roboto",
+    fontFamily: baseFontFamily,
   },
   title: {
     fontSize: 22,
@@ -168,7 +175,7 @@ const DC_FOOTER_HEIGHT = 24;
 const dcStyles = StyleSheet.create({
   /* Cover page */
   coverPage: {
-    fontFamily: "Roboto",
+    fontFamily: baseFontFamily,
     position: "relative",
   },
   ribbonDark: {
@@ -244,7 +251,7 @@ const dcStyles = StyleSheet.create({
     paddingTop: 20 + DC_HEADER_HEIGHT + 14,
     paddingBottom: 20 + DC_FOOTER_HEIGHT + 10,
     paddingHorizontal: T.spacing.pagePadding,
-    fontFamily: "Roboto",
+    fontFamily: baseFontFamily,
     fontSize: T.font.body,
     color: T.colors.text,
   },
