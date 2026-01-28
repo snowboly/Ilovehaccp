@@ -18,7 +18,7 @@ export default function Navbar() {
   const { t } = useLanguage();
 
   return (
-    <nav className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 sticky top-0 z-50 transition-colors">
+    <nav className="bg-white dark:bg-slate-900 sticky top-0 z-50 transition-colors">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -26,9 +26,9 @@ export default function Navbar() {
             <Image
               src="/logo.png"
               alt="iLoveHACCP"
-              width={150}
-              height={44}
-              className="h-11 w-auto group-hover:scale-105 transition-transform"
+              width={200}
+              height={40}
+              className="h-10 w-auto group-hover:scale-105 transition-transform"
               priority
             />
           </Link>
