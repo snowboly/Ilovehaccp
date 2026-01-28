@@ -1,9 +1,10 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { Menu, X, Heart, ChevronDown, FileText, HelpCircle } from 'lucide-react';
+import { Menu, X, ChevronDown, FileText, HelpCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import LanguageSelector from './LanguageSelector';
 import ThemeToggle from './ThemeToggle';
@@ -21,10 +22,15 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1.5 group">
-            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">i</span>
-            <Heart className="w-6 h-6 text-rose-600 fill-rose-600 group-hover:scale-110 transition-transform" />
-            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">HACCP</span>
+          <Link href="/" className="flex items-center group">
+            <Image
+              src="/logo.png"
+              alt="iLoveHACCP"
+              width={120}
+              height={36}
+              className="h-9 w-auto group-hover:scale-105 transition-transform"
+              priority
+            />
           </Link>
 
           {/* Desktop Nav */}
