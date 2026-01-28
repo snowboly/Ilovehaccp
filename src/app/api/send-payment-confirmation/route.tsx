@@ -1,13 +1,8 @@
-
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { supabaseService } from '@/lib/supabase';
-import { renderToBuffer } from '@react-pdf/renderer';
-import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { generateWordDocument } from '@/lib/word-generator';
-import { getDictionary } from '@/lib/locales';
 import { emailTranslations } from '@/lib/email-locales';
-import { fetchLogoAssets } from '@/lib/export/logo';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
@@ -80,61 +75,9 @@ export async function POST(req: Request) {
       }
     }
 
-    let userAttachments: any[] = [];
-    if (plan) {
-      const fullPlan = plan.full_plan || {};
-      const originalInputs = fullPlan._original_inputs || {};
-      const productInputs = originalInputs.product || {};
-      const dict = getDictionary(language as any).pdf;
-      const { pdfLogo, wordLogo } = await fetchLogoAssets(productInputs.logo_url);
-
-      const pdfBuffer = await renderToBuffer(
-        <HACCPDocument
-          data={{
-            businessName: plan.business_name,
-            productName: productInputs.product_name || plan.product_name || "HACCP Plan",
-            productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
-            intendedUse: productInputs.intended_use || plan.intended_use || "General",
-            storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
-            mainIngredients: productInputs.key_ingredients || "Standard",
-            shelfLife: productInputs.shelf_life || "As per label",
-            analysis: plan.hazard_analysis || [],
-            fullPlan,
-            planVersion,
-            lang: language,
-            isPaid: true
-          }}
-          dict={dict}
-          logo={pdfLogo}
-          template={originalInputs.template || 'audit-classic'}
-        />
-      );
-
-      const wordBuffer = await generateWordDocument({
-        businessName: plan.business_name,
-        full_plan: fullPlan,
-        planVersion,
-        template: originalInputs.template || fullPlan.validation?.document_style,
-        productName: productInputs.product_name || plan.product_name || "HACCP Plan",
-        productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
-        mainIngredients: productInputs.key_ingredients || "Standard",
-        intendedUse: productInputs.intended_use || plan.intended_use || "General",
-        storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
-        shelfLife: productInputs.shelf_life || "As per label",
-        logoBuffer: wordLogo
-      }, language);
-
-      userAttachments = [
-        {
-          filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.pdf`,
-          content: pdfBuffer
-        },
-        {
-          filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
-          content: wordBuffer
-        }
-      ];
-    }
+    // Skip inline attachment generation - users download from dashboard
+    // This avoids font/rendering issues in serverless environment
+    const userAttachments: any[] = [];
 
     // 1. Email to User
     await resend.emails.send({
