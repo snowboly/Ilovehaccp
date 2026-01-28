@@ -266,33 +266,37 @@ export function buildExportDoc({
       muted: true,
     },
     { type: "section", title: t("SECTION 5 — PREREQUISITE PROGRAMS (PRPS)", dict.s5_title) },
-    {
-      type: "table",
-      headers: [t("Program", dict.col_program), t("Control Details", dict.col_details)],
-      rows: prerequisitePrograms.map((p: any) => [p.program, p.details]),
-      colWidths: [30, 70],
-    },
+    prerequisitePrograms.length > 0
+      ? {
+          type: "table",
+          headers: [t("Program", dict.col_program), t("Control Details", dict.col_details)],
+          rows: prerequisitePrograms.map((p: any) => [p.program || "-", p.details || "-"]),
+          colWidths: [30, 70],
+        }
+      : { type: "paragraph", text: t("Prerequisite programs to be documented.", "PRPs pending.") },
     { type: "section", title: t("SECTION 6 — HAZARD ANALYSIS", dict.s6_title) },
-    {
-      type: "table",
-      headers: [
-        t("Step", dict.col_step),
-        t("Hazard", dict.lbl_hazard),
-        t("Sev"),
-        t("Lik"),
-        t("Sig?", dict.col_ccp),
-        t("Control", dict.col_control),
-      ],
-      rows: analysis.map((hazard: any) => [
-        hazard.step_name,
-        hazard.hazards,
-        hazard.severity,
-        hazard.likelihood,
-        hazard.is_ccp ? "Yes" : "No",
-        hazard.control_measure,
-      ]),
-      colWidths: [20, 30, 10, 10, 10, 20],
-    },
+    analysis.length > 0
+      ? {
+          type: "table",
+          headers: [
+            t("Step", dict.col_step),
+            t("Hazard", dict.lbl_hazard),
+            t("Sev"),
+            t("Lik"),
+            t("Sig?", dict.col_ccp),
+            t("Control", dict.col_control),
+          ],
+          rows: analysis.map((hazard: any) => [
+            hazard.step_name || "-",
+            hazard.hazards || "-",
+            hazard.severity || "-",
+            hazard.likelihood || "-",
+            hazard.is_ccp ? "Yes" : "No",
+            hazard.control_measure || "-",
+          ]),
+          colWidths: [20, 30, 10, 10, 10, 20],
+        }
+      : { type: "paragraph", text: t("Hazard analysis pending completion.", "Hazard analysis pending.") },
     { type: "section", title: t("SECTION 7 — CCP DETERMINATION", dict.s7_title) },
     {
       type: "paragraph",

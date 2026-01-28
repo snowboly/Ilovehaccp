@@ -151,16 +151,29 @@ export async function GET(req: Request) {
         isPaid: plan.payment_status === 'paid' || isAdmin
     };
 
-    const { pdfLogo } = await fetchLogoAssets(originalInputs.product?.logo_url);
+    let pdfLogo: string | null = null;
+    try {
+        const logoResult = await fetchLogoAssets(originalInputs.product?.logo_url);
+        pdfLogo = logoResult.pdfLogo;
+    } catch (logoError) {
+        console.error('[download-pdf] logo fetch error (continuing without logo):', logoError);
+        // Continue without logo rather than failing
+    }
 
-    const pdfBuffer = await renderToBuffer(
-        <HACCPDocument 
-            data={pdfData}
-            dict={dict}
-            logo={pdfLogo}
-            template={originalInputs.template || 'audit-classic'}
-        />
-    );
+    let pdfBuffer;
+    try {
+        pdfBuffer = await renderToBuffer(
+            <HACCPDocument
+                data={pdfData}
+                dict={dict}
+                logo={pdfLogo}
+                template={originalInputs.template || 'audit-classic'}
+            />
+        );
+    } catch (renderError: any) {
+        console.error('[download-pdf] PDF render error:', renderError?.message || renderError);
+        return NextResponse.json({ error: 'Failed to render PDF. Please try again or contact support.' }, { status: 500 });
+    }
 
     const safeBusinessName = String(plan.business_name || 'Draft').replace(/\s+/g, '_');
 
