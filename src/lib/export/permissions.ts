@@ -15,9 +15,14 @@ export function isExportAllowed(plan: any): { allowed: boolean; reason?: string 
     }
   }
 
+  // PAID PLANS: Always allow export (customer paid, they get their document)
+  if (plan.payment_status === 'paid') {
+    return { allowed: true };
+  }
+
   const validation = plan.full_plan?.validation;
 
-  // Rule 1: Block if Major Gaps are detected
+  // Rule 1: Block if Major Gaps are detected (FREE users only)
   if (validation) {
     if (validation.block_export === true) {
       return { allowed: false, reason: "Export Blocked: Critical gaps detected in the plan." };
