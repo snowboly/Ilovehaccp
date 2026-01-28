@@ -7,7 +7,8 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_123');
 export async function POST(req: Request) {
   try {
     const { name, email, subject, message, captchaAnswer } = await req.json();
-    const captchaCookie = cookies().get('contact_captcha')?.value;
+    const cookieStore = await cookies();
+    const captchaCookie = cookieStore.get('contact_captcha')?.value;
 
     if (!process.env.RESEND_API_KEY) {
       return NextResponse.json({ success: false, error: "Email service not configured" }, { status: 500 });
