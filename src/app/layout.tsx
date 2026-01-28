@@ -83,11 +83,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('app-theme');if(t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()` }} />
+      </head>
       <body className={`${inter.variable} ${merriweather.variable} font-sans`}>
         <Providers>
           <ScrollToTop />
           <CookieConsent />
-          <Suspense fallback={<div className="h-16 bg-white border-b border-slate-100" />}>
+          <Suspense fallback={<div className="h-16 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800" />}>
             <Navbar />
           </Suspense>
           <main className="min-h-screen">

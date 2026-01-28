@@ -62,6 +62,14 @@
           "required": true
         },
         {
+          "id": "monitoring_frequency_other",
+          "text": "Specify monitoring frequency",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g., Every 2 hours, Twice per shift, Weekly",
+          "show_if": { "questionId": "monitoring_frequency", "value": "Other" }
+        },
+        {
           "id": "monitoring_responsibility",
           "text": "Who is responsible for monitoring?",
           "type": "text",

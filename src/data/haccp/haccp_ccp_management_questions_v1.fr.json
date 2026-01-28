@@ -59,6 +59,14 @@
           "required": true
         },
         {
+          "id": "monitoring_frequency_other",
+          "text": "Précisez la fréquence de surveillance",
+          "type": "text",
+          "required": true,
+          "placeholder": "ex., Toutes les 2 heures, Deux fois par quart, Hebdomadaire",
+          "show_if": { "questionId": "monitoring_frequency", "value": "Autre" }
+        },
+        {
           "id": "monitoring_responsibility",
           "text": "Qui est responsable de la surveillance ?",
           "type": "text",
