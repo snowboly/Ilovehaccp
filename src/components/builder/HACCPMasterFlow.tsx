@@ -786,7 +786,10 @@ export default function HACCPMasterFlow() {
         window.history.replaceState({}, '', `?${params.toString()}`);
         // Trigger auto-save with new answers
         setAllAnswers(newAnswers);
-        triggerTransition("Changes saved! Returning to summary...", 'complete');
+        // Clear stale validation to force re-validation after edits
+        setValidationReport(null);
+        setValidationStatus('idle');
+        triggerTransition("Changes saved! Please re-validate your plan.", 'complete');
         return;
     }
 
@@ -2107,24 +2110,19 @@ export default function HACCPMasterFlow() {
                                                 : 'Pay here to unlock Word + PDF exports and the full validation findings.'}
                                         </p>
                                     </div>
-                    {exportBlocked && (
-                                        <div className="bg-amber-50 border border-amber-200 text-amber-900 p-3 rounded-xl text-xs font-bold">
-                                            The export function is currently unavailable for this draft. Reviewing and providing additional information within the builder is necessary to complete the document structure.
-                                        </div>
-                                    )}
 
                                     {isPaid ? (
                                         <div className="grid sm:grid-cols-2 gap-3">
-                                            <button 
+                                            <button
                                                 onClick={handleDownloadWord}
-                                                disabled={exportBlocked || !!busyAction}
+                                                disabled={!!busyAction}
                                                 className={`bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'word' ? 'animate-pulse' : ''}`}
                                             >
                                                 {busyAction === 'word' ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Word...</> : 'Download Word'}
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => handleDownloadPdf(true)}
-                                                disabled={exportBlocked || !!busyAction}
+                                                disabled={!!busyAction}
                                                 className={`bg-white text-emerald-900 px-4 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-all border border-emerald-200 flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'pdf_paid' ? 'animate-pulse' : ''}`}
                                             >
                                                 {busyAction === 'pdf_paid' ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing PDF...</> : 'Download PDF'}
@@ -2291,60 +2289,9 @@ export default function HACCPMasterFlow() {
                                     </div>
                                 )}
 
-                                {/* Paid review teaser for free users */}
-                                {!isPaid && validationReport?.advisory_recommendations && validationReport.advisory_recommendations.length > 0 && (
-                                    <div className="pt-6 border-t border-slate-100 mt-6">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <div className="bg-blue-50 p-2 rounded-lg">
-                                                <Info className="w-5 h-5 text-blue-500" />
-                                            </div>
-                                            <h3 className="text-lg font-black text-slate-900">{PLAN_TIERS.expert.shortLabel} Notes</h3>
-                                            <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Paid</span>
-                                        </div>
-                                        <p className="text-sm text-slate-600 mb-4">
-                                            {validationReport.advisory_recommendations.length} detailed recommendation{validationReport.advisory_recommendations.length !== 1 ? 's' : ''} available.
-                                            Includes expert explanations, practical guidance, and links to the relevant HACCP principles for each gap.
-                                        </p>
-                                    </div>
-                                )}
                             </div>
-                            {!isPaid && (
-                                <div className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                                    <div>
-                                        <p className="text-sm font-bold text-blue-900">Next Steps</p>
-                                        <p className="text-xs text-blue-700">
-                                            Export your HACCP draft or request expert feedback on identified gaps and assumptions.
-                                        </p>
-                                    </div>
-                                    <div className="flex flex-col sm:flex-row gap-2">
-                                        <button
-                                            onClick={() => openCheckout('professional')}
-                                            disabled={isSavingPlan || !!busyAction}
-                                            className={`bg-white text-blue-800 border border-blue-200 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_professional' ? 'animate-pulse' : ''}`}
-                                        >
-                                            {busyAction === 'checkout_professional' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : PLAN_TIERS.professional.upgradeLabel)}
-                                        </button>
-                                        <button
-                                            onClick={() => openCheckout('expert')}
-                                            disabled={isSavingPlan || !!busyAction}
-                                            className={`bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'checkout_expert' ? 'animate-pulse' : ''}`}
-                                        >
-                                            {busyAction === 'checkout_expert' ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening...</> : (isSavingPlan ? 'Saving...' : PLAN_TIERS.expert.upgradeLabel)}
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
                         </div>
-                        <p className="text-[10px] text-slate-400 leading-relaxed">
-                            This summary is generated from your inputs and does not constitute validation, approval, or audit.
-                        </p>
                     </div>
-                    {exportBlocked && (
-                        <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-2xl text-sm font-bold">
-                            Major gaps were detected during validation. Please revise critical items before using exported documents operationally.
-                        </div>
-                    )}
-
                     <div className="pt-8 border-t border-slate-200">
                         <p className="text-[10px] text-slate-400 text-center leading-relaxed max-w-2xl mx-auto">
                             This document is an assisted draft generated based on user-provided information and has not undergone professional validation or verification. 

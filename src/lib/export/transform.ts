@@ -22,7 +22,7 @@ export function transformDraftToPlan(draft: any) {
     user_id: draft.user_id,
     business_name: answers.product?.businessLegalName || 'Draft',
     product_name: answers.product?.product_name || 'Draft Plan',
-    payment_status: 'unpaid',
+    payment_status: draft.payment_status || 'unpaid',
     full_plan: fullPlan,
     hazard_analysis: fullPlan?.hazard_analysis || [],
     answers: answers,
