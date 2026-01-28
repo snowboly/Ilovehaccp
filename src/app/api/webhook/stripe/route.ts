@@ -148,7 +148,8 @@ export async function POST(req: Request) {
                     email: customerEmail,
                     businessName: businessName || 'Your Business',
                     planId: planId,
-                    amount: session.amount_total ? session.amount_total / 100 : 0
+                    amount: session.amount_total ? session.amount_total / 100 : 0,
+                    tier: features_review === 'true' ? 'review' : 'export'
                 })
             });
 
