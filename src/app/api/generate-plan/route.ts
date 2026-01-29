@@ -47,7 +47,11 @@ export async function POST(req: Request) {
           }
       }
     } catch (rlError) {
-        console.warn("Rate limiting failed silently:", rlError);
+        console.error("Rate limiting failed - blocking request for safety:", rlError);
+        return NextResponse.json(
+          { error: 'Service temporarily unavailable. Please try again.' },
+          { status: 503 }
+        );
     }
 
     const body = await req.json();

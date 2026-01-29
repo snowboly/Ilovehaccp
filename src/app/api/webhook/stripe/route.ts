@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { supabaseService } from '@/lib/supabase';
 import { sendEmail } from '@/lib/email/send';
 import { adminReviewRequestedEmailHtml } from '@/lib/email/templates/admin-review-requested';
+import { PLAN_TIERS } from '@/lib/constants';
 
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' as any })
@@ -70,7 +71,64 @@ export async function POST(req: Request) {
       return NextResponse.json({ received: true, warning: 'Missing planId or userId metadata' });
     }
 
-    console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}`);
+    // AUDIT: Log payment amount for monitoring (discounts/taxes may cause variance)
+    const expectedBaseAmount = features_review === 'true'
+      ? PLAN_TIERS.expert.amount
+      : PLAN_TIERS.professional.amount;
+
+    // Validate base price using line items (allows discounts/taxes on amount_total)
+    try {
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 10 });
+      const baseLineItemTotal = lineItems.data.reduce((sum, item) => {
+        const unitAmount = item.price?.unit_amount;
+        if (!unitAmount) return sum;
+        const quantity = item.quantity ?? 1;
+        return sum + unitAmount * quantity;
+      }, 0);
+
+      if (baseLineItemTotal > 0 && baseLineItemTotal !== expectedBaseAmount) {
+        console.error('[Webhook] Line item base amount mismatch', {
+          planId,
+          expectedBase: expectedBaseAmount,
+          actualBase: baseLineItemTotal,
+          sessionId: session.id
+        });
+        void supabaseService.from('access_logs').insert({
+          actor_email: session.customer_details?.email || 'unknown',
+          actor_role: 'user',
+          entity_type: 'plan',
+          entity_id: planId,
+          action: 'PAYMENT_BASE_AMOUNT_MISMATCH',
+          details: { expectedBase: expectedBaseAmount, actualBase: baseLineItemTotal, sessionId: session.id }
+        });
+        return NextResponse.json({ error: 'Payment amount mismatch' }, { status: 400 });
+      }
+    } catch (err) {
+      console.error('[Webhook] Failed to fetch line items:', err);
+      return NextResponse.json({ error: 'Failed to verify payment' }, { status: 500 });
+    }
+
+    // Log if amount differs significantly (>50% discount is unusual)
+    const minExpectedAmount = Math.floor(expectedBaseAmount * 0.5);
+    if (session.amount_total && session.amount_total < minExpectedAmount) {
+      console.warn('[Webhook] Unusual discount detected', {
+        planId,
+        expectedBase: expectedBaseAmount,
+        actual: session.amount_total,
+        discountPercent: Math.round((1 - session.amount_total / expectedBaseAmount) * 100)
+      });
+      // Log for audit but don't block (promo codes are set server-side)
+      void supabaseService.from('access_logs').insert({
+        actor_email: session.customer_details?.email || 'unknown',
+        actor_role: 'user',
+        entity_type: 'plan',
+        entity_id: planId,
+        action: 'PAYMENT_UNUSUAL_DISCOUNT',
+        details: { expectedBase: expectedBaseAmount, actual: session.amount_total, sessionId: session.id }
+      });
+    }
+
+    console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}, Amount: ${session.amount_total}`);
 
     // 2. Fetch current state
     const { data: currentPlan, error: fetchError } = await supabaseService
@@ -140,7 +198,16 @@ export async function POST(req: Request) {
           html: adminReviewRequestedEmailHtml({ appUrl, planId }),
         }).catch(e => console.error("[Webhook] Failed to send admin email:", e));
       } else {
-        console.error("[Webhook] ADMIN_REVIEW_INBOX not configured - admin notification skipped");
+        console.error("[Webhook] CRITICAL: ADMIN_REVIEW_INBOX not configured - review request may be missed!");
+        // Log to access_logs as fallback audit trail (non-blocking)
+        void supabaseService.from('access_logs').insert({
+          actor_email: 'system',
+          actor_role: 'system',
+          entity_type: 'plan',
+          entity_id: planId,
+          action: 'REVIEW_NOTIFICATION_FAILED',
+          details: { reason: 'ADMIN_REVIEW_INBOX not configured', sessionId: session.id }
+        });
       }
     }
 

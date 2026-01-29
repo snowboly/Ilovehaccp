@@ -58,7 +58,7 @@ export default function ExpertAdvisors() {
             <span className="text-blue-600">Verified by Experts.</span>
           </h2>
           <p className="text-xl text-slate-500 leading-relaxed">
-            Our system is built on the direct knowledge and experience of industry veterans, ensuring your plans aren&apos;t just generated—they&apos;re engineered for compliance.
+            Our system is built on the direct knowledge and experience of industry veterans, ensuring your plans aren&apos;t just generated—they&apos;re designed with compliance in mind.
           </p>
         </div>
 
@@ -79,21 +79,6 @@ export default function ExpertAdvisors() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Trust Stats */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-slate-100 pt-12">
-            {[
-                { label: "Active Plans", value: "10,000+" },
-                { label: "Audits Passed", value: "99.8%" },
-                { label: "Countries", value: "45+" },
-                { label: "Compliance Rate", value: "100%" }
-            ].map((stat, i) => (
-                <div key={i} className="text-center">
-                    <div className="text-3xl font-black text-slate-900 mb-1">{stat.value}</div>
-                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
-                </div>
-            ))}
         </div>
       </div>
     </section>
