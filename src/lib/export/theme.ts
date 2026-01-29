@@ -10,6 +10,7 @@ export const HACCP_THEME = {
   },
   font: {
     family: "Roboto",
+    wordFont: "Arial",  // Universal system font for Word documents
     body: 10,
     small: 8,
     h1: 16,

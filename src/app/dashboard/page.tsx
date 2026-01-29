@@ -483,11 +483,11 @@ function DashboardContent() {
                           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                             {isExportPaid ? (
                               <>
-                                <button onClick={() => handleDownload(plan.id, 'pdf', plan.business_name)} className="text-blue-600 hover:underline">
+                                <button onClick={() => handleDownload(plan.id, 'pdf', planLabel)} className="text-blue-600 hover:underline">
                                   PDF
                                 </button>
                                 <span className="hidden sm:inline text-slate-300">·</span>
-                                <button onClick={() => handleDownload(plan.id, 'word', plan.business_name)} className="text-blue-600 hover:underline">
+                                <button onClick={() => handleDownload(plan.id, 'word', planLabel)} className="text-blue-600 hover:underline">
                                   Word
                                 </button>
                               </>

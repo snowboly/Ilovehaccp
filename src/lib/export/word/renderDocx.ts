@@ -50,7 +50,7 @@ const renderSectionBand = (title: string) =>
                 children: [
                   new TextRun({
                     text: sanitizeDocxText(title),
-                    font: "Calibri",
+                    font: T.font.wordFont,
                     size: T.font.h2 * 2,
                     bold: true,
                     color: T.colors.primary.replace("#", ""),
@@ -81,7 +81,7 @@ const createHeaderTable = (labels: ExportDocLabels, generatedDate: string) =>
                 children: [
                   new TextRun({
                     text: sanitizeDocxText(labels.documentTitle),
-                    font: "Calibri",
+                    font: T.font.wordFont,
                     size: T.font.body * 2,
                     bold: true,
                     color: T.colors.text.replace("#", ""),
@@ -100,7 +100,7 @@ const createHeaderTable = (labels: ExportDocLabels, generatedDate: string) =>
                 children: [
                   new TextRun({
                     text: sanitizeDocxText(generatedDate),
-                    font: "Calibri",
+                    font: T.font.wordFont,
                     size: T.font.small * 2,
                     color: T.colors.muted.replace("#", ""),
                   }),
@@ -134,7 +134,7 @@ const buildPageFooterTable = (labels: ExportDocLabels, versionId: string) =>
                 children: [
                   new TextRun({
                     text: `${sanitizeDocxText(labels.version)}: ${sanitizeDocxText(versionId)}`,
-                    font: "Calibri",
+                    font: T.font.wordFont,
                     size: T.font.small * 2,
                     color: T.colors.muted.replace("#", ""),
                   }),
@@ -157,14 +157,14 @@ const buildPageFooterTable = (labels: ExportDocLabels, versionId: string) =>
                 children: [
                   new TextRun({
                     text: `${sanitizeDocxText(labels.page)} `,
-                    font: "Calibri",
+                    font: T.font.wordFont,
                     size: T.font.small * 2,
                     color: T.colors.muted.replace("#", ""),
                   }),
                   new TextRun({ children: [PageNumber.CURRENT], size: T.font.small * 2 }),
                   new TextRun({
                     text: ` ${sanitizeDocxText(labels.of)} `,
-                    font: "Calibri",
+                    font: T.font.wordFont,
                     size: T.font.small * 2,
                     color: T.colors.muted.replace("#", ""),
                   }),
@@ -205,7 +205,7 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
           children: [
             new TextRun({
               text: sanitizeDocxText(resolveExportText(block.text, "docx")),
-              font: "Calibri",
+              font: T.font.wordFont,
               size: T.font.body * 2,
               italics: block.italic,
               color: (block.muted ? T.colors.muted : T.colors.text).replace("#", ""),
@@ -226,7 +226,7 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
           children: [
             new TextRun({
               text: sanitizeDocxText(resolveExportText(block.text, "docx")),
-              font: "Calibri",
+              font: T.font.wordFont,
               size: T.font.body * 2,
               bold: true,
               color: T.colors.primary.replace("#", ""),
@@ -256,7 +256,7 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
                       children: [
                         new TextRun({
                           text: `${sanitizeDocxText(resolveExportText(block.left, "docx"))}: ________________`,
-                          font: "Calibri",
+                          font: T.font.wordFont,
                           size: T.font.body * 2,
                         }),
                       ],
@@ -278,7 +278,7 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
                       children: [
                         new TextRun({
                           text: `${sanitizeDocxText(resolveExportText(block.right, "docx"))}: ________________`,
-                          font: "Calibri",
+                          font: T.font.wordFont,
                           size: T.font.body * 2,
                         }),
                       ],
@@ -325,7 +325,7 @@ function buildDocapescaHeader(labels: ExportDocLabels, generatedDate: string): H
                     children: [
                       new TextRun({
                         text: sanitizeDocxText(labels.documentTitle),
-                        font: "Calibri",
+                        font: T.font.wordFont,
                         size: T.font.body * 2,
                         bold: true,
                         color: DC.navyDark.replace("#", ""),
@@ -347,7 +347,7 @@ function buildDocapescaHeader(labels: ExportDocLabels, generatedDate: string): H
                     children: [
                       new TextRun({
                         text: sanitizeDocxText(generatedDate),
-                        font: "Calibri",
+                        font: T.font.wordFont,
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
@@ -381,7 +381,7 @@ function buildDocapescaFooter(labels: ExportDocLabels, versionId: string): Foote
                     children: [
                       new TextRun({
                         text: `${sanitizeDocxText(labels.version)}: ${sanitizeDocxText(versionId)}`,
-                        font: "Calibri",
+                        font: T.font.wordFont,
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
@@ -399,14 +399,14 @@ function buildDocapescaFooter(labels: ExportDocLabels, versionId: string): Foote
                     children: [
                       new TextRun({
                         text: `${sanitizeDocxText(labels.page)} `,
-                        font: "Calibri",
+                        font: T.font.wordFont,
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
                       new TextRun({ children: [PageNumber.CURRENT], size: T.font.small * 2 }),
                       new TextRun({
                         text: ` ${sanitizeDocxText(labels.of)} `,
-                        font: "Calibri",
+                        font: T.font.wordFont,
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
@@ -473,7 +473,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
                   children: [
                     new TextRun({
                       text: sanitizeDocxText(labels.documentTitle).toUpperCase(),
-                      font: "Calibri",
+                      font: T.font.wordFont,
                       size: 52,
                       bold: true,
                       color: DC.navyDark.replace("#", ""),
@@ -487,7 +487,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
                   children: [
                     new TextRun({
                       text: sanitizeDocxText(doc.cover.docx.subtitle || labels.subtitle),
-                      font: "Calibri",
+                      font: T.font.wordFont,
                       size: 28,
                       color: T.colors.text.replace("#", ""),
                     }),
@@ -502,7 +502,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
                         children: [
                           new TextRun({
                             text: sanitizeDocxText(doc.cover.docx.businessName),
-                            font: "Calibri",
+                            font: T.font.wordFont,
                             size: 24,
                             bold: true,
                             color: T.colors.text.replace("#", ""),
@@ -536,14 +536,14 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
           children: [
             new TextRun({
               text: `${sanitizeDocxText(m.label)}: `,
-              font: "Calibri",
+              font: T.font.wordFont,
               size: T.font.body * 2,
               bold: true,
               color: DC.navyDark.replace("#", ""),
             }),
             new TextRun({
               text: sanitizeDocxText(m.value),
-              font: "Calibri",
+              font: T.font.wordFont,
               size: T.font.body * 2,
               color: T.colors.text.replace("#", ""),
             }),
@@ -626,7 +626,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
       children: [
         new TextRun({
           text: sanitizeDocxText(doc.cover.docx.title),
-          font: "Calibri",
+          font: T.font.wordFont,
           size: 32,
           bold: true,
           color: T.colors.primary.replace("#", ""),
@@ -639,7 +639,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
       children: [
         new TextRun({
           text: sanitizeDocxText(doc.cover.docx.subtitle),
-          font: "Calibri",
+          font: T.font.wordFont,
           size: 24,
           color: T.colors.text.replace("#", ""),
         }),
@@ -651,7 +651,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
       children: [
         new TextRun({
           text: sanitizeDocxText(doc.cover.docx.businessName),
-          font: "Calibri",
+          font: T.font.wordFont,
           size: 28,
           bold: true,
         }),
@@ -665,7 +665,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
           children: [
             new TextRun({
               text: `${sanitizeDocxText(m.label)}: ${sanitizeDocxText(m.value)}`,
-              font: "Calibri",
+              font: T.font.wordFont,
               size: T.font.body * 2,
             }),
           ],

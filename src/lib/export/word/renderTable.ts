@@ -47,7 +47,7 @@ export const makeFixedTable = (
                 children: [
                   new TextRun({
                     text: sanitizeDocxText(h),
-                    font: "Calibri",
+                    font: T.font.wordFont,
                     size: T.font.h2 * 2,
                     bold: true,
                     color: T.colors.text.replace("#", ""),
@@ -74,7 +74,7 @@ export const makeFixedTable = (
                   children: [
                     new TextRun({
                       text: sanitizeDocxText(String(cell || "-")),
-                      font: "Calibri",
+                      font: T.font.wordFont,
                       size: T.font.body * 2,
                     }),
                   ],
