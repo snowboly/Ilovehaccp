@@ -123,9 +123,10 @@ export default function AdminDashboard() {
       }
   };
 
-  const handleReviewAction = async (action: 'ADD_COMMENT' | 'COMPLETE_REVIEW') => {
+  const handleReviewAction = async (action: 'ADD_COMMENT' | 'MARK_CONCLUDED' | 'SET_IN_PROGRESS') => {
     if (!selectedReviewPlan) return;
-    if (action === 'COMPLETE_REVIEW' && !confirm('Mark this review as COMPLETED? This cannot be undone.')) return;
+    if (action === 'MARK_CONCLUDED' && !confirm('Mark this review as concluded? The user will see "Review concluded" status.')) return;
+    if (action === 'SET_IN_PROGRESS' && !confirm('Reopen this review? The user will see "Review in progress" status.')) return;
 
     setSubmitting(true);
     try {
@@ -147,10 +148,15 @@ export default function AdminDashboard() {
 
         if (!res.ok) throw new Error('Action failed');
 
-        if (action === 'COMPLETE_REVIEW') {
-            alert('Review completed successfully.');
-            setSelectedReviewPlan(null); // Go back to list
+        if (action === 'MARK_CONCLUDED') {
+            alert('Review marked as concluded.');
+            // Update local state to reflect change
+            setSelectedReviewPlan({ ...selectedReviewPlan, review_status: 'concluded' });
             fetchData('reviews', page); // Refresh list
+        } else if (action === 'SET_IN_PROGRESS') {
+            alert('Review reopened.');
+            setSelectedReviewPlan({ ...selectedReviewPlan, review_status: 'in_progress' });
+            fetchData('reviews', page);
         } else {
             alert('Comment saved.');
         }
@@ -357,25 +363,37 @@ export default function AdminDashboard() {
                           />
 
                           <div className="flex gap-4 mt-6 pt-6 border-t border-slate-700">
-                              <button 
+                              <button
                                   onClick={() => handleReviewAction('ADD_COMMENT')}
                                   disabled={submitting}
                                   className="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
                               >
                                   <Save className="w-4 h-4" /> Save Draft
                               </button>
-                              <button 
-                                  onClick={() => handleReviewAction('COMPLETE_REVIEW')}
-                                  disabled={submitting}
-                                  className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
-                              >
-                                  {submitting ? <Loader2 className="animate-spin w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
-                                  Mark Completed
-                              </button>
+                              {/* Toggle between concluded/in_progress */}
+                              {plan.review_status === 'concluded' || plan.review_status === 'completed' ? (
+                                <button
+                                    onClick={() => handleReviewAction('SET_IN_PROGRESS')}
+                                    disabled={submitting}
+                                    className="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
+                                >
+                                    {submitting ? <Loader2 className="animate-spin w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                                    Reopen Review
+                                </button>
+                              ) : (
+                                <button
+                                    onClick={() => handleReviewAction('MARK_CONCLUDED')}
+                                    disabled={submitting}
+                                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
+                                >
+                                    {submitting ? <Loader2 className="animate-spin w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                                    Mark Concluded
+                                </button>
+                              )}
                           </div>
-                          
+
                           <p className="text-center text-slate-500 text-xs mt-4">
-                              "Expert review provides guidance only. Final responsibility remains with the HACCP team."
+                              "Review concluded" indicates the review task is finished. It does not imply approval or certification.
                           </p>
                       </div>
                   </div>
@@ -408,10 +426,14 @@ export default function AdminDashboard() {
                                   <div className="text-xs text-slate-500">ID: {plan.id.slice(0,8)}...</div>
                               </td>
                               <td className="p-4">
-                                  {plan.review_status === 'completed' ? (
-                                      <span className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs font-bold">Completed</span>
+                                  {plan.review_status === 'concluded' || plan.review_status === 'completed' ? (
+                                      <span className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs font-bold">
+                                        ● Concluded
+                                      </span>
                                   ) : (
-                                      <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded-full text-xs font-bold animate-pulse">Pending Review</span>
+                                      <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-bold">
+                                        ● In Progress
+                                      </span>
                                   )}
                               </td>
                               <td className="p-4 text-right">

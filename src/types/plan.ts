@@ -33,7 +33,7 @@ export interface Plan {
   pdf_url?: string | null;
   docx_url?: string | null;
   review_requested?: boolean;
-  review_status?: 'pending' | 'completed';
+  review_status?: 'in_progress' | 'concluded' | 'pending' | 'completed'; // pending/completed are legacy
   review_comments?: string;
   review_notes?: string | null;
   reviewed_at?: string;
