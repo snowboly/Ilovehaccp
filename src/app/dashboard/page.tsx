@@ -13,7 +13,6 @@ import {
   LogOut,
   Loader2
 } from 'lucide-react';
-import { PLAN_TIERS } from '@/lib/constants';
 import { Suspense } from 'react';
 import type { Plan, Draft } from '@/types/plan';
 
@@ -320,8 +319,8 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b px-4 lg:px-6 h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-[#F9FAFB]">
+      <nav className="bg-white border-b border-slate-200/70 px-4 lg:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
           <span className="text-sm font-medium">← Back to Home</span>
         </Link>
@@ -391,9 +390,9 @@ function DashboardContent() {
           {drafts.length === 0 ? (
             <div className="text-sm text-gray-500">No active drafts.</div>
           ) : (
-            <div className="overflow-x-auto border rounded-lg bg-white">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
               <table className="min-w-full text-sm">
-                <thead className="bg-gray-50 text-gray-600">
+                <thead className="bg-slate-50 text-slate-600">
                   <tr>
                     <th className="text-left px-4 py-2 font-medium">Draft</th>
                     <th className="text-left px-4 py-2 font-medium">Business</th>
@@ -403,13 +402,13 @@ function DashboardContent() {
                 </thead>
                 <tbody>
                   {drafts.map(draft => (
-                    <tr key={draft.id} className="border-t">
-                      <td className="px-4 py-2">
+                    <tr key={draft.id} className="border-t border-slate-100 hover:bg-slate-50/70 transition-colors">
+                      <td className="px-4 py-3">
                         {draft.name?.trim() || `HACCP Draft – ${new Date(draft.created_at).toLocaleDateString()}`}
                       </td>
-                      <td className="px-4 py-2">{draft.business_name || 'Draft'}</td>
-                      <td className="px-4 py-2">{new Date(draft.created_at).toLocaleDateString()}</td>
-                      <td className="px-4 py-2 text-right space-x-2">
+                      <td className="px-4 py-3">{draft.business_name || 'Draft'}</td>
+                      <td className="px-4 py-3">{new Date(draft.created_at).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 text-right space-x-3">
                         <Link href={`/builder?draft=${draft.id}`} className="text-blue-600 hover:underline">
                           Resume
                         </Link>
@@ -436,15 +435,14 @@ function DashboardContent() {
           {plans.length === 0 ? (
             <div className="text-sm text-gray-500">No generated plans yet.</div>
           ) : (
-            <div className="overflow-x-auto border rounded-lg bg-white">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
               <table className="min-w-full text-sm">
-                <thead className="bg-gray-50 text-gray-600">
+                <thead className="bg-slate-50 text-slate-600">
                   <tr>
                     <th className="text-left px-4 py-2 font-medium">Plan</th>
-                    <th className="text-left px-4 py-2 font-medium">PDF</th>
-                    <th className="text-left px-4 py-2 font-medium">Word</th>
-                    <th className="text-left px-4 py-2 font-medium">Review Notes</th>
-                    <th className="text-left px-4 py-2 font-medium">Status</th>
+                    <th className="text-left px-4 py-2 font-medium">Files</th>
+                    <th className="text-left px-4 py-2 font-medium">Review</th>
+                    <th className="text-left px-4 py-2 font-medium">Summary</th>
                     <th className="text-right px-4 py-2 font-medium">Actions</th>
                   </tr>
                 </thead>
@@ -460,102 +458,125 @@ function DashboardContent() {
                   }).map(plan => {
                     const draftName = plan.draft_id ? draftNamesByPlanId[plan.draft_id] : undefined;
                     const planLabel = draftName?.trim() || plan.business_name || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
-                    const isPaid = plan.export_paid || plan.payment_status === 'paid';
+                    const isExportPaid = plan.export_paid || plan.payment_status === 'paid';
                     const pdfUrl = plan.pdf_url ?? plan.full_plan?.documents?.pdf_url ?? null;
                     const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;
                     const hasReviewNotes = Boolean(plan.review_notes || plan.review_comments);
 
-                    // Simplified review status: only two states
                     const isReviewInProgress = plan.review_status === 'in_progress' || plan.review_status === 'pending' || plan.review_requested;
-                    const isReviewConcluded = plan.review_status === 'concluded' || plan.review_status === 'completed';
-                    const hasActiveReview = isReviewInProgress || isReviewConcluded;
+                    const isReviewCompleted = plan.review_status === 'completed' || plan.review_status === 'concluded';
+                    const showUnderReview = !isReviewCompleted && (plan.review_requested || plan.review_status === 'pending' || plan.review_status === 'in_progress');
+                    const reviewLabel = isReviewCompleted
+                      ? 'Review completed'
+                      : showUnderReview
+                        ? 'Under review'
+                        : plan.review_paid
+                          ? 'Paid'
+                          : 'Not requested';
 
                     return (
-                      <tr key={plan.id} className="border-t">
-                        <td className="px-4 py-2">
+                      <tr key={plan.id} className="border-t border-slate-100 hover:bg-slate-50/70 transition-colors">
+                        <td className="px-4 py-3">
                           <span className="font-medium text-gray-900">{planLabel}</span>
-                          {isPaid && (
-                            <span className="ml-2 text-[10px] font-medium text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
-                              PAID
-                            </span>
-                          )}
                         </td>
-                        <td className="px-4 py-2">
-                          {isPaid ? (
-                            <button onClick={() => handleDownload(plan.id, 'pdf', plan.business_name)} className="text-blue-600 hover:underline">
-                              PDF
-                            </button>
-                          ) : pdfUrl ? (
-                            <a href={pdfUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
-                              PDF
-                            </a>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
+                        <td className="px-4 py-3">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                            {isExportPaid ? (
+                              <>
+                                <button onClick={() => handleDownload(plan.id, 'pdf', plan.business_name)} className="text-blue-600 hover:underline">
+                                  PDF
+                                </button>
+                                <span className="hidden sm:inline text-slate-300">·</span>
+                                <button onClick={() => handleDownload(plan.id, 'word', plan.business_name)} className="text-blue-600 hover:underline">
+                                  Word
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                {pdfUrl ? (
+                                  <a href={pdfUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
+                                    PDF
+                                  </a>
+                                ) : (
+                                  <span className="text-gray-400">—</span>
+                                )}
+                                <span className="hidden sm:inline text-slate-300">·</span>
+                                {docxUrl ? (
+                                  <a href={docxUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
+                                    Word
+                                  </a>
+                                ) : (
+                                  <span className="text-gray-400">—</span>
+                                )}
+                              </>
+                            )}
+                          </div>
                         </td>
-                        <td className="px-4 py-2">
-                          {isPaid ? (
-                            <button onClick={() => handleDownload(plan.id, 'word', plan.business_name)} className="text-blue-600 hover:underline">
-                              Word
-                            </button>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${
+                              reviewLabel === 'Review completed'
+                                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                                : reviewLabel === 'Under review'
+                                  ? 'border-purple-200 bg-purple-50 text-purple-700'
+                                  : reviewLabel === 'Paid'
+                                    ? 'border-blue-200 bg-blue-50 text-blue-700'
+                                    : 'border-slate-200 bg-slate-50 text-slate-600'
+                            }`}
+                          >
+                            {reviewLabel}
+                          </span>
                         </td>
-                        <td className="px-4 py-2">
-                          {hasReviewNotes ? (
-                            <Link href={`/dashboard/plans/${plan.id}/review`} className="text-blue-600 hover:underline">
-                              View
+                        <td className="px-4 py-3">
+                          {showUnderReview ? (
+                            <span className="text-xs text-slate-500">Sent by email</span>
+                          ) : isReviewCompleted && hasReviewNotes ? (
+                            <Link href={`/dashboard/plans/${plan.id}/review`} className="text-blue-600 hover:underline text-sm">
+                              View summary
                             </Link>
                           ) : (
                             <span className="text-gray-400">—</span>
                           )}
                         </td>
-                        <td className="px-4 py-2">
-                          {isReviewInProgress ? (
-                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
-                              <span className="text-purple-500">●</span> Review in progress
-                            </span>
-                          ) : isReviewConcluded ? (
-                            <span
-                              className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 cursor-help"
-                              title="The review task has been completed. This does not constitute certification or compliance approval."
-                            >
-                              <span className="text-emerald-500">●</span> Review concluded
-                            </span>
-                          ) : !isPaid ? (
-                            <span className="text-xs text-slate-500">Upgrade to unlock exports</span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-2 text-right flex justify-end items-center gap-2">
-                          {!plan.export_paid && !isPaid && (
-                             <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline text-sm font-medium">
-                               {PLAN_TIERS.professional.upgradeLabel}
-                             </button>
-                          )}
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-2">
+                            {plan.export_paid ? (
+                              <span className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold px-2 py-1 border border-emerald-200">
+                                PAID
+                              </span>
+                            ) : (
+                              <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline text-sm font-medium">
+                                Unlock export
+                              </button>
+                            )}
 
-                          {/* Review action: hide if review is active or concluded */}
-                          {!hasActiveReview && !plan.review_paid && (
-                            <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
-                              {PLAN_TIERS.expert.upgradeLabel}
-                            </button>
-                          )}
+                            {showUnderReview ? (
+                              <span className="inline-flex items-center rounded-full bg-purple-50 text-purple-700 text-[11px] font-semibold px-2 py-1 border border-purple-200">
+                                IN REVIEW
+                              </span>
+                            ) : plan.review_paid ? (
+                              <span className="inline-flex items-center rounded-full bg-blue-50 text-blue-700 text-[11px] font-semibold px-2 py-1 border border-blue-200">
+                                PAID
+                              </span>
+                            ) : (
+                              <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
+                                Request review
+                              </button>
+                            )}
 
-                          {/* Delete: disabled during active review */}
-                          {isReviewInProgress ? (
-                            <span
-                              className="text-gray-400 text-sm cursor-not-allowed"
-                              title="Cannot delete while review is in progress"
-                            >
-                              Delete
-                            </span>
-                          ) : (
-                            <button onClick={() => handleDeletePlan(plan.id)} className="text-red-600 hover:underline text-sm">
-                              Delete
-                            </button>
-                          )}
+                            {isReviewInProgress ? (
+                              <span
+                                className="text-slate-400 text-xs cursor-not-allowed"
+                                title="Cannot delete while review is in progress"
+                              >
+                                Delete
+                              </span>
+                            ) : (
+                              <button onClick={() => handleDeletePlan(plan.id)} className="text-slate-400 hover:text-slate-600 text-xs">
+                                Delete
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );
