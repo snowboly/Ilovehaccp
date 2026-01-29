@@ -376,6 +376,7 @@ const styles = StyleSheet.create({
   },
   body: {
     marginTop: 40,
+    paddingBottom: 40,
   },
   signatureRow: {
     marginTop: 40,

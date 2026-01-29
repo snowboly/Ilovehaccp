@@ -84,9 +84,16 @@ function DashboardContent() {
       const paidPlans = (plansData || []).filter(plan =>
         plan.export_paid || plan.review_paid || plan.payment_status === 'paid'
       );
+      const paidDraftIds = new Set(
+        paidPlans
+          .map((plan) => plan.draft_id)
+          .filter((draftId): draftId is string => Boolean(draftId))
+      );
       setPlans(paidPlans as any);
       setDrafts(
-        (draftsData || []).map(d => ({
+        (draftsData || [])
+          .filter((draft) => !paidDraftIds.has(draft.id))
+          .map(d => ({
           id: d.id,
           name: d.name ?? null,
           product_name: d.answers?.product?.product_name || 'Unfinished Draft',
@@ -440,6 +447,7 @@ function DashboardContent() {
                 <thead className="bg-slate-50 text-slate-600">
                   <tr>
                     <th className="text-left px-4 py-2 font-medium">Plan</th>
+                    <th className="text-left px-4 py-2 font-medium">Date</th>
                     <th className="text-left px-4 py-2 font-medium">Files</th>
                     <th className="text-left px-4 py-2 font-medium">Review</th>
                     <th className="text-left px-4 py-2 font-medium">Summary</th>
@@ -478,6 +486,9 @@ function DashboardContent() {
                       <tr key={plan.id} className="border-t border-slate-100 hover:bg-slate-50/70 transition-colors">
                         <td className="px-4 py-3">
                           <span className="font-medium text-gray-900">{planLabel}</span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-slate-500">
+                          {new Date(plan.created_at).toLocaleDateString()}
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
