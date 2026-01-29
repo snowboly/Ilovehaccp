@@ -50,7 +50,16 @@ const parseMarkdownTable = (text: string) => {
   if (!lines[0].includes("|") || !isMarkdownSeparator(lines[1])) return null;
   const headers = splitMarkdownRow(lines[0]);
   if (headers.length < 2) return null;
-  const bodyRows = lines.slice(2).filter((line) => line.includes("|"));
+  const bodyRows: string[] = [];
+  let remainderStart = lines.length;
+  for (let i = 2; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (!line.includes("|")) {
+      remainderStart = i;
+      break;
+    }
+    bodyRows.push(line);
+  }
   if (bodyRows.length === 0) return null;
   const rows = bodyRows.map((line) => {
     const cells = splitMarkdownRow(line);
@@ -58,7 +67,8 @@ const parseMarkdownTable = (text: string) => {
     while (padded.length < headers.length) padded.push("-");
     return padded.slice(0, headers.length);
   });
-  return { headers, rows };
+  const remainder = lines.slice(remainderStart).filter(Boolean);
+  return { headers, rows, remainder: remainder.length ? remainder : null };
 };
 
 const stringifyDocxValue = (value: unknown): string => {
@@ -353,13 +363,30 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
       const paragraphText = resolveExportText(block.text, "docx");
       const markdownTable = parseMarkdownTable(paragraphText);
       if (markdownTable) {
-        return [
-          makeFixedTable({
-            columnWidths: resolveDocxColumnWidths(markdownTable.headers.length),
-            headerRow: markdownTable.headers,
-            rows: markdownTable.rows,
-          }),
-        ];
+        const table = makeFixedTable({
+          columnWidths: resolveDocxColumnWidths(markdownTable.headers.length),
+          headerRow: markdownTable.headers,
+          rows: markdownTable.rows,
+        });
+        if (markdownTable.remainder?.length) {
+          const trailingParagraphs = markdownTable.remainder.map(
+            (line) =>
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: sanitizeDocxText(line),
+                    font: DOCX_FONT,
+                    size: T.font.body * 2,
+                    italics: block.italic,
+                    color: (block.muted ? T.colors.muted : T.colors.text).replace("#", ""),
+                  }),
+                ],
+                spacing: { after: toTwips(T.spacing.gapMd) },
+              })
+          );
+          return [table, ...trailingParagraphs];
+        }
+        return [table];
       }
       const structuredContent = parseStructuredContent(paragraphText);
       if (structuredContent?.type === "table") {
