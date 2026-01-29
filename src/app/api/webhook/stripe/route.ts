@@ -71,33 +71,32 @@ export async function POST(req: Request) {
       return NextResponse.json({ received: true, warning: 'Missing planId or userId metadata' });
     }
 
-    // SECURITY: Validate payment amount matches expected tier
-    const expectedAmount = features_review === 'true'
+    // AUDIT: Log payment amount for monitoring (discounts/taxes may cause variance)
+    const expectedBaseAmount = features_review === 'true'
       ? PLAN_TIERS.expert.amount
       : PLAN_TIERS.professional.amount;
 
-    if (session.amount_total !== expectedAmount) {
-      console.error('[Webhook] SECURITY: Amount mismatch detected', {
+    // Log if amount differs significantly (>50% discount is unusual)
+    const minExpectedAmount = Math.floor(expectedBaseAmount * 0.5);
+    if (session.amount_total && session.amount_total < minExpectedAmount) {
+      console.warn('[Webhook] Unusual discount detected', {
         planId,
-        userId,
-        expected: expectedAmount,
+        expectedBase: expectedBaseAmount,
         actual: session.amount_total,
-        metadata: session.metadata,
-        sessionId: session.id
+        discountPercent: Math.round((1 - session.amount_total / expectedBaseAmount) * 100)
       });
-      // Log potential fraud attempt but don't grant features (non-blocking)
+      // Log for audit but don't block (promo codes are set server-side)
       supabaseService.from('access_logs').insert({
         actor_email: session.customer_details?.email || 'unknown',
         actor_role: 'user',
         entity_type: 'plan',
         entity_id: planId,
-        action: 'PAYMENT_AMOUNT_MISMATCH',
-        details: { expected: expectedAmount, actual: session.amount_total, sessionId: session.id }
+        action: 'PAYMENT_UNUSUAL_DISCOUNT',
+        details: { expectedBase: expectedBaseAmount, actual: session.amount_total, sessionId: session.id }
       }).then(() => {}).catch(() => {});
-      return NextResponse.json({ error: 'Payment verification failed' }, { status: 400 });
     }
 
-    console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}`);
+    console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}, Amount: ${session.amount_total}`);
 
     // 2. Fetch current state
     const { data: currentPlan, error: fetchError } = await supabaseService
