@@ -71,7 +71,7 @@ export function PdfHeader(props: {
           </View>
           <View style={{ height: 4 }} />
           <View style={styles.versionRow}>
-            <Text style={styles.versionLabel}>Generated</Text>
+            <Text style={styles.versionLabel}>Generated </Text>
             <Text style={styles.versionValue}>{generatedDate}</Text>
           </View>
         </View>

@@ -34,6 +34,197 @@ if (hasAllRobotoFonts) {
   }
 }
 
+/* =========================================================
+   PDF TEXT SANITIZATION & CONTENT PARSING UTILITIES
+   ========================================================= */
+
+// Zero-width and invisible characters to remove
+const INVISIBLE_CHARS_REGEX = /[\u200B\u200C\u200D\u00AD\uFEFF\u2060\u180E]/g;
+
+/**
+ * Sanitize text for PDF rendering:
+ * - Remove zero-width spaces, soft hyphens, and other invisible chars
+ * - Collapse repeated whitespace
+ * - Insert normal spaces in very long unbroken tokens (>36 chars) for wrapping
+ */
+function sanitizePdfText(text: string): string {
+  if (!text) return "";
+
+  let result = text;
+
+  // 1. Remove invisible characters
+  result = result.replace(INVISIBLE_CHARS_REGEX, "");
+
+  // 2. Collapse repeated whitespace (but preserve single newlines for structure)
+  result = result.replace(/[ \t]+/g, " ");
+  result = result.replace(/\n{3,}/g, "\n\n");
+
+  // 3. Insert spaces in long unbroken tokens for wrapping
+  // Only apply to contiguous non-whitespace runs longer than 36 chars
+  result = result.replace(/(\S{36,})/g, (match) => {
+    // Insert a space every 24 characters
+    const parts: string[] = [];
+    for (let i = 0; i < match.length; i += 24) {
+      parts.push(match.slice(i, i + 24));
+    }
+    return parts.join(" ");
+  });
+
+  return result.trim();
+}
+
+/**
+ * Detect if text contains a markdown table (pipes with separator row)
+ */
+function containsMarkdownTable(text: string): boolean {
+  // Look for pattern: line with pipes, followed by separator row (|---|---|)
+  return /\|[^|]+\|[^|]*\n\|[-:\s|]+\|/.test(text);
+}
+
+/**
+ * Parse a markdown table string into headers and rows
+ */
+function parseMarkdownTable(text: string): { headers: string[]; rows: string[][] } | null {
+  const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+
+  // Find table lines (lines containing pipes)
+  const tableLines = lines.filter(line => line.includes("|"));
+  if (tableLines.length < 2) return null;
+
+  // Parse a table row (split by pipe, trim cells)
+  const parseRow = (line: string): string[] => {
+    return line
+      .split("|")
+      .map(cell => cell.trim())
+      .filter((cell, idx, arr) => {
+        // Remove empty first/last cells from leading/trailing pipes
+        if (idx === 0 && cell === "") return false;
+        if (idx === arr.length - 1 && cell === "") return false;
+        return true;
+      });
+  };
+
+  // First row is headers
+  const headers = parseRow(tableLines[0]);
+  if (headers.length === 0) return null;
+
+  // Skip separator row (contains --- patterns)
+  const rows: string[][] = [];
+  for (let i = 1; i < tableLines.length; i++) {
+    const line = tableLines[i];
+    // Skip separator rows
+    if (/^[|\s:-]+$/.test(line)) continue;
+    const row = parseRow(line);
+    if (row.length > 0) {
+      rows.push(row);
+    }
+  }
+
+  return { headers, rows };
+}
+
+/**
+ * Detect if text looks like JSON or a labeled JSON blob (e.g., "Benchmarking { ... }")
+ */
+function detectJsonContent(text: string): { label: string | null; json: any } | null {
+  if (!text) return null;
+
+  const trimmed = text.trim();
+
+  // Pattern 1: Direct JSON object
+  if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+    try {
+      const json = JSON.parse(trimmed);
+      return { label: null, json };
+    } catch {
+      return null;
+    }
+  }
+
+  // Pattern 2: "Label { ... }" format
+  const labeledMatch = trimmed.match(/^([A-Za-z_][A-Za-z0-9_\s]*?)\s*(\{[\s\S]*\})$/);
+  if (labeledMatch) {
+    try {
+      const json = JSON.parse(labeledMatch[2]);
+      return { label: labeledMatch[1].trim(), json };
+    } catch {
+      return null;
+    }
+  }
+
+  // Pattern 3: Direct JSON array
+  if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+    try {
+      const json = JSON.parse(trimmed);
+      return { label: null, json };
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Convert a parsed JSON object into table rows for rendering
+ * Returns { headers, rows } suitable for renderTable
+ */
+function jsonToTableData(json: any, label?: string | null): { headers: string[]; rows: string[][] } {
+  const headers = ["Field", "Value"];
+  const rows: string[][] = [];
+
+  if (label) {
+    rows.push(["Category", label]);
+  }
+
+  if (Array.isArray(json)) {
+    // For arrays, render each item
+    json.forEach((item, idx) => {
+      if (typeof item === "object" && item !== null) {
+        // If item has title/name/label, use it
+        const itemLabel = item.title || item.name || item.label || `Item ${idx + 1}`;
+        const itemValue = item.description || item.details || item.impact ||
+                          Object.entries(item)
+                            .filter(([k]) => !["title", "name", "label"].includes(k))
+                            .map(([k, v]) => `${k}: ${typeof v === "object" ? JSON.stringify(v) : v}`)
+                            .join("; ");
+        rows.push([sanitizePdfText(String(itemLabel)), sanitizePdfText(String(itemValue))]);
+      } else {
+        rows.push([`Item ${idx + 1}`, sanitizePdfText(String(item))]);
+      }
+    });
+  } else if (typeof json === "object" && json !== null) {
+    // For objects, render key-value pairs
+    for (const [key, value] of Object.entries(json)) {
+      const displayKey = key.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      let displayValue: string;
+
+      if (Array.isArray(value)) {
+        // For nested arrays (like recommendations), format as list
+        displayValue = value.map((item, idx) => {
+          if (typeof item === "object" && item !== null) {
+            const parts = Object.entries(item)
+              .map(([k, v]) => `${k}: ${typeof v === "object" ? JSON.stringify(v) : v}`)
+              .join(", ");
+            return `${idx + 1}. ${parts}`;
+          }
+          return `${idx + 1}. ${item}`;
+        }).join("\n");
+      } else if (typeof value === "object" && value !== null) {
+        displayValue = JSON.stringify(value, null, 2);
+      } else {
+        displayValue = String(value ?? "-");
+      }
+
+      rows.push([sanitizePdfText(displayKey), sanitizePdfText(displayValue)]);
+    }
+  } else {
+    rows.push(["Value", sanitizePdfText(String(json))]);
+  }
+
+  return { headers, rows };
+}
+
 const Watermark = ({ isPaid }: { isPaid: boolean }) => {
   if (isPaid) return null;
 
@@ -67,8 +258,37 @@ const Watermark = ({ isPaid }: { isPaid: boolean }) => {
 const renderBlock = (block: ExportBlock) => {
   switch (block.type) {
     case "section":
-      return renderSectionHeader(resolveExportText(block.title, "pdf"));
-    case "paragraph":
+      return renderSectionHeader(sanitizePdfText(resolveExportText(block.title, "pdf")));
+    case "paragraph": {
+      const rawText = resolveExportText(block.text, "pdf");
+
+      // Check for markdown table content
+      if (containsMarkdownTable(rawText)) {
+        const parsed = parseMarkdownTable(rawText);
+        if (parsed && parsed.headers.length > 0 && parsed.rows.length > 0) {
+          const colWidths = parsed.headers.map(() => `${Math.floor(100 / parsed.headers.length)}%`);
+          return renderTable(
+            parsed.headers.map(h => sanitizePdfText(h)),
+            parsed.rows.map(row => row.map(cell => sanitizePdfText(cell))),
+            colWidths,
+            { spacing: { sectionBottom: T.spacing.gapMd } }
+          );
+        }
+      }
+
+      // Check for JSON content
+      const jsonContent = detectJsonContent(rawText);
+      if (jsonContent) {
+        const { headers, rows } = jsonToTableData(jsonContent.json, jsonContent.label);
+        return renderTable(
+          headers,
+          rows,
+          ["30%", "70%"],
+          { spacing: { sectionBottom: T.spacing.gapMd } }
+        );
+      }
+
+      // Default: render as sanitized text
       return (
         <Text
           style={{
@@ -78,30 +298,31 @@ const renderBlock = (block: ExportBlock) => {
             fontStyle: block.italic ? "italic" : "normal",
           }}
         >
-          {resolveExportText(block.text, "pdf")}
+          {sanitizePdfText(rawText)}
         </Text>
       );
+    }
     case "table":
       return renderTable(
-        block.headers.map((header) => resolveExportText(header, "pdf")),
-        block.rows.map((row) => row.map((cell) => resolveExportText(cell, "pdf"))),
+        block.headers.map((header) => sanitizePdfText(resolveExportText(header, "pdf"))),
+        block.rows.map((row) => row.map((cell) => sanitizePdfText(resolveExportText(cell, "pdf")))),
         block.colWidths.map((width) => `${width}%`),
         { spacing: { sectionBottom: T.spacing.gapMd } }
       );
     case "subheading":
       return (
         <Text style={{ fontWeight: "bold", marginBottom: 5, color: T.colors.primary }}>
-          {resolveExportText(block.text, "pdf")}
+          {sanitizePdfText(resolveExportText(block.text, "pdf"))}
         </Text>
       );
     case "signature":
       return (
         <View style={styles.signatureRow}>
           <View style={styles.signatureLine}>
-            <Text>{resolveExportText(block.left, "pdf")}: ________________</Text>
+            <Text>{sanitizePdfText(resolveExportText(block.left, "pdf"))}: ________________</Text>
           </View>
           <View style={styles.signatureLine}>
-            <Text>{resolveExportText(block.right, "pdf")}: ________________</Text>
+            <Text>{sanitizePdfText(resolveExportText(block.right, "pdf"))}: ________________</Text>
           </View>
         </View>
       );

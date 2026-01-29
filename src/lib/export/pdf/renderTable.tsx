@@ -9,6 +9,9 @@ const rowBase = {
   borderColor: T.colors.border,
 };
 
+// Zero-width and invisible characters to remove
+const INVISIBLE_CHARS_REGEX = /[\u200B\u200C\u200D\u00AD\uFEFF\u2060\u180E]/g;
+
 // HELPER: Cell Sanitization
 function formatCellValue(cell: unknown): string {
   if (cell === null || cell === undefined || cell === "") {
@@ -26,18 +29,27 @@ function formatCellValue(cell: unknown): string {
     str = String(cell);
   }
 
-  // 1. Collapse whitespace
-  str = str.replace(/\s+/g, " ").trim();
+  // 1. Remove invisible characters (zero-width spaces, soft hyphens, etc.)
+  str = str.replace(INVISIBLE_CHARS_REGEX, "");
 
-  // 2. Truncate
+  // 2. Collapse whitespace
+  str = str.replace(/[ \t]+/g, " ").trim();
+
+  // 3. Truncate
   const MAX_LEN = typeof cell === 'object' ? 800 : 500;
   if (str.length > MAX_LEN) {
     str = str.substring(0, MAX_LEN) + "…";
   }
 
-  // 3. Wrap long tokens (insert space every 24 chars for runs > 36)
+  // 4. Wrap long tokens (insert space every 24 chars for contiguous runs > 36)
   // This prevents "unbreakable" strings from forcing layout overflows
-  str = str.replace(/([^\s]{24})([^\s]{12,})/g, '$1 $2');
+  str = str.replace(/(\S{36,})/g, (match) => {
+    const parts: string[] = [];
+    for (let i = 0; i < match.length; i += 24) {
+      parts.push(match.slice(i, i + 24));
+    }
+    return parts.join(" ");
+  });
 
   return str;
 }
