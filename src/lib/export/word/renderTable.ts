@@ -17,51 +17,60 @@ const toTwips = (points: number) => Math.round(points * 20);
 
 type FixedTableOptions = {
   columnWidths: number[];
+  headerRow?: string[];
+  rows: string[][];
   headerShading?: string;
   cellPadding?: number;
 };
 
-export const makeFixedTable = (
-  headers: string[],
-  rows: string[][],
-  { columnWidths, headerShading, cellPadding }: FixedTableOptions
-) => {
+export const makeFixedTable = ({
+  columnWidths,
+  headerRow,
+  rows,
+  headerShading,
+  cellPadding,
+}: FixedTableOptions) => {
   const padding = toTwips(6);
   const border = { color: T.colors.border.replace("#", ""), style: BorderStyle.SINGLE, size: 1 };
   const headerFill = headerShading ?? T.colors.tableHeaderBg.replace("#", "");
   const zebraFill = "FAFBFD";
   const resolvedPadding = cellPadding ?? padding;
+  const headers = headerRow ?? [];
 
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     layout: TableLayoutType.FIXED,
     rows: [
-      new TableRow({
-        tableHeader: true,
-        children: headers.map((h, i) =>
-          new TableCell({
-            width: { size: columnWidths[i], type: WidthType.PERCENTAGE },
-            shading: { type: ShadingType.CLEAR, fill: headerFill },
-            children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: sanitizeDocxText(h),
-                    font: "Calibri",
-                    size: T.font.h2 * 2,
-                    bold: true,
-                    color: T.colors.text.replace("#", ""),
-                  }),
-                ],
-                spacing: { before: 0, after: 0 },
-              }),
-            ],
-            verticalAlign: VerticalAlign.TOP,
-            margins: { top: resolvedPadding, bottom: resolvedPadding, left: resolvedPadding, right: resolvedPadding },
-            borders: { top: border, bottom: border, left: border, right: border },
-          })
-        ),
-      }),
+      ...(headers.length
+        ? [
+            new TableRow({
+              tableHeader: true,
+              children: headers.map((h, i) =>
+                new TableCell({
+                  width: { size: columnWidths[i], type: WidthType.PERCENTAGE },
+                  shading: { type: ShadingType.CLEAR, fill: headerFill },
+                  children: [
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: sanitizeDocxText(h),
+                          font: "Calibri",
+                          size: T.font.h2 * 2,
+                          bold: true,
+                          color: T.colors.text.replace("#", ""),
+                        }),
+                      ],
+                      spacing: { before: 0, after: 0 },
+                    }),
+                  ],
+                  verticalAlign: VerticalAlign.TOP,
+                  margins: { top: resolvedPadding, bottom: resolvedPadding, left: resolvedPadding, right: resolvedPadding },
+                  borders: { top: border, bottom: border, left: border, right: border },
+                })
+              ),
+            }),
+          ]
+        : []),
       ...rows.map((row, rowIndex) => {
         const fill = rowIndex % 2 === 1 ? zebraFill : T.colors.white.replace("#", "");
         return new TableRow({
@@ -93,4 +102,4 @@ export const makeFixedTable = (
 };
 
 export const renderWordTable = (headers: string[], rows: string[][], columnWidths: number[]) =>
-  makeFixedTable(headers, rows, { columnWidths });
+  makeFixedTable({ columnWidths, headerRow: headers, rows });
