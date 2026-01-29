@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { supabaseService } from '@/lib/supabase';
 import { sendEmail } from '@/lib/email/send';
 import { adminReviewRequestedEmailHtml } from '@/lib/email/templates/admin-review-requested';
+import { PLAN_TIERS } from '@/lib/constants';
 
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' as any })
@@ -68,6 +69,32 @@ export async function POST(req: Request) {
     if (!planId || !userId) {
       console.error(`[Webhook] Missing metadata for session ${session.id}:`, { planId, userId, features_export, features_review });
       return NextResponse.json({ received: true, warning: 'Missing planId or userId metadata' });
+    }
+
+    // SECURITY: Validate payment amount matches expected tier
+    const expectedAmount = features_review === 'true'
+      ? PLAN_TIERS.expert.amount
+      : PLAN_TIERS.professional.amount;
+
+    if (session.amount_total !== expectedAmount) {
+      console.error('[Webhook] SECURITY: Amount mismatch detected', {
+        planId,
+        userId,
+        expected: expectedAmount,
+        actual: session.amount_total,
+        metadata: session.metadata,
+        sessionId: session.id
+      });
+      // Log potential fraud attempt but don't grant features
+      await supabaseService.from('access_logs').insert({
+        actor_email: session.customer_details?.email || 'unknown',
+        actor_role: 'user',
+        entity_type: 'plan',
+        entity_id: planId,
+        action: 'PAYMENT_AMOUNT_MISMATCH',
+        details: { expected: expectedAmount, actual: session.amount_total, sessionId: session.id }
+      }).catch(() => {}); // Non-blocking audit
+      return NextResponse.json({ error: 'Payment verification failed' }, { status: 400 });
     }
 
     console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}`);
@@ -140,7 +167,16 @@ export async function POST(req: Request) {
           html: adminReviewRequestedEmailHtml({ appUrl, planId }),
         }).catch(e => console.error("[Webhook] Failed to send admin email:", e));
       } else {
-        console.error("[Webhook] ADMIN_REVIEW_INBOX not configured - admin notification skipped");
+        console.error("[Webhook] CRITICAL: ADMIN_REVIEW_INBOX not configured - review request may be missed!");
+        // Log to access_logs as fallback audit trail
+        await supabaseService.from('access_logs').insert({
+          actor_email: 'system',
+          actor_role: 'system',
+          entity_type: 'plan',
+          entity_id: planId,
+          action: 'REVIEW_NOTIFICATION_FAILED',
+          details: { reason: 'ADMIN_REVIEW_INBOX not configured', sessionId: session.id }
+        }).catch(() => {});
       }
     }
 

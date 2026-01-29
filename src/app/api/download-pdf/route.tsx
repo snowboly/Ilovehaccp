@@ -148,7 +148,7 @@ export async function GET(req: Request) {
         fullPlan: fullPlan,
         planVersion,
         lang,
-        isPaid: plan.payment_status === 'paid' || isAdmin
+        isPaid: plan.payment_status === 'paid' || plan.export_paid || plan.review_paid || isAdmin
     };
 
     let pdfLogo: string | null = null;

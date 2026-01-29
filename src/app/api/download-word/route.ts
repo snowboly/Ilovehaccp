@@ -96,7 +96,7 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const isPaid = plan.payment_status === 'paid';
+    const isPaid = plan.payment_status === 'paid' || plan.export_paid || plan.review_paid;
     if (!isPaid && !isAdmin) {
          await logAccess(
            { email: user?.email || 'token-user', role: isAdmin ? 'admin' : 'user' }, 
@@ -173,7 +173,7 @@ export async function GET(req: Request) {
 
   } catch (error: any) {
     console.error('Word Gen Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to generate document. Please try again.' }, { status: 500 });
   }
 }
 
