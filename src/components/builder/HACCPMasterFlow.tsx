@@ -2164,22 +2164,33 @@ export default function HACCPMasterFlow() {
                                             <div className="bg-white border border-slate-200 rounded-xl p-4">
                                                 <p className="font-bold text-slate-500 uppercase mb-2">{PLAN_TIERS.professional.label}</p>
                                                 <ul className="text-slate-600 space-y-1">
-                                                    <li> Remove watermarks</li>
-                                                    <li> Word + PDF downloads</li>
-                                                    <li> Automated gap list</li>
+                                                    <li>✓ Remove watermarks</li>
+                                                    <li>✓ Word + PDF downloads</li>
+                                                    <li>✓ Automated gap list</li>
                                                 </ul>
                                             </div>
                                             <div className="bg-white border border-blue-200 rounded-xl p-4">
                                                 <p className="font-bold text-blue-500 uppercase mb-2">{PLAN_TIERS.expert.label}</p>
-                                                <p className="text-blue-700 text-xs leading-relaxed">
-                                                    The Professional Review provides a human assessment of your draft based solely on the information you have provided. This service is limited to checking for logical consistency and does not provide certification, regulatory validation, or a guarantee of any specific outcome.
-                                                </p>
+                                                <ul className="text-blue-700 space-y-1">
+                                                    <li>✓ All Professional features</li>
+                                                    <li>✓ Human review of your draft</li>
+                                                    <li>✓ Feedback on logical gaps *</li>
+                                                </ul>
                                             </div>
                                         </div>
                                     )}
                                 </div>
                             </div>
                         </div>
+
+                        {/* Footnote / Important disclaimer section */}
+                        {!isPaid && (
+                            <div className="mt-4 pt-4 border-t border-slate-100">
+                                <p className="text-[11px] text-slate-500 leading-relaxed">
+                                    <span className="font-semibold text-slate-600">* Important:</span> The Expert Review service provides a human assessment of your draft based solely on the information you have provided. This service is limited to checking for logical consistency and does not provide certification, regulatory validation, or a guarantee of any specific outcome. Final responsibility for food safety compliance remains with the operator.
+                                </p>
+                            </div>
+                        )}
                     </div>
                     <div id="audit-report" className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm space-y-6">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-6">
