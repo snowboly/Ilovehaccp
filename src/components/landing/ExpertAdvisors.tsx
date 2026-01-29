@@ -80,21 +80,6 @@ export default function ExpertAdvisors() {
             ))}
           </div>
         </div>
-
-        {/* Trust Stats */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-slate-100 pt-12">
-            {[
-                { label: "Active Plans", value: "10,000+" },
-                { label: "User Satisfaction", value: "98%" },
-                { label: "Countries", value: "45+" },
-                { label: "Uptime", value: "99.9%" }
-            ].map((stat, i) => (
-                <div key={i} className="text-center">
-                    <div className="text-3xl font-black text-slate-900 mb-1">{stat.value}</div>
-                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
-                </div>
-            ))}
-        </div>
       </div>
     </section>
   );
