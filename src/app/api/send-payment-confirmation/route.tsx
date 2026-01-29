@@ -290,7 +290,7 @@ export async function POST(req: Request) {
     }
     // 3. Email to Admin
     console.log("Sending Admin Email...");
-    const adminInbox = process.env.ADMIN_REVIEW_INBOX || 'support@ilovehaacp.com';
+    const adminInbox = process.env.ADMIN_REVIEW_INBOX || 'support@ilovehaccp.com';
     const adminSubject = isExportOnly
       ? `[EXPORT] New Export Purchase: ${businessName}`
       : `[ACTION REQUIRED] New Plan Review & Feedback: ${businessName}`;
