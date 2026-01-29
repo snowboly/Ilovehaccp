@@ -76,6 +76,38 @@ export async function POST(req: Request) {
       ? PLAN_TIERS.expert.amount
       : PLAN_TIERS.professional.amount;
 
+    // Validate base price using line items (allows discounts/taxes on amount_total)
+    try {
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 10 });
+      const baseLineItemTotal = lineItems.data.reduce((sum, item) => {
+        const unitAmount = item.price?.unit_amount;
+        if (!unitAmount) return sum;
+        const quantity = item.quantity ?? 1;
+        return sum + unitAmount * quantity;
+      }, 0);
+
+      if (baseLineItemTotal > 0 && baseLineItemTotal !== expectedBaseAmount) {
+        console.error('[Webhook] Line item base amount mismatch', {
+          planId,
+          expectedBase: expectedBaseAmount,
+          actualBase: baseLineItemTotal,
+          sessionId: session.id
+        });
+        void supabaseService.from('access_logs').insert({
+          actor_email: session.customer_details?.email || 'unknown',
+          actor_role: 'user',
+          entity_type: 'plan',
+          entity_id: planId,
+          action: 'PAYMENT_BASE_AMOUNT_MISMATCH',
+          details: { expectedBase: expectedBaseAmount, actualBase: baseLineItemTotal, sessionId: session.id }
+        });
+        return NextResponse.json({ error: 'Payment amount mismatch' }, { status: 400 });
+      }
+    } catch (err) {
+      console.error('[Webhook] Failed to fetch line items:', err);
+      return NextResponse.json({ error: 'Failed to verify payment' }, { status: 500 });
+    }
+
     // Log if amount differs significantly (>50% discount is unusual)
     const minExpectedAmount = Math.floor(expectedBaseAmount * 0.5);
     if (session.amount_total && session.amount_total < minExpectedAmount) {
