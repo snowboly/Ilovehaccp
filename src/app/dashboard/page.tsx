@@ -478,11 +478,6 @@ function DashboardContent() {
                       <tr key={plan.id} className="border-t border-slate-100 hover:bg-slate-50/70 transition-colors">
                         <td className="px-4 py-3">
                           <span className="font-medium text-gray-900">{planLabel}</span>
-                          {isExportPaid && (
-                            <span className="ml-2 text-[10px] font-medium text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
-                              PAID
-                            </span>
-                          )}
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
