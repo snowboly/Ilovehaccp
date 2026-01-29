@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { checkAdminRole } from '@/lib/admin-auth';
-import Link from 'next/link';
 import { supabaseService } from '@/lib/supabase';
+import ReviewStatusToggle from '@/components/admin/ReviewStatusToggle';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -61,18 +61,18 @@ export default async function AdminPage() {
       .from('plans')
       .select('id, created_at, review_status, review_requested, draft_id, user_id')
       .eq('review_requested', true)
-      .or('review_status.is.null,review_status.neq.reviewed')
+      .or('review_status.is.null,review_status.eq.in_progress,review_status.eq.pending')
       .order('created_at', { ascending: true }),
     supabaseService
       .from('plans')
       .select('id, created_at, review_status, review_requested, draft_id, user_id, reviewed_at')
-      .eq('review_status', 'reviewed')
+      .or('review_status.eq.concluded,review_status.eq.reviewed,review_status.eq.completed')
       .order('reviewed_at', { ascending: false, nullsFirst: false })
       .order('created_at', { ascending: false }),
     supabaseService
       .from('plans')
       .select('id', { count: 'exact', head: true })
-      .eq('review_status', 'reviewed')
+      .or('review_status.eq.concluded,review_status.eq.reviewed,review_status.eq.completed')
       .gte('reviewed_at', sevenDaysAgoIso),
     supabaseService
       .from('plans')
@@ -204,12 +204,10 @@ export default async function AdminPage() {
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <Link
-                        href={`/admin/plans/${plan.id}/review`}
-                        className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-800"
-                      >
-                        Review
-                      </Link>
+                      <ReviewStatusToggle
+                        planId={plan.id}
+                        initialStatus={plan.review_status}
+                      />
                     </td>
                   </tr>
                 );
@@ -228,7 +226,7 @@ export default async function AdminPage() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-900">Completed Reviews</h2>
+          <h2 className="text-xl font-bold text-slate-900">Concluded Reviews</h2>
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{completedCount} total</span>
         </div>
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -265,16 +263,14 @@ export default async function AdminPage() {
                     <td className="p-4 text-sm text-slate-600">{reviewerLabel}</td>
                     <td className="p-4">
                       <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold uppercase text-emerald-600">
-                        Reviewed
+                        Concluded
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <Link
-                        href={`/admin/plans/${plan.id}/review`}
-                        className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
-                      >
-                        View
-                      </Link>
+                      <ReviewStatusToggle
+                        planId={plan.id}
+                        initialStatus={plan.review_status}
+                      />
                     </td>
                   </tr>
                 );
