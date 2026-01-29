@@ -6,34 +6,6 @@ const MARKDOWN_CODE = /`([^`]+)`/g;
 // Tab (0x09), Newline (0x0A), Carriage return (0x0D) are allowed
 const XML_INVALID_CHARS = /[\x00-\x08\x0B\x0C\x0E-\x1F]/g;
 
-const stringifyDocxValue = (value: unknown): string => {
-  if (value === null || value === undefined) return "";
-  if (Array.isArray(value)) {
-    return value.map((item) => stringifyDocxValue(item)).filter(Boolean).join("; ");
-  }
-  if (typeof value === "object") {
-    return Object.entries(value as Record<string, unknown>)
-      .map(([key, val]) => `${key}: ${stringifyDocxValue(val)}`)
-      .filter((entry) => entry.trim() !== ":")
-      .join("; ");
-  }
-  return String(value);
-};
-
-const normalizeJsonLikeText = (text: string) => {
-  const trimmed = text.trim();
-  if (!trimmed) return text;
-  if ((trimmed.startsWith("{") && trimmed.endsWith("}")) || (trimmed.startsWith("[") && trimmed.endsWith("]"))) {
-    try {
-      const parsed = JSON.parse(trimmed);
-      const normalized = stringifyDocxValue(parsed);
-      return normalized || text;
-    } catch {
-      return text;
-    }
-  }
-  return text;
-};
 
 const splitLongToken = (token: string, chunkSize: number) => {
   const segments: string[] = [];
@@ -43,7 +15,7 @@ const splitLongToken = (token: string, chunkSize: number) => {
   return segments.join(" ");
 };
 
-const insertSpacingForLongTokens = (text: string, maxTokenLength = 30, chunkSize = 18) => {
+const insertSpacingForLongTokens = (text: string, maxTokenLength = 30, chunkSize = 30) => {
   return text
     .split(/\s+/)
     .map((token) => (token.length > maxTokenLength ? splitLongToken(token, chunkSize) : token))
@@ -59,8 +31,7 @@ export const sanitizeDocxText = (input: string) => {
     .replace(MARKDOWN_LINK, "$1")
     .replace(MARKDOWN_BOLD, "$2")
     .replace(MARKDOWN_CODE, "$1");
-  const normalized = normalizeJsonLikeText(withoutMarkdown);
-  const result = insertSpacingForLongTokens(normalized.replace(/\s+/g, " ").trim());
+  const result = insertSpacingForLongTokens(withoutMarkdown.replace(/\s+/g, " ").trim());
   // Return at least a space for empty strings to prevent docx issues
   return result || " ";
 };

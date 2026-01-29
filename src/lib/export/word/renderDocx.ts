@@ -18,11 +18,160 @@ import {
 } from "docx";
 import { HACCP_THEME as T } from "../theme";
 import { ExportBlock, ExportDoc, ExportDocLabels, resolveExportText } from "../exportDoc";
-import { renderWordTable } from "./renderTable";
+import { makeFixedTable, renderWordTable } from "./renderTable";
 import { getImageDimensions, scaleToFit } from "./image";
 import { sanitizeDocxText } from "./text";
 
 const toTwips = (points: number) => Math.round(points * 20);
+const DOCX_FONT = "Calibri";
+
+type StructuredContent =
+  | { type: "table"; headers: string[]; rows: string[][]; columnWidths: number[] }
+  | { type: "list"; items: string[] };
+
+const splitMarkdownRow = (line: string) => {
+  const cells = line.split("|").map((cell) => cell.trim());
+  if (cells[0] === "") cells.shift();
+  if (cells[cells.length - 1] === "") cells.pop();
+  return cells;
+};
+
+const isMarkdownSeparator = (line: string) => {
+  const trimmed = line.trim();
+  return trimmed.includes("-") && /^[|:\-\s]+$/.test(trimmed);
+};
+
+const parseMarkdownTable = (text: string) => {
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (lines.length < 2) return null;
+  if (!lines[0].includes("|") || !isMarkdownSeparator(lines[1])) return null;
+  const headers = splitMarkdownRow(lines[0]);
+  if (headers.length < 2) return null;
+  const bodyRows = lines.slice(2).filter((line) => line.includes("|"));
+  if (bodyRows.length === 0) return null;
+  const rows = bodyRows.map((line) => {
+    const cells = splitMarkdownRow(line);
+    const padded = [...cells];
+    while (padded.length < headers.length) padded.push("-");
+    return padded.slice(0, headers.length);
+  });
+  return { headers, rows };
+};
+
+const stringifyDocxValue = (value: unknown): string => {
+  if (value === null || value === undefined) return "";
+  if (Array.isArray(value)) {
+    return value.map((item) => stringifyDocxValue(item)).filter(Boolean).join("; ");
+  }
+  if (typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>)
+      .map(([key, val]) => `${key}: ${stringifyDocxValue(val)}`)
+      .filter((entry) => entry.trim() !== ":")
+      .join("; ");
+  }
+  return String(value);
+};
+
+const parseDelimitedKeyValue = (text: string) => {
+  const hasDelimiter = /[;\n]/.test(text);
+  const segments = text
+    .split(/[;\n]+/)
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+  const pairs = segments
+    .map((segment) => {
+      const divider = segment.indexOf(":");
+      if (divider === -1) return null;
+      const key = segment.slice(0, divider).trim();
+      const value = segment.slice(divider + 1).trim();
+      if (!key || !value) return null;
+      return { key, value };
+    })
+    .filter((pair): pair is { key: string; value: string } => Boolean(pair));
+  if (pairs.length === 0) return null;
+  if (pairs.length > 1 || hasDelimiter) return pairs;
+  return null;
+};
+
+const extractTitleImpact = (entry: Record<string, unknown>) => {
+  const title = entry.title ?? entry.name ?? entry.step ?? entry.hazard ?? entry.control;
+  const impact = entry.impact ?? entry.details ?? entry.description ?? entry.control_measure;
+  if (!title || !impact) return null;
+  return `${title}: ${impact}`;
+};
+
+const parseStructuredContent = (text: string): StructuredContent | null => {
+  const trimmed = text.trim();
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        const bulletItems = parsed
+          .map((item) => {
+            if (item && typeof item === "object") {
+              const titleImpact = extractTitleImpact(item as Record<string, unknown>);
+              if (titleImpact) return titleImpact;
+            }
+            return stringifyDocxValue(item);
+          })
+          .filter((item) => item.trim().length > 0);
+        return bulletItems.length ? { type: "list", items: bulletItems } : null;
+      }
+      if (parsed && typeof parsed === "object") {
+        const rows = Object.entries(parsed as Record<string, unknown>).map(([key, value]) => [
+          key,
+          stringifyDocxValue(value),
+        ]);
+        return { type: "table", headers: ["Field", "Value"], rows, columnWidths: [30, 70] };
+      }
+    } catch {
+      const stripped = trimmed.replace(/^[{[]|[}\]]$/g, "").replace(/,/g, ";");
+      const fallbackPairs = parseDelimitedKeyValue(stripped);
+      if (fallbackPairs) {
+        const rows = fallbackPairs.map((pair) => [pair.key, pair.value]);
+        return { type: "table", headers: ["Field", "Value"], rows, columnWidths: [30, 70] };
+      }
+      const fallbackItems = stripped
+        .split(/[;\n]+/)
+        .map((item) => item.replace(/^\"|\"$/g, "").trim())
+        .filter((item) => item.length > 0);
+      if (fallbackItems.length) {
+        return { type: "list", items: fallbackItems };
+      }
+      const fallbackContent = stripped.trim();
+      return { type: "list", items: [fallbackContent || "-"] };
+    }
+  }
+
+  const kvPairs = parseDelimitedKeyValue(trimmed);
+  if (kvPairs) {
+    const rows = kvPairs.map((pair) => [pair.key, pair.value]);
+    return { type: "table", headers: ["Field", "Value"], rows, columnWidths: [30, 70] };
+  }
+
+  return null;
+};
+
+const renderBulletList = (items: string[]) =>
+  items.map(
+    (item) =>
+      new Paragraph({
+        bullet: { level: 0 },
+        children: [
+          new TextRun({
+            text: sanitizeDocxText(item),
+            font: DOCX_FONT,
+            size: T.font.body * 2,
+          }),
+        ],
+        spacing: { after: toTwips(4) },
+      })
+  );
 
 const renderSectionBand = (title: string) =>
   new Table({
@@ -32,6 +181,7 @@ const renderSectionBand = (title: string) =>
       new TableRow({
         children: [
           new TableCell({
+            width: { size: 100, type: WidthType.PERCENTAGE },
             shading: { type: ShadingType.CLEAR, fill: T.colors.lightBg.replace("#", "") },
             borders: {
               top: { color: T.colors.border.replace("#", ""), style: BorderStyle.SINGLE, size: 6 },
@@ -50,7 +200,7 @@ const renderSectionBand = (title: string) =>
                 children: [
                   new TextRun({
                     text: sanitizeDocxText(title),
-                    font: "Calibri",
+                    font: DOCX_FONT,
                     size: T.font.h2 * 2,
                     bold: true,
                     color: T.colors.primary.replace("#", ""),
@@ -157,18 +307,18 @@ const buildPageFooterTable = (labels: ExportDocLabels, versionId: string) =>
                 children: [
                   new TextRun({
                     text: `${sanitizeDocxText(labels.page)} `,
-                    font: "Calibri",
+                    font: DOCX_FONT,
                     size: T.font.small * 2,
                     color: T.colors.muted.replace("#", ""),
                   }),
-                  new TextRun({ children: [PageNumber.CURRENT], size: T.font.small * 2 }),
+                  new TextRun({ children: [PageNumber.CURRENT], font: DOCX_FONT, size: T.font.small * 2 }),
                   new TextRun({
                     text: ` ${sanitizeDocxText(labels.of)} `,
-                    font: "Calibri",
+                    font: DOCX_FONT,
                     size: T.font.small * 2,
                     color: T.colors.muted.replace("#", ""),
                   }),
-                  new TextRun({ children: [PageNumber.TOTAL_PAGES], size: T.font.small * 2 }),
+                  new TextRun({ children: [PageNumber.TOTAL_PAGES], font: DOCX_FONT, size: T.font.small * 2 }),
                 ],
                 spacing: { before: 0, after: 0 },
               }),
@@ -187,12 +337,12 @@ const getLogoTransformation = (logoBuffer: ArrayBuffer | Buffer, maxWidth: numbe
   return scaleToFit(dimensions, maxWidth, maxHeight);
 };
 
-const resolveDocxColumnWidths = (headers: string[], colWidths: number[]) => {
-  if (headers.length === 2) return [30, 70];
-  if (headers.length === 3) return [10, 30, 60];
-  if (headers.length === 6) return [18, 28, 10, 10, 10, 24];
-  if (colWidths.length === headers.length) return colWidths;
-  return headers.map(() => Math.floor(100 / headers.length));
+const resolveDocxColumnWidths = (columnCount: number, colWidths: number[] = []) => {
+  if (columnCount === 2) return [30, 70];
+  if (columnCount === 3) return [10, 30, 60];
+  if (columnCount === 6) return [18, 28, 10, 10, 10, 24];
+  if (colWidths.length === columnCount) return colWidths;
+  return Array.from({ length: columnCount }, () => Math.floor(100 / columnCount));
 };
 
 const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
@@ -200,12 +350,36 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
     case "section":
       return [renderSectionBand(resolveExportText(block.title, "docx"))];
     case "paragraph":
+      const paragraphText = resolveExportText(block.text, "docx");
+      const markdownTable = parseMarkdownTable(paragraphText);
+      if (markdownTable) {
+        return [
+          makeFixedTable({
+            columnWidths: resolveDocxColumnWidths(markdownTable.headers.length),
+            headerRow: markdownTable.headers,
+            rows: markdownTable.rows,
+          }),
+        ];
+      }
+      const structuredContent = parseStructuredContent(paragraphText);
+      if (structuredContent?.type === "table") {
+        return [
+          makeFixedTable({
+            columnWidths: structuredContent.columnWidths,
+            headerRow: structuredContent.headers,
+            rows: structuredContent.rows,
+          }),
+        ];
+      }
+      if (structuredContent?.type === "list") {
+        return renderBulletList(structuredContent.items);
+      }
       return [
         new Paragraph({
           children: [
             new TextRun({
-              text: sanitizeDocxText(resolveExportText(block.text, "docx")),
-              font: "Calibri",
+              text: sanitizeDocxText(paragraphText),
+              font: DOCX_FONT,
               size: T.font.body * 2,
               italics: block.italic,
               color: (block.muted ? T.colors.muted : T.colors.text).replace("#", ""),
@@ -218,7 +392,7 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
       const headers = block.headers.map((header) => resolveExportText(header, "docx"));
       const rows = block.rows.map((row) => row.map((cell) => resolveExportText(cell, "docx")));
       return [
-        renderWordTable(headers, rows, resolveDocxColumnWidths(headers, block.colWidths)),
+        renderWordTable(headers, rows, resolveDocxColumnWidths(headers.length, block.colWidths)),
       ];
     case "subheading":
       return [
@@ -226,7 +400,7 @@ const renderDocxBlock = (block: ExportBlock): (Paragraph | Table)[] => {
           children: [
             new TextRun({
               text: sanitizeDocxText(resolveExportText(block.text, "docx")),
-              font: "Calibri",
+              font: DOCX_FONT,
               size: T.font.body * 2,
               bold: true,
               color: T.colors.primary.replace("#", ""),
@@ -399,18 +573,18 @@ function buildDocapescaFooter(labels: ExportDocLabels, versionId: string): Foote
                     children: [
                       new TextRun({
                         text: `${sanitizeDocxText(labels.page)} `,
-                        font: "Calibri",
+                        font: DOCX_FONT,
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
-                      new TextRun({ children: [PageNumber.CURRENT], size: T.font.small * 2 }),
+                      new TextRun({ children: [PageNumber.CURRENT], font: DOCX_FONT, size: T.font.small * 2 }),
                       new TextRun({
                         text: ` ${sanitizeDocxText(labels.of)} `,
-                        font: "Calibri",
+                        font: DOCX_FONT,
                         size: T.font.small * 2,
                         color: T.colors.muted.replace("#", ""),
                       }),
-                      new TextRun({ children: [PageNumber.TOTAL_PAGES], size: T.font.small * 2 }),
+                      new TextRun({ children: [PageNumber.TOTAL_PAGES], font: DOCX_FONT, size: T.font.small * 2 }),
                     ],
                     spacing: { before: 0, after: 0 },
                   }),
@@ -449,10 +623,12 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
   blocks.push(
     new Table({
       width: { size: 100, type: WidthType.PERCENTAGE },
+      layout: TableLayoutType.FIXED,
       rows: [
         new TableRow({
           children: [
             new TableCell({
+              width: { size: 100, type: WidthType.PERCENTAGE },
               borders: {
                 left: { color: DC.navyDark.replace("#", ""), style: BorderStyle.SINGLE, size: 48 },
                 top: noBorder,
