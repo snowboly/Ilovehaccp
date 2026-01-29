@@ -85,15 +85,15 @@ export async function POST(req: Request) {
         metadata: session.metadata,
         sessionId: session.id
       });
-      // Log potential fraud attempt but don't grant features
-      await supabaseService.from('access_logs').insert({
+      // Log potential fraud attempt but don't grant features (non-blocking)
+      supabaseService.from('access_logs').insert({
         actor_email: session.customer_details?.email || 'unknown',
         actor_role: 'user',
         entity_type: 'plan',
         entity_id: planId,
         action: 'PAYMENT_AMOUNT_MISMATCH',
         details: { expected: expectedAmount, actual: session.amount_total, sessionId: session.id }
-      }).catch(() => {}); // Non-blocking audit
+      }).then(() => {}).catch(() => {});
       return NextResponse.json({ error: 'Payment verification failed' }, { status: 400 });
     }
 
@@ -168,15 +168,15 @@ export async function POST(req: Request) {
         }).catch(e => console.error("[Webhook] Failed to send admin email:", e));
       } else {
         console.error("[Webhook] CRITICAL: ADMIN_REVIEW_INBOX not configured - review request may be missed!");
-        // Log to access_logs as fallback audit trail
-        await supabaseService.from('access_logs').insert({
+        // Log to access_logs as fallback audit trail (non-blocking)
+        supabaseService.from('access_logs').insert({
           actor_email: 'system',
           actor_role: 'system',
           entity_type: 'plan',
           entity_id: planId,
           action: 'REVIEW_NOTIFICATION_FAILED',
           details: { reason: 'ADMIN_REVIEW_INBOX not configured', sessionId: session.id }
-        }).catch(() => {});
+        }).then(() => {}).catch(() => {});
       }
     }
 
