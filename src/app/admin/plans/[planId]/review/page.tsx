@@ -46,7 +46,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
 
   const { data: plan, error: planError } = await supabaseService
     .from('plans')
-    .select('id, created_at, user_id, draft_id, product_name, review_status, reviewed_at')
+    .select('id, created_at, user_id, draft_id, business_name, review_status, reviewed_at')
     .eq('id', planId)
     .maybeSingle();
 
@@ -81,12 +81,12 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
     : 'Not linked';
   const latestReview = reviewResponse.data as ReviewRecord | null;
   const latestNotes = latestReview?.content ?? null;
-  const draftProductName =
-    (draftResponse.data?.plan_data as { product_name?: string; productName?: string } | null)?.product_name
-    ?? (draftResponse.data?.plan_data as { product_name?: string; productName?: string } | null)?.productName
+  const draftBusinessName =
+    (draftResponse.data?.plan_data as { business_name?: string; businessName?: string } | null)?.business_name
+    ?? (draftResponse.data?.plan_data as { business_name?: string; businessName?: string } | null)?.businessName
     ?? null;
-  const productName = plan.product_name || draftProductName || 'Not provided';
-  const isReviewed = plan.review_status === 'reviewed';
+  const businessName = plan.business_name || draftBusinessName || 'Not provided';
+  const isReviewed = plan.review_status === 'reviewed' || plan.review_status === 'concluded';
   const isReadOnly = isReviewed && !isEditing;
 
   const parseNotes = (formData: FormData): ReviewNotes => {
@@ -123,7 +123,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
 
     const { data: currentPlan, error: currentPlanError } = await supabaseService
       .from('plans')
-      .select('review_status, user_id, product_name, business_name')
+      .select('review_status, user_id, business_name')
       .eq('id', planId)
       .maybeSingle();
 
@@ -132,7 +132,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
     }
 
     const editMode = formData.get('edit_mode') === 'true';
-    const wasReviewed = currentPlan?.review_status === 'reviewed';
+    const wasReviewed = currentPlan?.review_status === 'reviewed' || currentPlan?.review_status === 'concluded';
     if (wasReviewed && !editMode) {
       throw new Error('Review is locked. Enable edit mode to update notes.');
     }
@@ -205,7 +205,7 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
     }
 
     const editMode = formData.get('edit_mode') === 'true';
-    const wasReviewed = currentPlan?.review_status === 'reviewed';
+    const wasReviewed = currentPlan?.review_status === 'reviewed' || currentPlan?.review_status === 'concluded';
     if (wasReviewed && !editMode) {
       throw new Error('Review is locked. Enable edit mode to update notes.');
     }
@@ -262,8 +262,8 @@ export default async function AdminPlanReviewPage({ params, searchParams }: Revi
             )}
           </div>
           <div>
-            <p className="text-xs text-slate-400 uppercase tracking-wide">Product Name</p>
-            <p className="text-sm text-slate-700">{productName}</p>
+            <p className="text-xs text-slate-400 uppercase tracking-wide">Business Name</p>
+            <p className="text-sm text-slate-700">{businessName}</p>
           </div>
         </div>
       </section>

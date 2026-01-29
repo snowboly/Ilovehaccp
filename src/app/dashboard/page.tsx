@@ -463,13 +463,13 @@ function DashboardContent() {
                     const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;
                     const hasReviewNotes = Boolean(plan.review_notes || plan.review_comments);
 
-                    const isReviewInProgress = plan.review_status === 'in_progress' || plan.review_status === 'pending' || plan.review_requested;
-                    const isReviewCompleted = plan.review_status === 'completed' || plan.review_status === 'concluded';
-                    const showUnderReview = !isReviewCompleted && (plan.review_requested || plan.review_status === 'pending' || plan.review_status === 'in_progress');
-                    const reviewLabel = isReviewCompleted
-                      ? 'Review completed'
+                    const isReviewInProgress = plan.review_status === 'in_progress' || plan.review_status === 'pending' || (plan.review_requested && !plan.review_status);
+                    const isReviewConcluded = plan.review_status === 'completed' || plan.review_status === 'concluded';
+                    const showUnderReview = !isReviewConcluded && (plan.review_requested || plan.review_status === 'pending' || plan.review_status === 'in_progress');
+                    const reviewLabel = isReviewConcluded
+                      ? 'Review concluded'
                       : showUnderReview
-                        ? 'Under review'
+                        ? 'Review in progress'
                         : plan.review_paid
                           ? 'Paid'
                           : 'Not requested';
@@ -514,23 +514,25 @@ function DashboardContent() {
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${
-                              reviewLabel === 'Review completed'
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${
+                              reviewLabel === 'Review concluded'
                                 ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                                : reviewLabel === 'Under review'
+                                : reviewLabel === 'Review in progress'
                                   ? 'border-purple-200 bg-purple-50 text-purple-700'
                                   : reviewLabel === 'Paid'
                                     ? 'border-blue-200 bg-blue-50 text-blue-700'
                                     : 'border-slate-200 bg-slate-50 text-slate-600'
                             }`}
                           >
+                            {reviewLabel === 'Review concluded' && <span className="text-emerald-500">&#x1F7E2;</span>}
+                            {reviewLabel === 'Review in progress' && <span className="text-purple-500">&#x1F7E3;</span>}
                             {reviewLabel}
                           </span>
                         </td>
                         <td className="px-4 py-3">
                           {showUnderReview ? (
                             <span className="text-xs text-slate-500">Sent by email</span>
-                          ) : isReviewCompleted && hasReviewNotes ? (
+                          ) : isReviewConcluded && hasReviewNotes ? (
                             <Link href={`/dashboard/plans/${plan.id}/review`} className="text-blue-600 hover:underline text-sm">
                               View summary
                             </Link>
