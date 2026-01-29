@@ -36,17 +36,31 @@ export async function POST(req: Request) {
         if (error) throw error;
         await logAdminAction(user.email!, planId, 'ADD_COMMENT', { comment_length: comment.length });
 
-    } else if (action === 'COMPLETE_REVIEW') {
+    } else if (action === 'COMPLETE_REVIEW' || action === 'MARK_CONCLUDED') {
+        // Mark review as concluded (finished task, NOT approval/certification)
         const { error } = await supabaseService
             .from('plans')
-            .update({ 
-                review_status: 'completed',
+            .update({
+                review_status: 'concluded',
                 reviewed_at: new Date().toISOString()
             })
             .eq('id', planId);
 
         if (error) throw error;
-        await logAdminAction(user.email!, planId, 'COMPLETE_REVIEW');
+        await logAdminAction(user.email!, planId, 'MARK_CONCLUDED');
+
+    } else if (action === 'SET_IN_PROGRESS') {
+        // Reopen the review (set back to in_progress)
+        const { error } = await supabaseService
+            .from('plans')
+            .update({
+                review_status: 'in_progress',
+                reviewed_at: null
+            })
+            .eq('id', planId);
+
+        if (error) throw error;
+        await logAdminAction(user.email!, planId, 'SET_IN_PROGRESS');
 
     } else {
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

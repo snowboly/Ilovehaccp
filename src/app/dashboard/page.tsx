@@ -451,23 +451,37 @@ function DashboardContent() {
                   </tr>
                 </thead>
                 <tbody>
-                  {plans.map(plan => {
+                  {/* Sort: reviews in progress first, then concluded, then others */}
+                  {[...plans].sort((a, b) => {
+                    const getOrder = (p: Plan) => {
+                      if (p.review_status === 'in_progress' || p.review_status === 'pending' || p.review_requested) return 0;
+                      if (p.review_status === 'concluded' || p.review_status === 'completed') return 1;
+                      return 2;
+                    };
+                    return getOrder(a) - getOrder(b);
+                  }).map(plan => {
                     const draftName = plan.draft_id ? draftNamesByPlanId[plan.draft_id] : undefined;
                     const planLabel = draftName?.trim() || plan.business_name || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
                     const isPaid = plan.export_paid || plan.payment_status === 'paid';
                     const pdfUrl = plan.pdf_url ?? plan.full_plan?.documents?.pdf_url ?? null;
                     const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;
-                    const reviewStatus = plan.review_status === 'completed'
-                      ? 'Reviewed'
-                      : plan.review_requested
-                        ? 'Review Requested'
-                        : pdfUrl || docxUrl
-                          ? 'Exported'
-                          : 'Draft Exported';
                     const hasReviewNotes = Boolean(plan.review_notes || plan.review_comments);
+
+                    // Simplified review status: only two states
+                    const isReviewInProgress = plan.review_status === 'in_progress' || plan.review_status === 'pending' || plan.review_requested;
+                    const isReviewConcluded = plan.review_status === 'concluded' || plan.review_status === 'completed';
+                    const hasActiveReview = isReviewInProgress || isReviewConcluded;
+
                     return (
                       <tr key={plan.id} className="border-t">
-                        <td className="px-4 py-2">{planLabel}</td>
+                        <td className="px-4 py-2">
+                          <span className="font-medium text-gray-900">{planLabel}</span>
+                          {isPaid && (
+                            <span className="ml-2 text-[10px] font-medium text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                              PAID
+                            </span>
+                          )}
+                        </td>
                         <td className="px-4 py-2">
                           {isPaid ? (
                             <button onClick={() => handleDownload(plan.id, 'pdf', plan.business_name)} className="text-blue-600 hover:underline">
@@ -486,10 +500,6 @@ function DashboardContent() {
                             <button onClick={() => handleDownload(plan.id, 'word', plan.business_name)} className="text-blue-600 hover:underline">
                               Word
                             </button>
-                          ) : docxUrl ? (
-                            <a href={docxUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
-                              Word
-                            </a>
                           ) : (
                             <span className="text-gray-400">—</span>
                           )}
@@ -504,59 +514,50 @@ function DashboardContent() {
                           )}
                         </td>
                         <td className="px-4 py-2">
-                          {plan.review_status === 'completed' ? (
-                            <span className="text-xs font-semibold text-emerald-600">Reviewed — ready to use</span>
-                          ) : plan.review_requested || plan.review_status === 'pending' ? (
-                            <span className="text-xs font-semibold text-purple-600">Review in progress</span>
-                          ) : plan.export_paid ? (
-                            <span className="text-xs font-semibold text-emerald-600">Exports unlocked — download below</span>
+                          {isReviewInProgress ? (
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
+                              <span className="text-purple-500">●</span> Review in progress
+                            </span>
+                          ) : isReviewConcluded ? (
+                            <span
+                              className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 cursor-help"
+                              title="The review task has been completed. This does not constitute certification or compliance approval."
+                            >
+                              <span className="text-emerald-500">●</span> Review concluded
+                            </span>
+                          ) : !isPaid ? (
+                            <span className="text-xs text-slate-500">Upgrade to unlock exports</span>
                           ) : (
-                            <span className="text-xs text-slate-500">Upgrade to unlock clean exports</span>
+                            <span className="text-gray-400">—</span>
                           )}
                         </td>
                         <td className="px-4 py-2 text-right flex justify-end items-center gap-2">
-                          {plan.export_paid ? (
-                             <span className="text-emerald-700 bg-emerald-50 px-2 py-1 rounded text-xs font-bold border border-emerald-100">
-                               PAID
-                             </span>
-                          ) : (
+                          {!plan.export_paid && !isPaid && (
                              <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline text-sm font-medium">
                                {PLAN_TIERS.professional.upgradeLabel}
                              </button>
                           )}
 
-                          {(() => {
-                            if (plan.review_status === 'completed') {
-                              return (
-                                <span className="text-emerald-700 bg-emerald-50 px-2 py-1 rounded text-xs font-bold border border-emerald-100">
-                                  REVIEWED
-                                </span>
-                              );
-                            }
-                            if (plan.review_requested || plan.review_status === 'pending') {
-                              return (
-                                <span className="text-purple-700 bg-purple-50 px-2 py-1 rounded text-xs font-bold border border-purple-100">
-                                  IN REVIEW
-                                </span>
-                              );
-                            }
-                            if (plan.review_paid) {
-                              return (
-                                <span className="text-emerald-700 bg-emerald-50 px-2 py-1 rounded text-xs font-bold border border-emerald-100">
-                                  PAID
-                                </span>
-                              );
-                            }
-                            return (
-                              <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
-                                {PLAN_TIERS.expert.upgradeLabel}
-                              </button>
-                            );
-                          })()}
-                          
-                          <button onClick={() => handleDeletePlan(plan.id)} className="text-red-600 hover:underline text-sm">
-                            Delete
-                          </button>
+                          {/* Review action: hide if review is active or concluded */}
+                          {!hasActiveReview && !plan.review_paid && (
+                            <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
+                              {PLAN_TIERS.expert.upgradeLabel}
+                            </button>
+                          )}
+
+                          {/* Delete: disabled during active review */}
+                          {isReviewInProgress ? (
+                            <span
+                              className="text-gray-400 text-sm cursor-not-allowed"
+                              title="Cannot delete while review is in progress"
+                            >
+                              Delete
+                            </span>
+                          ) : (
+                            <button onClick={() => handleDeletePlan(plan.id)} className="text-red-600 hover:underline text-sm">
+                              Delete
+                            </button>
+                          )}
                         </td>
                       </tr>
                     );
