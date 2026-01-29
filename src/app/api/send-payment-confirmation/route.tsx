@@ -83,7 +83,7 @@ export async function POST(req: Request) {
     await resend.emails.send({
       from: 'iLoveHACCP <noreply@ilovehaccp.com>',
       to: [email],
-      replyTo: 'support@ilovehaccp.com',
+      replyTo: 'support@ilovehaacp.com',
       subject: t.subject.replace('{businessName}', businessName),
       attachments: userAttachments,
       html: `
@@ -277,9 +277,10 @@ export async function POST(req: Request) {
           businessName: plan.business_name,
           full_plan: plan.full_plan
         });
+        const safeBusinessName = (plan.business_name || 'HACCP_Plan').replace(/\s+/g, '_');
         
         attachments.push({
-          filename: `HACCP_Plan_${plan.business_name.replace(/\s+/g, '_')}.docx`,
+          filename: `HACCP_Plan_${safeBusinessName}.docx`,
           content: buffer
         });
         console.log("Attachment generated successfully.");
@@ -289,33 +290,34 @@ export async function POST(req: Request) {
     }
     // 3. Email to Admin
     console.log("Sending Admin Email...");
-    if (!isExportOnly) {
-      const adminInbox = process.env.ADMIN_REVIEW_INBOX || 'support@ilovehaccp.com';
-      const adminRes = await resend.emails.send({
-        from: 'iLoveHACCP Alerts <noreply@ilovehaccp.com>',
-        to: [adminInbox], 
-        subject: `[ACTION REQUIRED] New Plan Review & Feedback: ${businessName}`,
-        html: `
-          <h1>New Plan Review & Feedback Purchased</h1>
-          <ul>
-            <li><strong>Business:</strong> ${businessName}</li>
-            <li><strong>User Email:</strong> ${email}</li>
-            <li><strong>Plan ID:</strong> ${planId}</li>
-            <li><strong>Amount:</strong> €${amount}</li>
-          </ul>
-          <p>The generated HACCP plan is attached for your review.</p>
-          <p>Please edit/redline this document and reply to the user.</p>
-        `,
-        attachments: attachments
-      });
+    const adminInbox = process.env.ADMIN_REVIEW_INBOX || 'support@ilovehaacp.com';
+    const adminSubject = isExportOnly
+      ? `[EXPORT] New Export Purchase: ${businessName}`
+      : `[ACTION REQUIRED] New Plan Review & Feedback: ${businessName}`;
+    const adminRes = await resend.emails.send({
+      from: 'iLoveHACCP Alerts <noreply@ilovehaccp.com>',
+      to: [adminInbox],
+      subject: adminSubject,
+      html: `
+        <h1>${isExportOnly ? 'New Export Purchase' : 'New Plan Review & Feedback Purchased'}</h1>
+        <ul>
+          <li><strong>Business:</strong> ${businessName}</li>
+          <li><strong>User Email:</strong> ${email}</li>
+          <li><strong>Plan ID:</strong> ${planId}</li>
+          <li><strong>Amount:</strong> €${amount}</li>
+        </ul>
+        <p>${isExportOnly ? 'Export purchase completed. Documents are available in the user dashboard.' : 'The generated HACCP plan is attached for your review.'}</p>
+        ${isExportOnly ? '' : '<p>Please edit/redline this document and reply to the user.</p>'}
+      `,
+      attachments: attachments
+    });
 
-      if (adminRes.error) {
-          console.error("Resend Admin Email Failed:", adminRes.error);
-          // Do not throw, return partial success? 
-          // Or throw to see it in logs? Let's log it.
-      } else {
-          console.log("Admin Email Sent ID:", adminRes.data?.id);
-      }
+    if (adminRes.error) {
+      console.error("Resend Admin Email Failed:", adminRes.error);
+      // Do not throw, return partial success? 
+      // Or throw to see it in logs? Let's log it.
+    } else {
+      console.log("Admin Email Sent ID:", adminRes.data?.id);
     }
 
     return NextResponse.json({ success: true });

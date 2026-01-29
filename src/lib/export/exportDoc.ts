@@ -48,7 +48,9 @@ export interface ExportDoc {
 }
 
 export function resolveExportText(text: ExportText, target: ExportTarget): string {
-  return typeof text === "string" ? text : text[target];
+  if (text === null || text === undefined) return "";
+  if (typeof text === "string") return text;
+  return text[target] ?? text.pdf ?? text.docx ?? "";
 }
 
 const t = (pdf: string, docx: string = pdf): ExportText => ({ pdf, docx });
