@@ -86,14 +86,14 @@ export async function POST(req: Request) {
         discountPercent: Math.round((1 - session.amount_total / expectedBaseAmount) * 100)
       });
       // Log for audit but don't block (promo codes are set server-side)
-      supabaseService.from('access_logs').insert({
+      void supabaseService.from('access_logs').insert({
         actor_email: session.customer_details?.email || 'unknown',
         actor_role: 'user',
         entity_type: 'plan',
         entity_id: planId,
         action: 'PAYMENT_UNUSUAL_DISCOUNT',
         details: { expectedBase: expectedBaseAmount, actual: session.amount_total, sessionId: session.id }
-      }).then(() => {}).catch(() => {});
+      });
     }
 
     console.log(`[Webhook] Processing Plan: ${planId}. Export: ${features_export}, Review: ${features_review}, Amount: ${session.amount_total}`);
@@ -168,14 +168,14 @@ export async function POST(req: Request) {
       } else {
         console.error("[Webhook] CRITICAL: ADMIN_REVIEW_INBOX not configured - review request may be missed!");
         // Log to access_logs as fallback audit trail (non-blocking)
-        supabaseService.from('access_logs').insert({
+        void supabaseService.from('access_logs').insert({
           actor_email: 'system',
           actor_role: 'system',
           entity_type: 'plan',
           entity_id: planId,
           action: 'REVIEW_NOTIFICATION_FAILED',
           details: { reason: 'ADMIN_REVIEW_INBOX not configured', sessionId: session.id }
-        }).then(() => {}).catch(() => {});
+        });
       }
     }
 
