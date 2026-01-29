@@ -9,7 +9,6 @@ import {
   Link2,
   XCircle,
   AlertTriangle,
-  ShieldCheck,
   Settings,
   LogOut,
   Loader2
@@ -323,9 +322,8 @@ function DashboardContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b px-4 lg:px-6 h-16 flex items-center justify-between">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <ShieldCheck className="h-6 w-6 text-blue-600" />
-          <span className="font-bold text-xl">ilovehaccp.com</span>
+        <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+          <span className="text-sm font-medium">← Back to Home</span>
         </Link>
         <div className="flex items-center gap-4">
           <div className="hidden md:flex flex-col items-end mr-2">
