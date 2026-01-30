@@ -71,7 +71,7 @@ async function renderLegacyPdf({
     dict,
     logo,
     template
-  });
+  }) as React.ReactElement<any>;
 
   const pdfBuffer = await renderToBuffer(pdfElement);
   return Buffer.isBuffer(pdfBuffer)
