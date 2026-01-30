@@ -91,14 +91,20 @@ export async function POST(req: Request) {
     if (!planId && body?.data) {
       const data = body.data as Record<string, any>;
       const templateVersion = String(data.template || DEFAULT_TEMPLATE_VERSION);
-      const fullPlan = data.fullPlan ?? data.full_plan ?? {};
+      const baseFullPlan = data.fullPlan ?? data.full_plan ?? {};
+      const fullPlan = {
+        ...baseFullPlan,
+        hazard_analysis: Array.isArray(baseFullPlan?.hazard_analysis)
+          ? baseFullPlan.hazard_analysis
+          : data.analysis || data.hazard_analysis || []
+      };
       const plan = {
         business_name: data.businessName || data.business_name || 'HACCP Plan',
         product_name: data.productName || data.product_name || 'HACCP Plan',
         product_description: data.productDescription || data.product_description || '',
         intended_use: data.intendedUse || data.intended_use || '',
         storage_type: data.storageType || data.storage_type || '',
-        hazard_analysis: data.analysis || data.hazard_analysis || []
+        hazard_analysis: fullPlan.hazard_analysis
       };
       const productInputs = {
         product_name: plan.product_name,
