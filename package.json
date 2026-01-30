@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "predev": "node scripts/restore_favicons.js",
-    "dev": "NODE_OPTIONS=--no-deprecation next dev",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "prebuild": "node scripts/restore_favicons.js",
-    "build": "NODE_OPTIONS=--no-deprecation next build",
+    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "prestart": "node scripts/restore_favicons.js",
-    "start": "NODE_OPTIONS=--no-deprecation next start",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "eslint"
   },
   "dependencies": {
@@ -46,7 +46,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
+    "cross-env": "^7.0.3",
     "eslint-config-next": "16.1.1",
     "sharp": "^0.34.5",
     "tailwindcss": "^4",
