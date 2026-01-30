@@ -350,6 +350,7 @@ export const introParagraph = (options: IntroParagraphOptions): Paragraph => {
     alignment,
     // Keep with next element to act as anchor for following content
     keepNext: true,
+    keepLines: true,
     spacing: {
       before: toTwips(Spacing.gapSm),
       after: toTwips(Spacing.paragraphAfter),
@@ -427,6 +428,68 @@ export const captionParagraph = (text: string, italic: boolean = true): Paragrap
   });
 };
 
+/**
+ * Create a section lead paragraph.
+ * Visually distinct intro text with smaller font and lighter color.
+ * Used as the primary anchor between headings and tables.
+ *
+ * @example
+ * sectionLeadParagraph("The following table summarises the identified hazards.")
+ */
+export const sectionLeadParagraph = (text: string): Paragraph => {
+  return new Paragraph({
+    // Critical: keeps heading + lead + table together
+    keepNext: true,
+    keepLines: true,
+    spacing: {
+      before: toTwips(Spacing.gapXs),
+      after: toTwips(Spacing.gapSm),
+      line: toLineSpacing(LineHeights.tight),
+    },
+    children: [
+      new TextRun({
+        text: sanitizeText(text),
+        font: Fonts.primary,
+        size: toHalfPoints(FontSizes.small), // 9pt - slightly smaller
+        // Modern style: use color + weight instead of italics
+        color: Colors.textSecondary, // #4B5563 - lighter than body
+      }),
+    ],
+  });
+};
+
+/**
+ * Create a table caption paragraph.
+ * Used for labelling tables like "Table 5.2 — Process Steps".
+ * Has keepWithNext to ensure caption sticks with intro line and table.
+ *
+ * @example
+ * tableCaptionParagraph("Table 6", "Hazard Analysis")
+ */
+export const tableCaptionParagraph = (
+  tableNumber: string,
+  title: string
+): Paragraph => {
+  return new Paragraph({
+    // Keep caption with the intro line and table
+    keepNext: true,
+    keepLines: true,
+    spacing: {
+      before: toTwips(Spacing.gapMd),
+      after: toTwips(Spacing.gapXs),
+    },
+    children: [
+      new TextRun({
+        text: `${sanitizeText(tableNumber)} — ${sanitizeText(title)}`,
+        font: Fonts.primary,
+        size: toHalfPoints(FontSizes.small),
+        bold: true,
+        color: Colors.textSecondary,
+      }),
+    ],
+  });
+};
+
 // ============================================================================
 // TABLE PRIMITIVES
 // ============================================================================
@@ -451,8 +514,9 @@ export const tableIntroLine = (
   const { italic = true, muted = true } = options;
 
   return new Paragraph({
-    // Keep with next element (the table) to prevent orphaning
+    // Critical: keeps heading + intro + table together
     keepNext: true,
+    keepLines: true,
     spacing: {
       before: toTwips(Spacing.gapSm),
       after: toTwips(Spacing.gapSm),
@@ -462,9 +526,9 @@ export const tableIntroLine = (
       new TextRun({
         text: sanitizeText(text),
         font: Fonts.primary,
-        size: toHalfPoints(FontSizes.body),
+        size: toHalfPoints(FontSizes.small), // Use smaller font for lead-in
         italics: italic,
-        color: muted ? Colors.muted : Colors.text,
+        color: muted ? Colors.textSecondary : Colors.text, // Use textSecondary for muted
       }),
     ],
   });
@@ -794,14 +858,15 @@ export interface FlowStepOptions {
 export const flowStep = (options: FlowStepOptions): Table => {
   const { stepNumber, title, description, isCCP = false } = options;
 
-  const stepPadding = toTwips(Spacing.flowStepPadding);
+  // Increased padding for better visual presence
+  const stepPadding = toTwips(Spacing.flowStepPadding + 2);
   const backgroundColor = isCCP ? "FEF3C7" : Colors.flowStepBg; // Amber tint for CCP
   const borderColor = isCCP ? Colors.warning : Colors.borderAccent;
 
   const children: Paragraph[] = [
-    // Step number and title
+    // Step number and title line
     new Paragraph({
-      spacing: { before: 0, after: description ? toTwips(Spacing.gapXs) : 0 },
+      spacing: { before: 0, after: isCCP || description ? toTwips(Spacing.gapXs) : 0 },
       children: [
         new TextRun({
           text: `Step ${stepNumber}: `,
@@ -817,20 +882,27 @@ export const flowStep = (options: FlowStepOptions): Table => {
           bold: true,
           color: Colors.text,
         }),
-        ...(isCCP
-          ? [
-              new TextRun({
-                text: "  [CCP]",
-                font: Fonts.primary,
-                size: toHalfPoints(FontSizes.small),
-                bold: true,
-                color: Colors.warning,
-              }),
-            ]
-          : []),
       ],
     }),
   ];
+
+  // CCP indicator on separate line for better visibility (badge-like)
+  if (isCCP) {
+    children.push(
+      new Paragraph({
+        spacing: { before: 0, after: description ? toTwips(Spacing.gapXs) : 0 },
+        children: [
+          new TextRun({
+            text: "• Critical Control Point (CCP)",
+            font: Fonts.primary,
+            size: toHalfPoints(FontSizes.small),
+            bold: true,
+            color: Colors.warning,
+          }),
+        ],
+      })
+    );
+  }
 
   // Add description if provided
   if (description) {
@@ -892,14 +964,15 @@ export const flowArrow = (): Paragraph => {
   return new Paragraph({
     alignment: AlignmentType.CENTER,
     spacing: {
-      before: toTwips(Spacing.flowArrowGap),
-      after: toTwips(Spacing.flowArrowGap),
+      // Reduced spacing for tighter visual grouping
+      before: toTwips(Spacing.gapXs),
+      after: toTwips(Spacing.gapXs),
     },
     children: [
       new TextRun({
         text: "\u2193", // Unicode down arrow
         font: Fonts.primary,
-        size: toHalfPoints(18), // Larger for visibility
+        size: toHalfPoints(16), // Slightly smaller for compactness
         bold: true,
         color: Colors.primary,
       }),
