@@ -1,3 +1,4 @@
+import React from 'react';
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
 import { renderToBuffer } from '@react-pdf/renderer';
@@ -175,17 +176,17 @@ export async function GET(req: Request) {
                 isPaid,
                 null // Logo buffer not used in this PDF template (could be added later)
             );
-            pdfBuffer = await renderToBuffer(<MinneapolisPdfDocument data={templateData} />);
+            const pdfElement = React.createElement(MinneapolisPdfDocument, { data: templateData });
+            pdfBuffer = await renderToBuffer(pdfElement);
         } else {
             // Legacy template
-            pdfBuffer = await renderToBuffer(
-                <HACCPDocument
-                    data={pdfData}
-                    dict={dict}
-                    logo={pdfLogo}
-                    template={originalInputs.template || 'audit-classic'}
-                />
-            );
+            const legacyElement = React.createElement(HACCPDocument, {
+                data: pdfData,
+                dict,
+                logo: pdfLogo,
+                template: originalInputs.template || 'audit-classic'
+            });
+            pdfBuffer = await renderToBuffer(legacyElement);
         }
     } catch (renderError: any) {
         console.error('[download-pdf] PDF render error:', renderError?.message || renderError);
