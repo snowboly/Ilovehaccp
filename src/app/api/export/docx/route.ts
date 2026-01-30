@@ -136,7 +136,7 @@ export async function POST(req: Request) {
     const cachedDocx = await getCachedArtifact({ path: docxPath });
     if (cachedDocx.exists && cachedDocx.buffer) {
       const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.docx`);
-      return new NextResponse(cachedDocx.buffer, {
+      return new NextResponse(cachedDocx.buffer as any, {
         headers: {
           'Content-Type':
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -166,7 +166,7 @@ export async function POST(req: Request) {
 
     const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.docx`);
 
-    return new NextResponse(buffer, {
+    return new NextResponse(buffer as any, {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': `attachment; filename="${fileName}"`,
