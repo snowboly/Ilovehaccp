@@ -780,10 +780,12 @@ export async function generateMinneapolisDocument(data: TemplateData): Promise<B
         properties: {
           page: {
             margin: {
-              top: toTwips(50),
-              right: toTwips(50),
-              bottom: toTwips(50),
-              left: toTwips(50),
+              top: toTwips(72),    // 1 inch top margin for header clearance
+              right: toTwips(50),   // 0.7 inch right margin
+              bottom: toTwips(72),  // 1 inch bottom margin for footer clearance
+              left: toTwips(50),    // 0.7 inch left margin
+              header: toTwips(36),  // Header distance from page edge (0.5 inch)
+              footer: toTwips(36),  // Footer distance from page edge (0.5 inch)
             },
           },
         },

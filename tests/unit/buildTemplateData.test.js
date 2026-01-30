@@ -9,16 +9,38 @@ const assert = require('assert');
 const PROCESS_CONTROL_DEFAULT_DESCRIPTION =
   'Process controls are applied at this step; specify the control(s) used (time/temperature, segregation, handling, sanitation, etc.).';
 
+const PROCESS_CONTROL_LABELS = [
+  'Process control',
+  'Control de proceso',
+  'Contrôle de processus',
+  'Controle de processo',
+];
+
+const normalizeProcessControlLabel = (label) =>
+  label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const processControlLabelMatchers = PROCESS_CONTROL_LABELS.map(normalizeProcessControlLabel);
+
+const matchesProcessControlLabel = (label) => {
+  const normalized = normalizeProcessControlLabel(label);
+  return processControlLabelMatchers.some((match) => normalized.includes(match));
+};
+
 // Helper to check if process control is selected (mirrors the implementation)
 function isProcessControlSelected(controlMeasure) {
   if (!controlMeasure) return false;
   if (Array.isArray(controlMeasure)) {
     return controlMeasure.some(
-      (c) => typeof c === 'string' && c.toLowerCase().includes('process control')
+      (control) => (typeof control === 'string' ? matchesProcessControlLabel(control) : false)
     );
   }
   if (typeof controlMeasure === 'string') {
-    return controlMeasure.toLowerCase().includes('process control');
+    return matchesProcessControlLabel(controlMeasure);
   }
   return false;
 }
@@ -164,9 +186,15 @@ console.log('Test 6: isProcessControlSelected helper...');
 {
   assert.strictEqual(isProcessControlSelected(['Process control']), true);
   assert.strictEqual(isProcessControlSelected(['Prerequisite Program (PRP)', 'Process control']), true);
+  assert.strictEqual(isProcessControlSelected(['Control de proceso']), true);
+  assert.strictEqual(isProcessControlSelected(['Contrôle de processus']), true);
+  assert.strictEqual(isProcessControlSelected(['Controle de processo']), true);
   assert.strictEqual(isProcessControlSelected(['Prerequisite Program (PRP)']), false);
   assert.strictEqual(isProcessControlSelected(['None']), false);
   assert.strictEqual(isProcessControlSelected('Process control'), true);
+  assert.strictEqual(isProcessControlSelected('Control de proceso'), true);
+  assert.strictEqual(isProcessControlSelected('Contrôle de processus'), true);
+  assert.strictEqual(isProcessControlSelected('Controle de processo'), true);
   assert.strictEqual(isProcessControlSelected('PRP'), false);
   assert.strictEqual(isProcessControlSelected(null), false);
   assert.strictEqual(isProcessControlSelected(undefined), false);
