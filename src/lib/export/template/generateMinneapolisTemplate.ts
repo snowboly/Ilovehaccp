@@ -55,6 +55,8 @@ import {
   introParagraph,
   bodyParagraph,
   captionParagraph,
+  sectionLeadParagraph,
+  tableCaptionParagraph,
   dataTable,
   tableIntroLine,
   keyValueTable,
@@ -65,6 +67,20 @@ import {
   noBorders,
   thinBorders,
 } from '../docx/primitives';
+
+// ============================================================================
+// PLACEHOLDERS - Human-readable defaults
+// ============================================================================
+
+const PLACEHOLDERS = {
+  toBeDefinedByBusiness: 'To be defined by the food business.',
+  notProvidedInDraft: 'Not provided in the current draft.',
+  completeInReview: 'Complete during HACCP team review.',
+  prpToBeDocumented: 'Prerequisite programs to be documented during HACCP implementation.',
+  processToBeDocumented: 'Process flow to be documented during HACCP team review.',
+  hazardToBeCompleted: 'Hazard analysis to be completed by the HACCP team.',
+  descriptionToComplete: 'Description to be completed by the food business.',
+};
 
 // ============================================================================
 // COVER PAGE
@@ -260,6 +276,7 @@ function createProductSection(data: TemplateData): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
   elements.push(sectionHeading({ text: 'PRODUCT DESCRIPTION', number: 'SECTION 2 -' }));
+  elements.push(tableCaptionParagraph('Table 2', 'Product Description'));
 
   elements.push(
     ...dataTable({
@@ -294,6 +311,7 @@ function createPRPSection(data: TemplateData): (Paragraph | Table)[] {
   elements.push(sectionHeading({ text: 'PREREQUISITE PROGRAMS (PRPs)', number: 'SECTION 4 -' }));
 
   if (data.has_prp_programs && data.prp_programs.length > 0) {
+    elements.push(tableCaptionParagraph('Table 4', 'Prerequisite Programs'));
     elements.push(
       ...dataTable({
         headers: ['Program', 'In Place', 'Documented', 'Reference'],
@@ -304,7 +322,7 @@ function createPRPSection(data: TemplateData): (Paragraph | Table)[] {
       })
     );
   } else {
-    elements.push(introParagraph({ text: 'Prerequisite programs to be documented.', italic: true, muted: true }));
+    elements.push(introParagraph({ text: PLACEHOLDERS.prpToBeDocumented, italic: true, muted: true }));
   }
 
   return elements;
@@ -351,20 +369,21 @@ function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
       )
     );
   } else {
-    elements.push(introParagraph({ text: 'Process flow diagram to be documented.', italic: true, muted: true }));
+    elements.push(introParagraph({ text: PLACEHOLDERS.processToBeDocumented, italic: true, muted: true }));
   }
 
   // 5.2 Process Steps Description Table
   elements.push(subsectionHeading({ text: 'Process Steps Description', number: '5.2' }));
 
   if (data.has_process_steps && data.process_steps.length > 0) {
+    elements.push(tableCaptionParagraph('Table 5.2', 'Process Steps'));
     elements.push(
       ...dataTable({
         headers: ['Step No.', 'Step Name', 'Description'],
         rows: data.process_steps.map((step) => [
           String(step.step_number),
           step.step_name,
-          step.step_description || 'Description to be completed by the food business.',
+          step.step_description || PLACEHOLDERS.descriptionToComplete,
         ]),
         columnWidths: [12, 28, 60],
         zebraStripe: true,
@@ -394,17 +413,15 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
   elements.push(sectionHeading({ text: 'HAZARD ANALYSIS & CCP DETERMINATION', number: 'SECTION 6 -' }));
 
   if (data.has_hazard_analysis && data.hazard_analysis.length > 0) {
-    // Check if any row has a control measure description to display
-    const hasDescriptions = data.hazard_analysis.some(
+    // Collect descriptions that need to be shown
+    const descriptionsToShow = data.hazard_analysis.filter(
       (h) => h.control_measure_description && h.control_measure_description !== '-'
     );
 
-    // Build hazard analysis table with Control Measure Description as additional column
-    // Using abbreviated headers for readability
+    // Build hazard analysis table
     const headers = ['Step', 'Hazard', 'Type', 'Sev.', 'Lik.', 'Sig?', 'Control Measure'];
     const colWidths = [12, 16, 8, 6, 6, 6, 46];
 
-    // If descriptions exist, we'll show them in a separate subsection for clarity
     const hazardRows = data.hazard_analysis.map((h) => [
       h.step,
       h.hazard,
@@ -415,6 +432,7 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
       h.control_measure,
     ]);
 
+    elements.push(tableCaptionParagraph('Table 6', 'Hazard Analysis'));
     elements.push(
       ...dataTable({
         headers,
@@ -425,26 +443,39 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
       })
     );
 
-    // Control Measure Descriptions subsection (if any descriptions exist)
-    if (hasDescriptions) {
-      elements.push(subsectionHeading({ text: 'Control Measure Descriptions', number: '6.1' }));
-
-      const descriptionsToShow = data.hazard_analysis.filter(
-        (h) => h.control_measure_description && h.control_measure_description !== '-'
-      );
-
-      elements.push(
-        ...dataTable({
-          headers: ['Step', 'Control Measure', 'Description'],
-          rows: descriptionsToShow.map((h) => [h.step, h.control_measure, h.control_measure_description]),
-          columnWidths: [15, 25, 60],
-          zebraStripe: true,
-          introText: 'Detailed descriptions of control measures are provided below.',
-        })
-      );
+    // Control Measure Descriptions - conditional display based on count
+    // ≤2 descriptions: append as notes under the main table (reduces fragmentation)
+    // >2 descriptions: separate 6.1 subsection with its own table
+    if (descriptionsToShow.length > 0) {
+      if (descriptionsToShow.length <= 2) {
+        // Append as compact notes under the hazard table
+        elements.push(spacerParagraph(Spacing.gapSm));
+        elements.push(sectionLeadParagraph('Control Measure Notes:'));
+        descriptionsToShow.forEach((h) => {
+          elements.push(
+            bodyParagraph({
+              text: `${h.step} — ${h.control_measure}: ${h.control_measure_description}`,
+              spacingAfter: Spacing.gapSm,
+            })
+          );
+        });
+      } else {
+        // Separate subsection for better organization
+        elements.push(subsectionHeading({ text: 'Control Measure Descriptions', number: '6.1' }));
+        elements.push(tableCaptionParagraph('Table 6.1', 'Control Measure Details'));
+        elements.push(
+          ...dataTable({
+            headers: ['Step', 'Control Measure', 'Description'],
+            rows: descriptionsToShow.map((h) => [h.step, h.control_measure, h.control_measure_description]),
+            columnWidths: [15, 25, 60],
+            zebraStripe: true,
+            introText: 'Detailed descriptions of control measures are provided below.',
+          })
+        );
+      }
     }
   } else {
-    elements.push(introParagraph({ text: 'Hazard analysis to be completed.', italic: true, muted: true }));
+    elements.push(introParagraph({ text: PLACEHOLDERS.hazardToBeCompleted, italic: true, muted: true }));
   }
 
   // CCP Determination methodology note (merged from former standalone section)
@@ -467,6 +498,7 @@ function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
 
   if (data.has_ccps && data.ccps.length > 0) {
     elements.push(subsectionHeading({ text: 'CCP Summary', number: '7.1' }));
+    elements.push(tableCaptionParagraph('Table 7.1', 'Critical Control Points'));
 
     elements.push(
       ...dataTable({
@@ -479,6 +511,7 @@ function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
     );
 
     elements.push(subsectionHeading({ text: 'Monitoring & Corrective Actions', number: '7.2' }));
+    elements.push(tableCaptionParagraph('Table 7.2', 'CCP Monitoring'));
 
     elements.push(
       ...dataTable({
@@ -520,7 +553,7 @@ function createVerificationSection(data: TemplateData): (Paragraph | Table)[] {
 // HEADER AND FOOTER
 // ============================================================================
 
-function createHeader(businessName: string, date: string): Header {
+function createHeader(productName: string, businessName: string): Header {
   return new Header({
     children: [
       new Table({
@@ -530,7 +563,7 @@ function createHeader(businessName: string, date: string): Header {
           new TableRow({
             children: [
               new TableCell({
-                width: { size: 70, type: WidthType.PERCENTAGE },
+                width: { size: 60, type: WidthType.PERCENTAGE },
                 borders: {
                   top: { style: BorderStyle.NONE, size: 0, color: Colors.white },
                   bottom: { style: BorderStyle.SINGLE, size: BorderWidths.medium, color: Colors.primary },
@@ -541,7 +574,7 @@ function createHeader(businessName: string, date: string): Header {
                   new Paragraph({
                     children: [
                       new TextRun({
-                        text: `HACCP Plan - ${sanitizeText(businessName)}`,
+                        text: `HACCP Plan — ${sanitizeText(productName)}`,
                         font: Fonts.primary,
                         size: toHalfPoints(FontSizes.small),
                         color: Colors.primary,
@@ -551,7 +584,7 @@ function createHeader(businessName: string, date: string): Header {
                 ],
               }),
               new TableCell({
-                width: { size: 30, type: WidthType.PERCENTAGE },
+                width: { size: 40, type: WidthType.PERCENTAGE },
                 borders: {
                   top: { style: BorderStyle.NONE, size: 0, color: Colors.white },
                   bottom: { style: BorderStyle.SINGLE, size: BorderWidths.medium, color: Colors.primary },
@@ -563,7 +596,7 @@ function createHeader(businessName: string, date: string): Header {
                     alignment: AlignmentType.RIGHT,
                     children: [
                       new TextRun({
-                        text: sanitizeText(date),
+                        text: sanitizeText(businessName),
                         font: Fonts.primary,
                         size: toHalfPoints(FontSizes.small),
                         color: Colors.muted,
@@ -705,7 +738,7 @@ export async function generateMinneapolisDocument(data: TemplateData): Promise<B
             },
           },
         },
-        headers: { default: createHeader(data.business_name, data.date) },
+        headers: { default: createHeader(data.product_name, data.business_name) },
         footers: { default: createFooter(data.version) },
         children: allContent,
       },
