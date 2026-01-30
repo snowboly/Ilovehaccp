@@ -1045,9 +1045,9 @@ export const signatureLines = (options: SignatureLineOptions): Table => {
   const { leftLabel, rightLabel, lineWidth = 50 } = options;
   const cellPadding = toTwips(Spacing.gapMd);
 
-  const createSignatureCell = (label: string): TableCell => {
+  const createSignatureCell = (label: string, width: number): TableCell => {
     return new TableCell({
-      width: { size: 50, type: WidthType.PERCENTAGE },
+      width: { size: width, type: WidthType.PERCENTAGE },
       borders: noBorders,
       margins: { top: cellPadding, bottom: cellPadding, left: 0, right: cellPadding },
       children: [
@@ -1079,7 +1079,10 @@ export const signatureLines = (options: SignatureLineOptions): Table => {
     layout: TableLayoutType.FIXED,
     rows: [
       new TableRow({
-        children: [createSignatureCell(leftLabel), createSignatureCell(rightLabel)],
+        children: [
+          createSignatureCell(leftLabel, lineWidth),
+          createSignatureCell(rightLabel, 100 - lineWidth),
+        ],
       }),
     ],
   });
