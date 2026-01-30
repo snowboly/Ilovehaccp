@@ -115,7 +115,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
       if (q.id === 'hazard_identification' && answers[q.id]) {
           const groupAnswers = answers[q.id];
           const hazGroup = q.questions?.find(sq => sq.id === 'no_hazards_justification');
-          
+
           if (hazGroup && hazGroup.required === 'when_all_hazards_false' && hazGroup.show_if_all_false) {
               const allFalse = hazGroup.show_if_all_false.every((key: string) => groupAnswers[key] === false);
               if (allFalse) {
@@ -123,6 +123,31 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
                   if (!val || val === '') {
                       newErrors[q.id] = "Please provide justification for no hazards.";
                       isValid = false;
+                  }
+              }
+          }
+      }
+
+      // Validate process_control_description when Process control is selected (group_per_hazard)
+      if (q.id === 'control_measures' && q.type === 'group_per_hazard' && answers[q.id]) {
+          const controlMeasuresData = answers[q.id];
+          // controlMeasuresData is keyed by hazard type: { bio: {...}, chem: {...}, etc. }
+          const hazardTypes = ['bio', 'chem', 'phys', 'allergen'];
+
+          for (const hazType of hazardTypes) {
+              const hazardData = controlMeasuresData[hazType];
+              if (hazardData) {
+                  const appliedControls = hazardData.applied_controls || [];
+                  const hasProcessControl = Array.isArray(appliedControls) &&
+                      appliedControls.some((c: string) => c.toLowerCase().includes('process control'));
+
+                  if (hasProcessControl) {
+                      const description = hazardData.process_control_description;
+                      if (!description || description.trim() === '') {
+                          newErrors[q.id] = `Process control description is required for ${hazType === 'bio' ? 'Biological' : hazType === 'chem' ? 'Chemical' : hazType === 'phys' ? 'Physical' : 'Allergen'} hazard when Process control is selected.`;
+                          isValid = false;
+                          break; // Report first error only
+                      }
                   }
               }
           }

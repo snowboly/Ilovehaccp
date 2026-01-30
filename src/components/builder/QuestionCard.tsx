@@ -509,11 +509,21 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                     // Conditional visibility: show only when a sibling field matches the expected value
                     if (subQ.show_if) {
                         const siblingValue = value?.[subQ.show_if.questionId];
-                        const expected = subQ.show_if.value;
-                        if (Array.isArray(expected)) {
-                            if (!expected.includes(siblingValue)) return null;
-                        } else if (siblingValue !== expected) {
-                            return null;
+
+                        // Handle "includes" check for multi-select fields
+                        if (subQ.show_if.includes) {
+                            // Check if the sibling value (array) includes the specified string
+                            if (!Array.isArray(siblingValue) || !siblingValue.includes(subQ.show_if.includes)) {
+                                return null;
+                            }
+                        } else {
+                            // Original value-based check
+                            const expected = subQ.show_if.value;
+                            if (Array.isArray(expected)) {
+                                if (!expected.includes(siblingValue)) return null;
+                            } else if (siblingValue !== expected) {
+                                return null;
+                            }
                         }
                     }
 
@@ -563,22 +573,45 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                             </div>
                         </div>
                         <div className="space-y-6">
-                            {question.questions?.map(subQ => (
-                                <div key={`${haz.id}_${subQ.id}`} className="border-t border-slate-200 pt-4 first:border-0 first:pt-0">
-                                    <QuestionCard 
-                                        question={subQ} 
-                                        value={value?.[haz.id]?.[subQ.id]} 
-                                        onChange={(id, val) => {
-                                            const hazardValues = value?.[haz.id] || {};
-                                            onChange(question.id, { 
-                                                ...value, 
-                                                [haz.id]: { ...hazardValues, [id]: val } 
-                                            });
-                                        }}
-                                        context={context} // Pass context down recursively
-                                    />
-                                </div>
-                            ))}
+                            {question.questions?.map(subQ => {
+                                // Handle show_if conditional visibility within group_per_hazard
+                                const hazardValue = value?.[haz.id] || {};
+
+                                if (subQ.show_if) {
+                                    const siblingValue = hazardValue[subQ.show_if.questionId];
+
+                                    // Handle "includes" check for multi-select fields
+                                    if (subQ.show_if.includes) {
+                                        if (!Array.isArray(siblingValue) || !siblingValue.includes(subQ.show_if.includes)) {
+                                            return null;
+                                        }
+                                    } else {
+                                        // Original value-based check
+                                        const expected = subQ.show_if.value;
+                                        if (Array.isArray(expected)) {
+                                            if (!expected.includes(siblingValue)) return null;
+                                        } else if (siblingValue !== expected) {
+                                            return null;
+                                        }
+                                    }
+                                }
+
+                                return (
+                                    <div key={`${haz.id}_${subQ.id}`} className="border-t border-slate-200 pt-4 first:border-0 first:pt-0">
+                                        <QuestionCard
+                                            question={subQ}
+                                            value={hazardValue[subQ.id]}
+                                            onChange={(id, val) => {
+                                                onChange(question.id, {
+                                                    ...value,
+                                                    [haz.id]: { ...hazardValue, [id]: val }
+                                                });
+                                            }}
+                                            context={context} // Pass context down recursively
+                                        />
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 ))}

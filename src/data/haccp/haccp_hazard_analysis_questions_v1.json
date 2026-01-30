@@ -137,12 +137,21 @@
           "required": true
         },
         {
+          "id": "process_control_description",
+          "text": "Describe the process control(s) used",
+          "tooltip": "REQUIRED when Process control is selected. Describe the specific process control measures applied at this step (e.g., time/temperature parameters, segregation procedures, handling controls, sanitation steps).",
+          "type": "multiline_text",
+          "required": false,
+          "show_if": { "questionId": "applied_controls", "includes": "Process control" },
+          "placeholder": "e.g., Cooking to core temperature of 75°C for minimum 30 seconds; Temperature monitored using calibrated probe thermometer; Time/temperature logged on batch record form."
+        },
+        {
           "id": "control_measure_description",
-          "text": "Describe the control measure (Optional)",
-          "tooltip": "Briefly describe how this hazard is controlled. Examples: 'Daily temperature checks', 'Supplier approval procedure', 'Metal detection'.",
+          "text": "Additional control measure notes (Optional)",
+          "tooltip": "Briefly describe any additional control measures or notes. Examples: 'Supplier approval procedure', 'Metal detection frequency'.",
           "type": "text",
           "required": false,
-          "placeholder": "e.g., Temperature monitoring every 4 hours, Visual inspection of incoming goods"
+          "placeholder": "e.g., Visual inspection of incoming goods, Supplier certificates verified on delivery"
         }
       ]
     }

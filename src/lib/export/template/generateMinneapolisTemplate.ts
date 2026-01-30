@@ -377,10 +377,112 @@ function createProductSection(data: TemplateData): (Paragraph | Table)[] {
   return elements;
 }
 
+function createProcessFlowDiagram(steps: ProcessStep[]): (Paragraph | Table)[] {
+  const elements: (Paragraph | Table)[] = [];
+
+  if (steps.length === 0) {
+    elements.push(createParagraph('Process flow diagram to be documented.', true));
+    return elements;
+  }
+
+  // Create a box-style flow diagram using a single-column table
+  // Each step is a "box" with borders, with arrows between them
+  const diagramRows: TableRow[] = [];
+
+  steps.forEach((step, index) => {
+    // Add the step box
+    diagramRows.push(
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            borders: {
+              top: standardBorder,
+              bottom: standardBorder,
+              left: standardBorder,
+              right: standardBorder,
+            },
+            shading: { type: ShadingType.CLEAR, fill: THEME.lightBlue },
+            margins: { top: toTwips(8), bottom: toTwips(8), left: toTwips(12), right: toTwips(12) },
+            children: [
+              new Paragraph({
+                alignment: AlignmentType.CENTER,
+                children: [
+                  new TextRun({
+                    text: `${step.step_number}. ${sanitizeText(step.step_name)}`,
+                    font: 'Calibri',
+                    size: 22,
+                    bold: true,
+                    color: THEME.navy,
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      })
+    );
+
+    // Add arrow between steps (except after the last step)
+    if (index < steps.length - 1) {
+      diagramRows.push(
+        new TableRow({
+          children: [
+            new TableCell({
+              width: { size: 100, type: WidthType.PERCENTAGE },
+              borders: { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder },
+              margins: { top: toTwips(4), bottom: toTwips(4) },
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new TextRun({
+                      text: '↓',
+                      font: 'Calibri',
+                      size: 28,
+                      bold: true,
+                      color: THEME.blue,
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          ],
+        })
+      );
+    }
+  });
+
+  const flowDiagram = new Table({
+    width: { size: 60, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
+    alignment: AlignmentType.CENTER,
+    rows: diagramRows,
+  });
+
+  elements.push(flowDiagram);
+
+  return elements;
+}
+
 function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
-  elements.push(createSectionHeader('SECTION 4 - PROCESS FLOW'));
+  elements.push(createSectionHeader('SECTION 5 - PROCESS FLOW'));
+
+  // 5.1 Process Flow Diagram
+  elements.push(createSubsectionHeader('5.1 Process Flow Diagram'));
+  elements.push(...createProcessFlowDiagram(data.process_steps));
+
+  elements.push(
+    createParagraph(
+      'Note: A visual process flow diagram should be maintained on-site and reviewed by the HACCP team during each plan revision.',
+      true
+    )
+  );
+
+  // 5.2 Process Steps Description Table
+  elements.push(createSubsectionHeader('5.2 Process Steps Description'));
 
   if (data.has_process_steps && data.process_steps.length > 0) {
     const processTable = createDataTable(
@@ -388,26 +490,19 @@ function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
       data.process_steps.map((step) => [
         String(step.step_number),
         step.step_name,
-        step.step_description,
+        step.step_description || 'Description to be completed by the food business.',
       ]),
       [12, 28, 60]
     );
     elements.push(processTable);
   } else {
-    elements.push(createParagraph('Process flow to be documented.', true));
+    elements.push(createParagraph('Process steps to be documented.', true));
   }
 
   if (data.process_description && data.process_description !== '-') {
-    elements.push(createSubsectionHeader('Process Description'));
+    elements.push(createSubsectionHeader('Process Narrative'));
     elements.push(createParagraph(data.process_description));
   }
-
-  elements.push(
-    createParagraph(
-      'Note: A visual process flow diagram should be maintained on-site and used by the HACCP team.',
-      true
-    )
-  );
 
   return elements;
 }
@@ -415,7 +510,7 @@ function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
 function createPRPSection(data: TemplateData): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
-  elements.push(createSectionHeader('SECTION 5 - PREREQUISITE PROGRAMS (PRPs)'));
+  elements.push(createSectionHeader('SECTION 4 - PREREQUISITE PROGRAMS (PRPs)'));
 
   if (data.has_prp_programs && data.prp_programs.length > 0) {
     const prpTable = createDataTable(
@@ -434,12 +529,15 @@ function createPRPSection(data: TemplateData): (Paragraph | Table)[] {
 function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
-  elements.push(createSectionHeader('SECTION 6 - HAZARD ANALYSIS'));
+  elements.push(createSectionHeader('SECTION 6 - HAZARD ANALYSIS & CCP DETERMINATION'));
 
   if (data.has_hazard_analysis && data.hazard_analysis.length > 0) {
-    const hazardTable = createDataTable(
-      ['Step', 'Hazard', 'Type', 'Sev.', 'Lik.', 'Sig?', 'Control Measure'],
-      data.hazard_analysis.map((h) => [
+    // Create a table with control measure description as a combined cell or additional column
+    // Using a two-row-per-hazard approach for better readability: main row + description row
+    const hazardRows: string[][] = [];
+    data.hazard_analysis.forEach((h) => {
+      // Main data row
+      hazardRows.push([
         h.step,
         h.hazard,
         h.hazard_type,
@@ -447,13 +545,41 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
         h.likelihood,
         h.significant,
         h.control_measure,
-      ]),
-      [15, 20, 10, 8, 8, 8, 31]
+      ]);
+    });
+
+    const hazardTable = createDataTable(
+      ['Step', 'Hazard', 'Type', 'Sev.', 'Lik.', 'Sig?', 'Control Measure'],
+      hazardRows,
+      [14, 18, 8, 7, 7, 7, 39]
     );
     elements.push(hazardTable);
+
+    // Add control measure descriptions table if any descriptions exist
+    const descriptionsToShow = data.hazard_analysis.filter(
+      (h) => h.control_measure_description && h.control_measure_description !== '-'
+    );
+
+    if (descriptionsToShow.length > 0) {
+      elements.push(createSubsectionHeader('Control Measure Descriptions'));
+      const descriptionTable = createDataTable(
+        ['Step', 'Control Measure Description'],
+        descriptionsToShow.map((h) => [h.step, h.control_measure_description]),
+        [25, 75]
+      );
+      elements.push(descriptionTable);
+    }
   } else {
     elements.push(createParagraph('Hazard analysis to be completed.', true));
   }
+
+  // CCP Determination note (merged from former Section 7)
+  elements.push(
+    createParagraph(
+      'CCP determination was performed using Codex Alimentarius decision tree methodology.',
+      true
+    )
+  );
 
   return elements;
 }
@@ -461,7 +587,7 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
 function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
-  elements.push(createSectionHeader('SECTION 8 - CCP MANAGEMENT'));
+  elements.push(createSectionHeader('SECTION 7 - CCP MANAGEMENT'));
 
   if (data.has_ccps && data.ccps.length > 0) {
     elements.push(createSubsectionHeader('CCP Summary'));
@@ -496,10 +622,10 @@ function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
 function createVerificationSection(data: TemplateData): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
-  elements.push(createSectionHeader('SECTION 9 - VERIFICATION & VALIDATION'));
+  elements.push(createSectionHeader('SECTION 8 - VERIFICATION & VALIDATION'));
   elements.push(createParagraph(data.verification_procedures));
 
-  elements.push(createSectionHeader('SECTION 10 - RECORDS & DOCUMENTATION'));
+  elements.push(createSectionHeader('SECTION 9 - RECORDS & DOCUMENTATION'));
   elements.push(createParagraph(data.record_keeping));
 
   return elements;
@@ -632,23 +758,19 @@ export async function generateMinneapolisDocument(data: TemplateData): Promise<B
     createSectionHeader('SECTION 3 - INTENDED USE'),
     createParagraph(data.intended_use_narrative || data.intended_use),
 
-    // Section 4 - Process Flow
-    ...createProcessSection(data),
-
-    // Section 5 - PRPs
+    // Section 4 - PRPs
     ...createPRPSection(data),
 
-    // Section 6 - Hazard Analysis
+    // Section 5 - Process Flow (with 5.1 Diagram and 5.2 Steps Table)
+    ...createProcessSection(data),
+
+    // Section 6 - Hazard Analysis & CCP Determination (merged)
     ...createHazardAnalysisSection(data),
 
-    // Section 7 - CCP Determination (brief)
-    createSectionHeader('SECTION 7 - CCP DETERMINATION'),
-    createParagraph('CCPs determined using Codex Alimentarius Decision Tree methodology.'),
-
-    // Section 8 - CCP Management
+    // Section 7 - CCP Management
     ...createCCPSection(data),
 
-    // Sections 9 & 10 - Verification and Records
+    // Sections 8 & 9 - Verification and Records
     ...createVerificationSection(data),
   ];
 
