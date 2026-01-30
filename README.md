@@ -67,6 +67,26 @@ APP_URL=...
 2. **Build:** `npm run build`.
 3. **Pushed:** Changes are synced to GitHub `main` branch.
 
+## 📄 DOCX ➜ PDF Export (LibreOffice)
+
+PDF exports are generated from the canonical DOCX output using headless LibreOffice (`soffice`). Free users receive a watermarked preview PDF; paid users receive a clean PDF.
+
+### Install LibreOffice
+- **macOS (Homebrew):** `brew install --cask libreoffice`
+- **Ubuntu/Debian:** `sudo apt-get install libreoffice`
+- **Docker/CI:** include `libreoffice` in the image or install it during build.
+
+### Verify outputs
+1. Generate a DOCX export and confirm the DOCX is correct (source of truth).
+2. Call `POST /api/export/pdf` with a valid `planId` and authenticated session.
+3. Confirm paid users receive a clean PDF and free users receive a watermarked preview.
+
+### Rollback strategy
+Set `PDF_USE_DOCX_CONVERSION=false` to disable DOCX➜PDF conversion and fall back to the legacy PDF renderer. Optionally set `PDF_USE_LEGACY_EXPORTER=true` to allow automatic fallback if LibreOffice is missing or conversion fails.
+
+### Operational notes
+- `PDF_CONVERSION_TIMEOUT_MS` controls the LibreOffice timeout (default 45s).
+
 ## 🗄️ Production DB Checklist (Quick)
 1. **Run migrations:** Apply new SQL in `src/db/*.sql` to production (Supabase SQL editor or your migration pipeline).
 2. **Verify critical tables exist:** `public.stripe_processed_events`, `public.haccp_plan_versions`, and any new tables referenced by API routes.
