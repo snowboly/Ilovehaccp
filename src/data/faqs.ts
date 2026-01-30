@@ -25,7 +25,19 @@ export const faqs: FAQItem[] = [
   // General & Legal
   {
     q: "Is a generated HACCP plan legal?",
-    a: "Yes, provided it accurately reflects your actual operations. The law requires a plan based on HACCP principles; the tool used to draft it does not matter. However, the business operator is responsible for validating and implementing the plan. We recommend our Professional Review for peace of mind."
+    a: "Yes, provided it accurately reflects your actual operations. The law requires a plan based on HACCP principles; the tool used to draft it does not matter. However, the business operator is responsible for validating and implementing the plan. We recommend our Expert Review for peace of mind."
+  },
+  {
+    q: "Is my plan certified or approved by regulators?",
+    a: "No. The documents we generate are drafts to assist your documentation efforts. They are not certificates, approvals, or validations from any regulatory body (FSA, EHO, local councils, etc.). Your plan must be implemented in practice and may be reviewed by your local authority during inspection."
+  },
+  {
+    q: "Who is responsible for food safety after I generate a plan?",
+    a: "You are. As the Food Business Operator, you remain solely and legally responsible for food safety, the accuracy of your plan, and its day-to-day implementation. A document alone does not ensure safety—active monitoring, staff training, and equipment maintenance are your ongoing obligations."
+  },
+  {
+    q: "What if I fail an inspection using your plan?",
+    a: "Our tool provides a framework based on general HACCP principles, not a guarantee of passing any specific audit. Regulatory interpretation varies by inspector and jurisdiction. We strongly recommend professional review and on-site validation before your inspection."
   },
   {
     q: "Does this cover me for local health inspections?",
@@ -43,11 +55,19 @@ export const faqs: FAQItem[] = [
   },
   {
     q: "Can I use this for a multi-site operation?",
-    a: "Yes. For multi-site operations, we recommend our Enterprise/Pro tier which allows for central management and standardization across locations. The standard builder is best for single-site locations."
+    a: "Yes. You can create separate plans for each location to account for site-specific differences. For businesses needing centralized management across multiple sites, contact us at support@ilovehaccp.com to discuss your requirements."
   },
   {
     q: "Is my data secure?",
     a: "Absolutely. We use enterprise-grade encryption for all data. Your recipes and operational details are private and never shared with third parties."
+  },
+  {
+    q: "Who processes my data?",
+    a: "Your inputs are processed by our technology partners under strict contractual terms. Your recipes and operational details are never used for model training, shared with third parties for marketing, or sold. See our Privacy Policy for full details."
+  },
+  {
+    q: "Can I delete my account and data?",
+    a: "Yes. Under GDPR, you have the right to access, correct, export, or permanently delete your data. Email support@ilovehaccp.com with subject 'Privacy Request' and we'll respond within 30 days."
   },
   {
     q: "How does the tool know my specific hazards?",
@@ -56,16 +76,16 @@ export const faqs: FAQItem[] = [
 
   // Pricing & Billing
   {
-    q: "What is included in the €99 Plan Review?",
-    a: "The Plan Review package includes full access to our builder tool, unlimited edits, PDF export, and a standard review of your plan by one of our food safety experts to ensure alignment with standards."
+    q: "What are the pricing options?",
+    a: "Professional (€39): Clean PDF and Word export with unlimited edits. Expert Review (€99): Everything in Professional, plus a human food safety expert reviews your plan for standards alignment."
   },
   {
     q: "Do you offer refunds?",
-    a: "Because the digital product (the HACCP plan) is delivered instantly, we generally do not offer refunds once the file has been downloaded. However, if you are unsatisfied with the expert review, please contact us."
+    a: "Because HACCP plans are digital products delivered instantly, all sales are final once generated or downloaded. However, we will issue refunds for technical failures (corrupted or unusable files), accidental double charges, or non-delivery that our support team cannot resolve. Contact support@ilovehaccp.com."
   },
   {
     q: "Is there a monthly fee?",
-    a: "No. The €99 Plan Review is a one-time payment per plan. Enterprise/Pro clients may have custom billing arrangements."
+    a: "No. Both tiers (€39 Professional and €99 Expert Review) are one-time payments per plan. No subscriptions required."
   },
 
   // Specific Food Safety Topics
@@ -79,7 +99,7 @@ export const faqs: FAQItem[] = [
   },
   {
     q: "Can I export to Word or Excel?",
-    a: "Currently, we export to a secured, professional PDF format to ensure document integrity. Editable formats are available upon request for Pro tier customers."
+    a: "Yes. Professional and Expert tiers include Word (.docx) export for easy editing. PDF is available at all tiers. Excel export is not currently supported."
   },
   {
     q: "How often should I review my HACCP plan?",
@@ -87,6 +107,20 @@ export const faqs: FAQItem[] = [
   },
   {
     q: "Do you support VACCP and TACCP?",
-    a: "Our current tool focuses on HACCP (Safety). Vulnerability (VACCP) and Threat (TACCP) assessments are part of our advanced Enterprise module. Contact us for details."
+    a: "Our current tool focuses on HACCP (Safety). Vulnerability (VACCP) and Threat (TACCP) assessments are on our roadmap. Contact support@ilovehaccp.com if this is a priority for your business."
+  },
+
+  // Account & Support
+  {
+    q: "I forgot my password. How do I reset it?",
+    a: "Click 'Forgot password?' on the login page. We'll email you a reset link. Check your spam folder if it doesn't arrive within a few minutes."
+  },
+  {
+    q: "How do I contact support?",
+    a: "Email support@ilovehaccp.com for general inquiries, technical issues, or privacy requests. We aim to respond within 1-2 business days."
+  },
+  {
+    q: "What languages is the platform available in?",
+    a: "The interface and generated plans are available in English, Portuguese, Spanish, and French. Select your language from the dropdown in the navigation bar."
   }
 ];
