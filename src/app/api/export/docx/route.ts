@@ -8,7 +8,6 @@ import {
   buildStoragePath,
   computeContentHash,
   getCachedArtifact,
-  getOrGenerateArtifact,
   putArtifact
 } from '@/lib/export/cache/exportCache';
 
@@ -142,6 +141,7 @@ export async function POST(req: Request) {
 
     const cachedDocx = await getCachedArtifact({ path: docxPath });
     if (cachedDocx.exists && cachedDocx.buffer) {
+      console.info('[export/docx] cache hit', { planId, artifact: 'plan.docx' });
       const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.docx`);
       const responseBody = toBodyInit(cachedDocx.buffer);
       return new NextResponse(responseBody as any, {
@@ -155,21 +155,13 @@ export async function POST(req: Request) {
         }
       });
     }
-
-    const { buffer } = await getOrGenerateArtifact({
-      getCached: async () => {
-        const cached = await getCachedArtifact({ path: docxPath });
-        return cached.buffer ?? null;
-      },
-      generate: async () =>
-        generateDocxBuffer({ ...exportPayload, logoBuffer: wordLogo }, lang),
-      store: async (buffer) =>
-        putArtifact({
-          path: docxPath,
-          buffer,
-          contentType:
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        })
+    console.info('[export/docx] cache miss', { planId, artifact: 'plan.docx' });
+    const buffer = await generateDocxBuffer({ ...exportPayload, logoBuffer: wordLogo }, lang);
+    await putArtifact({
+      path: docxPath,
+      buffer,
+      contentType:
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     });
 
     const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.docx`);
