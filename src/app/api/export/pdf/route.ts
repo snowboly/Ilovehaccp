@@ -127,7 +127,7 @@ export async function POST(req: Request) {
       });
       samplePdf = await applyWatermark(samplePdf, defaultWatermarkConfig);
       const fileName = sanitizeFileName(body?.fileName || 'HACCP_Plan.pdf');
-      return new NextResponse(samplePdf, {
+      return new NextResponse(new Uint8Array(samplePdf), {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${fileName}"`,
