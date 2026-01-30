@@ -32,7 +32,7 @@ export const Colors = {
   lightBg: "F8FAFC",        // Subtle background for sections
   sectionBg: "EEF2FF",      // Section header background
   tableHeaderBg: "F1F5F9",  // Table header background
-  tableZebraBg: "FAFBFD",   // Alternating row background
+  tableZebraBg: "FAFCFE",   // Alternating row background (very subtle)
   boxBg: "F9FAFB",          // Boxed content background
   flowStepBg: "EFF6FF",     // Process flow step background
 

@@ -10,10 +10,11 @@
  * - Accessibility and readability
  *
  * Usage Guidelines:
- * - Always use spacerParagraph() between headings and tables
+ * - Use `introText` option on tables to provide context and anchor them to headings
  * - Use section headings for major document divisions
  * - Use subsection headings for content within sections
- * - Tables should never immediately follow headings
+ * - For hazard tables, disable zebra striping with `zebraStripe: false`
+ * - Tables should never immediately follow headings without an intro line
  */
 
 import {
@@ -347,6 +348,8 @@ export const introParagraph = (options: IntroParagraphOptions): Paragraph => {
 
   return new Paragraph({
     alignment,
+    // Keep with next element to act as anchor for following content
+    keepNext: true,
     spacing: {
       before: toTwips(Spacing.gapSm),
       after: toTwips(Spacing.paragraphAfter),
@@ -429,6 +432,45 @@ export const captionParagraph = (text: string, italic: boolean = true): Paragrap
 // ============================================================================
 
 /**
+ * Default intro text for tables when none is provided.
+ */
+const DEFAULT_TABLE_INTRO = "Details are provided in the table below.";
+
+/**
+ * Create a table introduction line.
+ * Acts as an "anchor" paragraph that keeps the heading connected to the table.
+ * Using text (not a blank spacer) ensures proper widow/orphan control.
+ *
+ * @example
+ * tableIntroLine("The following hazards were identified during the analysis.")
+ */
+export const tableIntroLine = (
+  text: string = DEFAULT_TABLE_INTRO,
+  options: { italic?: boolean; muted?: boolean } = {}
+): Paragraph => {
+  const { italic = true, muted = true } = options;
+
+  return new Paragraph({
+    // Keep with next element (the table) to prevent orphaning
+    keepNext: true,
+    spacing: {
+      before: toTwips(Spacing.gapSm),
+      after: toTwips(Spacing.gapSm),
+      line: toLineSpacing(LineHeights.normal),
+    },
+    children: [
+      new TextRun({
+        text: sanitizeText(text),
+        font: Fonts.primary,
+        size: toHalfPoints(FontSizes.body),
+        italics: italic,
+        color: muted ? Colors.muted : Colors.text,
+      }),
+    ],
+  });
+};
+
+/**
  * Options for data table creation.
  */
 export interface DataTableOptions {
@@ -438,25 +480,48 @@ export interface DataTableOptions {
   rows: string[][];
   /** Column width percentages (must sum to 100) */
   columnWidths: number[];
-  /** Use zebra striping for rows */
+  /** Use zebra striping for rows (default true; disable for hazard tables) */
   zebraStripe?: boolean;
   /** Header background color (hex without #) */
   headerBackground?: string;
-  /** Include a spacer paragraph before the table */
-  includeTopSpacer?: boolean;
+  /**
+   * Intro text to display before the table.
+   * - true: use default intro ("Details are provided in the table below.")
+   * - string: use custom intro text
+   * - false/undefined: no intro line
+   */
+  introText?: string | boolean;
 }
 
 /**
  * Create a data table with consistent styling.
- * Tables automatically include header row formatting and zebra striping.
+ * Tables automatically include header row formatting and optional zebra striping.
  *
- * IMPORTANT: Always call spacerParagraph() before tables that follow headings.
+ * Best practice: Use `introText` to provide context and anchor the table to headings.
  *
  * @example
+ * // With custom intro text
  * dataTable({
  *   headers: ["Hazard", "Risk Level", "Control Measure"],
  *   rows: [["Salmonella", "High", "Cook to 75C"]],
- *   columnWidths: [30, 20, 50]
+ *   columnWidths: [30, 20, 50],
+ *   introText: "The following biological hazards were identified."
+ * })
+ *
+ * // With default intro
+ * dataTable({
+ *   headers: ["Step", "Description"],
+ *   rows: [["1", "Receiving"]],
+ *   columnWidths: [20, 80],
+ *   introText: true
+ * })
+ *
+ * // Without striping (for hazard tables)
+ * dataTable({
+ *   headers: ["CCP", "Hazard", "Critical Limit"],
+ *   rows: [...],
+ *   columnWidths: [15, 35, 50],
+ *   zebraStripe: false
  * })
  */
 export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
@@ -466,15 +531,16 @@ export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
     columnWidths,
     zebraStripe = true,
     headerBackground = Colors.tableHeaderBg,
-    includeTopSpacer = true,
+    introText,
   } = options;
 
   const cellPadding = toTwips(Spacing.tableCellPadding);
   const elements: (Paragraph | Table)[] = [];
 
-  // CRITICAL: Add spacer to prevent table directly after heading
-  if (includeTopSpacer) {
-    elements.push(spacerParagraph(Spacing.tableMarginTop));
+  // Add intro line to anchor table to preceding heading
+  if (introText) {
+    const text = typeof introText === "string" ? introText : DEFAULT_TABLE_INTRO;
+    elements.push(tableIntroLine(text));
   }
 
   const table = new Table({
@@ -1110,13 +1176,11 @@ export const buildSection = (options: SectionBuilderOptions): (Paragraph | Table
   // Add section heading
   elements.push(sectionHeading({ text: title, number }));
 
-  // Add intro if provided
+  // Add intro if provided - this acts as the anchor to keep heading with content
+  // If no intro, tables in content should use their own introText option
   if (intro) {
     elements.push(introParagraph({ text: intro }));
   }
-
-  // CRITICAL: Add spacer before content to prevent orphaned headings
-  elements.push(spacerParagraph());
 
   // Add content
   elements.push(...content);
