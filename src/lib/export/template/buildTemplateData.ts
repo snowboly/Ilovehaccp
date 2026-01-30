@@ -24,6 +24,7 @@ export interface HazardAnalysisRow {
   likelihood: string;
   significant: string;
   control_measure: string;
+  control_measure_description: string;
 }
 
 export interface CCPRow {
@@ -125,19 +126,51 @@ const extractPRPPrograms = (fullPlan: any): PRPProgram[] => {
   }));
 };
 
+const PROCESS_CONTROL_DEFAULT_DESCRIPTION =
+  'Process controls are applied at this step; specify the control(s) used (time/temperature, segregation, handling, sanitation, etc.).';
+
+const isProcessControlSelected = (controlMeasure: any): boolean => {
+  if (!controlMeasure) return false;
+  if (Array.isArray(controlMeasure)) {
+    return controlMeasure.some(c =>
+      typeof c === 'string' && c.toLowerCase().includes('process control')
+    );
+  }
+  if (typeof controlMeasure === 'string') {
+    return controlMeasure.toLowerCase().includes('process control');
+  }
+  return false;
+};
+
 const extractHazardAnalysis = (fullPlan: any): HazardAnalysisRow[] => {
   const analysis = fullPlan?.hazard_analysis;
   if (!Array.isArray(analysis) || analysis.length === 0) return [];
 
-  return analysis.map((hazard: any) => ({
-    step: formatValue(hazard.step_name || hazard.step),
-    hazard: formatValue(hazard.hazards || hazard.hazard),
-    hazard_type: formatValue(hazard.hazard_type || hazard.type),
-    severity: formatValue(hazard.severity),
-    likelihood: formatValue(hazard.likelihood),
-    significant: hazard.is_ccp ? 'Yes' : 'No',
-    control_measure: formatValue(hazard.control_measure),
-  }));
+  return analysis.map((hazard: any) => {
+    const controlMeasure = hazard.control_measure;
+    const hasProcessControl = isProcessControlSelected(controlMeasure);
+
+    // Get description from various possible sources
+    let description = hazard.control_measure_description ||
+                      hazard.process_control_description ||
+                      '';
+
+    // Apply default if Process control is selected but description is empty
+    if (hasProcessControl && !description) {
+      description = PROCESS_CONTROL_DEFAULT_DESCRIPTION;
+    }
+
+    return {
+      step: formatValue(hazard.step_name || hazard.step),
+      hazard: formatValue(hazard.hazards || hazard.hazard),
+      hazard_type: formatValue(hazard.hazard_type || hazard.type),
+      severity: formatValue(hazard.severity),
+      likelihood: formatValue(hazard.likelihood),
+      significant: hazard.is_ccp ? 'Yes' : 'No',
+      control_measure: formatValue(controlMeasure),
+      control_measure_description: description || '-',
+    };
+  });
 };
 
 const extractCCPs = (fullPlan: any): CCPRow[] => {
