@@ -164,7 +164,13 @@ export async function GET(req: Request) {
 
     const safeBusinessName = String(plan.business_name || 'Draft').replace(/\s+/g, '_');
 
-    return new NextResponse(buffer as any, {
+    const responseBody = Buffer.isBuffer(buffer)
+      ? buffer
+      : buffer instanceof ArrayBuffer
+        ? new Uint8Array(buffer)
+        : buffer;
+
+    return new NextResponse(responseBody as any, {
         headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Disposition': `attachment; filename="HACCP_Plan_${safeBusinessName}.docx"`
@@ -176,4 +182,3 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Failed to generate document. Please try again.' }, { status: 500 });
   }
 }
-

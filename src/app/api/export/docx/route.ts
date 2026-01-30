@@ -35,7 +35,13 @@ export async function POST(req: Request) {
     const baseName = data.businessName || 'HACCP_Plan';
     const fileName = sanitizeFileName(body?.fileName || `${baseName}.docx`);
 
-    return new NextResponse(buffer as any, {
+    const responseBody = Buffer.isBuffer(buffer)
+      ? buffer
+      : buffer instanceof ArrayBuffer
+        ? new Uint8Array(buffer)
+        : buffer;
+
+    return new NextResponse(responseBody as any, {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': `attachment; filename="${fileName}"`
