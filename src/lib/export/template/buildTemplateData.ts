@@ -129,15 +129,37 @@ const extractPRPPrograms = (fullPlan: any): PRPProgram[] => {
 const PROCESS_CONTROL_DEFAULT_DESCRIPTION =
   'Process controls are applied at this step; specify the control(s) used (time/temperature, segregation, handling, sanitation, etc.).';
 
+const PROCESS_CONTROL_LABELS = [
+  'Process control',
+  'Control de proceso',
+  'Contrôle de processus',
+  'Controle de processo',
+];
+
+const normalizeProcessControlLabel = (label: string): string =>
+  label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const processControlLabelMatchers = PROCESS_CONTROL_LABELS.map(normalizeProcessControlLabel);
+
+const matchesProcessControlLabel = (label: string): boolean => {
+  const normalized = normalizeProcessControlLabel(label);
+  return processControlLabelMatchers.some((match) => normalized.includes(match));
+};
+
 const isProcessControlSelected = (controlMeasure: any): boolean => {
   if (!controlMeasure) return false;
   if (Array.isArray(controlMeasure)) {
-    return controlMeasure.some(c =>
-      typeof c === 'string' && c.toLowerCase().includes('process control')
+    return controlMeasure.some((control) =>
+      typeof control === 'string' ? matchesProcessControlLabel(control) : false
     );
   }
   if (typeof controlMeasure === 'string') {
-    return controlMeasure.toLowerCase().includes('process control');
+    return matchesProcessControlLabel(controlMeasure);
   }
   return false;
 };
