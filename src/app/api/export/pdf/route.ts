@@ -33,6 +33,15 @@ const DOCX_PDF_ENABLED = process.env.PDF_USE_DOCX_CONVERSION !== 'false';
 const DEFAULT_TEMPLATE_VERSION = 'minneapolis-v1';
 const WATERMARK_VERSION = 'wm-v1';
 
+/**
+ * PDF Pipeline Selection
+ * - "docx" (default): Generate PDF from DOCX conversion (current production behavior)
+ * - "legacy": Use legacy react-pdf renderer directly
+ *
+ * To rollback to legacy pipeline, set: EXPORT_PDF_PIPELINE=legacy
+ */
+const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
+
 async function renderLegacyPdf({
   plan,
   fullPlan,
@@ -222,6 +231,38 @@ export async function POST(req: Request) {
       originalInputs.template || fullPlan.validation?.document_style || DEFAULT_TEMPLATE_VERSION
     );
 
+    // Pipeline selection: "docx" (default) or "legacy"
+    console.info('[export/pdf] pipeline:', PDF_PIPELINE);
+
+    // Legacy pipeline: Use react-pdf renderer directly (rollback option)
+    if (PDF_PIPELINE === 'legacy') {
+      let legacyPdf = await renderLegacyPdf({
+        plan: { ...plan, planVersion },
+        fullPlan,
+        lang,
+        template: templateVersion,
+        logo: pdfLogo,
+        productInputs,
+        isPaid
+      });
+
+      if (!isPaid) {
+        legacyPdf = await applyWatermark(legacyPdf, defaultWatermarkConfig);
+      }
+
+      const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.pdf`);
+      return new NextResponse(new Uint8Array(legacyPdf), {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `inline; filename="${fileName}"`,
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0'
+        }
+      });
+    }
+
+    // DOCX pipeline (default): Generate PDF from DOCX conversion
     const exportPayload = {
       businessName: plan.business_name,
       full_plan: fullPlan,
