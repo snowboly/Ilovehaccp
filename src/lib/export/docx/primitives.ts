@@ -451,7 +451,7 @@ export const sectionLeadParagraph = (text: string): Paragraph => {
         text: sanitizeText(text),
         font: Fonts.primary,
         size: toHalfPoints(FontSizes.small), // 9pt - slightly smaller
-        italics: true,
+        // Modern style: use color + weight instead of italics
         color: Colors.textSecondary, // #4B5563 - lighter than body
       }),
     ],
@@ -461,7 +461,7 @@ export const sectionLeadParagraph = (text: string): Paragraph => {
 /**
  * Create a table caption paragraph.
  * Used for labelling tables like "Table 5.2 — Process Steps".
- * Does not need keepWithNext as it precedes the section lead.
+ * Has keepWithNext to ensure caption sticks with intro line and table.
  *
  * @example
  * tableCaptionParagraph("Table 6", "Hazard Analysis")
@@ -471,6 +471,9 @@ export const tableCaptionParagraph = (
   title: string
 ): Paragraph => {
   return new Paragraph({
+    // Keep caption with the intro line and table
+    keepNext: true,
+    keepLines: true,
     spacing: {
       before: toTwips(Spacing.gapMd),
       after: toTwips(Spacing.gapXs),

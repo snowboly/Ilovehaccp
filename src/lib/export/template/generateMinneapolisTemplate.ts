@@ -419,8 +419,9 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
     );
 
     // Build hazard analysis table
+    // Column widths optimized for readability: Hazard and Control Measure get most space
     const headers = ['Step', 'Hazard', 'Type', 'Sev.', 'Lik.', 'Sig?', 'Control Measure'];
-    const colWidths = [12, 16, 8, 6, 6, 6, 46];
+    const colWidths = [10, 20, 8, 6, 6, 6, 44];
 
     const hazardRows = data.hazard_analysis.map((h) => [
       h.step,
