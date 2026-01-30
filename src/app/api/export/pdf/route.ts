@@ -197,7 +197,7 @@ export async function POST(req: Request) {
     const cachedPdf = await getCachedArtifact({ path: pdfPath });
     if (cachedPdf.exists && cachedPdf.buffer) {
       const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.pdf`);
-      return new NextResponse(cachedPdf.buffer, {
+      return new NextResponse(cachedPdf.buffer as any, {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${fileName}"`,
@@ -227,7 +227,7 @@ export async function POST(req: Request) {
         legacyPdf = await applyWatermark(legacyPdf, defaultWatermarkConfig);
       }
 
-      return new NextResponse(legacyPdf, {
+      return new NextResponse(legacyPdf as any, {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${sanitizeFileName(
