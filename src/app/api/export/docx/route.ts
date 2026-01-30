@@ -17,6 +17,17 @@ export const dynamic = 'force-dynamic';
 
 const sanitizeFileName = (name: string) => name.replace(/[^a-z0-9._-]/gi, '_');
 const DEFAULT_TEMPLATE_VERSION = 'minneapolis-v1';
+type BodyInitLike = ArrayBuffer | Uint8Array | string | ReadableStream;
+
+const toBodyInit = (data: Buffer | Uint8Array | ArrayBuffer): BodyInitLike => {
+  if (data instanceof ArrayBuffer) {
+    return data;
+  }
+  if (data instanceof Uint8Array && !Buffer.isBuffer(data)) {
+    return data;
+  }
+  return new Uint8Array(data);
+};
 
 export async function POST(req: Request) {
   let planId: string | undefined;
@@ -136,7 +147,7 @@ export async function POST(req: Request) {
     const cachedDocx = await getCachedArtifact({ path: docxPath });
     if (cachedDocx.exists && cachedDocx.buffer) {
       const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.docx`);
-      return new NextResponse(cachedDocx.buffer as any, {
+      return new NextResponse(toBodyInit(cachedDocx.buffer), {
         headers: {
           'Content-Type':
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -166,7 +177,7 @@ export async function POST(req: Request) {
 
     const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.docx`);
 
-    return new NextResponse(buffer as any, {
+    return new NextResponse(toBodyInit(buffer), {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': `attachment; filename="${fileName}"`,

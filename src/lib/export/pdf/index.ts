@@ -6,4 +6,4 @@ export {
 } from './generatePdf';
 export { convertDocxToPdf } from './convertDocxToPdf';
 export { applyWatermark } from './watermark/applyWatermark';
-export { defaultWatermarkConfig, type WatermarkConfig } from './watermark/watermarkConfig';
+export { getDefaultWatermarkConfig, type WatermarkConfig } from './watermark/watermarkConfig';
