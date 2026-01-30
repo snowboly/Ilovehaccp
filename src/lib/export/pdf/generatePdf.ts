@@ -1,7 +1,7 @@
 import 'server-only';
 import { convertDocxToPdf } from './convertDocxToPdf';
 import { applyWatermark } from './watermark/applyWatermark';
-import { defaultWatermarkConfig, type WatermarkConfig } from './watermark/watermarkConfig';
+import { getDefaultWatermarkConfig, type WatermarkConfig } from './watermark/watermarkConfig';
 
 export type GeneratePdfOptions = {
   docxBuffer: Buffer;
@@ -15,7 +15,7 @@ export async function generateCleanPdfFromDocx(docxBuffer: Buffer): Promise<Buff
 
 export async function generatePreviewPdfFromDocx(
   docxBuffer: Buffer,
-  watermarkConfig: WatermarkConfig = defaultWatermarkConfig
+  watermarkConfig: WatermarkConfig = getDefaultWatermarkConfig()
 ): Promise<Buffer> {
   const pdfBuffer = await generateCleanPdfFromDocx(docxBuffer);
   return applyWatermark(pdfBuffer, watermarkConfig);
@@ -28,5 +28,5 @@ export async function generatePdfFromDocx(options: GeneratePdfOptions): Promise<
     return generateCleanPdfFromDocx(docxBuffer);
   }
 
-  return generatePreviewPdfFromDocx(docxBuffer, watermarkConfig ?? defaultWatermarkConfig);
+  return generatePreviewPdfFromDocx(docxBuffer, watermarkConfig ?? getDefaultWatermarkConfig());
 }

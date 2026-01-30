@@ -7,7 +7,7 @@ export type WatermarkConfig = {
   lineGap: number;
 };
 
-export const defaultWatermarkConfig: WatermarkConfig = {
+export const getDefaultWatermarkConfig = (): WatermarkConfig => ({
   textLines: [
     'PREVIEW — NOT FOR OFFICIAL USE',
     'Upgrade to download the final document'
@@ -17,4 +17,4 @@ export const defaultWatermarkConfig: WatermarkConfig = {
   rotationDegrees: -30,
   color: { r: 0.2, g: 0.2, b: 0.2 },
   lineGap: 12
-};
+});
