@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
 import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
+import { MinneapolisPdfDocument } from '@/lib/export/template/renderMinneapolisPdf';
+import { buildTemplateData } from '@/lib/export/template/buildTemplateData';
 import { checkAdminRole } from '@/lib/admin-auth';
 import { getDictionary } from '@/lib/locales';
 import { isExportAllowed } from '@/lib/export/permissions';
@@ -9,6 +11,9 @@ import { fetchLogoAssets } from '@/lib/export/logo';
 import { verifyExportToken } from '@/lib/export/auth';
 import { transformDraftToPlan } from '@/lib/export/transform';
 import { logAccess } from '@/lib/audit';
+
+// Feature flag: Use Minneapolis-style template for PDF (matches DOCX structure)
+const PDF_USE_MINNEAPOLIS_TEMPLATE = process.env.PDF_USE_MINNEAPOLIS_TEMPLATE !== 'false';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -162,14 +167,26 @@ export async function GET(req: Request) {
 
     let pdfBuffer;
     try {
-        pdfBuffer = await renderToBuffer(
-            <HACCPDocument
-                data={pdfData}
-                dict={dict}
-                logo={pdfLogo}
-                template={originalInputs.template || 'audit-classic'}
-            />
-        );
+        if (PDF_USE_MINNEAPOLIS_TEMPLATE) {
+            // Use Minneapolis-style template (matches DOCX structure)
+            const isPaid = plan.payment_status === 'paid' || plan.export_paid || plan.review_paid || isAdmin;
+            const templateData = buildTemplateData(
+                { fullPlan, businessName: plan.business_name, productName: productInputs.product_name, planVersion },
+                isPaid,
+                null // Logo buffer not used in this PDF template (could be added later)
+            );
+            pdfBuffer = await renderToBuffer(<MinneapolisPdfDocument data={templateData} />);
+        } else {
+            // Legacy template
+            pdfBuffer = await renderToBuffer(
+                <HACCPDocument
+                    data={pdfData}
+                    dict={dict}
+                    logo={pdfLogo}
+                    template={originalInputs.template || 'audit-classic'}
+                />
+            );
+        }
     } catch (renderError: any) {
         console.error('[download-pdf] PDF render error:', renderError?.message || renderError);
         return NextResponse.json({ error: 'Failed to render PDF. Please try again or contact support.' }, { status: 500 });

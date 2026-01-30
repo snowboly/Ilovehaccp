@@ -229,28 +229,43 @@ const Watermark = ({ isPaid }: { isPaid: boolean }) => {
   if (isPaid) return null;
 
   const styles = StyleSheet.create({
-    watermark: {
+    watermarkContainer: {
       position: 'absolute',
-      top: 300,
-      left: 100,
-      width: 400,
-      height: 400,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 999, // On top of content
+      pointerEvents: 'none', // Allow content underneath to remain selectable (though PDF doesn't support this)
+    },
+    watermarkInner: {
       transform: 'rotate(-45deg)',
-      opacity: 0.1,
-      zIndex: -1
+      opacity: 0.15, // Slightly more visible overlay
     },
     text: {
-      fontSize: 60,
-      color: '#000000',
+      fontSize: 72,
+      color: '#CC0000', // Red for visibility
       fontWeight: 'bold',
-      textAlign: 'center'
+      textAlign: 'center',
+      letterSpacing: 4,
+    },
+    textSmall: {
+      fontSize: 32,
+      color: '#CC0000',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginTop: 10,
     }
   });
 
   return (
-    <View style={styles.watermark} fixed>
-      <Text style={styles.text}>iLoveHACCP</Text>
-      <Text style={styles.text}>Free Edition</Text>
+    <View style={styles.watermarkContainer} fixed>
+      <View style={styles.watermarkInner}>
+        <Text style={styles.text}>DRAFT</Text>
+        <Text style={styles.textSmall}>iLoveHACCP Free Edition</Text>
+      </View>
     </View>
   );
 };
