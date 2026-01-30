@@ -18,9 +18,9 @@ import {
 } from '@/lib/export/cache/exportCache';
 import {
   applyWatermark,
-  defaultWatermarkConfig,
   generateCleanPdfFromDocx,
-  generatePreviewPdfFromDocx
+  generatePreviewPdfFromDocx,
+  getDefaultWatermarkConfig
 } from '@/lib/export/pdf';
 
 export const runtime = 'nodejs';
@@ -41,6 +41,15 @@ const WATERMARK_VERSION = 'wm-v1';
  * To rollback to legacy pipeline, set: EXPORT_PDF_PIPELINE=legacy
  */
 const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
+const toBodyInit = (data: Buffer | Uint8Array | ArrayBuffer): BodyInit => {
+  if (data instanceof ArrayBuffer) {
+    return data;
+  }
+  if (data instanceof Uint8Array) {
+    return data;
+  }
+  return new Uint8Array(data);
+};
 
 async function renderLegacyPdf({
   plan,
@@ -134,9 +143,9 @@ export async function POST(req: Request) {
         productInputs,
         isPaid: false
       });
-      samplePdf = await applyWatermark(samplePdf, defaultWatermarkConfig);
+      samplePdf = await applyWatermark(samplePdf, getDefaultWatermarkConfig());
       const fileName = sanitizeFileName(body?.fileName || 'HACCP_Plan.pdf');
-      return new NextResponse(new Uint8Array(samplePdf), {
+      return new NextResponse(toBodyInit(samplePdf), {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${fileName}"`,
@@ -247,11 +256,11 @@ export async function POST(req: Request) {
       });
 
       if (!isPaid) {
-        legacyPdf = await applyWatermark(legacyPdf, defaultWatermarkConfig);
+        legacyPdf = await applyWatermark(legacyPdf, getDefaultWatermarkConfig());
       }
 
       const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.pdf`);
-      return new NextResponse(new Uint8Array(legacyPdf), {
+      return new NextResponse(toBodyInit(legacyPdf), {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${fileName}"`,
@@ -288,7 +297,7 @@ export async function POST(req: Request) {
     const cachedPdf = await getCachedArtifact({ path: pdfPath });
     if (cachedPdf.exists && cachedPdf.buffer) {
       const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.pdf`);
-      return new NextResponse(cachedPdf.buffer as any, {
+      return new NextResponse(toBodyInit(cachedPdf.buffer), {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${fileName}"`,
@@ -315,10 +324,10 @@ export async function POST(req: Request) {
       });
 
       if (!isPaid) {
-        legacyPdf = await applyWatermark(legacyPdf, defaultWatermarkConfig);
+        legacyPdf = await applyWatermark(legacyPdf, getDefaultWatermarkConfig());
       }
 
-      return new NextResponse(legacyPdf as any, {
+      return new NextResponse(toBodyInit(legacyPdf), {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${sanitizeFileName(
@@ -363,7 +372,7 @@ export async function POST(req: Request) {
 
           return isPaid
             ? generateCleanPdfFromDocx(docxBuffer)
-            : generatePreviewPdfFromDocx(docxBuffer, defaultWatermarkConfig);
+            : generatePreviewPdfFromDocx(docxBuffer, getDefaultWatermarkConfig());
         },
         store: async (buffer) => {
           await putArtifact({
@@ -392,12 +401,12 @@ export async function POST(req: Request) {
 
       pdfBuffer = isPaid
         ? legacyPdf
-        : await applyWatermark(legacyPdf, defaultWatermarkConfig);
+        : await applyWatermark(legacyPdf, getDefaultWatermarkConfig());
     }
 
     const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.pdf`);
 
-    return new NextResponse(pdfBuffer as any, {
+    return new NextResponse(toBodyInit(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `inline; filename="${fileName}"`,

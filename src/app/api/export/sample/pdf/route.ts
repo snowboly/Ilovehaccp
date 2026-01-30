@@ -4,13 +4,14 @@ import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { getDictionary } from '@/lib/locales';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
-import { applyWatermark, defaultWatermarkConfig, generateCleanPdfFromDocx } from '@/lib/export/pdf';
+import { applyWatermark, generateCleanPdfFromDocx, getDefaultWatermarkConfig } from '@/lib/export/pdf';
 import { samplePlanFixture } from '@/lib/export/sample/fixture';
 
 export const runtime = 'nodejs';
 
 const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
 const WATERMARK_TEXT = 'PREVIEW — NOT FOR OFFICIAL USE';
+const SAMPLE_FILENAME = 'Sample_HACCP_Plan.pdf';
 
 /**
  * Public sample export route (no auth by design). Uses fixture data only.
@@ -63,7 +64,7 @@ async function generateSamplePdf(): Promise<Buffer> {
 export async function GET() {
   const pdfBuffer = await generateSamplePdf();
   const watermarkConfig = {
-    ...defaultWatermarkConfig,
+    ...getDefaultWatermarkConfig(),
     textLines: [WATERMARK_TEXT]
   };
   const watermarkedPdf = await applyWatermark(pdfBuffer, watermarkConfig);
@@ -71,7 +72,7 @@ export async function GET() {
   return new NextResponse(new Uint8Array(watermarkedPdf), {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': 'inline; filename="Sample_HACCP_Plan.pdf"',
+      'Content-Disposition': `inline; filename="${SAMPLE_FILENAME}"`,
       'Cache-Control': 'public, max-age=600'
     }
   });
