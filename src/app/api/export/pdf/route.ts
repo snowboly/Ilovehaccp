@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactElement } from 'react';
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
@@ -71,7 +71,7 @@ async function renderLegacyPdf({
     dict,
     logo,
     template
-  }) as React.ReactElement<any>;
+  }) as ReactElement<any>;
 
   const pdfBuffer = await renderToBuffer(pdfElement);
   return Buffer.isBuffer(pdfBuffer)

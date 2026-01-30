@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactElement } from "react";
 import { HACCPDocumentModular } from "@/lib/export/pdf/renderPdf";
 import { buildExportDoc } from "@/lib/export/exportDoc";
 
@@ -9,7 +9,7 @@ interface Props {
   dict: any;
 }
 
-const HACCPDocument = ({ data, dict, logo, template }: Props) => {
+const HACCPDocument = ({ data, dict, logo, template }: Props): ReactElement => {
   const doc = buildExportDoc({
     data,
     dict,

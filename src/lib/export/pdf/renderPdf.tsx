@@ -1,5 +1,6 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
+import type { ReactElement } from "react";
 import type { FontSource } from "@react-pdf/font";
 import { renderSectionHeader } from "./renderSectionHeader";
 import { renderTable } from "./renderTable";
@@ -619,7 +620,7 @@ const DocapescaFooter = ({ doc }: { doc: ExportDoc }) => {
    MAIN EXPORT COMPONENT
    ========================================================= */
 
-export const HACCPDocumentModular = ({ doc }: { doc: ExportDoc }) => {
+export const HACCPDocumentModular = ({ doc }: { doc: ExportDoc }): ReactElement => {
   const isDocapesca = doc.meta.template === "docapesca-classic";
 
   if (isDocapesca) {
