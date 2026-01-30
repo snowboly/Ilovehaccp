@@ -167,7 +167,7 @@ export async function GET(req: Request) {
 
     let pdfBuffer;
     try {
-        if (PDF_USE_MINNEAPOLIS_TEMPLATE) {
+        if (PDF_USE_MINNEAPOLIS_TEMPLATE && lang === 'en') {
             // Use Minneapolis-style template (matches DOCX structure)
             const isPaid = plan.payment_status === 'paid' || plan.export_paid || plan.review_paid || isAdmin;
             const templateData = buildTemplateData(
@@ -223,4 +223,3 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-
