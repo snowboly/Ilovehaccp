@@ -3,6 +3,9 @@ import { NextResponse } from 'next/server';
 import { renderToBuffer, type DocumentProps } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { getDictionary } from '@/lib/locales';
+import { buildTemplateData } from '@/lib/export/template/buildTemplateData';
+import { MinneapolisPdfDocument } from '@/lib/export/template/renderMinneapolisPdf';
+import { getPdfPipeline } from '@/lib/export/pdfPipeline';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,14 +24,33 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing data payload' }, { status: 400 });
     }
 
-    const dict = getDictionary(lang).pdf;
-    const pdfElement = React.createElement(HACCPDocument, {
-      data,
-      dict,
-      logo,
-      template
-    }) as React.ReactElement<DocumentProps>;
-    const pdfBuffer = await renderToBuffer(pdfElement);
+    const pipeline = getPdfPipeline();
+    console.info('[export/pdf] PDF pipeline:', pipeline);
+
+    let pdfBuffer: Awaited<ReturnType<typeof renderToBuffer>>;
+    if (pipeline === 'docx') {
+      const templateData = buildTemplateData(
+        {
+          fullPlan: data.fullPlan ?? data.full_plan ?? {},
+          businessName: data.businessName,
+          productName: data.productName,
+          planVersion: data.planVersion,
+        },
+        false,
+        null
+      );
+      pdfBuffer = await renderToBuffer(<MinneapolisPdfDocument data={templateData} />);
+    } else {
+      // Legacy React-PDF template (rollback only)
+      const dict = getDictionary(lang).pdf;
+      const pdfElement = React.createElement(HACCPDocument, {
+        data,
+        dict,
+        logo,
+        template,
+      }) as React.ReactElement<DocumentProps>;
+      pdfBuffer = await renderToBuffer(pdfElement);
+    }
 
     const baseName = data.businessName || 'HACCP_Plan';
     const fileName = sanitizeFileName(body?.fileName || `${baseName}.pdf`);

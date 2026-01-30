@@ -11,9 +11,9 @@ import { fetchLogoAssets } from '@/lib/export/logo';
 import { verifyExportToken } from '@/lib/export/auth';
 import { transformDraftToPlan } from '@/lib/export/transform';
 import { logAccess } from '@/lib/audit';
+import { getPdfPipeline } from '@/lib/export/pdfPipeline';
 
-// Feature flag: Use Minneapolis-style template for PDF (matches DOCX structure)
-const PDF_USE_MINNEAPOLIS_TEMPLATE = process.env.PDF_USE_MINNEAPOLIS_TEMPLATE !== 'false';
+// Guard: prefer the DOCX pipeline (Minneapolis template) unless explicitly rolled back.
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -165,10 +165,13 @@ export async function GET(req: Request) {
         // Continue without logo rather than failing
     }
 
+    const pipeline = getPdfPipeline();
+    console.info('[download-pdf] PDF pipeline:', pipeline);
+
     let pdfBuffer;
     try {
-        if (PDF_USE_MINNEAPOLIS_TEMPLATE && lang === 'en') {
-            // Use Minneapolis-style template (matches DOCX structure)
+        if (pipeline === 'docx') {
+            // DOCX-aligned template (matches DOCX structure)
             const isPaid = plan.payment_status === 'paid' || plan.export_paid || plan.review_paid || isAdmin;
             const templateData = buildTemplateData(
                 { fullPlan, businessName: plan.business_name, productName: productInputs.product_name, planVersion },
@@ -177,7 +180,7 @@ export async function GET(req: Request) {
             );
             pdfBuffer = await renderToBuffer(<MinneapolisPdfDocument data={templateData} />);
         } else {
-            // Legacy template
+            // Legacy React-PDF template (rollback only)
             pdfBuffer = await renderToBuffer(
                 <HACCPDocument
                     data={pdfData}
