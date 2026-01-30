@@ -9,14 +9,24 @@ export type GeneratePdfOptions = {
   watermarkConfig?: WatermarkConfig;
 };
 
+export async function generateCleanPdfFromDocx(docxBuffer: Buffer): Promise<Buffer> {
+  return convertDocxToPdf(docxBuffer);
+}
+
+export async function generatePreviewPdfFromDocx(
+  docxBuffer: Buffer,
+  watermarkConfig: WatermarkConfig = defaultWatermarkConfig
+): Promise<Buffer> {
+  const pdfBuffer = await generateCleanPdfFromDocx(docxBuffer);
+  return applyWatermark(pdfBuffer, watermarkConfig);
+}
+
 export async function generatePdfFromDocx(options: GeneratePdfOptions): Promise<Buffer> {
   const { docxBuffer, watermark = false, watermarkConfig } = options;
 
-  const pdfBuffer = await convertDocxToPdf(docxBuffer);
-
   if (!watermark) {
-    return pdfBuffer;
+    return generateCleanPdfFromDocx(docxBuffer);
   }
 
-  return applyWatermark(pdfBuffer, watermarkConfig ?? defaultWatermarkConfig);
+  return generatePreviewPdfFromDocx(docxBuffer, watermarkConfig ?? defaultWatermarkConfig);
 }

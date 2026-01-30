@@ -5,10 +5,23 @@ import { cookies } from 'next/headers';
 import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { getDictionary } from '@/lib/locales';
-import { generateWordDocument } from '@/lib/word-generator';
 import { fetchLogoAssets } from '@/lib/export/logo';
 import { isExportAllowed } from '@/lib/export/permissions';
-import { applyWatermark, defaultWatermarkConfig, generatePdfFromDocx } from '@/lib/export/pdf';
+import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
+import {
+  buildStoragePath,
+  computeContentHash,
+  getCachedArtifact,
+  getOrGenerateArtifact,
+  putArtifact,
+  resolvePdfArtifactType
+} from '@/lib/export/cache/exportCache';
+import {
+  applyWatermark,
+  defaultWatermarkConfig,
+  generateCleanPdfFromDocx,
+  generatePreviewPdfFromDocx
+} from '@/lib/export/pdf';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,6 +30,8 @@ const sanitizeFileName = (name: string) => name.replace(/[^a-z0-9._-]/gi, '_');
 
 const LEGACY_FALLBACK_ENABLED = process.env.PDF_USE_LEGACY_EXPORTER === 'true';
 const DOCX_PDF_ENABLED = process.env.PDF_USE_DOCX_CONVERSION !== 'false';
+const DEFAULT_TEMPLATE_VERSION = 'minneapolis-v1';
+const WATERMARK_VERSION = 'wm-v1';
 
 async function renderLegacyPdf({
   plan,
@@ -153,69 +168,143 @@ export async function POST(req: Request) {
       plan.export_paid ||
       plan.review_paid;
 
-    let pdfBuffer: Buffer;
+    const templateVersion = String(
+      originalInputs.template || fullPlan.validation?.document_style || DEFAULT_TEMPLATE_VERSION
+    );
 
-    if (DOCX_PDF_ENABLED) {
-      try {
-        const docxBuffer = await generateWordDocument(
-          {
-            businessName: plan.business_name,
-            full_plan: fullPlan,
-            planVersion,
-            template: originalInputs.template || fullPlan.validation?.document_style,
-            productName: productInputs.product_name || plan.product_name || 'HACCP Plan',
-            productDescription: productInputs.product_category || plan.product_description || 'Generated Plan',
-            mainIngredients: productInputs.key_ingredients || 'Standard',
-            intendedUse: productInputs.intended_use || plan.intended_use || 'General',
-            storageType: productInputs.storage_conditions || plan.storage_type || 'Standard',
-            shelfLife: productInputs.shelf_life || 'As per label',
-            logoBuffer: wordLogo,
-            isPaid
-          },
-          lang
-        );
+    const exportPayload = {
+      businessName: plan.business_name,
+      full_plan: fullPlan,
+      planVersion,
+      template: templateVersion,
+      productName: productInputs.product_name || plan.product_name || 'HACCP Plan',
+      productDescription: productInputs.product_category || plan.product_description || 'Generated Plan',
+      mainIngredients: productInputs.key_ingredients || 'Standard',
+      intendedUse: productInputs.intended_use || plan.intended_use || 'General',
+      storageType: productInputs.storage_conditions || plan.storage_type || 'Standard',
+      shelfLife: productInputs.shelf_life || 'As per label',
+      logoUrl: productInputs.logo_url || null,
+      isPaid
+    };
 
-        pdfBuffer = await generatePdfFromDocx({
-          docxBuffer,
-          watermark: !isPaid
-        });
-      } catch (error) {
-        console.error('[export/pdf] DOCX conversion failed', { planId, userId, error });
-        if (!LEGACY_FALLBACK_ENABLED) {
-          throw error;
+    const cleanHash = computeContentHash(exportPayload, templateVersion);
+    const previewHash = computeContentHash(exportPayload, templateVersion, WATERMARK_VERSION);
+    const pdfArtifact = resolvePdfArtifactType(isPaid);
+    const pdfHash = isPaid ? cleanHash : previewHash;
+    const pdfPath = buildStoragePath(planId, templateVersion, pdfHash, pdfArtifact);
+    const docxPath = buildStoragePath(planId, templateVersion, cleanHash, 'plan.docx');
+
+    const cachedPdf = await getCachedArtifact({ path: pdfPath });
+    if (cachedPdf.exists && cachedPdf.buffer) {
+      const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.pdf`);
+      return new NextResponse(cachedPdf.buffer, {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `inline; filename="${fileName}"`,
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0'
         }
+      });
+    }
 
-        console.warn('[export/pdf] Falling back to legacy PDF renderer:', error);
-        pdfBuffer = await renderLegacyPdf({
-          plan: { ...plan, planVersion },
-          fullPlan,
-          lang,
-          template: originalInputs.template || 'audit-classic',
-          logo: pdfLogo,
-          productInputs,
-          isPaid
-        });
-        if (!isPaid) {
-          pdfBuffer = await applyWatermark(pdfBuffer, defaultWatermarkConfig);
-        }
+    if (!DOCX_PDF_ENABLED) {
+      if (!LEGACY_FALLBACK_ENABLED) {
+        return NextResponse.json({ error: 'DOCX-based PDF exports are disabled.' }, { status: 503 });
       }
-    } else {
-      pdfBuffer = await renderLegacyPdf({
+
+      let legacyPdf = await renderLegacyPdf({
         plan: { ...plan, planVersion },
         fullPlan,
         lang,
-        template: originalInputs.template || 'audit-classic',
+        template: templateVersion,
         logo: pdfLogo,
         productInputs,
         isPaid
       });
+
       if (!isPaid) {
-        pdfBuffer = await applyWatermark(pdfBuffer, defaultWatermarkConfig);
+        legacyPdf = await applyWatermark(legacyPdf, defaultWatermarkConfig);
       }
+
+      return new NextResponse(legacyPdf, {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `inline; filename="${sanitizeFileName(
+            body?.fileName || `${plan.business_name || 'HACCP_Plan'}.pdf`
+          )}"`,
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0'
+        }
+      });
     }
 
-    const baseName = plan.business_name || 'HACCP_Plan';
-    const fileName = sanitizeFileName(body?.fileName || `${baseName}.pdf`);
+    let pdfBuffer: Buffer;
+    try {
+      const result = await getOrGenerateArtifact({
+        getCached: async () => {
+          const cached = await getCachedArtifact({ path: pdfPath });
+          return cached.buffer ?? null;
+        },
+        generate: async () => {
+          let docxBuffer: Buffer | null = null;
+          const cachedDocx = await getCachedArtifact({ path: docxPath });
+          if (cachedDocx.exists && cachedDocx.buffer) {
+            docxBuffer = cachedDocx.buffer;
+          }
+
+          if (!docxBuffer) {
+            docxBuffer = await generateDocxBuffer(
+              { ...exportPayload, logoBuffer: wordLogo },
+              lang
+            );
+
+            if (isPaid) {
+              await putArtifact({
+                path: docxPath,
+                buffer: docxBuffer,
+                contentType:
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+              });
+            }
+          }
+
+          return isPaid
+            ? generateCleanPdfFromDocx(docxBuffer)
+            : generatePreviewPdfFromDocx(docxBuffer, defaultWatermarkConfig);
+        },
+        store: async (buffer) => {
+          await putArtifact({
+            path: pdfPath,
+            buffer,
+            contentType: 'application/pdf'
+          });
+        }
+      });
+      pdfBuffer = result.buffer;
+    } catch (error) {
+      console.error('[export/pdf] DOCX conversion failed', { planId, userId, error });
+      if (!LEGACY_FALLBACK_ENABLED) {
+        throw error;
+      }
+
+      const legacyPdf = await renderLegacyPdf({
+        plan: { ...plan, planVersion },
+        fullPlan,
+        lang,
+        template: templateVersion,
+        logo: pdfLogo,
+        productInputs,
+        isPaid
+      });
+
+      pdfBuffer = isPaid
+        ? legacyPdf
+        : await applyWatermark(legacyPdf, defaultWatermarkConfig);
+    }
+
+    const fileName = sanitizeFileName(body?.fileName || `${plan.business_name || 'HACCP_Plan'}.pdf`);
 
     return new NextResponse(pdfBuffer as any, {
       headers: {
@@ -228,6 +317,11 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     console.error('PDF Export Error:', { planId, userId, error });
+
+    if (LEGACY_FALLBACK_ENABLED && DOCX_PDF_ENABLED) {
+      console.warn('[export/pdf] Falling back to legacy PDF renderer:', error);
+    }
+
     const message = error instanceof Error ? error.message : 'Internal Server Error';
     return NextResponse.json({ error: message }, { status: 500 });
   }

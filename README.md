@@ -87,6 +87,24 @@ Set `PDF_USE_DOCX_CONVERSION=false` to disable DOCX➜PDF conversion and fall ba
 ### Operational notes
 - `PDF_CONVERSION_TIMEOUT_MS` controls the LibreOffice timeout (default 45s).
 
+## 🗄️ Export Hybrid Cache (Supabase Storage)
+
+Exports are cached per plan revision using a content hash. Artifacts are stored in a private `exports` bucket (configurable via `EXPORTS_BUCKET`).
+
+### Storage paths
+- `plans/{planId}/exports/{templateVersion}/{contentHash}/clean.pdf`
+- `plans/{planId}/exports/{templateVersion}/{contentHash}/preview.pdf`
+- `plans/{planId}/exports/{templateVersion}/{contentHash}/plan.docx`
+
+### Rollback
+- Set `PDF_USE_DOCX_CONVERSION=false` to disable DOCX→PDF conversion and use the legacy renderer when enabled.
+- Leave cached artifacts intact; new hashes are written on plan changes.
+
+### Verification checklist
+1. Paid plan: DOCX and clean PDF are served from cache after the first generation.
+2. Free plan: only preview PDF is cached and served; DOCX/clean PDF are never returned.
+3. Modify plan content and verify new paths are generated (hash changes).
+
 ## 🗄️ Production DB Checklist (Quick)
 1. **Run migrations:** Apply new SQL in `src/db/*.sql` to production (Supabase SQL editor or your migration pipeline).
 2. **Verify critical tables exist:** `public.stripe_processed_events`, `public.haccp_plan_versions`, and any new tables referenced by API routes.
