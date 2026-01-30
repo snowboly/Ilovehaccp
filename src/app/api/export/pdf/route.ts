@@ -88,6 +88,50 @@ export async function POST(req: Request) {
     planId = body?.planId as string | undefined;
     const lang = (body?.lang || 'en') as 'en' | 'es' | 'fr' | 'pt';
 
+    if (!planId && body?.data) {
+      const data = body.data as Record<string, any>;
+      const templateVersion = String(data.template || DEFAULT_TEMPLATE_VERSION);
+      const fullPlan = data.fullPlan ?? data.full_plan ?? {};
+      const plan = {
+        business_name: data.businessName || data.business_name || 'HACCP Plan',
+        product_name: data.productName || data.product_name || 'HACCP Plan',
+        product_description: data.productDescription || data.product_description || '',
+        intended_use: data.intendedUse || data.intended_use || '',
+        storage_type: data.storageType || data.storage_type || '',
+        hazard_analysis: data.analysis || data.hazard_analysis || []
+      };
+      const productInputs = {
+        product_name: plan.product_name,
+        product_category: plan.product_description,
+        intended_use: plan.intended_use,
+        storage_conditions: plan.storage_type,
+        key_ingredients: data.mainIngredients || data.main_ingredients || '',
+        shelf_life: data.shelfLife || data.shelf_life || '',
+        logo_url: data.logoUrl || data.logo_url || null
+      };
+      const { pdfLogo } = await fetchLogoAssets(productInputs.logo_url);
+      let samplePdf = await renderLegacyPdf({
+        plan,
+        fullPlan,
+        lang,
+        template: templateVersion,
+        logo: pdfLogo,
+        productInputs,
+        isPaid: false
+      });
+      samplePdf = await applyWatermark(samplePdf, defaultWatermarkConfig);
+      const fileName = sanitizeFileName(body?.fileName || 'HACCP_Plan.pdf');
+      return new NextResponse(samplePdf, {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `inline; filename="${fileName}"`,
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0'
+        }
+      });
+    }
+
     if (!planId) {
       return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
     }
