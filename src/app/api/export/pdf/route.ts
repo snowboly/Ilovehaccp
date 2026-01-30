@@ -27,6 +27,11 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const sanitizeFileName = (name: string) => name.replace(/[^a-z0-9._-]/gi, '_');
+const toBodyInit = (bytes: Buffer | Uint8Array | ArrayBuffer) => {
+  if (bytes instanceof ArrayBuffer) return bytes;
+  if (bytes instanceof Uint8Array) return bytes;
+  return new Uint8Array(bytes);
+};
 
 const LEGACY_FALLBACK_ENABLED = process.env.PDF_USE_LEGACY_EXPORTER === 'true';
 const DOCX_PDF_ENABLED = process.env.PDF_USE_DOCX_CONVERSION !== 'false';
@@ -127,7 +132,7 @@ export async function POST(req: Request) {
       });
       samplePdf = await applyWatermark(samplePdf, defaultWatermarkConfig);
       const fileName = sanitizeFileName(body?.fileName || 'HACCP_Plan.pdf');
-      return new NextResponse(samplePdf, {
+      return new NextResponse(toBodyInit(samplePdf), {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${fileName}"`,
