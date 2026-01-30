@@ -1,6 +1,7 @@
+import React from 'react';
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
-import { renderToBuffer } from '@react-pdf/renderer';
+import { renderToBuffer, type DocumentProps } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { MinneapolisPdfDocument } from '@/lib/export/template/renderMinneapolisPdf';
 import { buildTemplateData } from '@/lib/export/template/buildTemplateData';
@@ -175,17 +176,23 @@ export async function GET(req: Request) {
                 isPaid,
                 null // Logo buffer not used in this PDF template (could be added later)
             );
-            pdfBuffer = await renderToBuffer(<MinneapolisPdfDocument data={templateData} />);
+            const pdfElement = React.createElement(
+                MinneapolisPdfDocument as React.ComponentType<any>,
+                { data: templateData }
+            ) as React.ReactElement<DocumentProps>;
+            pdfBuffer = await renderToBuffer(pdfElement);
         } else {
             // Legacy template
-            pdfBuffer = await renderToBuffer(
-                <HACCPDocument
-                    data={pdfData}
-                    dict={dict}
-                    logo={pdfLogo}
-                    template={originalInputs.template || 'audit-classic'}
-                />
-            );
+            const legacyElement = React.createElement(
+                HACCPDocument as React.ComponentType<any>,
+                {
+                    data: pdfData,
+                    dict,
+                    logo: pdfLogo,
+                    template: originalInputs.template || 'audit-classic'
+                }
+            ) as React.ReactElement<DocumentProps>;
+            pdfBuffer = await renderToBuffer(legacyElement);
         }
     } catch (renderError: any) {
         console.error('[download-pdf] PDF render error:', renderError?.message || renderError);
