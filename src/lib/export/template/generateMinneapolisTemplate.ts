@@ -420,29 +420,35 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
       (h) => h.control_measure_description && h.control_measure_description !== '-'
     );
 
-    // Build hazard analysis table
-    // Column widths optimized for readability: Hazard and Control Measure get most space
-    const headers = ['Step', 'Hazard', 'Type', 'Sev.', 'Lik.', 'Sig?', 'Control Measure'];
-    const colWidths = [10, 20, 8, 6, 6, 6, 44];
+    const hazardRows = data.hazard_analysis.map((h) => ({
+      step: h.step,
+      hazard: h.hazard,
+      type: h.hazard_type,
+      severity: h.severity,
+      likelihood: h.likelihood,
+      significant: h.significant,
+      control: h.control_measure,
+    }));
 
-    const hazardRows = data.hazard_analysis.map((h) => [
-      h.step,
-      h.hazard,
-      h.hazard_type,
-      h.severity,
-      h.likelihood,
-      h.significant,
-      h.control_measure,
-    ]);
-
-    elements.push(tableCaptionParagraph('Table 6', 'Hazard Analysis'));
+    elements.push(tableCaptionParagraph('Table 6A', 'Hazard Identification'));
     elements.push(
       ...dataTable({
-        headers,
-        rows: hazardRows,
-        columnWidths: colWidths,
-        zebraStripe: false, // Hazard tables read better without striping
-        introText: 'The hazard analysis identifies potential hazards at each process step and determines their significance.',
+        headers: ['Step', 'Hazard', 'Type'],
+        rows: hazardRows.map((h) => [h.step, h.hazard, h.type]),
+        columnWidths: [20, 55, 25],
+        zebraStripe: false,
+        introText: 'Identified hazards are summarized by process step.',
+      })
+    );
+
+    elements.push(tableCaptionParagraph('Table 6B', 'Risk & Controls'));
+    elements.push(
+      ...dataTable({
+        headers: ['Step', 'Sev.', 'Lik.', 'Sig?', 'Control Measure'],
+        rows: hazardRows.map((h) => [h.step, h.severity, h.likelihood, h.significant, h.control]),
+        columnWidths: [20, 10, 10, 12, 48],
+        zebraStripe: false,
+        introText: 'Risk ratings and declared controls are shown per step.',
       })
     );
 
