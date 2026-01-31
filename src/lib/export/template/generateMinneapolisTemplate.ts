@@ -35,6 +35,7 @@ import {
   Packer,
 } from 'docx';
 import type { TemplateData, ProcessStep } from './buildTemplateData';
+import { resolveDocxImageType } from '../word/image';
 
 // Import design system and primitives
 import {
@@ -92,20 +93,26 @@ function createCoverPage(data: TemplateData): (Paragraph | Table)[] {
   // Logo if present
   if (data.logo && data.has_logo) {
     try {
+      const logoType = resolveDocxImageType(data.logo);
+      if (!logoType) {
+        throw new Error('Unsupported logo format for DOCX export. Use PNG or JPEG.');
+      }
       elements.push(
         new Paragraph({
           children: [
             new ImageRun({
               data: data.logo,
               transformation: { width: 150, height: 75 },
+              type: logoType,
             } as any),
           ],
           alignment: AlignmentType.RIGHT,
           spacing: { before: toTwips(10), after: toTwips(20) },
         })
       );
-    } catch {
-      // Skip logo if it fails
+    } catch (error) {
+      console.error('Failed to render logo in DOCX export.', error);
+      throw error;
     }
   }
 
