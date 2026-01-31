@@ -94,6 +94,28 @@ const getAnswerValue = (answers: Record<string, any>, questionId: string, parent
   return undefined;
 };
 
+const buildCcpKey = (step?: string, hazard?: string) =>
+  `ccp_${step || ""}_${hazard || ""}`.replace(/[^a-zA-Z0-9]/g, "_");
+
+const normalizeCcpManagementInputs = (inputs: any) => {
+  if (!inputs) return { list: [], byKey: {} as Record<string, any> };
+  const byKey: Record<string, any> = {};
+  const list = Array.isArray(inputs) ? inputs : Object.values(inputs);
+  list.forEach((entry: any) => {
+    const derivedKey = buildCcpKey(
+      entry?.step_name || entry?.step || entry?.ccp_step,
+      entry?.hazard
+    );
+    if (entry?.ccp_id) {
+      byKey[entry.ccp_id] = entry;
+    }
+    if (derivedKey) {
+      byKey[derivedKey] = entry;
+    }
+  });
+  return { list, byKey };
+};
+
 const buildQuestionRows = (questions: any[], answers: Record<string, any>, parentId?: string) => {
   const rows: ExportText[][] = [];
   const repeatableTables: { title: string; headers: string[]; rows: ExportText[][] }[] = [];
@@ -221,6 +243,53 @@ export function buildExportDoc({
         headers: table.headers,
         rows: table.rows,
         colWidths: table.headers.map(() => Math.floor(100 / table.headers.length)),
+      });
+    });
+
+    return blocks;
+  };
+
+  const buildCcpManagementSection = (): ExportBlock[] => {
+    const questions = getQuestions("ccp_management", lang);
+    const questionList = Array.isArray(questions?.questions) ? questions.questions : [];
+    const normalized = normalizeCcpManagementInputs(ccpManagementInputs);
+
+    if (normalized.list.length === 0) {
+      return buildInputSection(t("CCP Management Inputs"), questions, ccpManagementInputs);
+    }
+
+    const blocks: ExportBlock[] = [{ type: "section", title: t("CCP Management Inputs") }];
+    const orderedEntries =
+      ccps.length > 0
+        ? ccps
+            .map((ccp: any) => {
+              const key = buildCcpKey(ccp.ccp_step || ccp.step, ccp.hazard);
+              return normalized.byKey[key] || null;
+            })
+            .filter(Boolean)
+        : normalized.list;
+
+    orderedEntries.forEach((entry: any, index: number) => {
+      const step = entry?.step_name || entry?.step || entry?.ccp_step || "-";
+      const hazard = entry?.hazard || "-";
+      const label = `CCP ${index + 1} — ${step} (${hazard})`;
+      const { rows, repeatableTables } = buildQuestionRows(questionList, entry || {});
+      blocks.push({ type: "subheading", text: label });
+      blocks.push({
+        type: "table",
+        headers: [t("Question"), t("Answer")],
+        rows: rows.length > 0 ? rows : [["", "No inputs provided"]],
+        colWidths: [45, 55],
+      });
+
+      repeatableTables.forEach((table) => {
+        blocks.push({ type: "subheading", text: table.title });
+        blocks.push({
+          type: "table",
+          headers: table.headers,
+          rows: table.rows,
+          colWidths: table.headers.map(() => Math.floor(100 / table.headers.length)),
+        });
       });
     });
 
@@ -396,11 +465,7 @@ export function buildExportDoc({
       getQuestions("ccp_determination", lang),
       ccpDeterminationInputs
     ),
-    ...buildInputSection(
-      t("CCP Management Inputs"),
-      getQuestions("ccp_management", lang),
-      ccpManagementInputs
-    ),
+    ...buildCcpManagementSection(),
     ...buildInputSection(
       t("Verification, Validation & Records Inputs"),
       getQuestions("validation", lang),

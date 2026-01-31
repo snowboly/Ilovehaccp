@@ -501,6 +501,34 @@ export default function HACCPMasterFlow() {
   const [currentCCPIndex, setCurrentCCPIndex] = useState(0);
   const [identifiedCCPs, setIdentifiedCCPs] = useState<any[]>([]);
 
+  const buildCcpId = (stepName: string, hazard: string) =>
+      `ccp_${stepName}_${hazard}`.replace(/[^a-zA-Z0-9]/g, '_');
+
+  const cloneCcpManagementEntry = (entry: any) => ({
+      ...entry,
+      critical_limits: entry?.critical_limits ? { ...entry.critical_limits } : undefined,
+      monitoring: entry?.monitoring ? { ...entry.monitoring } : undefined,
+      corrective_actions: entry?.corrective_actions ? { ...entry.corrective_actions } : undefined,
+      verification: entry?.verification ? { ...entry.verification } : undefined,
+      records: entry?.records ? { ...entry.records } : undefined,
+  });
+
+  const normalizeCcpManagementById = (ccpManagement: any) => {
+      if (!ccpManagement) return {};
+      if (!Array.isArray(ccpManagement)) {
+          return Object.keys(ccpManagement).reduce((acc: any, key: string) => {
+              acc[key] = cloneCcpManagementEntry(ccpManagement[key]);
+              return acc;
+          }, {});
+      }
+      return ccpManagement.reduce((acc: any, item: any) => {
+          const key = item?.ccp_id || buildCcpId(item?.step_name, item?.hazard);
+          if (!key) return acc;
+          acc[key] = cloneCcpManagementEntry(item);
+          return acc;
+      }, {});
+  };
+
   // Generation & Validation State
   const [generatedPlan, setGeneratedPlan] = useState<any>(null);
   const [validationReport, setValidationReport] = useState<any>(null);
@@ -891,12 +919,13 @@ export default function HACCPMasterFlow() {
 
          // Save decision for CURRENT hazard
          const isCCPResult = evaluateCCP(data);
-         const decision = {
-             step_name: currentHazard.step_name,
-             hazard: currentHazard.hazards,
-             is_ccp: isCCPResult,
-             answers: data
-         };
+          const decision = {
+              step_name: currentHazard.step_name,
+              hazard: currentHazard.hazards,
+              ccp_id: buildCcpId(currentHazard.step_name, currentHazard.hazards),
+              is_ccp: isCCPResult,
+              answers: data
+          };
          
          const updatedCCPs = [...identifiedCCPs, decision];
          setIdentifiedCCPs(updatedCCPs);
@@ -922,21 +951,23 @@ export default function HACCPMasterFlow() {
       case 'ccp_management':
         const ccpList = getIdentifiedCCPs();
         
-        // Transform the nested group answers back into the array structure
-        const flattenedManagement = ccpList.map((ccp: any) => {
-            const groupKey = `ccp_${ccp.step_name}_${ccp.hazard}`.replace(/[^a-zA-Z0-9]/g, '_');
-            const groupData = data[groupKey] || {};
+        // Transform the nested group answers into a CCP-id keyed map
+        const managementById = ccpList.reduce((acc: any, ccp: any) => {
+            const groupKey = ccp.ccp_id || buildCcpId(ccp.step_name, ccp.hazard);
+            const groupData = data[groupKey] ? { ...data[groupKey] } : {};
+            const groupDataClone = cloneCcpManagementEntry(groupData);
             
-            return {
+            acc[groupKey] = {
                 ccp_id: groupKey,
                 step_name: ccp.step_name,
                 hazard: ccp.hazard,
-                ...groupData
+                ...groupDataClone
             };
-        });
+            return acc;
+        }, {});
 
         // Save
-        newAnswers.ccp_management = flattenedManagement;
+        newAnswers.ccp_management = managementById;
         setAllAnswers(newAnswers);
         setCurrentSection('review_validation');
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1773,7 +1804,7 @@ export default function HACCPMasterFlow() {
 
       // Construct Dynamic Schema: One group per CCP
       const dynamicQuestions = ccpList.map((ccp: any, idx: number) => {
-          const groupId = `ccp_${ccp.step_name}_${ccp.hazard}`.replace(/[^a-zA-Z0-9]/g, '_');
+          const groupId = ccp.ccp_id || buildCcpId(ccp.step_name, ccp.hazard);
           
           return {
               id: groupId,
@@ -1796,12 +1827,7 @@ export default function HACCPMasterFlow() {
                 onComplete={(d) => handleSectionComplete('ccp_management', d)} 
                 // Initial data mapping: { group_id: { ...answers } }
                 initialData={
-                    allAnswers.ccp_management 
-                    ? allAnswers.ccp_management.reduce((acc: any, item: any) => {
-                        if(item.ccp_id) acc[item.ccp_id] = item;
-                        return acc;
-                    }, {})
-                    : {}
+                    normalizeCcpManagementById(allAnswers.ccp_management)
                 }
                 title="Manage Critical Points"
                 description={
