@@ -702,7 +702,13 @@ export async function generateMinneapolisDocument(data: TemplateData): Promise<B
 
     // Section 3 - Intended Use
     sectionHeading({ text: 'INTENDED USE', number: 'SECTION 3 -' }),
-    bodyParagraph({ text: data.intended_use_narrative || data.intended_use }),
+    ...(data.is_rte
+      ? []
+      : [
+          bodyParagraph({
+            text: `Further Preparation/Handling: ${data.consumer_handling}`,
+          }),
+        ]),
 
     // Section 4 - PRPs
     ...createPRPSection(data),

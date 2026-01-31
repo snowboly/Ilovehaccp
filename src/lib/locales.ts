@@ -314,6 +314,7 @@ export const translations = {
       lbl_ingredients: "Main Ingredients",
       lbl_shelf_life: "Shelf Life",
       lbl_intended_use: "Intended Use",
+      lbl_further_preparation: "Further Preparation/Handling",
       lbl_storage: "Storage",
       col_program: "Program",
       col_details: "Control Details",
@@ -672,6 +673,7 @@ export const translations = {
       lbl_ingredients: "Ingredientes Principales",
       lbl_shelf_life: "Vida Útil",
       lbl_intended_use: "Uso Previsto",
+      lbl_further_preparation: "Preparación/manipulación adicional",
       lbl_storage: "Almacenamiento",
       col_program: "Programa",
       col_details: "Detalles de Control",
@@ -1040,6 +1042,7 @@ export const translations = {
       lbl_ingredients: "Ingrédients Principaux",
       lbl_shelf_life: "Durée de Conservation",
       lbl_intended_use: "Utilisation Prévue",
+      lbl_further_preparation: "Préparation/Manipulation supplémentaire",
       lbl_storage: "Stockage",
       col_program: "Programme",
       col_details: "Détails de Contrôle",
@@ -1408,6 +1411,7 @@ export const translations = {
       lbl_ingredients: "Ingredientes Principais",
       lbl_shelf_life: "Prazo de Validade",
       lbl_intended_use: "Uso Pretendido",
+      lbl_further_preparation: "Preparação/Manuseamento adicional",
       lbl_storage: "Armazenamento",
       col_program: "Programa",
       col_details: "Detalhes de Controlo",
@@ -1463,3 +1467,6 @@ export const translations = {
 export function getDictionary(lang: Language) {
   return translations[lang] || translations.en;
 }
+
+
+

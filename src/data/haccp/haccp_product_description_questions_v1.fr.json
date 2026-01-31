@@ -168,8 +168,8 @@
       },
       {
         "id": "cooking_required",
-        "text": "Préparation du produit avant consommation",
-        "description": "Les produits qui dépendent de la cuisson par le consommateur peuvent encore présenter des risques si les instructions ne sont pas suivies.",
+        "text": "Préparation/manipulation supplémentaire (si non prêt-à-manger)",
+        "description": "Si le produit n'est pas prêt-à-manger, décrivez la préparation ou la manipulation requise avant consommation.",
         "type": "single_select",
         "required": true,
         "options": [
@@ -192,3 +192,4 @@
     ]
   }
 }
+

@@ -174,8 +174,8 @@
     },
     {
       "id": "cooking_required",
-      "text": "Product preparation before consumption",
-      "description": "Products that rely on consumer cooking may still present risks if instructions are not followed.",
+      "text": "Further preparation/handling (if not ready-to-eat)",
+      "description": "If the product is not ready-to-eat, describe the consumer preparation or handling required before safe consumption.",
       "type": "single_select",
       "required": true,
       "options": [
