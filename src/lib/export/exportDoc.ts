@@ -262,16 +262,16 @@ export function buildExportDoc({
     });
   }
 
+  content.push({ type: "section", title: t("SECTION 3 — INTENDED USE", dict.s3_title) });
+
+  if (!isRte) {
+    content.push({
+      type: "paragraph",
+      text: `${furtherHandlingLabel}: ${formatValue(consumerHandling)}`,
+    });
+  }
+
   content.push(
-    { type: "section", title: t("SECTION 3 — INTENDED USE", dict.s3_title) },
-    ...(!isRte
-      ? [
-          {
-            type: "paragraph",
-            text: `${furtherHandlingLabel}: ${formatValue(consumerHandling)}`,
-          },
-        ]
-      : []),
     { type: "section", title: t("SECTION 4 — PROCESS FLOW DIAGRAM", dict.s4_title) },
     processSteps.length > 0
       ? {
