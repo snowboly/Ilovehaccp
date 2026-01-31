@@ -537,6 +537,10 @@ export interface DataTableOptions {
   zebraStripe?: boolean;
   /** Header background color (hex without #) */
   headerBackground?: string;
+  /** Repeat header row on each page */
+  headerRepeat?: boolean;
+  /** Prevent rows from splitting across pages */
+  cantSplitRows?: boolean;
   /**
    * Intro text to display before the table.
    * - true: use default intro ("Details are provided in the table below.")
@@ -585,6 +589,8 @@ export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
     zebraStripe = true,
     headerBackground = Colors.tableHeaderBg,
     introText,
+    headerRepeat = true,
+    cantSplitRows = false,
   } = options;
 
   const cellPadding = toTwips(Spacing.tableCellPadding);
@@ -602,7 +608,7 @@ export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
     rows: [
       // Header row
       new TableRow({
-        tableHeader: true,
+        tableHeader: headerRepeat,
         children: headers.map((header, index) =>
           new TableCell({
             width: { size: columnWidths[index], type: WidthType.PERCENTAGE },
@@ -637,6 +643,7 @@ export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
         const fillColor = zebraStripe && rowIndex % 2 === 1 ? Colors.tableZebraBg : Colors.white;
 
         return new TableRow({
+          cantSplit: cantSplitRows,
           children: row.map((cell, cellIndex) =>
             new TableCell({
               width: { size: columnWidths[cellIndex], type: WidthType.PERCENTAGE },

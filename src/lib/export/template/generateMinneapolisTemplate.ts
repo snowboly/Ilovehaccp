@@ -388,6 +388,8 @@ function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
         columnWidths: [12, 28, 60],
         zebraStripe: true,
         introText: 'Each process step is described in the table below.',
+        headerRepeat: true,
+        cantSplitRows: true,
       })
     );
   } else {
