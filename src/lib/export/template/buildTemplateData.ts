@@ -3,6 +3,8 @@
  * Maps HACCP plan data to template placeholders
  */
 
+import { getQuestions } from '@/data/haccp/loader';
+
 export interface ProcessStep {
   step_number: number;
   step_name: string;
@@ -132,16 +134,64 @@ const extractProcessSteps = (fullPlan: any): ProcessStep[] => {
   }));
 };
 
+const yn = (value: any): string => {
+  if (value === true) return 'Yes';
+  if (value === false) return 'No';
+  return 'TBD';
+};
+
+const normalizeLabel = (value: string): string =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
 const extractPRPPrograms = (fullPlan: any): PRPProgram[] => {
   const prps = fullPlan?.prerequisite_programs;
-  if (!Array.isArray(prps) || prps.length === 0) return [];
+  const prpInputs = fullPlan?._original_inputs?.prp || {};
+  const prpQuestions = getQuestions('prp', 'en');
+  const questionList = Array.isArray(prpQuestions?.questions) ? prpQuestions.questions : [];
 
-  return prps.map((prp: any) => ({
-    program: formatValue(prp.program),
-    exists: formatValue(prp.exists, 'TBD'),
-    documented: formatValue(prp.documented, 'TBD'),
-    reference: formatValue(prp.details || prp.reference),
-  }));
+  const idToLabel = new Map<string, string>();
+  const labelToInput = new Map<string, any>();
+
+  questionList.forEach((q: any) => {
+    if (!q?.id || !q?.text) return;
+    idToLabel.set(q.id, q.text);
+  });
+
+  Object.entries(prpInputs).forEach(([key, value]) => {
+    const label = idToLabel.get(key) || key;
+    labelToInput.set(normalizeLabel(label), value);
+  });
+
+  if (Array.isArray(prps) && prps.length > 0) {
+    return prps.map((prp: any) => {
+      const match = prp?.program ? labelToInput.get(normalizeLabel(prp.program)) : undefined;
+      const existsValue = prp?.exists ?? match?.exists ?? match?.inPlace ?? match?.in_place;
+      const documentedValue = prp?.documented ?? match?.documented ?? match?.is_documented;
+      const referenceValue = prp?.details || prp?.reference || match?.reference;
+
+      return {
+        program: formatValue(prp.program),
+        exists: yn(existsValue),
+        documented: yn(documentedValue),
+        reference: formatValue(referenceValue),
+      };
+    });
+  }
+
+  if (Object.keys(prpInputs).length === 0) return [];
+
+  return Object.entries(prpInputs).map(([key, value]: [string, any]) => {
+    const label = idToLabel.get(key) || key;
+    return {
+      program: formatValue(label),
+      exists: yn(value?.exists ?? value?.inPlace ?? value?.in_place),
+      documented: yn(value?.documented ?? value?.is_documented),
+      reference: formatValue(value?.reference),
+    };
+  });
 };
 
 const PROCESS_CONTROL_DEFAULT_DESCRIPTION =
