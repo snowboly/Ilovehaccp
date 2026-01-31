@@ -35,6 +35,8 @@ import {
   ITableCellOptions,
 } from "docx";
 
+import { sanitizeDocxText } from "../word/text";
+
 import {
   Colors,
   Fonts,
@@ -52,25 +54,12 @@ import {
 // ============================================================================
 
 /**
- * XML 1.0 invalid control characters.
- * Tab (0x09), Newline (0x0A), Carriage return (0x0D) are allowed.
- */
-const XML_INVALID_CHARS = /[\x00-\x08\x0B\x0C\x0E-\x1F]/g;
-const ZERO_WIDTH_CHARS = /[\u200B\u200C\u200D\u200E\u200F\uFEFF\u00AD]/g;
-
-/**
  * Sanitize text for DOCX XML compatibility.
- * Removes invalid XML characters and normalizes whitespace.
+ * Removes invalid XML chars and splits long tokens to avoid DOCX corruption.
  */
 export const sanitizeText = (input: string | undefined | null): string => {
-  const text = input?.toString() ?? "";
-  const cleaned = text
-    .replace(XML_INVALID_CHARS, "")
-    .replace(ZERO_WIDTH_CHARS, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  // Return at least a space to prevent empty text node issues
-  return cleaned || " ";
+  const value = input?.toString() ?? "";
+  return sanitizeDocxText(value);
 };
 
 // ============================================================================

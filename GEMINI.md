@@ -2,6 +2,14 @@
 
 ## Implementation Status
 
+- v3.36 Hybrid Export Artifact Caching (Jan 30, 2026):
+- **Caching:** Added Supabase Storage caching for authenticated DOCX/PDF exports with stable content hashing (sorted keys + template version).
+- **Pipeline Safety:** PDF cache keys now include a pipeline/version marker and watermark version to avoid docx vs legacy collisions.
+- **Entitlement Guard:** Free users always receive `preview.pdf`; clean PDFs are never served without entitlement.
+- **DOCX Canonical:** PDF generation always derives from cached DOCX (generates once if missing).
+- **Observability:** Minimal cache hit/miss logs for `plan.docx`, `clean.pdf`, and `preview.pdf`.
+- **Tests:** Added unit coverage for hash stability/version changes and entitlement artifact selection.
+
 - v3.35 Builder UX & PDF Stability (Jan 25, 2026):
 - **PDF Engine Overhaul:**
     - **Reliability:** Enforced Node.js runtime and implemented robust buffer normalization to eliminate 500 errors during export.
