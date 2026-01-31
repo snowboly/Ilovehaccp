@@ -431,6 +431,7 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
         ['Packaging', data.packaging],
         ['Shelf Life', data.shelf_life],
         ['Storage Conditions', data.storage_conditions],
+        ['Intended Use', data.intended_use],
         ['Intended Consumer', data.intended_consumer],
       ]}
       colWidths={[30, 70]}
@@ -438,7 +439,11 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
 
     {/* SECTION 3 - INTENDED USE */}
     <SectionHeader title="SECTION 3 - INTENDED USE" />
-    <Text style={styles.paragraph}>{sanitizeText(data.intended_use_narrative || data.intended_use)}</Text>
+    {!data.is_rte && (
+      <Text style={styles.paragraph}>
+        {sanitizeText(`Further Preparation/Handling: ${data.consumer_handling}`)}
+      </Text>
+    )}
 
     {/* SECTION 4 - PREREQUISITE PROGRAMS (PRPs) */}
     <SectionHeader title="SECTION 4 - PREREQUISITE PROGRAMS (PRPs)" />

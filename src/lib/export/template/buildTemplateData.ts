@@ -57,6 +57,8 @@ export interface TemplateData {
   storage_conditions: string;
   intended_use: string;
   intended_consumer: string;
+  consumer_handling: string;
+  is_rte: boolean;
 
   // Process
   process_steps: ProcessStep[];
@@ -101,6 +103,22 @@ const formatValue = (value: any, defaultValue: string = '-'): string => {
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
   if (typeof value === 'object') return JSON.stringify(value);
   return String(value);
+};
+
+const RTE_MATCHERS = [
+  'ready-to-eat',
+  'pronto a comer',
+  'listo para comer',
+  'prêt à consommer',
+  'pret a consommer',
+  'prêt-à-consommer',
+  'pret-a-consommer',
+];
+
+const isReadyToEat = (value: string | undefined | null): boolean => {
+  if (!value) return false;
+  const normalized = value.toLowerCase();
+  return RTE_MATCHERS.some((matcher) => normalized.includes(matcher));
 };
 
 const extractProcessSteps = (fullPlan: any): ProcessStep[] => {
@@ -234,6 +252,9 @@ export function buildTemplateData(
   const prpPrograms = extractPRPPrograms(fullPlan);
   const hazardAnalysis = extractHazardAnalysis(fullPlan);
   const ccps = extractCCPs(fullPlan);
+  const intendedUseRaw = productInputs.intended_use || data.intendedUse || '';
+  const consumerHandlingRaw = productInputs.cooking_required || data.consumerHandling || '';
+  const isRte = isReadyToEat(consumerHandlingRaw) || isReadyToEat(intendedUseRaw);
 
   return {
     // Cover
@@ -253,6 +274,8 @@ export function buildTemplateData(
     storage_conditions: formatValue(productInputs.storage_conditions || data.storageType, 'As per label'),
     intended_use: formatValue(productInputs.intended_use || data.intendedUse, 'General consumption'),
     intended_consumer: formatValue(productInputs.intended_consumer || productInputs.target_consumer, 'General public'),
+    consumer_handling: formatValue(consumerHandlingRaw, '-'),
+    is_rte: isRte,
 
     // Process
     process_steps: processSteps,

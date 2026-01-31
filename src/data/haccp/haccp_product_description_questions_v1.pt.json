@@ -168,8 +168,8 @@
       },
       {
         "id": "cooking_required",
-        "text": "Preparação do produto antes do consumo",
-        "description": "Os produtos que dependem da cozedura pelo consumidor podem ainda apresentar riscos se as instruções não forem seguidas.",
+        "text": "Preparação/manuseamento adicional (se não for pronto a comer)",
+        "description": "Se o produto não for pronto a comer, descreva a preparação ou o manuseamento necessário antes do consumo seguro.",
         "type": "single_select",
         "required": true,
         "options": [
@@ -192,3 +192,4 @@
     ]
   }
 }
+

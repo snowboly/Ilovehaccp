@@ -68,6 +68,22 @@ const formatValue = (value: any) => {
   return String(value);
 };
 
+const RTE_MATCHERS = [
+  "ready-to-eat",
+  "pronto a comer",
+  "listo para comer",
+  "prêt à consommer",
+  "pret a consommer",
+  "prêt-à-consommer",
+  "pret-a-consommer",
+];
+
+const isReadyToEat = (value: string | undefined | null): boolean => {
+  if (!value) return false;
+  const normalized = value.toLowerCase();
+  return RTE_MATCHERS.some((matcher) => normalized.includes(matcher));
+};
+
 const getAnswerValue = (answers: Record<string, any>, questionId: string, parentId?: string) => {
   if (!answers) return undefined;
   if (answers[questionId] !== undefined) return answers[questionId];
@@ -176,6 +192,10 @@ export function buildExportDoc({
   const ccpDeterminationInputs = originalInputs.ccp_determination || {};
   const ccpManagementInputs = originalInputs.ccp_management || {};
   const validationInputs = originalInputs.review_validation || originalInputs.validation || {};
+  const intendedUse = productInputs.intended_use || data.intendedUse || "";
+  const consumerHandling = productInputs.cooking_required || data.consumerHandling || "";
+  const isRte = isReadyToEat(consumerHandling) || isReadyToEat(intendedUse);
+  const furtherHandlingLabel = dict.lbl_further_preparation || "Further Preparation/Handling";
 
   const buildInputSection = (
     title: ExportText,
@@ -223,6 +243,7 @@ export function buildExportDoc({
         [t("Ingredients", dict.lbl_ingredients), data.mainIngredients || "Standard"],
         [t("Storage", dict.lbl_storage), data.storageType],
         [t("Shelf Life", dict.lbl_shelf_life), data.shelfLife || "As per label"],
+        [t("Intended Use", dict.lbl_intended_use), formatValue(intendedUse)],
       ],
       colWidths: [35, 65],
     },
@@ -243,10 +264,14 @@ export function buildExportDoc({
 
   content.push(
     { type: "section", title: t("SECTION 3 — INTENDED USE", dict.s3_title) },
-    {
-      type: "paragraph",
-      text: fullPlan?.intended_use || data.intendedUse || "General public.",
-    },
+    ...(!isRte
+      ? [
+          {
+            type: "paragraph",
+            text: `${furtherHandlingLabel}: ${formatValue(consumerHandling)}`,
+          },
+        ]
+      : []),
     { type: "section", title: t("SECTION 4 — PROCESS FLOW DIAGRAM", dict.s4_title) },
     processSteps.length > 0
       ? {

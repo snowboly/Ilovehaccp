@@ -168,8 +168,8 @@
       },
       {
         "id": "cooking_required",
-        "text": "Preparación del producto antes del consumo",
-        "description": "Los productos que dependen de la cocción del consumidor aún pueden presentar riesgos si no se siguen las instrucciones.",
+        "text": "Preparación/manipulación adicional (si no está listo para comer)",
+        "description": "Si el producto no está listo para comer, describa la preparación o manipulación requerida antes del consumo seguro.",
         "type": "single_select",
         "required": true,
         "options": [
