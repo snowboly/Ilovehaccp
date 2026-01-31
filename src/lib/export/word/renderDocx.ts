@@ -19,7 +19,7 @@ import {
 import { HACCP_THEME as T } from "../theme";
 import { ExportBlock, ExportDoc, ExportDocLabels, resolveExportText } from "../exportDoc";
 import { makeFixedTable, renderWordTable } from "./renderTable";
-import { getImageDimensions, scaleToFit } from "./image";
+import { getImageDimensions, scaleToFit, resolveDocxImageType } from "./image";
 import { sanitizeDocxText } from "./text";
 
 const toTwips = (points: number) => Math.round(points * 20);
@@ -631,6 +631,10 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
 
   // Logo top-right (rendered as right-aligned paragraph)
   if (doc.meta.logoBuffer) {
+    const logoType = resolveDocxImageType(doc.meta.logoBuffer);
+    if (!logoType) {
+      throw new Error("Unsupported logo format for DOCX export. Use PNG or JPEG.");
+    }
     const logoTransform = getLogoTransformation(doc.meta.logoBuffer, 140, 70);
     blocks.push(
       new Paragraph({
@@ -638,6 +642,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
           new ImageRun({
             data: doc.meta.logoBuffer,
             transformation: logoTransform,
+            type: logoType,
           } as any),
         ],
         alignment: AlignmentType.RIGHT,
@@ -809,6 +814,10 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
   const coverBlocks: (Paragraph | Table)[] = [];
 
   if (doc.meta.logoBuffer) {
+    const logoType = resolveDocxImageType(doc.meta.logoBuffer);
+    if (!logoType) {
+      throw new Error("Unsupported logo format for DOCX export. Use PNG or JPEG.");
+    }
     const logoTransform = getLogoTransformation(doc.meta.logoBuffer, 140, 140);
     coverBlocks.push(
       new Paragraph({
@@ -816,6 +825,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
           new ImageRun({
             data: doc.meta.logoBuffer,
             transformation: logoTransform,
+            type: logoType,
           } as any),
         ],
         alignment: AlignmentType.CENTER,

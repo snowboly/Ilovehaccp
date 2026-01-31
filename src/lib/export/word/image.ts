@@ -2,6 +2,8 @@ type ImageDimensions = { width: number; height: number };
 
 const toBuffer = (data: ArrayBuffer | Buffer) => (Buffer.isBuffer(data) ? data : Buffer.from(new Uint8Array(data)));
 
+export type DocxImageType = "png" | "jpg" | "gif" | "bmp";
+
 const readUInt24LE = (buffer: Buffer, offset: number) =>
   buffer[offset] + (buffer[offset + 1] << 8) + (buffer[offset + 2] << 16);
 
@@ -66,6 +68,31 @@ const getWebpSize = (buffer: Buffer): ImageDimensions | null => {
     const height = 1 + ((((buffer[22] & 0xc0) >> 6) | (buffer[23] << 2) | ((buffer[24] & 0x0f) << 10)) & 0x3fff);
     return { width, height };
   }
+  return null;
+};
+
+const isSvg = (buffer: Buffer): boolean => {
+  const snippet = buffer.toString("utf8", 0, 256).trim().toLowerCase();
+  return snippet.startsWith("<svg") || snippet.includes("<svg");
+};
+
+export const detectImageType = (data: ArrayBuffer | Buffer): string | null => {
+  const buffer = toBuffer(data);
+  if (buffer.length < 4) return null;
+  if (buffer.readUInt32BE(0) === 0x89504e47) return "png";
+  if (buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) return "jpg";
+  if (buffer.toString("ascii", 0, 3) === "GIF") return "gif";
+  if (buffer.toString("ascii", 0, 2) === "BM") return "bmp";
+  if (buffer.toString("ascii", 0, 4) === "RIFF" && buffer.toString("ascii", 8, 12) === "WEBP") {
+    return "webp";
+  }
+  if (isSvg(buffer)) return "svg";
+  return null;
+};
+
+export const resolveDocxImageType = (data: ArrayBuffer | Buffer): DocxImageType | null => {
+  const type = detectImageType(data);
+  if (type === "png" || type === "jpg" || type === "gif" || type === "bmp") return type;
   return null;
 };
 
