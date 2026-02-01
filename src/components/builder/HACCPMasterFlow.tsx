@@ -58,6 +58,11 @@ export default function HACCPMasterFlow() {
   // UX State for Review Actions
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [pulseAction, setPulseAction] = useState<string | null>(null);
+  type ExportStatus = 'idle' | 'loading' | 'error';
+  type ExportState = { status: ExportStatus; error?: string };
+  const [wordExport, setWordExport] = useState<ExportState>({ status: 'idle' });
+  const [pdfFreeExport, setPdfFreeExport] = useState<ExportState>({ status: 'idle' });
+  const [pdfPaidExport, setPdfPaidExport] = useState<ExportState>({ status: 'idle' });
 
   const triggerPulse = (action: string) => {
       setPulseAction(action);
@@ -1086,90 +1091,100 @@ export default function HACCPMasterFlow() {
   };
 
   const handleDownloadPdf = async (isPaidContext = false) => {
-      const actionKey = isPaidContext ? 'pdf_paid' : 'pdf_free';
-      if (busyAction) return;
+      const exportId = generatedPlan?.id || draftId;
+      const exportState = isPaidContext ? pdfPaidExport : pdfFreeExport;
+      const setExportState = isPaidContext ? setPdfPaidExport : setPdfFreeExport;
+      if (exportState.status === 'loading') return;
+      setExportState({ status: 'loading' });
 
-      await runWithBusy(actionKey, async () => {
-          const exportId = generatedPlan?.id || draftId;
-          if (!exportId) return;
-          try {
-              const { data: { session } } = await supabase.auth.getSession();
-              if (!session) return;
+      if (!exportId) {
+          setExportState({ status: 'error', error: 'Export failed. Try again.' });
+          return;
+      }
 
-              const fetchPdf = async (id: string) => {
-                  const response = await fetch(`/api/download-pdf?planId=${id}&lang=${language}`, {
-                      headers: { Authorization: `Bearer ${session.access_token}` }
-                  });
-                  return response;
-              };
-
-              let res = await fetchPdf(exportId);
-              if (!res.ok && draftId && draftId !== exportId) {
-                  const err = await res.json().catch(() => null);
-                  if (err?.error === 'Plan not found') {
-                      res = await fetchPdf(draftId);
-                  }
-              }
-
-              if (!res.ok) {
-                  const err = await res.json().catch(() => null);
-                  alert(err?.error || 'Download failed');
-                  return;
-              }
-              
-              const blob = await res.blob();
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.pdf`;
-              document.body.appendChild(a);
-              a.click();
-              a.remove();
-              window.URL.revokeObjectURL(url);
-          } catch (e) {
-              console.error(e);
-              alert('Failed to download PDF.');
-          }
-      });
-  };
-
-  const handleDownloadWord = async () => {
-      if (busyAction) return;
-      await runWithBusy('word', async () => {
-          const exportId = generatedPlan?.id;
-          if (!exportId) {
-              alert('Please save your plan before downloading the Word document.');
+      try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) {
+              setExportState({ status: 'error', error: 'Export failed. Try again.' });
               return;
           }
 
-          try {
-              const { data: { session } } = await supabase.auth.getSession();
-              if (!session) return;
-
-              const res = await fetch(`/api/download-word?planId=${exportId}&lang=${language}`, {
+          const fetchPdf = async (id: string) => {
+              const response = await fetch(`/api/download-pdf?planId=${id}&lang=${language}`, {
                   headers: { Authorization: `Bearer ${session.access_token}` }
               });
+              return response;
+          };
 
-              if (!res.ok) {
-                  const err = await res.json().catch(() => null);
-                  alert(err?.error || 'Download failed');
-                  return;
+          let res = await fetchPdf(exportId);
+          if (!res.ok && draftId && draftId !== exportId) {
+              const err = await res.json().catch(() => null);
+              if (err?.error === 'Plan not found') {
+                  res = await fetchPdf(draftId);
               }
-
-              const blob = await res.blob();
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.docx`;
-              document.body.appendChild(a);
-              a.click();
-              a.remove();
-              window.URL.revokeObjectURL(url);
-          } catch (e) {
-              console.error(e);
-              alert('Failed to download Word document.');
           }
-      });
+
+          if (!res.ok) {
+              setExportState({ status: 'error', error: 'Export failed. Try again.' });
+              return;
+          }
+          
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+          setExportState({ status: 'idle' });
+      } catch (e) {
+          console.error(e);
+          setExportState({ status: 'error', error: 'Export failed. Try again.' });
+      }
+  };
+
+  const handleDownloadWord = async () => {
+      if (wordExport.status === 'loading') return;
+      setWordExport({ status: 'loading' });
+
+      const exportId = generatedPlan?.id;
+      if (!exportId) {
+          setWordExport({ status: 'error', error: 'Please save your plan before downloading the Word document.' });
+          return;
+      }
+
+      try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) {
+              setWordExport({ status: 'error', error: 'Export failed. Try again.' });
+              return;
+          }
+
+          const res = await fetch(`/api/download-word?planId=${exportId}&lang=${language}`, {
+              headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+
+          if (!res.ok) {
+              setWordExport({ status: 'error', error: 'Export failed. Try again.' });
+              return;
+          }
+
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `HACCP_Plan_${allAnswers.product?.businessLegalName?.replace(/\s+/g, '_') || 'Draft'}.docx`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+          setWordExport({ status: 'idle' });
+      } catch (e) {
+          console.error(e);
+          setWordExport({ status: 'error', error: 'Export failed. Try again.' });
+      }
   };
 
   const handleRunValidation = async () => {
@@ -2166,11 +2181,22 @@ export default function HACCPMasterFlow() {
                                 <div className="mt-6 space-y-3">
                                     <button 
                                         onClick={() => handleDownloadPdf(false)}
-                                        disabled={!!busyAction}
-                                        className={`bg-white text-slate-900 border border-slate-300 px-4 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all w-full flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'pdf_free' ? 'animate-pulse' : ''}`}
+                                        disabled={pdfFreeExport.status === 'loading'}
+                                        aria-busy={pdfFreeExport.status === 'loading'}
+                                        className={`bg-white text-slate-900 border border-slate-300 px-4 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all w-full flex items-center justify-center gap-2 active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:ring-2 ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${pdfFreeExport.status === 'loading' ? 'animate-pulse motion-reduce:animate-none' : ''}`}
                                     >
-                                        {busyAction === 'pdf_free' ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing PDF...</> : 'Download Watermarked PDF'}
+                                        {pdfFreeExport.status === 'loading' ? (
+                                            <>
+                                                <span className="inline-block h-4 w-4 rounded-full border-2 border-slate-400/70 border-t-slate-700 animate-spin" aria-hidden="true" />
+                                                <span>Preparing</span>
+                                            </>
+                                        ) : 'Download Watermarked PDF'}
                                     </button>
+                                    {pdfFreeExport.status === 'error' && (
+                                        <p className="text-[11px] text-red-600 mt-2" role="status">
+                                            {pdfFreeExport.error || 'Export failed. Try again.'}
+                                        </p>
+                                    )}
                                     <p className="text-[11px] text-slate-500">
                                         Drafts are for internal review only and are not intended for operational implementation.
                                     </p>
@@ -2195,20 +2221,46 @@ export default function HACCPMasterFlow() {
 
                                     {isPaid ? (
                                         <div className="grid sm:grid-cols-2 gap-3">
-                                            <button
-                                                onClick={handleDownloadWord}
-                                                disabled={!!busyAction}
-                                                className={`bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'word' ? 'animate-pulse' : ''}`}
-                                            >
-                                                {busyAction === 'word' ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Word...</> : 'Download Word'}
-                                            </button>
-                                            <button
-                                                onClick={() => handleDownloadPdf(true)}
-                                                disabled={!!busyAction}
-                                                className={`bg-white text-emerald-900 px-4 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-all border border-emerald-200 flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed ${pulseAction === 'pdf_paid' ? 'animate-pulse' : ''}`}
-                                            >
-                                                {busyAction === 'pdf_paid' ? <><Loader2 className="w-4 h-4 animate-spin" /> Preparing PDF...</> : 'Download PDF'}
-                                            </button>
+                                            <div className="flex flex-col">
+                                                <button
+                                                    onClick={handleDownloadWord}
+                                                    disabled={wordExport.status === 'loading'}
+                                                    aria-busy={wordExport.status === 'loading'}
+                                                    className={`bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:ring-2 ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed ${wordExport.status === 'loading' ? 'animate-pulse motion-reduce:animate-none' : ''}`}
+                                                >
+                                                    {wordExport.status === 'loading' ? (
+                                                        <>
+                                                            <span className="inline-block h-4 w-4 rounded-full border-2 border-white/60 border-t-white animate-spin" aria-hidden="true" />
+                                                            <span>Preparing</span>
+                                                        </>
+                                                    ) : 'Download Word'}
+                                                </button>
+                                                {wordExport.status === 'error' && (
+                                                    <p className="text-[11px] text-red-600 mt-2" role="status">
+                                                        {wordExport.error || 'Export failed. Try again.'}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <button
+                                                    onClick={() => handleDownloadPdf(true)}
+                                                    disabled={pdfPaidExport.status === 'loading'}
+                                                    aria-busy={pdfPaidExport.status === 'loading'}
+                                                    className={`bg-white text-emerald-900 px-4 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-all border border-emerald-200 flex items-center justify-center gap-2 active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:ring-2 ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed ${pdfPaidExport.status === 'loading' ? 'animate-pulse motion-reduce:animate-none' : ''}`}
+                                                >
+                                                    {pdfPaidExport.status === 'loading' ? (
+                                                        <>
+                                                            <span className="inline-block h-4 w-4 rounded-full border-2 border-emerald-400/70 border-t-emerald-700 animate-spin" aria-hidden="true" />
+                                                            <span>Preparing</span>
+                                                        </>
+                                                    ) : 'Download PDF'}
+                                                </button>
+                                                {pdfPaidExport.status === 'error' && (
+                                                    <p className="text-[11px] text-red-600 mt-2" role="status">
+                                                        {pdfPaidExport.error || 'Export failed. Try again.'}
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
                                     ) : (
                                         <div className="grid sm:grid-cols-2 gap-3">
