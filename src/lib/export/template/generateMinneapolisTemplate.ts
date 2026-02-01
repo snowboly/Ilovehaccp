@@ -87,10 +87,12 @@ const PLACEHOLDERS = {
 // COVER PAGE
 // ============================================================================
 
+type AlignmentTypeValue = (typeof AlignmentType)[keyof typeof AlignmentType];
+
 const withPlaceholder = (value: string, placeholder = '____________________') =>
   value && value.trim().length > 0 ? value : placeholder;
 
-const buildLogoParagraph = (data: TemplateData, alignment: AlignmentType) => {
+const buildLogoParagraph = (data: TemplateData, alignment: AlignmentTypeValue) => {
   if (!data.logo || !data.has_logo) return null;
   const logoType = resolveDocxImageType(data.logo);
   if (!logoType) {
