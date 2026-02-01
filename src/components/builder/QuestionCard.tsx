@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HACCPQuestion, QuestionType } from '@/types/haccp';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { shouldEscalateSeverity } from '@/lib/haccp/vulnerableSeverityEscalation';
 import { 
   AlertCircle, 
   CheckCircle2, 
@@ -246,20 +247,37 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
         );
 
       case 'single_select':
+        const forcedSeverity = question.id === 'severity'
+          ? (shouldEscalateSeverity({
+              vulnerableConsumer: context?.vulnerable_consumer,
+              hazardDescription: context?.hazard_description,
+            }) ? 'High' : null)
+          : null;
+        const displayValue = forcedSeverity ?? value;
         return (
           <div className="grid gap-2">
+            {forcedSeverity && (
+              <div className="flex items-center gap-2 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                Severity escalated to High — vulnerable consumer population
+              </div>
+            )}
             {question.options?.map((opt) => (
               <button
                 key={opt}
-                onClick={() => onChange(question.id, opt)}
+                onClick={() => {
+                  if (forcedSeverity && opt !== forcedSeverity) return;
+                  onChange(question.id, forcedSeverity ?? opt);
+                }}
                 className={`w-full text-left p-4 rounded-xl border-2 font-bold transition-all flex justify-between items-center cursor-pointer ${
-                  value === opt 
+                  displayValue === opt 
                     ? 'border-blue-600 bg-blue-50 text-blue-700' 
-                    : 'border-slate-200 text-slate-600 hover:border-blue-200'
+                    : forcedSeverity
+                      ? 'border-slate-200 text-slate-400 cursor-not-allowed'
+                      : 'border-slate-200 text-slate-600 hover:border-blue-200'
                 }`}
               >
                 {opt}
-                {value === opt && <CheckCircle2 className="w-5 h-5 text-blue-600" />}
+                {displayValue === opt && <CheckCircle2 className="w-5 h-5 text-blue-600" />}
               </button>
             ))}
           </div>
@@ -608,7 +626,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                                     [haz.id]: { ...hazardValue, [id]: val }
                                                 });
                                             }}
-                                            context={context} // Pass context down recursively
+                                            context={{
+                                                ...context,
+                                                hazard_id: haz.id,
+                                                hazard_description: context?.hazard_identification?.[`${haz.id}_hazards_description`]
+                                            }} // Pass context down recursively
                                         />
                                     </div>
                                 );

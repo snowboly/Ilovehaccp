@@ -14,6 +14,7 @@ import { ProcessLog } from '@/components/ui/ProcessLog';
 import { fetchWithTimeout } from '@/lib/builder/utils/withTimeoutFetch';
 import { classifyControl, type ControlClassification } from '@/lib/builder/ccpDecisionTree';
 import { applySignificanceToHazardEvaluation, isSignificant } from '@/lib/haccp/significanceMatrix';
+import { applyVulnerableSeverityEscalation } from '@/lib/haccp/vulnerableSeverityEscalation';
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -887,9 +888,14 @@ export default function HACCPMasterFlow() {
       case 'hazards':
         // Check if more steps remain
         const steps = newAnswers.process.process_steps;
+        const escalatedEvaluation = applyVulnerableSeverityEscalation(
+            data?.hazard_evaluation,
+            data?.hazard_identification,
+            riskFlags.VULNERABLE_CONSUMER
+        );
         const hazardPayload = {
             ...data,
-            hazard_evaluation: applySignificanceToHazardEvaluation(data?.hazard_evaluation),
+            hazard_evaluation: applySignificanceToHazardEvaluation(escalatedEvaluation),
         };
         if (currentStepIndex < steps.length - 1) {
             const existingHazards = newAnswers.hazard_analysis || [];
@@ -1760,7 +1766,7 @@ export default function HACCPMasterFlow() {
             <HACCPQuestionnaire 
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('hazards', d)} 
-                additionalContext={{ step_name: step?.step_name }}
+                additionalContext={{ step_name: step?.step_name, vulnerable_consumer: riskFlags.VULNERABLE_CONSUMER }}
                 title="Analyze Hazards"
                 description={
                     <span className="font-bold text-slate-700">
