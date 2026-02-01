@@ -32,6 +32,7 @@ import {
   ImageRun,
   ShadingType,
   TableLayoutType,
+  HeightRule,
   Packer,
 } from 'docx';
 import type { TemplateData, ProcessStep } from './buildTemplateData';
@@ -66,7 +67,6 @@ import {
   processFlowDiagram,
   spacerParagraph,
   noBorders,
-  thinBorders,
 } from '../docx/primitives';
 
 // ============================================================================
@@ -87,43 +87,125 @@ const PLACEHOLDERS = {
 // COVER PAGE
 // ============================================================================
 
-function createCoverPage(data: TemplateData): (Paragraph | Table)[] {
-  const elements: (Paragraph | Table)[] = [];
+type AlignmentTypeValue = (typeof AlignmentType)[keyof typeof AlignmentType];
 
-  const preparedBy = sanitizeText(data.created_by || 'ilovehaccp.com');
+const withPlaceholder = (value: string, placeholder = '____________________') =>
+  value && value.trim().length > 0 ? value : placeholder;
 
-  // Optional logo (top right)
-  if (data.logo && data.has_logo) {
-    try {
-      const logoType = resolveDocxImageType(data.logo);
-      if (!logoType) {
-        throw new Error('Unsupported logo format for DOCX export. Use PNG or JPEG.');
-      }
-      elements.push(
-        new Paragraph({
-          children: [
-            new ImageRun({
-              data: data.logo,
-              transformation: { width: 120, height: 60 },
-              type: logoType,
-            } as any),
-          ],
-          alignment: AlignmentType.RIGHT,
-          spacing: { before: toTwips(8), after: toTwips(20) },
-        })
-      );
-    } catch (error) {
-      console.error('Failed to render logo in DOCX export.', error);
-      throw error;
-    }
+const buildLogoParagraph = (data: TemplateData, alignment: AlignmentTypeValue) => {
+  if (!data.logo || !data.has_logo) return null;
+  const logoType = resolveDocxImageType(data.logo);
+  if (!logoType) {
+    throw new Error('Unsupported logo format for DOCX export. Use PNG or JPEG.');
   }
+  return new Paragraph({
+    children: [
+      new ImageRun({
+        data: data.logo,
+        transformation: { width: 120, height: 60 },
+        type: logoType,
+      } as any),
+    ],
+    alignment,
+    spacing: { before: toTwips(6), after: toTwips(12) },
+  });
+};
 
-  // Title
+const buildCoverMetaTable = (rows: { label: string; value: string }[]) =>
+  new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
+    rows: rows.map(
+      (row) =>
+        new TableRow({
+          children: [
+            new TableCell({
+              borders: noBorders,
+              width: { size: 35, type: WidthType.PERCENTAGE },
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: row.label,
+                      font: Fonts.primary,
+                      size: toHalfPoints(FontSizes.h3),
+                      bold: true,
+                      color: Colors.textSecondary,
+                    }),
+                  ],
+                }),
+              ],
+            }),
+            new TableCell({
+              borders: noBorders,
+              width: { size: 65, type: WidthType.PERCENTAGE },
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: row.value,
+                      font: Fonts.primary,
+                      size: toHalfPoints(FontSizes.h3),
+                      color: Colors.text,
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          ],
+        })
+    ),
+  });
+
+const buildCoverRows = (data: TemplateData) => {
+  const preparedBy = sanitizeText(data.created_by || 'ilovehaccp.com');
+  return [
+    { label: 'Prepared for', value: sanitizeText(data.business_name) },
+    { label: 'Prepared by', value: withPlaceholder(preparedBy) },
+    { label: 'Date', value: sanitizeText(data.date) },
+    { label: 'Version', value: sanitizeText(data.version) },
+    { label: 'Approved by', value: withPlaceholder(sanitizeText(data.approved_by)) },
+  ];
+};
+
+const createCoverPage = (data: TemplateData): (Paragraph | Table)[] => {
+  const elements: (Paragraph | Table)[] = [];
+  const topBand = new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
+    rows: [
+      new TableRow({
+        height: { value: toTwips(10), rule: HeightRule.EXACT },
+        children: [
+          new TableCell({
+            borders: noBorders,
+            shading: { type: ShadingType.CLEAR, color: Colors.text, fill: Colors.text },
+            children: [new Paragraph({})],
+          }),
+        ],
+      }),
+      new TableRow({
+        height: { value: toTwips(4), rule: HeightRule.EXACT },
+        children: [
+          new TableCell({
+            borders: noBorders,
+            shading: { type: ShadingType.CLEAR, color: Colors.primary, fill: Colors.primary },
+            children: [new Paragraph({})],
+          }),
+        ],
+      }),
+    ],
+  });
+  elements.push(topBand);
+
+  const logo = buildLogoParagraph(data, AlignmentType.RIGHT);
+  if (logo) elements.push(logo);
+
   elements.push(
     new Paragraph({
       children: [
         new TextRun({
-          text: 'HACCP Plan',
+          text: 'HACCP PLAN',
           font: Fonts.primary,
           size: toHalfPoints(FontSizes.display),
           bold: true,
@@ -131,65 +213,24 @@ function createCoverPage(data: TemplateData): (Paragraph | Table)[] {
         }),
       ],
       alignment: AlignmentType.CENTER,
-      spacing: { before: data.has_logo ? toTwips(10) : toTwips(80), after: toTwips(30) },
+      spacing: { before: toTwips(20), after: toTwips(12) },
+    }),
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: sanitizeText(data.business_name),
+          font: Fonts.primary,
+          size: toHalfPoints(FontSizes.displaySub),
+          color: Colors.textSecondary,
+        }),
+      ],
+      alignment: AlignmentType.CENTER,
+      spacing: { after: toTwips(20) },
     })
   );
 
-  const subtitleBlocks = [
-    { label: 'Prepared for', value: sanitizeText(data.business_name) },
-    { label: 'Prepared by', value: preparedBy },
-    { label: 'Date', value: sanitizeText(data.date) },
-  ];
-
-  subtitleBlocks.forEach((block, index) => {
-    elements.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `${block.label}  `,
-            font: Fonts.primary,
-            size: toHalfPoints(FontSizes.h2),
-            bold: true,
-            color: Colors.textSecondary,
-          }),
-          new TextRun({
-            text: block.value,
-            font: Fonts.primary,
-            size: toHalfPoints(FontSizes.h2),
-            color: Colors.text,
-          }),
-        ],
-        alignment: AlignmentType.CENTER,
-        spacing: { after: index === subtitleBlocks.length - 1 ? toTwips(10) : toTwips(16) },
-      })
-    );
-  });
-
-  elements.push(spacerParagraph(120));
-
-  const bandTable = new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
-    layout: TableLayoutType.FIXED,
-    alignment: AlignmentType.CENTER,
-    rows: [
-      new TableRow({
-        children: [
-          new TableCell({
-            borders: noBorders,
-            shading: {
-              type: ShadingType.CLEAR,
-              color: Colors.primary,
-              fill: Colors.primary,
-            },
-            margins: { top: toTwips(4), bottom: toTwips(4) },
-            children: [new Paragraph({ children: [] })],
-          }),
-        ],
-      }),
-    ],
-  });
-
-  elements.push(bandTable);
+  elements.push(buildCoverMetaTable(buildCoverRows(data)));
+  elements.push(spacerParagraph(40));
 
   // Page break after cover
   elements.push(

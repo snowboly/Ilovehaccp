@@ -1,0 +1,120 @@
+{
+  "businessName": "Golden Test Bakery",
+  "productName": "Artisan Sourdough Bread",
+  "productDescription": "Handcrafted sourdough bread using traditional fermentation methods",
+  "intendedUse": "Direct consumption after purchase",
+  "storageType": "Store at room temperature, consume within 5 days",
+  "mainIngredients": "Wheat flour, water, salt, sourdough starter",
+  "shelfLife": "5 days at ambient temperature",
+  "logoUrl": null,
+  "isPaid": true,
+  "full_plan": {
+    "_original_inputs": {
+      "product": {
+        "product_name": "Artisan Sourdough Bread",
+        "product_category": "Bakery - Bread",
+        "key_ingredients": "Wheat flour, water, salt, sourdough starter",
+        "allergens": "Gluten (wheat)",
+        "packaging": "Paper bag with window",
+        "shelf_life": "5 days",
+        "storage_conditions": "Room temperature (15-25°C)",
+        "intended_use": "Direct consumption",
+        "intended_consumer": "General public",
+        "cooking_required": "No cooking required - ready to eat"
+      },
+      "process": {
+        "process_steps": [
+          { "step_number": 1, "step_name": "Receiving", "step_description": "Receive and inspect raw ingredients" },
+          { "step_number": 2, "step_name": "Storage", "step_description": "Store ingredients at appropriate temperatures" },
+          { "step_number": 3, "step_name": "Mixing", "step_description": "Combine flour, water, salt, and starter" },
+          { "step_number": 4, "step_name": "Fermentation", "step_description": "Bulk fermentation at 24°C for 4-6 hours" },
+          { "step_number": 5, "step_name": "Shaping", "step_description": "Divide and shape dough into loaves" },
+          { "step_number": 6, "step_name": "Proofing", "step_description": "Final proof in bannetons for 12-16 hours" },
+          { "step_number": 7, "step_name": "Baking", "step_description": "Bake at 230°C for 35-45 minutes" },
+          { "step_number": 8, "step_name": "Cooling", "step_description": "Cool on wire racks for minimum 2 hours" },
+          { "step_number": 9, "step_name": "Packaging", "step_description": "Package in paper bags once cooled" },
+          { "step_number": 10, "step_name": "Dispatch", "step_description": "Deliver to retail or direct sale" }
+        ]
+      },
+      "prp": {
+        "prp_programs": [
+          { "program": "Supplier Approval", "exists": true, "documented": true, "reference": "SOP-001" },
+          { "program": "Pest Control", "exists": true, "documented": true, "reference": "SOP-002" },
+          { "program": "Cleaning & Sanitation", "exists": true, "documented": true, "reference": "SOP-003" },
+          { "program": "Personal Hygiene", "exists": true, "documented": false, "reference": "" },
+          { "program": "Allergen Management", "exists": false, "documented": false, "reference": "" },
+          { "program": "Water Quality", "exists": true, "documented": true, "reference": "SOP-006" }
+        ]
+      }
+    },
+    "prerequisite_programs": [
+      { "program": "Supplier Approval", "exists": true, "documented": true, "reference": "SOP-001" },
+      { "program": "Pest Control", "exists": true, "documented": true, "reference": "SOP-002" },
+      { "program": "Cleaning & Sanitation", "exists": true, "documented": true, "reference": "SOP-003" },
+      { "program": "Personal Hygiene", "exists": true, "documented": false, "reference": "" },
+      { "program": "Allergen Management", "exists": false, "documented": false, "reference": "" },
+      { "program": "Water Quality", "exists": true, "documented": true, "reference": "SOP-006" }
+    ],
+    "hazard_analysis": [
+      {
+        "step_name": "Receiving",
+        "hazards": "Contaminated raw materials (biological, chemical)",
+        "hazard_type": "Biological",
+        "severity": "High",
+        "likelihood": "Medium",
+        "is_ccp": "No",
+        "control_measure": "Supplier approval program"
+      },
+      {
+        "step_name": "Storage",
+        "hazards": "Pest infestation, mould growth",
+        "hazard_type": "Biological",
+        "severity": "Medium",
+        "likelihood": "Low",
+        "is_ccp": "No",
+        "control_measure": "Pest control, FIFO stock rotation"
+      },
+      {
+        "step_name": "Baking",
+        "hazards": "Survival of pathogens due to inadequate heat treatment",
+        "hazard_type": "Biological",
+        "severity": "High",
+        "likelihood": "Low",
+        "is_ccp": "Yes",
+        "control_measure": "Process control",
+        "control_measure_description": "Minimum internal temperature of 90°C achieved through baking at 230°C for minimum 35 minutes"
+      },
+      {
+        "step_name": "Cooling",
+        "hazards": "Recontamination from environment",
+        "hazard_type": "Biological",
+        "severity": "Medium",
+        "likelihood": "Low",
+        "is_ccp": "No",
+        "control_measure": "Hygienic cooling area, covered racks"
+      }
+    ],
+    "ccp_summary": [
+      {
+        "ccp_id": "CCP 1",
+        "step": "Baking",
+        "hazard": "Survival of pathogens due to inadequate heat treatment",
+        "critical_limit": "Internal temperature ≥90°C; Bake time ≥35 minutes at 230°C",
+        "monitoring": "Check oven temperature display; probe internal temp of sample loaves",
+        "frequency": "Each batch",
+        "corrective_action": "Extend baking time; reject under-baked product; recalibrate oven",
+        "verification": "Daily oven calibration check; weekly probe thermometer verification",
+        "records": "Baking log with time, temperature, operator initials"
+      }
+    ],
+    "team_scope_summary": "The HACCP team at Golden Test Bakery consists of the Head Baker (HACCP Team Leader), Production Manager, and Quality Assurance Officer. The scope covers all sourdough bread production from ingredient receipt to final product dispatch.",
+    "process_description": "Artisan sourdough bread is produced using a traditional long-fermentation method. The process begins with receiving quality-assured flour and maintaining an active sourdough starter. Dough is mixed, bulk fermented, shaped, and cold-proofed before baking at high temperature. Products are cooled and packaged for same-day or next-day sale.",
+    "verification_procedures": "1. Daily pre-operational checks of equipment and facilities\n2. Weekly review of monitoring records by HACCP Team Leader\n3. Monthly internal audit of HACCP system compliance\n4. Annual third-party verification audit\n5. Quarterly review of corrective actions and trend analysis",
+    "record_keeping": "All HACCP-related records are maintained for a minimum of 2 years. Records include: daily production logs, temperature monitoring charts, cleaning schedules, supplier certificates, training records, and corrective action reports. Records are stored securely and made available for regulatory inspection.",
+    "validation": {
+      "document_style": "minneapolis-v1"
+    }
+  },
+  "template": "minneapolis-v1",
+  "planVersion": 1
+}

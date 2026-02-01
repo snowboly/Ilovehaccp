@@ -19,7 +19,8 @@ import {
 import {
   applyWatermark,
   generateCleanPdfFromDocx,
-  getDefaultWatermarkConfig
+  getDefaultWatermarkConfig,
+  resolvePdfPipeline
 } from '@/lib/export/pdf';
 import { resolvePdfPipeline } from '@/lib/export/pdf/pipeline';
 
@@ -28,6 +29,19 @@ export const dynamic = 'force-dynamic';
 
 const sanitizeFileName = (name: string) => name.replace(/[^a-z0-9._-]/gi, '_');
 
+/**
+ * Legacy Pipeline Status: FROZEN
+ * ================================
+ * The legacy react-pdf pipeline is frozen and should NOT be used in production.
+ * It remains in the codebase for emergency rollback only.
+ *
+ * To enable legacy (NOT RECOMMENDED):
+ *   PDF_USE_LEGACY_EXPORTER=true
+ *   EXPORT_PDF_PIPELINE=legacy
+ *
+ * Scheduled for removal in a future cleanup PR.
+ * See: docs/architecture/EXPORT_PIPELINE.md
+ */
 const LEGACY_FALLBACK_ENABLED = process.env.PDF_USE_LEGACY_EXPORTER === 'true';
 const DEFAULT_TEMPLATE_VERSION = 'minneapolis-v1';
 const WATERMARK_VERSION = 'wm-v1';
@@ -343,6 +357,7 @@ export async function POST(req: Request) {
     let pdfBuffer: Buffer;
     try {
       if (useLegacyPipeline) {
+        logLegacyPipelineUsage({ planId, reason: 'EXPORT_PDF_PIPELINE=legacy or DOCX disabled' });
         let legacyPdf = await renderLegacyPdf({
           plan: { ...plan, planVersion },
           fullPlan,
@@ -379,6 +394,7 @@ export async function POST(req: Request) {
         throw error;
       }
 
+      logLegacyPipelineUsage({ planId, reason: 'DOCX conversion failed - emergency fallback' });
       let legacyPdf = await renderLegacyPdf({
         plan: { ...plan, planVersion },
         fullPlan,
