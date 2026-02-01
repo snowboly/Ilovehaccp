@@ -1,4 +1,5 @@
 import { getQuestions } from "@/data/haccp/loader";
+import { isSignificant } from "@/lib/haccp/significanceMatrix";
 
 export type ExportTarget = "pdf" | "docx";
 export type ExportText = string | { pdf: string; docx: string };
@@ -54,6 +55,13 @@ export function resolveExportText(text: ExportText, target: ExportTarget): strin
 }
 
 const t = (pdf: string, docx: string = pdf): ExportText => ({ pdf, docx });
+
+const resolveHazardSignificance = (hazard: any): boolean => {
+  if (hazard?.is_significant !== undefined && hazard?.is_significant !== null) {
+    return Boolean(hazard.is_significant);
+  }
+  return isSignificant(hazard?.severity, hazard?.likelihood);
+};
 
 const formatValue = (value: any) => {
   if (value === null || value === undefined || value === "") return "Not provided";
@@ -387,7 +395,7 @@ export function buildExportDoc({
             hazard.hazards || "-",
             hazard.severity || "-",
             hazard.likelihood || "-",
-            hazard.is_ccp ? "Yes" : "No",
+            resolveHazardSignificance(hazard) ? "Yes" : "No",
             hazard.control_measure || "-",
           ]),
           colWidths: [20, 30, 10, 10, 10, 20],

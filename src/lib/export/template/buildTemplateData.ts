@@ -4,6 +4,7 @@
  */
 
 import { getQuestions } from '@/data/haccp/loader';
+import { isSignificant } from '@/lib/haccp/significanceMatrix';
 
 export interface ProcessStep {
   step_number: number;
@@ -250,13 +251,17 @@ const extractHazardAnalysis = (fullPlan: any): HazardAnalysisRow[] => {
       description = PROCESS_CONTROL_DEFAULT_DESCRIPTION;
     }
 
+    const significant = hazard.is_significant !== undefined && hazard.is_significant !== null
+      ? Boolean(hazard.is_significant)
+      : isSignificant(hazard.severity, hazard.likelihood);
+
     return {
       step: formatValue(hazard.step_name || hazard.step),
       hazard: formatValue(hazard.hazards || hazard.hazard),
       hazard_type: formatValue(hazard.hazard_type || hazard.type),
       severity: formatValue(hazard.severity),
       likelihood: formatValue(hazard.likelihood),
-      significant: hazard.is_ccp ? 'Yes' : 'No',
+      significant: significant ? 'Yes' : 'No',
       control_measure: formatValue(controlMeasure),
       control_measure_description: description || '-',
     };
