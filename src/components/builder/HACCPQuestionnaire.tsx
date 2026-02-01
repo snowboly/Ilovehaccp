@@ -57,16 +57,38 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
   }, [initialData]);
 
   // MOVED UP: Calculate visible questions first so validate() can use it
-  const visibleQuestions = sectionData.questions.filter(q => {
-      if (q.show_if) {
-          const parentVal = answers[q.show_if.questionId];
-          const requiredVal = q.show_if.value;
-          if (Array.isArray(requiredVal)) {
-              return requiredVal.includes(parentVal);
-          }
-          return parentVal === requiredVal;
+  const matchesCondition = (condition: any, values: Record<string, any>) => {
+    const parentVal = values[condition.questionId];
+
+    if (condition.includes !== undefined) {
+      if (Array.isArray(parentVal)) {
+        return parentVal.includes(condition.includes);
       }
-      return true;
+      return parentVal === condition.includes;
+    }
+
+    if (condition.excludes !== undefined) {
+      if (Array.isArray(parentVal)) {
+        return parentVal.length > 0 && parentVal.some((item: string) => item !== condition.excludes);
+      }
+      return parentVal !== condition.excludes;
+    }
+
+    const requiredVal = condition.value;
+    if (Array.isArray(requiredVal)) {
+      return requiredVal.includes(parentVal);
+    }
+    return parentVal === requiredVal;
+  };
+
+  const visibleQuestions = sectionData.questions.filter(q => {
+    if (q.show_if) {
+      if (Array.isArray(q.show_if?.all)) {
+        return q.show_if.all.every((condition: any) => matchesCondition(condition, answers));
+      }
+      return matchesCondition(q.show_if, answers);
+    }
+    return true;
   });
 
   const handleAnswerChange = (id: string, value: any) => {

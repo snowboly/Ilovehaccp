@@ -53,7 +53,13 @@ export interface HACCPQuestion {
   min_items?: number; // For repeatable_list
   item_schema?: RepeatableItemSchema; // For repeatable_list
   show_if_all_false?: string[]; // For special conditions
-  show_if?: { questionId: string; value?: string | boolean | string[]; includes?: string };
+  show_if?: {
+    questionId?: string;
+    value?: string | boolean | string[];
+    includes?: string;
+    excludes?: string;
+    all?: Array<{ questionId: string; value?: string | boolean | string[]; includes?: string; excludes?: string }>;
+  };
 }
 
 export interface HACCPSectionData {
