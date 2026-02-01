@@ -20,9 +20,9 @@ const resolvePdfPipeline = (env: NodeJS.ProcessEnv) => {
   };
 };
 
-const logLegacyPipelineUsage = (context: { reason: string }) => {
+const logLegacyPipelineUsage = (reason: string) => {
   console.warn('[DEPRECATED] Legacy PDF pipeline invoked', {
-    ...context,
+    reason,
     timestamp: new Date().toISOString(),
     advisory: 'Legacy pipeline is frozen. Migrate to DOCX pipeline.'
   });
@@ -66,7 +66,7 @@ async function generateSamplePdf(): Promise<Buffer> {
   const pipelineConfig = resolvePdfPipeline(process.env);
 
   if (pipelineConfig.useLegacy) {
-    logLegacyPipelineUsage({ reason: 'EXPORT_PDF_PIPELINE=legacy' });
+    logLegacyPipelineUsage('EXPORT_PDF_PIPELINE=legacy');
     return renderLegacySamplePdf();
   }
 
@@ -78,7 +78,7 @@ async function generateSamplePdf(): Promise<Buffer> {
       throw error;
     }
 
-    logLegacyPipelineUsage({ reason: 'DOCX conversion unavailable' });
+    logLegacyPipelineUsage('DOCX conversion unavailable');
     console.warn('DOCX conversion unavailable, falling back to legacy sample PDF.', error);
     return renderLegacySamplePdf();
   }
