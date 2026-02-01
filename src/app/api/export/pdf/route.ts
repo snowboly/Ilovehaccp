@@ -8,7 +8,6 @@ import { getDictionary } from '@/lib/locales';
 import { fetchLogoAssets } from '@/lib/export/logo';
 import { isExportAllowed } from '@/lib/export/permissions';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
-import { validateCriticalLimits } from '@/lib/export/criticalLimitValidation';
 import {
   buildStoragePath,
   computeContentHash,
@@ -226,14 +225,6 @@ export async function POST(req: Request) {
         ? baseFullPlan.hazard_analysis
         : plan.hazard_analysis || []
     };
-
-    const criticalLimitIssues = validateCriticalLimits(fullPlan);
-    if (criticalLimitIssues.length > 0) {
-      return NextResponse.json(
-        { error: 'Critical limits below standard require justification and reference.', issues: criticalLimitIssues },
-        { status: 422 }
-      );
-    }
 
     const productInputs = originalInputs.product || {};
     const { wordLogo, pdfLogo } = await fetchLogoAssets(productInputs.logo_url);

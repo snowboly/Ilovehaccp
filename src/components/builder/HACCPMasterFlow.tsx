@@ -15,6 +15,7 @@ import { fetchWithTimeout } from '@/lib/builder/utils/withTimeoutFetch';
 import { classifyControl, type ControlClassification } from '@/lib/builder/ccpDecisionTree';
 import { applySignificanceToHazardEvaluation, isSignificant } from '@/lib/haccp/significanceMatrix';
 import { applyVulnerableSeverityEscalation } from '@/lib/haccp/vulnerableSeverityEscalation';
+import { validateCriticalLimits } from '@/lib/export/criticalLimitValidation';
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -705,6 +706,12 @@ export default function HACCPMasterFlow() {
           HAS_WARNINGS: SCOPE_GROUPED || INGREDIENT_DETAIL_LOW || SHELF_LIFE_UNVALIDATED || HIGH_RISK_RTE || VULNERABLE_CONSUMER || FORESEEABLE_MISUSE
       };
   }, [allAnswers]);
+
+  const criticalLimitIssues = React.useMemo(() => {
+      const fullPlan = generatedPlan?.full_plan || generatedPlan?.fullPlan;
+      if (!fullPlan) return [];
+      return validateCriticalLimits(fullPlan);
+  }, [generatedPlan]);
 
   // Helper: Detect Generic Risk Pattern
   const checkGenericRiskPattern = () => {
@@ -1947,6 +1954,39 @@ export default function HACCPMasterFlow() {
                   </p>
               </div>
 
+              {(exportBlocked || criticalLimitIssues.length > 0) && (
+                  <div className="bg-amber-50 border border-amber-200 p-6 rounded-3xl shadow-sm">
+                      <div className="flex items-start gap-3">
+                          <AlertTriangle className="w-5 h-5 text-amber-600 mt-1" />
+                          <div className="space-y-3">
+                              <h2 className="text-lg font-black text-amber-900">Warnings to review before use</h2>
+                              {exportBlocked && (
+                                  <p className="text-sm text-amber-800">
+                                      Major gaps were flagged in the system review. Exports are still available, but this draft is not audit-ready.
+                                  </p>
+                              )}
+                              {criticalLimitIssues.length > 0 && (
+                                  <div className="text-sm text-amber-800 space-y-2">
+                                      <p>
+                                          We found {criticalLimitIssues.length} critical limit{criticalLimitIssues.length === 1 ? '' : 's'} below common standards or missing justification/reference.
+                                          Exports are still available, but please confirm these limits.
+                                      </p>
+                                      <ul className="list-disc list-inside space-y-1">
+                                          {criticalLimitIssues.slice(0, 3).map((issue, i) => (
+                                              <li key={i}>
+                                                  {issue.stepName || issue.controlType}: {issue.limitValue || 'No limit provided'}
+                                              </li>
+                                          ))}
+                                      </ul>
+                                      {criticalLimitIssues.length > 3 && (
+                                          <p className="text-xs text-amber-700">+{criticalLimitIssues.length - 3} more items.</p>
+                                      )}
+                                  </div>
+                              )}
+                          </div>
+                      </div>
+                  </div>
+              )}
               {/* SECTION 2 — AUTOMATED CHECKS & LIMITATIONS */}
               <div className="grid md:grid-cols-2 gap-8">
                   <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm">
