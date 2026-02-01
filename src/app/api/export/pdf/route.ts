@@ -26,19 +26,33 @@ export const dynamic = 'force-dynamic';
 
 const sanitizeFileName = (name: string) => name.replace(/[^a-z0-9._-]/gi, '_');
 
+/**
+ * Legacy Pipeline Status: FROZEN
+ * ================================
+ * The legacy react-pdf pipeline is frozen and should NOT be used in production.
+ * It remains in the codebase for emergency rollback only.
+ *
+ * To enable legacy (NOT RECOMMENDED):
+ *   PDF_USE_LEGACY_EXPORTER=true
+ *   EXPORT_PDF_PIPELINE=legacy
+ *
+ * Scheduled for removal in a future cleanup PR.
+ * See: docs/architecture/EXPORT_PIPELINE.md
+ */
 const LEGACY_FALLBACK_ENABLED = process.env.PDF_USE_LEGACY_EXPORTER === 'true';
 const DOCX_PDF_ENABLED = process.env.PDF_USE_DOCX_CONVERSION !== 'false';
 const DEFAULT_TEMPLATE_VERSION = 'minneapolis-v1';
 const WATERMARK_VERSION = 'wm-v1';
 
-/**
- * PDF Pipeline Selection
- * - "docx" (default): Generate PDF from DOCX conversion (current production behavior)
- * - "legacy": Use legacy react-pdf renderer directly
- *
- * To rollback to legacy pipeline, set: EXPORT_PDF_PIPELINE=legacy
- */
 const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
+
+const logLegacyPipelineUsage = (context: { planId?: string; reason: string }) => {
+  console.warn('[DEPRECATED] Legacy PDF pipeline invoked', {
+    ...context,
+    timestamp: new Date().toISOString(),
+    advisory: 'Legacy pipeline is frozen. Migrate to DOCX pipeline.',
+  });
+};
 type NextResponseBody = ArrayBuffer | Uint8Array | string;
 const toBodyInit = (data: Buffer | Uint8Array | ArrayBuffer): NextResponseBody => {
   if (data instanceof ArrayBuffer) return data;
@@ -317,6 +331,7 @@ export async function POST(req: Request) {
     let pdfBuffer: Buffer;
     try {
       if (useLegacyPipeline) {
+        logLegacyPipelineUsage({ planId, reason: 'EXPORT_PDF_PIPELINE=legacy or DOCX disabled' });
         let legacyPdf = await renderLegacyPdf({
           plan: { ...plan, planVersion },
           fullPlan,
@@ -353,6 +368,7 @@ export async function POST(req: Request) {
         throw error;
       }
 
+      logLegacyPipelineUsage({ planId, reason: 'DOCX conversion failed - emergency fallback' });
       let legacyPdf = await renderLegacyPdf({
         plan: { ...plan, planVersion },
         fullPlan,

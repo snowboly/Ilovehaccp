@@ -9,7 +9,8 @@
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "prestart": "node scripts/restore_favicons.js",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "ci:validate-export": "node scripts/ci-validate-export.js"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.2",
