@@ -23,6 +23,20 @@
           "tooltip": "Cite a fonte do seu limite (por exemplo, Diretrizes da ANVISA, Regulamento 852/2004) se conhecida.",
           "type": "text",
           "required": false
+        },
+        {
+          "id": "critical_limit_justification",
+          "text": "Justificativa se abaixo do padrÃ£o (Opcional)",
+          "tooltip": "Explique por que o seu limite difere dos padrÃµes comuns, se aplicÃ¡vel.",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "critical_limit_reference",
+          "text": "ReferÃªncia da justificativa (Opcional)",
+          "tooltip": "ReferÃªncia que sustenta a justificativa (ex.: relatÃ³rio de validaÃ§Ã£o, guia regulatÃ³rio).",
+          "type": "text",
+          "required": false
         }
       ]
     },

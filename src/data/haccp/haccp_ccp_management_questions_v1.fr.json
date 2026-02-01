@@ -23,6 +23,20 @@
           "tooltip": "Citez la source de votre limite (par exemple, lignes directrices de l'FSA, Règlement 852/2004) si connue.",
           "type": "text",
           "required": false
+        },
+        {
+          "id": "critical_limit_justification",
+          "text": "Justification si en dessous du standard (Optionnel)",
+          "tooltip": "Expliquez pourquoi votre limite diffÃ¨re des standards courants, le cas Ã©chÃ©ant.",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "critical_limit_reference",
+          "text": "RÃ©fÃ©rence de la justification (Optionnel)",
+          "tooltip": "RÃ©fÃ©rence soutenant la justification (p. ex. rapport de validation, guide rÃ©glementaire).",
+          "type": "text",
+          "required": false
         }
       ]
     },

@@ -25,6 +25,22 @@
           "type": "text",
           "required": false,
           "placeholder": "e.g., FSA Safe Catering Pack, Codex Alimentarius"
+        },
+        {
+          "id": "critical_limit_justification",
+          "text": "Justification if below standard (Optional)",
+          "tooltip": "Explain why your limit differs from common standards, if applicable.",
+          "type": "text",
+          "required": false,
+          "placeholder": "e.g., Validated with product-specific study"
+        },
+        {
+          "id": "critical_limit_reference",
+          "text": "Justification reference (Optional)",
+          "tooltip": "Reference supporting the justification (e.g. validation report, regulatory guidance).",
+          "type": "text",
+          "required": false,
+          "placeholder": "e.g., Validation report ID or standard clause"
         }
       ]
     },
