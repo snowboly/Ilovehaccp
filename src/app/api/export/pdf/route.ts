@@ -22,7 +22,6 @@ import {
   getDefaultWatermarkConfig,
   resolvePdfPipeline
 } from '@/lib/export/pdf';
-import { resolvePdfPipeline } from '@/lib/export/pdf/pipeline';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
