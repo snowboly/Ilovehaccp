@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { FileText, Download, CheckCircle2, ArrowRight, FileCheck, Sparkles, Loader2 } from 'lucide-react';
 
+const SAMPLE_PDF_URL = '/api/export/sample/pdf';
+
 // FAQ data for both schema and UI
 const faqs = [
   {
@@ -62,6 +64,7 @@ export default function SampleHACCPPlanPage() {
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [pdfVisible, setPdfVisible] = useState(false);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
+  const viewerUrl = `/pdfjs-viewer.html?file=${encodeURIComponent(SAMPLE_PDF_URL)}`;
 
   // Lazy-load PDF when container enters viewport
   useEffect(() => {
@@ -86,7 +89,7 @@ export default function SampleHACCPPlanPage() {
     setIsDownloading(true);
     setDownloadError(null);
     try {
-      const res = await fetch('/api/export/sample/pdf');
+      const res = await fetch(SAMPLE_PDF_URL);
       if (!res.ok) {
         throw new Error('Failed to download PDF');
       }
@@ -186,27 +189,13 @@ export default function SampleHACCPPlanPage() {
           {/* PDF Embed with Lazy Loading */}
           <div ref={pdfContainerRef} className="relative bg-slate-200">
             {pdfVisible ? (
-              <object
-                data="/api/export/sample/pdf"
-                type="application/pdf"
-                className="w-full h-[700px]"
+              <iframe
                 title="Sample HACCP Plan PDF Preview"
-                aria-label="Embedded PDF preview of a sample HACCP plan document"
-              >
-                <div className="flex flex-col items-center justify-center h-[700px] bg-slate-100 text-slate-600">
-                  <FileText className="w-16 h-16 text-slate-400 mb-4" aria-hidden="true" />
-                  <p className="text-lg font-semibold mb-2">PDF Preview Unavailable</p>
-                  <p className="text-sm mb-4">Your browser may not support inline PDF viewing.</p>
-                  <button
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors"
-                  >
-                    <Download className="w-5 h-5" aria-hidden="true" />
-                    Download PDF Instead
-                  </button>
-                </div>
-              </object>
+                src={viewerUrl}
+                className="w-full h-[700px]"
+                loading="lazy"
+                aria-label="PDF.js preview of a sample HACCP plan document"
+              />
             ) : (
               <div className="flex flex-col items-center justify-center h-[700px] bg-slate-100 text-slate-600">
                 <Loader2 className="w-12 h-12 text-slate-400 mb-4 animate-spin" aria-hidden="true" />
