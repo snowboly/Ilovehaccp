@@ -6,10 +6,10 @@ import { getDictionary } from '@/lib/locales';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
 import { applyWatermark, generateCleanPdfFromDocx, getDefaultWatermarkConfig } from '@/lib/export/pdf';
 import { samplePlanFixture } from '@/lib/export/sample/fixture';
+import { resolvePdfPipeline } from '@/lib/export/pdf/pipeline';
 
 export const runtime = 'nodejs';
 
-const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
 const WATERMARK_TEXT = 'PREVIEW — NOT FOR OFFICIAL USE';
 const SAMPLE_FILENAME = 'Sample_HACCP_Plan.pdf';
 
@@ -48,7 +48,8 @@ async function renderLegacySamplePdf(): Promise<Buffer> {
 }
 
 async function generateSamplePdf(): Promise<Buffer> {
-  if (PDF_PIPELINE === 'legacy') {
+  const pipelineConfig = resolvePdfPipeline(process.env);
+  if (pipelineConfig.useLegacy) {
     return renderLegacySamplePdf();
   }
 
@@ -56,6 +57,9 @@ async function generateSamplePdf(): Promise<Buffer> {
     const docxBuffer = await generateDocxBuffer(samplePlanFixture, 'en');
     return await generateCleanPdfFromDocx(docxBuffer);
   } catch (error) {
+    if (pipelineConfig.isProd) {
+      throw error;
+    }
     console.warn('DOCX conversion unavailable, falling back to legacy sample PDF.', error);
     return renderLegacySamplePdf();
   }
@@ -77,3 +81,5 @@ export async function GET() {
     }
   });
 }
+
+

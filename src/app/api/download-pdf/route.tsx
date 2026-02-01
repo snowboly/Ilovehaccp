@@ -1,20 +1,13 @@
-import React from 'react';
 import { NextResponse } from 'next/server';
 import { supabaseService } from '@/lib/supabase';
-import { renderToBuffer, type DocumentProps } from '@react-pdf/renderer';
-import HACCPDocument from '@/components/pdf/HACCPDocument';
-import { MinneapolisPdfDocument } from '@/lib/export/template/renderMinneapolisPdf';
-import { buildTemplateData } from '@/lib/export/template/buildTemplateData';
 import { checkAdminRole } from '@/lib/admin-auth';
-import { getDictionary } from '@/lib/locales';
 import { isExportAllowed } from '@/lib/export/permissions';
 import { fetchLogoAssets } from '@/lib/export/logo';
 import { verifyExportToken } from '@/lib/export/auth';
 import { transformDraftToPlan } from '@/lib/export/transform';
 import { logAccess } from '@/lib/audit';
-
-// Feature flag: Use Minneapolis-style template for PDF (matches DOCX structure)
-const PDF_USE_MINNEAPOLIS_TEMPLATE = process.env.PDF_USE_MINNEAPOLIS_TEMPLATE !== 'false';
+import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
+import { applyWatermark, generateCleanPdfFromDocx, getDefaultWatermarkConfig } from '@/lib/export/pdf';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -121,8 +114,7 @@ export async function GET(req: Request) {
 
     const planVersion = latestVersion?.version_number || 1;
 
-    // 5. Generate PDF
-    const dict = getDictionary(lang).pdf;
+    // 5. Generate PDF via DOCX pipeline
     const baseFullPlan =
         plan.full_plan ||
         ({
@@ -142,63 +134,26 @@ export async function GET(req: Request) {
     };
 
     const productInputs = originalInputs.product || {};
-    
-    const pdfData = {
+    const isPaid = plan.payment_status === 'paid' || plan.export_paid || plan.review_paid || isAdmin;
+    const exportPayload = {
         businessName: plan.business_name,
+        full_plan: fullPlan,
+        planVersion,
+        template: String(originalInputs.template || fullPlan.validation?.document_style || 'minneapolis-v1'),
         productName: productInputs.product_name || plan.product_name || "HACCP Plan",
         productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
+        mainIngredients: productInputs.key_ingredients || "Standard",
         intendedUse: productInputs.intended_use || plan.intended_use || "General",
         storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
-        mainIngredients: productInputs.key_ingredients || "Standard",
         shelfLife: productInputs.shelf_life || "As per label",
-        analysis: plan.hazard_analysis || [],
-        fullPlan: fullPlan,
-        planVersion,
-        lang,
-        isPaid: plan.payment_status === 'paid' || plan.export_paid || plan.review_paid || isAdmin
+        logoUrl: productInputs.logo_url || null,
+        isPaid
     };
 
-    let pdfLogo: string | null = null;
-    try {
-        const logoResult = await fetchLogoAssets(originalInputs.product?.logo_url);
-        pdfLogo = logoResult.pdfLogo;
-    } catch (logoError) {
-        console.error('[download-pdf] logo fetch error (continuing without logo):', logoError);
-        // Continue without logo rather than failing
-    }
-
-    let pdfBuffer;
-    try {
-        if (PDF_USE_MINNEAPOLIS_TEMPLATE && lang === 'en') {
-            // Use Minneapolis-style template (matches DOCX structure)
-            const isPaid = plan.payment_status === 'paid' || plan.export_paid || plan.review_paid || isAdmin;
-            const templateData = buildTemplateData(
-                { fullPlan, businessName: plan.business_name, productName: productInputs.product_name, planVersion },
-                isPaid,
-                null // Logo buffer not used in this PDF template (could be added later)
-            );
-            const pdfElement = React.createElement(
-                MinneapolisPdfDocument as React.ComponentType<any>,
-                { data: templateData }
-            ) as React.ReactElement<DocumentProps>;
-            pdfBuffer = await renderToBuffer(pdfElement);
-        } else {
-            // Legacy template
-            const legacyElement = React.createElement(
-                HACCPDocument as React.ComponentType<any>,
-                {
-                    data: pdfData,
-                    dict,
-                    logo: pdfLogo,
-                    template: originalInputs.template || 'audit-classic'
-                }
-            ) as React.ReactElement<DocumentProps>;
-            pdfBuffer = await renderToBuffer(legacyElement);
-        }
-    } catch (renderError: any) {
-        console.error('[download-pdf] PDF render error:', renderError?.message || renderError);
-        return NextResponse.json({ error: 'Failed to render PDF. Please try again or contact support.' }, { status: 500 });
-    }
+    const { wordLogo } = await fetchLogoAssets(productInputs.logo_url);
+    const docxBuffer = await generateDocxBuffer({ ...exportPayload, logoBuffer: wordLogo }, lang);
+    const cleanPdf = await generateCleanPdfFromDocx(docxBuffer);
+    const pdfBuffer = isPaid ? cleanPdf : await applyWatermark(cleanPdf, getDefaultWatermarkConfig());
 
     const safeBusinessName = String(plan.business_name || 'Draft').replace(/\s+/g, '_');
 

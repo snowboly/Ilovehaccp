@@ -9,6 +9,7 @@ import { fetchLogoAssets } from '@/lib/export/logo';
 import { isExportAllowed } from '@/lib/export/permissions';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
 import {
+  buildDocxTemplateVersion,
   buildStoragePath,
   computeContentHash,
   getCachedArtifact,
@@ -20,6 +21,7 @@ import {
   generateCleanPdfFromDocx,
   getDefaultWatermarkConfig
 } from '@/lib/export/pdf';
+import { resolvePdfPipeline } from '@/lib/export/pdf/pipeline';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -27,18 +29,9 @@ export const dynamic = 'force-dynamic';
 const sanitizeFileName = (name: string) => name.replace(/[^a-z0-9._-]/gi, '_');
 
 const LEGACY_FALLBACK_ENABLED = process.env.PDF_USE_LEGACY_EXPORTER === 'true';
-const DOCX_PDF_ENABLED = process.env.PDF_USE_DOCX_CONVERSION !== 'false';
 const DEFAULT_TEMPLATE_VERSION = 'minneapolis-v1';
 const WATERMARK_VERSION = 'wm-v1';
 
-/**
- * PDF Pipeline Selection
- * - "docx" (default): Generate PDF from DOCX conversion (current production behavior)
- * - "legacy": Use legacy react-pdf renderer directly
- *
- * To rollback to legacy pipeline, set: EXPORT_PDF_PIPELINE=legacy
- */
-const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
 type NextResponseBody = ArrayBuffer | Uint8Array | string;
 const toBodyInit = (data: Buffer | Uint8Array | ArrayBuffer): NextResponseBody => {
   if (data instanceof ArrayBuffer) return data;
@@ -102,6 +95,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     planId = body?.planId as string | undefined;
     const lang = (body?.lang || 'en') as 'en' | 'es' | 'fr' | 'pt';
+    const pipelineConfig = resolvePdfPipeline(process.env);
 
     if (!planId && body?.data) {
       const data = body.data as Record<string, any>;
@@ -130,19 +124,45 @@ export async function POST(req: Request) {
         shelf_life: data.shelfLife || data.shelf_life || '',
         logo_url: data.logoUrl || data.logo_url || null
       };
-      const { pdfLogo } = await fetchLogoAssets(productInputs.logo_url);
-      let samplePdf = await renderLegacyPdf({
-        plan,
-        fullPlan,
-        lang,
-        template: templateVersion,
-        logo: pdfLogo,
-        productInputs,
-        isPaid: false
-      });
-      samplePdf = await applyWatermark(samplePdf, getDefaultWatermarkConfig());
+      if (pipelineConfig.isProd && !pipelineConfig.docxEnabled) {
+        return NextResponse.json({ error: 'DOCX-based PDF exports are disabled.' }, { status: 503 });
+      }
+
+      let pdfBuffer: Buffer;
+      if (pipelineConfig.useLegacy) {
+        const { pdfLogo } = await fetchLogoAssets(productInputs.logo_url);
+        const legacyPdf = await renderLegacyPdf({
+          plan,
+          fullPlan,
+          lang,
+          template: templateVersion,
+          logo: pdfLogo,
+          productInputs,
+          isPaid: false
+        });
+        pdfBuffer = await applyWatermark(legacyPdf, getDefaultWatermarkConfig());
+      } else {
+        const { wordLogo } = await fetchLogoAssets(productInputs.logo_url);
+        const exportPayload = {
+          businessName: plan.business_name,
+          full_plan: fullPlan,
+          planVersion: data.planVersion || 1,
+          template: templateVersion,
+          productName: productInputs.product_name || plan.product_name || 'HACCP Plan',
+          productDescription: productInputs.product_category || plan.product_description || 'Generated Plan',
+          mainIngredients: productInputs.key_ingredients || 'Standard',
+          intendedUse: productInputs.intended_use || plan.intended_use || 'General',
+          storageType: productInputs.storage_conditions || plan.storage_type || 'Standard',
+          shelfLife: productInputs.shelf_life || 'As per label',
+          logoUrl: productInputs.logo_url || null,
+          isPaid: false
+        };
+        const docxBuffer = await generateDocxBuffer({ ...exportPayload, logoBuffer: wordLogo }, lang);
+        const samplePdf = await generateCleanPdfFromDocx(docxBuffer);
+        pdfBuffer = await applyWatermark(samplePdf, getDefaultWatermarkConfig());
+      }
       const fileName = sanitizeFileName(body?.fileName || 'HACCP_Plan.pdf');
-      const responseBody = toBodyInit(samplePdf);
+      const responseBody = toBodyInit(pdfBuffer);
       return new NextResponse(responseBody as any, {
         headers: {
           'Content-Type': 'application/pdf',
@@ -238,8 +258,7 @@ export async function POST(req: Request) {
       originalInputs.template || fullPlan.validation?.document_style || DEFAULT_TEMPLATE_VERSION
     );
 
-    // Pipeline selection: "docx" (default) or "legacy"
-    console.info('[export/pdf] pipeline:', PDF_PIPELINE);
+    console.info('[export/pdf] pipeline:', pipelineConfig.useLegacy ? 'legacy' : 'docx');
 
     // DOCX pipeline (default): Generate PDF from DOCX conversion
     const exportPayload = {
@@ -257,19 +276,20 @@ export async function POST(req: Request) {
       isPaid: exportUnlocked
     };
 
-    const docxContentHash = computeContentHash(exportPayload, templateVersion);
-    const docxPath = buildStoragePath(planId, templateVersion, docxContentHash, 'plan.docx');
+    const cacheTemplateVersion = buildDocxTemplateVersion(templateVersion);
+    const docxContentHash = computeContentHash(exportPayload, cacheTemplateVersion);
+    const docxPath = buildStoragePath(planId, cacheTemplateVersion, docxContentHash, 'plan.docx');
 
-    const useLegacyPipeline = PDF_PIPELINE === 'legacy' || !DOCX_PDF_ENABLED;
+    const useLegacyPipeline = pipelineConfig.useLegacy;
     const pdfPipelineVersion = useLegacyPipeline ? 'legacy-v1' : 'docx-v1';
-    const cleanHash = computeContentHash(exportPayload, templateVersion, pdfPipelineVersion);
+    const cleanHash = computeContentHash(exportPayload, cacheTemplateVersion, pdfPipelineVersion);
     const previewHash = computeContentHash(
       exportPayload,
-      templateVersion,
+      cacheTemplateVersion,
       `${pdfPipelineVersion}:${WATERMARK_VERSION}`
     );
-    const cleanPath = buildStoragePath(planId, templateVersion, cleanHash, 'clean.pdf');
-    const previewPath = buildStoragePath(planId, templateVersion, previewHash, 'preview.pdf');
+    const cleanPath = buildStoragePath(planId, cacheTemplateVersion, cleanHash, 'clean.pdf');
+    const previewPath = buildStoragePath(planId, cacheTemplateVersion, previewHash, 'preview.pdf');
 
     let docxBuffer: Buffer | null = null;
     const cachedDocx = await getCachedArtifact({ path: docxPath });
@@ -310,8 +330,14 @@ export async function POST(req: Request) {
 
     console.info('[export/pdf] cache miss', { planId, artifact: requestedArtifact });
 
-    if (!DOCX_PDF_ENABLED && !LEGACY_FALLBACK_ENABLED) {
+    if (!pipelineConfig.docxEnabled && !LEGACY_FALLBACK_ENABLED) {
       return NextResponse.json({ error: 'DOCX-based PDF exports are disabled.' }, { status: 503 });
+    }
+    if (pipelineConfig.isProd && !pipelineConfig.docxEnabled) {
+      return NextResponse.json({ error: 'DOCX-based PDF exports are disabled.' }, { status: 503 });
+    }
+    if (pipelineConfig.isProd && useLegacyPipeline) {
+      return NextResponse.json({ error: 'Legacy PDF exports are disabled in production.' }, { status: 503 });
     }
 
     let pdfBuffer: Buffer;
@@ -349,7 +375,7 @@ export async function POST(req: Request) {
       });
     } catch (error) {
       console.error('[export/pdf] DOCX conversion failed', { planId, userId, error });
-      if (!LEGACY_FALLBACK_ENABLED) {
+      if (!LEGACY_FALLBACK_ENABLED || pipelineConfig.isProd) {
         throw error;
       }
 
@@ -385,10 +411,6 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     console.error('PDF Export Error:', { planId, userId, error });
-
-    if (LEGACY_FALLBACK_ENABLED && DOCX_PDF_ENABLED) {
-      console.warn('[export/pdf] Falling back to legacy PDF renderer:', error);
-    }
 
     const message = error instanceof Error ? error.message : 'Internal Server Error';
     return NextResponse.json({ error: message }, { status: 500 });

@@ -5,6 +5,7 @@ import { supabaseService } from '@/lib/supabase';
 export type ArtifactType = 'clean.pdf' | 'preview.pdf' | 'plan.docx';
 
 const DEFAULT_BUCKET = process.env.EXPORTS_BUCKET ?? 'exports';
+export const DOCX_TEMPLATE_VERSION = 'docx-template-v1';
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
@@ -45,6 +46,10 @@ export function buildStoragePath(
   artifactType: ArtifactType
 ): string {
   return `plans/${planId}/exports/${templateVersion}/${contentHash}/${artifactType}`;
+}
+
+export function buildDocxTemplateVersion(templateVersion: string): string {
+  return `${templateVersion}:${DOCX_TEMPLATE_VERSION}`;
 }
 
 export async function getCachedArtifact({
