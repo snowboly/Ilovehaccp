@@ -98,7 +98,8 @@
       "text": "Allergen cross-contact risks (if any)",
       "description": "Describe where unintended allergen contact could occur (e.g., shared equipment, rework, storage).",
       "type": "multiline_text",
-      "required": false
+      "required": false,
+      "show_if": { "questionId": "allergens_present", "excludes": "None" }
     },
     {
       "id": "allergen_controls",
@@ -106,6 +107,7 @@
       "description": "Select all applicable controls used to prevent cross-contact.",
       "type": "multi_select",
       "required": false,
+      "show_if": { "questionId": "allergens_present", "excludes": "None" },
       "options": [
         "Segregation",
         "Cleaning validation",
@@ -120,7 +122,12 @@
       "text": "Allergen control details (Optional)",
       "type": "text",
       "required": false,
-      "show_if": { "questionId": "allergen_controls", "includes": "Other" },
+      "show_if": {
+        "all": [
+          { "questionId": "allergens_present", "excludes": "None" },
+          { "questionId": "allergen_controls", "includes": "Other" }
+        ]
+      },
       "placeholder": "e.g., Color-coded tools, changeover verification"
     },
     {

@@ -516,6 +516,29 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
 
       case 'group':
         const groupValue = value || {};
+        const matchesCondition = (condition: any, values: Record<string, any>) => {
+            const parentVal = values[condition.questionId];
+
+            if (condition.includes !== undefined) {
+                if (Array.isArray(parentVal)) {
+                    return parentVal.includes(condition.includes);
+                }
+                return parentVal === condition.includes;
+            }
+
+            if (condition.excludes !== undefined) {
+                if (Array.isArray(parentVal)) {
+                    return parentVal.length > 0 && parentVal.some((item: string) => item !== condition.excludes);
+                }
+                return parentVal !== condition.excludes;
+            }
+
+            const expected = condition.value;
+            if (Array.isArray(expected)) {
+                return expected.includes(parentVal);
+            }
+            return parentVal === expected;
+        };
         return (
             <div className="space-y-6">
                 {question.questions?.map(subQ => {
@@ -527,22 +550,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
 
                     // Conditional visibility: show only when a sibling field matches the expected value
                     if (subQ.show_if) {
-                        const siblingValue = groupValue[subQ.show_if.questionId];
-
-                        // Handle "includes" check for multi-select fields
-                        if (subQ.show_if.includes) {
-                            // Check if the sibling value (array) includes the specified string
-                            if (!Array.isArray(siblingValue) || !siblingValue.includes(subQ.show_if.includes)) {
+                        if (Array.isArray(subQ.show_if?.all)) {
+                            if (!subQ.show_if.all.every((condition: any) => matchesCondition(condition, groupValue))) {
                                 return null;
                             }
-                        } else {
-                            // Original value-based check
-                            const expected = subQ.show_if.value;
-                            if (Array.isArray(expected)) {
-                                if (!expected.includes(siblingValue)) return null;
-                            } else if (siblingValue !== expected) {
-                                return null;
-                            }
+                        } else if (!matchesCondition(subQ.show_if, groupValue)) {
+                            return null;
                         }
                     }
 
@@ -569,6 +582,30 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
         if (ident.allergen_hazards) activeHazards.push({ id: 'allergen', name: 'Allergen Hazard' });
 
         if (activeHazards.length === 0) return <div className="text-slate-400 italic p-4 bg-slate-50 rounded-xl">No hazards identified in previous step.</div>;
+
+        const matchesHazardCondition = (condition: any, values: Record<string, any>) => {
+            const parentVal = values[condition.questionId];
+
+            if (condition.includes !== undefined) {
+                if (Array.isArray(parentVal)) {
+                    return parentVal.includes(condition.includes);
+                }
+                return parentVal === condition.includes;
+            }
+
+            if (condition.excludes !== undefined) {
+                if (Array.isArray(parentVal)) {
+                    return parentVal.length > 0 && parentVal.some((item: string) => item !== condition.excludes);
+                }
+                return parentVal !== condition.excludes;
+            }
+
+            const expected = condition.value;
+            if (Array.isArray(expected)) {
+                return expected.includes(parentVal);
+            }
+            return parentVal === expected;
+        };
 
         return (
             <div className="space-y-8">
@@ -597,21 +634,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                 const hazardValue = value?.[haz.id] || {};
 
                                 if (subQ.show_if) {
-                                    const siblingValue = hazardValue[subQ.show_if.questionId];
-
-                                    // Handle "includes" check for multi-select fields
-                                    if (subQ.show_if.includes) {
-                                        if (!Array.isArray(siblingValue) || !siblingValue.includes(subQ.show_if.includes)) {
+                                    if (Array.isArray(subQ.show_if?.all)) {
+                                        if (!subQ.show_if.all.every((condition: any) => matchesHazardCondition(condition, hazardValue))) {
                                             return null;
                                         }
-                                    } else {
-                                        // Original value-based check
-                                        const expected = subQ.show_if.value;
-                                        if (Array.isArray(expected)) {
-                                            if (!expected.includes(siblingValue)) return null;
-                                        } else if (siblingValue !== expected) {
-                                            return null;
-                                        }
+                                    } else if (!matchesHazardCondition(subQ.show_if, hazardValue)) {
+                                        return null;
                                     }
                                 }
 

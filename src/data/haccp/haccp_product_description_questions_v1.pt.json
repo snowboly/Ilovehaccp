@@ -92,7 +92,8 @@
         "text": "Riscos de contacto cruzado de alergénios (se houver)",
         "description": "Descreva onde pode ocorrer contacto involuntário (ex.: equipamentos partilhados, retrabalho, armazenamento).",
         "type": "multiline_text",
-        "required": false
+        "required": false,
+        "show_if": { "questionId": "allergens_present", "excludes": "Nenhum" }
       },
       {
         "id": "allergen_controls",
@@ -100,6 +101,7 @@
         "description": "Selecione os controlos aplicáveis para prevenir contacto cruzado.",
         "type": "multi_select",
         "required": false,
+        "show_if": { "questionId": "allergens_present", "excludes": "Nenhum" },
         "options": [
           "Segregação",
           "Validação de limpeza",
@@ -114,7 +116,12 @@
         "text": "Detalhes dos controlos de alergénios (Opcional)",
         "type": "text",
         "required": false,
-        "show_if": { "questionId": "allergen_controls", "includes": "Outro" },
+        "show_if": {
+          "all": [
+            { "questionId": "allergens_present", "excludes": "Nenhum" },
+            { "questionId": "allergen_controls", "includes": "Outro" }
+          ]
+        },
         "placeholder": "ex.: Ferramentas codificadas por cor, verificação de mudança"
       },
       {
@@ -222,4 +229,3 @@
     ]
   }
 }
-
