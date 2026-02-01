@@ -17,6 +17,22 @@ const nextConfig: NextConfig = {
         destination: "https://www.ilovehaccp.com/:path*",
         permanent: true,
       },
+      // SEO: Redirect alias URLs to canonical sample page
+      {
+        source: "/haccp-plan-example-pdf",
+        destination: "/sample-haccp-plan-pdf",
+        permanent: true,
+      },
+      {
+        source: "/haccp-plan-example",
+        destination: "/sample-haccp-plan-pdf",
+        permanent: true,
+      },
+      {
+        source: "/haccp-example-pdf",
+        destination: "/sample-haccp-plan-pdf",
+        permanent: true,
+      },
     ];
   },
 

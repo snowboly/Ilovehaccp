@@ -70,7 +70,7 @@ export default function SampleHACCPPlanPage() {
               Free Document Preview
             </span>
             <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight leading-[1.1]">
-              Sample HACCP Plan <span className="text-blue-600">PDF</span>
+              HACCP Plan Example <span className="text-blue-600">PDF</span>
             </h1>
             <p className="text-xl text-slate-600 font-medium leading-relaxed max-w-2xl mx-auto">
               See the exact document structure used by food businesses for EU & UK compliance.
@@ -253,7 +253,7 @@ export default function SampleHACCPPlanPage() {
           <h3 className="font-bold text-slate-900 mb-4">Related Resources</h3>
           <div className="flex flex-wrap gap-3">
             <Link href="/haccp-template" className="text-blue-600 hover:text-blue-800 font-medium underline">
-              HACCP Templates
+              HACCP Plan Word Template
             </Link>
             <span className="text-slate-400">|</span>
             <Link href="/requirements-eu-uk" className="text-blue-600 hover:text-blue-800 font-medium underline">

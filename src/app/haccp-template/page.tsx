@@ -244,7 +244,7 @@ export default function HACCPTemplatePage() {
           <h3 className="font-bold text-slate-900 mb-4">Related Resources</h3>
           <div className="flex flex-wrap gap-3">
             <Link href="/sample-haccp-plan-pdf" className="text-blue-600 hover:text-blue-800 font-medium underline">
-              Sample HACCP Plan PDF
+              HACCP Plan Example PDF
             </Link>
             <span className="text-slate-400">|</span>
             <Link href="/requirements-eu-uk" className="text-blue-600 hover:text-blue-800 font-medium underline">
