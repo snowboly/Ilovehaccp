@@ -7,7 +7,6 @@ import { fetchLogoAssets } from '@/lib/export/logo';
 import { verifyExportToken } from '@/lib/export/auth';
 import { transformDraftToPlan } from '@/lib/export/transform';
 import { logAccess } from '@/lib/audit';
-import { validateCriticalLimits } from '@/lib/export/criticalLimitValidation';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -138,13 +137,6 @@ export async function GET(req: Request) {
             : plan.hazard_analysis || []
     };
 
-    const criticalLimitIssues = validateCriticalLimits(fullPlan);
-    if (criticalLimitIssues.length > 0) {
-        return NextResponse.json(
-          { error: 'Critical limits below standard require justification and reference.', issues: criticalLimitIssues },
-          { status: 422 }
-        );
-    }
     const productInputs = originalInputs.product || {};
 
     const { wordLogo } = await fetchLogoAssets(productInputs.logo_url);
