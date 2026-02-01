@@ -13,6 +13,14 @@ const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'le
 const WATERMARK_TEXT = 'PREVIEW — NOT FOR OFFICIAL USE';
 const SAMPLE_FILENAME = 'Sample_HACCP_Plan.pdf';
 
+const logLegacyPipelineUsage = (reason: string) => {
+  console.warn('[DEPRECATED] Legacy PDF pipeline invoked', {
+    reason,
+    timestamp: new Date().toISOString(),
+    advisory: 'Legacy pipeline is frozen. Migrate to DOCX pipeline.'
+  });
+};
+
 /**
  * Public sample export route (no auth by design). Uses fixture data only.
  * Rollback docx conversion with EXPORT_PDF_PIPELINE=legacy.
@@ -49,6 +57,7 @@ async function renderLegacySamplePdf(): Promise<Buffer> {
 
 async function generateSamplePdf(): Promise<Buffer> {
   if (PDF_PIPELINE === 'legacy') {
+    logLegacyPipelineUsage('EXPORT_PDF_PIPELINE=legacy');
     return renderLegacySamplePdf();
   }
 
@@ -56,6 +65,7 @@ async function generateSamplePdf(): Promise<Buffer> {
     const docxBuffer = await generateDocxBuffer(samplePlanFixture, 'en');
     return await generateCleanPdfFromDocx(docxBuffer);
   } catch (error) {
+    logLegacyPipelineUsage('DOCX conversion unavailable');
     console.warn('DOCX conversion unavailable, falling back to legacy sample PDF.', error);
     return renderLegacySamplePdf();
   }
