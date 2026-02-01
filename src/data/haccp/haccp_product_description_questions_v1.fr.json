@@ -117,6 +117,7 @@
         "show_if": { "questionId": "allergen_controls", "includes": "Autre" },
         "placeholder": "p. ex., Outils codés par couleur, vérification de changement"
       },
+      {
         "id": "packaging_type",
         "text": "Type d'emballage primaire",
         "description": "Exemple : film plastique, emballage sous vide, bocal en verre, boîte en carton.",
