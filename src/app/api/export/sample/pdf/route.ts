@@ -11,7 +11,6 @@ import {
   resolvePdfPipeline
 } from '@/lib/export/pdf';
 import { samplePlanFixture } from '@/lib/export/sample/fixture';
-import { resolvePdfPipeline } from '@/lib/export/pdf/pipeline';
 
 export const runtime = 'nodejs';
 

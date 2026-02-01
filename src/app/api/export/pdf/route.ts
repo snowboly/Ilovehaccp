@@ -22,7 +22,6 @@ import {
   getDefaultWatermarkConfig,
   resolvePdfPipeline
 } from '@/lib/export/pdf';
-import { resolvePdfPipeline } from '@/lib/export/pdf/pipeline';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -45,6 +44,14 @@ const sanitizeFileName = (name: string) => name.replace(/[^a-z0-9._-]/gi, '_');
 const LEGACY_FALLBACK_ENABLED = process.env.PDF_USE_LEGACY_EXPORTER === 'true';
 const DEFAULT_TEMPLATE_VERSION = 'minneapolis-v1';
 const WATERMARK_VERSION = 'wm-v1';
+
+const logLegacyPipelineUsage = ({ planId, reason }: { planId?: string; reason: string }) => {
+  console.warn('[DEPRECATED] Legacy PDF pipeline invoked', {
+    planId,
+    reason,
+    timestamp: new Date().toISOString(),
+  });
+};
 
 type NextResponseBody = ArrayBuffer | Uint8Array | string;
 const toBodyInit = (data: Buffer | Uint8Array | ArrayBuffer): NextResponseBody => {
