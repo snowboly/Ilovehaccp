@@ -18,7 +18,8 @@ import {
 import {
   applyWatermark,
   generateCleanPdfFromDocx,
-  getDefaultWatermarkConfig
+  getDefaultWatermarkConfig,
+  resolvePdfPipeline
 } from '@/lib/export/pdf';
 
 export const runtime = 'nodejs';
@@ -43,8 +44,7 @@ const LEGACY_FALLBACK_ENABLED = process.env.PDF_USE_LEGACY_EXPORTER === 'true';
 const DOCX_PDF_ENABLED = process.env.PDF_USE_DOCX_CONVERSION !== 'false';
 const DEFAULT_TEMPLATE_VERSION = 'minneapolis-v1';
 const WATERMARK_VERSION = 'wm-v1';
-
-const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
+const pipelineConfig = resolvePdfPipeline(process.env);
 
 const logLegacyPipelineUsage = (context: { planId?: string; reason: string }) => {
   console.warn('[DEPRECATED] Legacy PDF pipeline invoked', {
@@ -253,7 +253,7 @@ export async function POST(req: Request) {
     );
 
     // Pipeline selection: "docx" (default) or "legacy"
-    console.info('[export/pdf] pipeline:', PDF_PIPELINE);
+    console.info('[export/pdf] pipeline:', pipelineConfig.pipeline);
 
     // DOCX pipeline (default): Generate PDF from DOCX conversion
     const exportPayload = {
@@ -274,7 +274,7 @@ export async function POST(req: Request) {
     const docxContentHash = computeContentHash(exportPayload, templateVersion);
     const docxPath = buildStoragePath(planId, templateVersion, docxContentHash, 'plan.docx');
 
-    const useLegacyPipeline = PDF_PIPELINE === 'legacy' || !DOCX_PDF_ENABLED;
+    const useLegacyPipeline = pipelineConfig.useLegacy || !DOCX_PDF_ENABLED;
     const pdfPipelineVersion = useLegacyPipeline ? 'legacy-v1' : 'docx-v1';
     const cleanHash = computeContentHash(exportPayload, templateVersion, pdfPipelineVersion);
     const previewHash = computeContentHash(

@@ -4,14 +4,25 @@ import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
 import { getDictionary } from '@/lib/locales';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
-import { applyWatermark, generateCleanPdfFromDocx, getDefaultWatermarkConfig } from '@/lib/export/pdf';
+import {
+  applyWatermark,
+  generateCleanPdfFromDocx,
+  getDefaultWatermarkConfig,
+  resolvePdfPipeline
+} from '@/lib/export/pdf';
 import { samplePlanFixture } from '@/lib/export/sample/fixture';
 
 export const runtime = 'nodejs';
-
-const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
 const WATERMARK_TEXT = 'PREVIEW — NOT FOR OFFICIAL USE';
 const SAMPLE_FILENAME = 'Sample_HACCP_Plan.pdf';
+
+const logLegacyPipelineUsage = (reason: string) => {
+  console.warn('[DEPRECATED] Legacy PDF pipeline invoked', {
+    reason,
+    timestamp: new Date().toISOString(),
+    advisory: 'Legacy pipeline is frozen. Migrate to DOCX pipeline.'
+  });
+};
 
 /**
  * Public sample export route (no auth by design). Uses fixture data only.
@@ -48,7 +59,10 @@ async function renderLegacySamplePdf(): Promise<Buffer> {
 }
 
 async function generateSamplePdf(): Promise<Buffer> {
-  if (PDF_PIPELINE === 'legacy') {
+  const pipelineConfig = resolvePdfPipeline(process.env);
+
+  if (pipelineConfig.useLegacy) {
+    logLegacyPipelineUsage('EXPORT_PDF_PIPELINE=legacy');
     return renderLegacySamplePdf();
   }
 
@@ -56,6 +70,11 @@ async function generateSamplePdf(): Promise<Buffer> {
     const docxBuffer = await generateDocxBuffer(samplePlanFixture, 'en');
     return await generateCleanPdfFromDocx(docxBuffer);
   } catch (error) {
+    if (pipelineConfig.isProd) {
+      throw error;
+    }
+
+    logLegacyPipelineUsage('DOCX conversion unavailable');
     console.warn('DOCX conversion unavailable, falling back to legacy sample PDF.', error);
     return renderLegacySamplePdf();
   }
