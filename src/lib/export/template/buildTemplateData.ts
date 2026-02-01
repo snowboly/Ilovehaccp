@@ -55,6 +55,10 @@ export interface TemplateData {
   product_category: string;
   ingredients: string;
   allergens: string;
+  allergens_present: string;
+  allergen_cross_contact_risks: string;
+  allergen_controls: string;
+  allergen_controls_notes: string;
   packaging: string;
   shelf_life: string;
   storage_conditions: string;
@@ -305,7 +309,19 @@ export function buildTemplateData(
 
   const processSteps = extractProcessSteps(fullPlan);
   const prpPrograms = extractPRPPrograms(fullPlan);
-  const hazardAnalysis = extractHazardAnalysis(fullPlan);
+  const allergensPresent = formatValue(productInputs.allergens_present || productInputs.allergens, 'None');
+  const hazardAnalysisBase = extractHazardAnalysis(fullPlan);
+  const hazardAnalysis = hazardAnalysisBase.map((row) => {
+    if (!allergensPresent || ['none', '-', 'not provided'].includes(allergensPresent.toLowerCase())) {
+      return row;
+    }
+    const type = (row.hazard_type || '').toLowerCase();
+    const hazardText = (row.hazard || '').toLowerCase();
+    if (type.includes('allergen') || hazardText.includes('allergen')) {
+      return { ...row, hazard: `${row.hazard} (Allergens: ${allergensPresent})` };
+    }
+    return row;
+  });
   const ccps = extractCCPs(fullPlan);
   const intendedUseRaw = productInputs.intended_use || data.intendedUse || '';
   const consumerHandlingRaw = productInputs.cooking_required || data.consumerHandling || '';
@@ -323,7 +339,11 @@ export function buildTemplateData(
     product_name: formatValue(productInputs.product_name || data.productName, 'Product'),
     product_category: formatValue(productInputs.product_category || data.productDescription),
     ingredients: formatValue(productInputs.key_ingredients || data.mainIngredients, 'As per recipe'),
-    allergens: formatValue(productInputs.allergens, 'See ingredients list'),
+    allergens: allergensPresent,
+    allergens_present: allergensPresent,
+    allergen_cross_contact_risks: formatValue(productInputs.allergen_cross_contact_risks, 'Not provided'),
+    allergen_controls: formatValue(productInputs.allergen_controls, 'Not provided'),
+    allergen_controls_notes: formatValue(productInputs.allergen_controls_notes, '-'),
     packaging: formatValue(productInputs.packaging_type || productInputs.packaging),
     shelf_life: formatValue(productInputs.shelf_life || data.shelfLife, 'As per label'),
     storage_conditions: formatValue(productInputs.storage_conditions || data.storageType, 'As per label'),

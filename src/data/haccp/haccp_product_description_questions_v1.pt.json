@@ -88,6 +88,36 @@
         ]
       },
       {
+        "id": "allergen_cross_contact_risks",
+        "text": "Riscos de contacto cruzado de alergénios (se houver)",
+        "description": "Descreva onde pode ocorrer contacto involuntário (ex.: equipamentos partilhados, retrabalho, armazenamento).",
+        "type": "multiline_text",
+        "required": false
+      },
+      {
+        "id": "allergen_controls",
+        "text": "Controlos de contacto cruzado de alergénios",
+        "description": "Selecione os controlos aplicáveis para prevenir contacto cruzado.",
+        "type": "multi_select",
+        "required": false,
+        "options": [
+          "Segregação",
+          "Validação de limpeza",
+          "Verificação de rotulagem",
+          "Equipamento dedicado",
+          "Outro",
+          "Nenhum"
+        ]
+      },
+      {
+        "id": "allergen_controls_notes",
+        "text": "Detalhes dos controlos de alergénios (Opcional)",
+        "type": "text",
+        "required": false,
+        "show_if": { "questionId": "allergen_controls", "includes": "Outro" },
+        "placeholder": "ex.: Ferramentas codificadas por cor, verificação de mudança"
+      },
+      {
         "id": "packaging_type",
         "text": "Tipo de embalagem primária",
         "description": "Exemplo: película de plástico, embalagem a vácuo, frasco de vidro, caixa de cartão.",

@@ -437,6 +437,22 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
       colWidths={[30, 70]}
     />
 
+    {(data.allergens_present !== '-' ||
+      data.allergen_cross_contact_risks !== '-' ||
+      data.allergen_controls !== '-' ||
+      data.allergen_controls_notes !== '-') && (
+      <Table
+        headers={['Field', 'Details']}
+        rows={[
+          ['Allergens Present', data.allergens_present],
+          ['Cross-contact Risks', data.allergen_cross_contact_risks],
+          ['Controls', data.allergen_controls],
+          ['Control Notes', data.allergen_controls_notes],
+        ].filter((row) => row[1] && row[1] !== '-' && row[1] !== 'Not provided')}
+        colWidths={[30, 70]}
+      />
+    )}
+
     {/* SECTION 3 - INTENDED USE */}
     <SectionHeader title="SECTION 3 - INTENDED USE" />
     {!data.is_rte && (

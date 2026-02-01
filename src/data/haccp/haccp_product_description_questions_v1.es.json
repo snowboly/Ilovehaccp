@@ -88,6 +88,36 @@
         ]
       },
       {
+        "id": "allergen_cross_contact_risks",
+        "text": "Riesgos de contacto cruzado de alérgenos (si los hay)",
+        "description": "Describa dónde podría ocurrir el contacto involuntario (p. ej., equipos compartidos, reprocesos, almacenamiento).",
+        "type": "multiline_text",
+        "required": false
+      },
+      {
+        "id": "allergen_controls",
+        "text": "Controles de contacto cruzado de alérgenos",
+        "description": "Seleccione los controles aplicables para prevenir contacto cruzado.",
+        "type": "multi_select",
+        "required": false,
+        "options": [
+          "Segregación",
+          "Validación de limpieza",
+          "Verificación de etiquetado",
+          "Equipo dedicado",
+          "Otro",
+          "Ninguno"
+        ]
+      },
+      {
+        "id": "allergen_controls_notes",
+        "text": "Detalles de controles de alérgenos (Opcional)",
+        "type": "text",
+        "required": false,
+        "show_if": { "questionId": "allergen_controls", "includes": "Otro" },
+        "placeholder": "p. ej., Herramientas codificadas por color, verificación de cambio"
+      },
+      {
         "id": "packaging_type",
         "text": "Tipo de envase primario",
         "description": "Ejemplo: película plástica, envasado al vacío, frasco de vidrio, caja de cartón.",
