@@ -6,6 +6,7 @@ import { isExportAllowed } from '@/lib/export/permissions';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
 import {
   buildStoragePath,
+  buildDocxTemplateVersion,
   computeContentHash,
   getCachedArtifact,
   putArtifact
@@ -120,6 +121,7 @@ export async function POST(req: Request) {
     const templateVersion = String(
       originalInputs.template || fullPlan.validation?.document_style || DEFAULT_TEMPLATE_VERSION
     );
+    const cacheTemplateVersion = buildDocxTemplateVersion(templateVersion);
 
     const exportPayload = {
       businessName: plan.business_name,
@@ -136,8 +138,8 @@ export async function POST(req: Request) {
       isPaid
     };
 
-    const contentHash = computeContentHash(exportPayload, templateVersion);
-    const docxPath = buildStoragePath(planId, templateVersion, contentHash, 'plan.docx');
+    const contentHash = computeContentHash(exportPayload, cacheTemplateVersion);
+    const docxPath = buildStoragePath(planId, cacheTemplateVersion, contentHash, 'plan.docx');
 
     const cachedDocx = await getCachedArtifact({ path: docxPath });
     if (cachedDocx.exists && cachedDocx.buffer) {

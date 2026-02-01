@@ -11,8 +11,10 @@ import {
   resolvePdfPipeline
 } from '@/lib/export/pdf';
 import { samplePlanFixture } from '@/lib/export/sample/fixture';
+import { resolvePdfPipeline } from '@/lib/export/pdf/pipeline';
 
 export const runtime = 'nodejs';
+
 const WATERMARK_TEXT = 'PREVIEW — NOT FOR OFFICIAL USE';
 const SAMPLE_FILENAME = 'Sample_HACCP_Plan.pdf';
 
@@ -60,9 +62,7 @@ async function renderLegacySamplePdf(): Promise<Buffer> {
 
 async function generateSamplePdf(): Promise<Buffer> {
   const pipelineConfig = resolvePdfPipeline(process.env);
-
   if (pipelineConfig.useLegacy) {
-    logLegacyPipelineUsage('EXPORT_PDF_PIPELINE=legacy');
     return renderLegacySamplePdf();
   }
 
@@ -73,8 +73,6 @@ async function generateSamplePdf(): Promise<Buffer> {
     if (pipelineConfig.isProd) {
       throw error;
     }
-
-    logLegacyPipelineUsage('DOCX conversion unavailable');
     console.warn('DOCX conversion unavailable, falling back to legacy sample PDF.', error);
     return renderLegacySamplePdf();
   }
@@ -96,3 +94,5 @@ export async function GET() {
     }
   });
 }
+
+

@@ -32,7 +32,7 @@ const sandbox = {
 
 vm.runInNewContext(compiled, sandbox);
 
-const { computeContentHash, resolvePdfArtifactType, getOrGenerateArtifact } = sandbox.module.exports;
+const { computeContentHash, resolvePdfArtifactType, getOrGenerateArtifact, buildDocxTemplateVersion, DOCX_TEMPLATE_VERSION } = sandbox.module.exports;
 
 async function run() {
   console.log('Test 0: content hash stable across key order...');
@@ -80,14 +80,25 @@ async function run() {
     console.log('  PASSED');
   }
 
-  console.log('Test 4: free users resolve preview.pdf artifact...');
+  console.log('Test 4: DOCX template version is included in cache key...');
+  {
+    const payload = { businessName: 'Acme', full_plan: { steps: [1, 2, 3] }, isPaid: true };
+    const versionA = buildDocxTemplateVersion('minneapolis-v1');
+    const versionB = `minneapolis-v1:${DOCX_TEMPLATE_VERSION}-bump`;
+    const hashA = computeContentHash(payload, versionA);
+    const hashB = computeContentHash(payload, versionB);
+    assert.notStrictEqual(hashA, hashB);
+    console.log('  PASSED');
+  }
+
+  console.log('Test 5: free users resolve preview.pdf artifact...');
   {
     const artifact = resolvePdfArtifactType(false);
     assert.strictEqual(artifact, 'preview.pdf');
     console.log('  PASSED');
   }
 
-  console.log('Test 5: cache hit returns without generation...');
+  console.log('Test 6: cache hit returns without generation...');
   {
     let generateCalled = false;
     const cachedBuffer = Buffer.from('cached');
