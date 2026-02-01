@@ -13,6 +13,7 @@ import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
 import { fetchWithTimeout } from '@/lib/builder/utils/withTimeoutFetch';
 import { classifyControl, type ControlClassification } from '@/lib/builder/ccpDecisionTree';
+import { applySignificanceToHazardEvaluation, isSignificant } from '@/lib/haccp/significanceMatrix';
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -751,7 +752,10 @@ export default function HACCPMasterFlow() {
           // Iterate over potential hazard keys
           ['bio', 'chem', 'phys', 'allergen'].forEach(key => {
               const evalData = evaluations[key];
-              if (evalData && evalData.is_significant === true) {
+              const computedSignificance = evalData
+                ? isSignificant(evalData.severity, evalData.likelihood)
+                : false;
+              if (computedSignificance) {
                   flattened.push({
                       step_name: stepData.step_id,
                       hazards: hazardMap[key],
@@ -883,10 +887,14 @@ export default function HACCPMasterFlow() {
       case 'hazards':
         // Check if more steps remain
         const steps = newAnswers.process.process_steps;
+        const hazardPayload = {
+            ...data,
+            hazard_evaluation: applySignificanceToHazardEvaluation(data?.hazard_evaluation),
+        };
         if (currentStepIndex < steps.length - 1) {
             const existingHazards = newAnswers.hazard_analysis || [];
             const stepId = steps[currentStepIndex].step_id || steps[currentStepIndex].step_name;
-            newAnswers.hazard_analysis = [...existingHazards, { step_id: stepId, data }];
+            newAnswers.hazard_analysis = [...existingHazards, { step_id: stepId, data: hazardPayload }];
             setAllAnswers(newAnswers);
             // Small toast for loop steps instead of full transition? Or fast transition?
             // Let's just increment for flow speed, maybe a quick toast in future.
@@ -894,10 +902,10 @@ export default function HACCPMasterFlow() {
             setCurrentStepIndex(prev => prev + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-            // Loop done. Save final one.
+             // Loop done. Save final one.
              const existingHazards = newAnswers.hazard_analysis || [];
              const stepId = steps[currentStepIndex].step_id || steps[currentStepIndex].step_name;
-             newAnswers.hazard_analysis = [...existingHazards, { step_id: stepId, data }];
+             newAnswers.hazard_analysis = [...existingHazards, { step_id: stepId, data: hazardPayload }];
              setAllAnswers(newAnswers);
 
             // Check if any significant hazards were identified
