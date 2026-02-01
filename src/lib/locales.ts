@@ -14,7 +14,7 @@ export const translations = {
     },
     landing: {
       hero: {
-        titlePart1: "Create a HACCP Plan in Minutes â€”",
+        titlePart1: "Create a HACCP Plan in Minutes —",
         titlePart2: "Without Consultants or Spreadsheets",
         subtitle: "Create a HACCP plan in minutes. Professional food safety tools for restaurants, manufacturers, and catering.",
         check1: "Aligns with Standards",
