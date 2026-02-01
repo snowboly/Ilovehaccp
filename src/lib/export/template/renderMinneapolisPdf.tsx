@@ -1,6 +1,6 @@
 /**
  * Minneapolis-style PDF Renderer
- * Matches the DOCX template structure exactly (Sections 1-9)
+ * Matches the DOCX template structure exactly (Sections 1-8)
  */
 
 import React from 'react';
@@ -11,6 +11,7 @@ import {
   View,
   StyleSheet,
   Font,
+  Image,
 } from '@react-pdf/renderer';
 import type { FontSource } from '@react-pdf/font';
 import fs from 'fs';
@@ -127,6 +128,12 @@ const styles = StyleSheet.create({
   coverMeta: {
     width: '80%',
     marginTop: 30,
+  },
+  coverLogo: {
+    width: 140,
+    height: 70,
+    marginBottom: 16,
+    objectFit: 'contain',
   },
   coverMetaRow: {
     flexDirection: 'row',
@@ -381,6 +388,10 @@ const CoverPage = ({ data }: { data: TemplateData }) => (
   <Page size="A4" style={styles.coverPage}>
     <Watermark isPaid={data.is_paid} />
 
+    {data.has_logo && data.logo && (
+      <Image style={styles.coverLogo} src={data.logo as any} />
+    )}
+
     <Text style={styles.coverTitle}>HACCP PLAN</Text>
     <Text style={styles.coverSubtitle}>{sanitizeText(data.business_name)}</Text>
 
@@ -453,16 +464,8 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
       />
     )}
 
-    {/* SECTION 3 - INTENDED USE */}
-    <SectionHeader title="SECTION 3 - INTENDED USE" />
-    {!data.is_rte && (
-      <Text style={styles.paragraph}>
-        {sanitizeText(`Further Preparation/Handling: ${data.consumer_handling}`)}
-      </Text>
-    )}
-
-    {/* SECTION 4 - PREREQUISITE PROGRAMS (PRPs) */}
-    <SectionHeader title="SECTION 4 - PREREQUISITE PROGRAMS (PRPs)" />
+    {/* SECTION 3 - PREREQUISITE PROGRAMS (PRPs) */}
+    <SectionHeader title="SECTION 3 - PREREQUISITE PROGRAMS (PRPs)" />
     {data.has_prp_programs ? (
       <Table
         headers={['Program', 'In Place', 'Documented', 'Reference']}
@@ -478,16 +481,16 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
       <Text style={styles.paragraphItalic}>Prerequisite programs to be documented.</Text>
     )}
 
-    {/* SECTION 5 - PROCESS FLOW */}
-    <SectionHeader title="SECTION 5 - PROCESS FLOW" />
+    {/* SECTION 4 - PROCESS FLOW */}
+    <SectionHeader title="SECTION 4 - PROCESS FLOW" />
 
-    <SubsectionHeader title="5.1 Process Flow Diagram" />
+    <SubsectionHeader title="4.1 Process Flow Diagram" />
     <ProcessFlowDiagram steps={data.process_steps} />
     <Text style={styles.paragraphItalic}>
       Note: A visual process flow diagram should be maintained on-site and reviewed by the HACCP team during each plan revision.
     </Text>
 
-    <SubsectionHeader title="5.2 Process Steps Description" />
+    <SubsectionHeader title="4.2 Process Steps Description" />
     {data.has_process_steps ? (
       <Table
         headers={['Step No.', 'Step Name', 'Description']}
@@ -509,22 +512,32 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
       </>
     )}
 
-    {/* SECTION 6 - HAZARD ANALYSIS & CCP DETERMINATION */}
-    <SectionHeader title="SECTION 6 - HAZARD ANALYSIS & CCP DETERMINATION" />
+    {/* SECTION 5 - HAZARD ANALYSIS & CCP DETERMINATION */}
+    <SectionHeader title="SECTION 5 - HAZARD ANALYSIS & CCP DETERMINATION" />
     {data.has_hazard_analysis ? (
       <>
+        <SubsectionHeader title="Table 5A — Hazard Identification" />
         <Table
-          headers={['Step', 'Hazard', 'Type', 'Sev.', 'Lik.', 'Sig?', 'Control Measure']}
+          headers={['Step', 'Hazard', 'Type']}
           rows={data.hazard_analysis.map((h: HazardAnalysisRow) => [
             h.step,
             h.hazard,
             h.hazard_type,
+          ])}
+          colWidths={[20, 55, 25]}
+        />
+
+        <SubsectionHeader title="Table 5B — Risk & Controls" />
+        <Table
+          headers={['Step', 'Sev.', 'Lik.', 'Sig?', 'Control Measure']}
+          rows={data.hazard_analysis.map((h: HazardAnalysisRow) => [
+            h.step,
             h.severity,
             h.likelihood,
             h.significant,
             h.control_measure,
           ])}
-          colWidths={[14, 18, 8, 7, 7, 7, 39]}
+          colWidths={[20, 10, 10, 12, 48]}
         />
 
         {/* Control Measure Descriptions */}
@@ -548,8 +561,8 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
       CCP determination was performed using Codex Alimentarius decision tree methodology.
     </Text>
 
-    {/* SECTION 7 - CCP MANAGEMENT */}
-    <SectionHeader title="SECTION 7 - CCP MANAGEMENT" />
+    {/* SECTION 6 - CCP MANAGEMENT */}
+    <SectionHeader title="SECTION 6 - CCP MANAGEMENT" />
     {data.has_ccps ? (
       <>
         <SubsectionHeader title="CCP Summary" />
@@ -570,12 +583,12 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
       <Text style={styles.paragraphItalic}>No CCPs identified or CCP management to be documented.</Text>
     )}
 
-    {/* SECTION 8 - VERIFICATION & VALIDATION */}
-    <SectionHeader title="SECTION 8 - VERIFICATION & VALIDATION" />
+    {/* SECTION 7 - VERIFICATION & VALIDATION */}
+    <SectionHeader title="SECTION 7 - VERIFICATION & VALIDATION" />
     <Text style={styles.paragraph}>{sanitizeText(data.verification_procedures)}</Text>
 
-    {/* SECTION 9 - RECORDS & DOCUMENTATION */}
-    <SectionHeader title="SECTION 9 - RECORDS & DOCUMENTATION" />
+    {/* SECTION 8 - RECORDS & DOCUMENTATION */}
+    <SectionHeader title="SECTION 8 - RECORDS & DOCUMENTATION" />
     <Text style={styles.paragraph}>{sanitizeText(data.record_keeping)}</Text>
 
     <Footer version={data.version} />

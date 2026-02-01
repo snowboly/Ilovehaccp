@@ -92,22 +92,6 @@ const formatValue = (value: any) => {
   return String(value);
 };
 
-const RTE_MATCHERS = [
-  "ready-to-eat",
-  "pronto a comer",
-  "listo para comer",
-  "prêt à consommer",
-  "pret a consommer",
-  "prêt-à-consommer",
-  "pret-a-consommer",
-];
-
-const isReadyToEat = (value: string | undefined | null): boolean => {
-  if (!value) return false;
-  const normalized = value.toLowerCase();
-  return RTE_MATCHERS.some((matcher) => normalized.includes(matcher));
-};
-
 const getAnswerValue = (answers: Record<string, any>, questionId: string, parentId?: string) => {
   if (!answers) return undefined;
   if (answers[questionId] !== undefined) return answers[questionId];
@@ -239,9 +223,6 @@ export function buildExportDoc({
   const ccpManagementInputs = originalInputs.ccp_management || {};
   const validationInputs = originalInputs.review_validation || originalInputs.validation || {};
   const intendedUse = productInputs.intended_use || data.intendedUse || "";
-  const consumerHandling = productInputs.cooking_required || data.consumerHandling || "";
-  const isRte = isReadyToEat(consumerHandling) || isReadyToEat(intendedUse);
-  const furtherHandlingLabel = dict.lbl_further_preparation || "Further Preparation/Handling";
   const allergensPresent = formatAllergenList(productInputs.allergens_present || productInputs.allergens);
 
   const buildInputSection = (
@@ -382,17 +363,8 @@ export function buildExportDoc({
     });
   }
 
-  content.push({ type: "section", title: t("SECTION 3 — INTENDED USE", dict.s3_title) });
-
-  if (!isRte) {
-    content.push({
-      type: "paragraph",
-      text: `${furtherHandlingLabel}: ${formatValue(consumerHandling)}`,
-    });
-  }
-
   content.push(
-    { type: "section", title: t("SECTION 4 — PROCESS FLOW DIAGRAM", dict.s4_title) },
+    { type: "section", title: t("SECTION 3 — PROCESS FLOW DIAGRAM", dict.s3_title) },
     processSteps.length > 0
       ? {
           type: "table",
@@ -412,7 +384,7 @@ export function buildExportDoc({
       italic: true,
       muted: true,
     },
-    { type: "section", title: t("SECTION 5 — PREREQUISITE PROGRAMS (PRPS)", dict.s5_title) },
+    { type: "section", title: t("SECTION 4 — PREREQUISITE PROGRAMS (PRPS)", dict.s4_title) },
     prerequisitePrograms.length > 0
       ? {
           type: "table",
@@ -421,7 +393,7 @@ export function buildExportDoc({
           colWidths: [30, 70],
         }
       : { type: "paragraph", text: t("Prerequisite programs to be documented.", "PRPs pending.") },
-    { type: "section", title: t("SECTION 6 — HAZARD ANALYSIS", dict.s6_title) },
+    { type: "section", title: t("SECTION 5 — HAZARD ANALYSIS", dict.s5_title) },
     analysis.length > 0
       ? {
           type: "table",
@@ -444,12 +416,12 @@ export function buildExportDoc({
           colWidths: [20, 30, 10, 10, 10, 20],
         }
       : { type: "paragraph", text: t("Hazard analysis pending completion.", "Hazard analysis pending.") },
-    { type: "section", title: t("SECTION 7 — CCP DETERMINATION", dict.s7_title) },
+    { type: "section", title: t("SECTION 6 — CCP DETERMINATION", dict.s6_title) },
     {
       type: "paragraph",
       text: t("CCPs determined using Codex Decision Tree.", dict.s7_desc),
     },
-    { type: "section", title: t("SECTION 8 — CCP MANAGEMENT", dict.s8_title) }
+    { type: "section", title: t("SECTION 7 — CCP MANAGEMENT", dict.s7_title) }
   );
 
   if (ccps.length > 0) {
@@ -493,9 +465,9 @@ export function buildExportDoc({
   }
 
   content.push(
-    { type: "section", title: t("SECTION 9 — VERIFICATION & VALIDATION", dict.s9_title) },
+    { type: "section", title: t("SECTION 8 — VERIFICATION & VALIDATION", dict.s8_title) },
     { type: "paragraph", text: fullPlan?.verification_validation || "Procedures established." },
-    { type: "section", title: t("SECTION 10 — RECORDS & REVIEW", dict.s10_title) },
+    { type: "section", title: t("SECTION 9 — RECORDS & REVIEW", dict.s9_title) },
     { type: "paragraph", text: fullPlan?.record_keeping || "Records maintained." },
     {
       type: "signature",
@@ -585,3 +557,4 @@ export function buildExportDoc({
     content,
   };
 }
+
