@@ -29,7 +29,7 @@ export const translations = {
         for_title: "Perfect For:",
         for_items: [
           "Small & medium food businesses",
-          "Restaurants, bakeries, cafÃ©s & food trucks",
+          "Restaurants, bakeries, cafés & food trucks",
           "First-time HACCP plan creation",
           "Businesses preparing for an upcoming inspection"
         ],
