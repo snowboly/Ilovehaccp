@@ -90,7 +90,9 @@ const PLACEHOLDERS = {
 function createCoverPage(data: TemplateData): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
-  // Logo if present
+  const preparedBy = sanitizeText(data.created_by || 'ilovehaccp.com');
+
+  // Optional logo (top right)
   if (data.logo && data.has_logo) {
     try {
       const logoType = resolveDocxImageType(data.logo);
@@ -102,12 +104,12 @@ function createCoverPage(data: TemplateData): (Paragraph | Table)[] {
           children: [
             new ImageRun({
               data: data.logo,
-              transformation: { width: 150, height: 75 },
+              transformation: { width: 120, height: 60 },
               type: logoType,
             } as any),
           ],
           alignment: AlignmentType.RIGHT,
-          spacing: { before: toTwips(10), after: toTwips(20) },
+          spacing: { before: toTwips(8), after: toTwips(20) },
         })
       );
     } catch (error) {
@@ -116,100 +118,78 @@ function createCoverPage(data: TemplateData): (Paragraph | Table)[] {
     }
   }
 
-  // Business name - large centered title
-  elements.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: sanitizeText(data.business_name),
-          font: Fonts.primary,
-          size: toHalfPoints(FontSizes.display),
-          bold: true,
-          color: Colors.primary,
-        }),
-      ],
-      alignment: AlignmentType.CENTER,
-      spacing: { before: data.has_logo ? toTwips(10) : toTwips(60), after: toTwips(10) },
-    })
-  );
-
-  // HACCP Plan title
+  // Title
   elements.push(
     new Paragraph({
       children: [
         new TextRun({
           text: 'HACCP Plan',
           font: Fonts.primary,
-          size: toHalfPoints(FontSizes.displaySub),
+          size: toHalfPoints(FontSizes.display),
           bold: true,
-          color: Colors.primaryLight,
-        }),
-      ],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: toTwips(5) },
-    })
-  );
-
-  // Subtitle - Food Safety Management System
-  elements.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: 'Food Safety Management System',
-          font: Fonts.primary,
-          size: toHalfPoints(FontSizes.h2),
-          color: Colors.muted,
-        }),
-      ],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: toTwips(30) },
-    })
-  );
-
-  // Date
-  elements.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: sanitizeText(data.date),
-          font: Fonts.primary,
-          size: toHalfPoints(FontSizes.h2),
           color: Colors.text,
         }),
       ],
       alignment: AlignmentType.CENTER,
-      spacing: { after: toTwips(40) },
+      spacing: { before: data.has_logo ? toTwips(10) : toTwips(80), after: toTwips(30) },
     })
   );
 
-  // Signature lines using a table
-  const signatureTable = new Table({
-    width: { size: 80, type: WidthType.PERCENTAGE },
+  const subtitleBlocks = [
+    { label: 'Prepared for', value: sanitizeText(data.business_name) },
+    { label: 'Prepared by', value: preparedBy },
+    { label: 'Date', value: sanitizeText(data.date) },
+  ];
+
+  subtitleBlocks.forEach((block, index) => {
+    elements.push(
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: `${block.label}  `,
+            font: Fonts.primary,
+            size: toHalfPoints(FontSizes.h2),
+            bold: true,
+            color: Colors.textSecondary,
+          }),
+          new TextRun({
+            text: block.value,
+            font: Fonts.primary,
+            size: toHalfPoints(FontSizes.h2),
+            color: Colors.text,
+          }),
+        ],
+        alignment: AlignmentType.CENTER,
+        spacing: { after: index === subtitleBlocks.length - 1 ? toTwips(10) : toTwips(16) },
+      })
+    );
+  });
+
+  elements.push(spacerParagraph(120));
+
+  const bandTable = new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
     layout: TableLayoutType.FIXED,
     alignment: AlignmentType.CENTER,
     rows: [
-      createSignatureRow('Created by:', 'Date:'),
-      createSignatureRow('Approved by:', 'Date:'),
+      new TableRow({
+        children: [
+          new TableCell({
+            borders: noBorders,
+            shading: {
+              type: ShadingType.CLEAR,
+              color: Colors.primary,
+              fill: Colors.primary,
+            },
+            margins: { top: toTwips(4), bottom: toTwips(4) },
+            children: [new Paragraph({ children: [] })],
+          }),
+        ],
+      }),
     ],
   });
 
-  elements.push(signatureTable);
-
-  // Version info
-  elements.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: `Version: ${sanitizeText(data.version)}`,
-          font: Fonts.primary,
-          size: toHalfPoints(FontSizes.body),
-          color: Colors.muted,
-        }),
-      ],
-      alignment: AlignmentType.CENTER,
-      spacing: { before: toTwips(20) },
-    })
-  );
+  elements.push(bandTable);
 
   // Page break after cover
   elements.push(
@@ -220,59 +200,6 @@ function createCoverPage(data: TemplateData): (Paragraph | Table)[] {
   );
 
   return elements;
-}
-
-function createSignatureRow(leftLabel: string, rightLabel: string): TableRow {
-  const cellPadding = toTwips(Spacing.gapMd);
-
-  return new TableRow({
-    children: [
-      new TableCell({
-        width: { size: 50, type: WidthType.PERCENTAGE },
-        borders: noBorders,
-        margins: { top: cellPadding, bottom: toTwips(5) },
-        children: [
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: leftLabel + ' ',
-                font: Fonts.primary,
-                size: toHalfPoints(FontSizes.body),
-                bold: true,
-              }),
-              new TextRun({
-                text: '____________________',
-                font: Fonts.primary,
-                size: toHalfPoints(FontSizes.body),
-              }),
-            ],
-          }),
-        ],
-      }),
-      new TableCell({
-        width: { size: 50, type: WidthType.PERCENTAGE },
-        borders: noBorders,
-        margins: { top: cellPadding, bottom: toTwips(5) },
-        children: [
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: rightLabel + ' ',
-                font: Fonts.primary,
-                size: toHalfPoints(FontSizes.body),
-                bold: true,
-              }),
-              new TextRun({
-                text: '____________________',
-                font: Fonts.primary,
-                size: toHalfPoints(FontSizes.body),
-              }),
-            ],
-          }),
-        ],
-      }),
-    ],
-  });
 }
 
 // ============================================================================
