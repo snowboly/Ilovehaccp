@@ -1,9 +1,16 @@
 import 'server-only';
+import { resolveDocxImageType } from '@/lib/export/word/image';
 
 type LogoAssets = {
   pdfLogo: string | null;
   wordLogo: Buffer | null;
 };
+
+const normalizeContentType = (contentType: string): string =>
+  contentType === 'image/jpg' ? 'image/jpeg' : contentType;
+
+const resolveWordLogo = (buffer: Buffer): Buffer | null =>
+  resolveDocxImageType(buffer) ? buffer : null;
 
 const parseDataUrl = (value: string): LogoAssets | null => {
   // Strict regex for image mime types
@@ -12,7 +19,8 @@ const parseDataUrl = (value: string): LogoAssets | null => {
     return null;
   }
 
-  const [, mimeType, , data] = match;
+  const [, rawMimeType, , data] = match;
+  const mimeType = normalizeContentType(rawMimeType);
   if (!mimeType || !data) {
     return null;
   }
@@ -22,7 +30,7 @@ const parseDataUrl = (value: string): LogoAssets | null => {
     // Sanity check buffer size (e.g. max 5MB)
     if (buffer.length > 5 * 1024 * 1024) return null;
     
-    return { pdfLogo: value, wordLogo: buffer };
+    return { pdfLogo: `data:${mimeType};base64,${data}`, wordLogo: resolveWordLogo(buffer) };
   } catch {
     return null;
   }
@@ -83,10 +91,11 @@ export const fetchLogoAssets = async (logoUrl?: string | null): Promise<LogoAsse
       return { pdfLogo: null, wordLogo: null };
     }
 
-    const contentType = res.headers.get('content-type');
-    if (!contentType || !contentType.startsWith('image/')) {
+    const contentTypeHeader = res.headers.get('content-type');
+    if (!contentTypeHeader || !contentTypeHeader.startsWith('image/')) {
         return { pdfLogo: null, wordLogo: null };
     }
+    const contentType = normalizeContentType(contentTypeHeader.split(';')[0].trim());
 
     const arrayBuffer = await res.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -94,7 +103,7 @@ export const fetchLogoAssets = async (logoUrl?: string | null): Promise<LogoAsse
 
     return {
       pdfLogo: `data:${contentType};base64,${base64}`,
-      wordLogo: buffer
+      wordLogo: resolveWordLogo(buffer)
     };
   } catch (error) {
     console.warn('Failed to fetch logo assets', error);
