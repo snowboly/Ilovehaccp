@@ -8,10 +8,17 @@ import { applyWatermark, generateCleanPdfFromDocx, getDefaultWatermarkConfig } f
 import { samplePlanFixture } from '@/lib/export/sample/fixture';
 
 export const runtime = 'nodejs';
-
-const PDF_PIPELINE = (process.env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
 const WATERMARK_TEXT = 'PREVIEW — NOT FOR OFFICIAL USE';
 const SAMPLE_FILENAME = 'Sample_HACCP_Plan.pdf';
+
+const resolvePdfPipeline = (env: NodeJS.ProcessEnv) => {
+  const pipeline = (env.EXPORT_PDF_PIPELINE ?? 'docx') as 'docx' | 'legacy';
+  return {
+    pipeline,
+    useLegacy: pipeline === 'legacy',
+    isProd: env.NODE_ENV === 'production'
+  };
+};
 
 const logLegacyPipelineUsage = (reason: string) => {
   console.warn('[DEPRECATED] Legacy PDF pipeline invoked', {
@@ -56,7 +63,9 @@ async function renderLegacySamplePdf(): Promise<Buffer> {
 }
 
 async function generateSamplePdf(): Promise<Buffer> {
-  if (PDF_PIPELINE === 'legacy') {
+  const pipelineConfig = resolvePdfPipeline(process.env);
+
+  if (pipelineConfig.useLegacy) {
     logLegacyPipelineUsage('EXPORT_PDF_PIPELINE=legacy');
     return renderLegacySamplePdf();
   }
@@ -65,6 +74,10 @@ async function generateSamplePdf(): Promise<Buffer> {
     const docxBuffer = await generateDocxBuffer(samplePlanFixture, 'en');
     return await generateCleanPdfFromDocx(docxBuffer);
   } catch (error) {
+    if (pipelineConfig.isProd) {
+      throw error;
+    }
+
     logLegacyPipelineUsage('DOCX conversion unavailable');
     console.warn('DOCX conversion unavailable, falling back to legacy sample PDF.', error);
     return renderLegacySamplePdf();
