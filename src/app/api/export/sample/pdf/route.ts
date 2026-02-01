@@ -69,29 +69,36 @@ async function generateSamplePdf(): Promise<Buffer> {
     const docxBuffer = await generateDocxBuffer(samplePlanFixture, 'en');
     return await generateCleanPdfFromDocx(docxBuffer);
   } catch (error) {
-    if (pipelineConfig.isProd) {
-      throw error;
-    }
-    console.warn('DOCX conversion unavailable, falling back to legacy sample PDF.', error);
+    // Always fall back to legacy PDF for sample route - LibreOffice may not be available
+    console.warn('[sample-pdf] DOCX conversion failed, falling back to legacy PDF:', error);
+    logLegacyPipelineUsage('DOCX conversion failed - LibreOffice unavailable');
     return renderLegacySamplePdf();
   }
 }
 
 export async function GET() {
-  const pdfBuffer = await generateSamplePdf();
-  const watermarkConfig = {
-    ...getDefaultWatermarkConfig(),
-    textLines: [WATERMARK_TEXT]
-  };
-  const watermarkedPdf = await applyWatermark(pdfBuffer, watermarkConfig);
+  try {
+    const pdfBuffer = await generateSamplePdf();
+    const watermarkConfig = {
+      ...getDefaultWatermarkConfig(),
+      textLines: [WATERMARK_TEXT]
+    };
+    const watermarkedPdf = await applyWatermark(pdfBuffer, watermarkConfig);
 
-  return new NextResponse(new Uint8Array(watermarkedPdf), {
-    headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename="${SAMPLE_FILENAME}"`,
-      'Cache-Control': 'public, max-age=600'
-    }
-  });
+    return new NextResponse(new Uint8Array(watermarkedPdf), {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `inline; filename="${SAMPLE_FILENAME}"`,
+        'Cache-Control': 'public, max-age=600'
+      }
+    });
+  } catch (error) {
+    console.error('[sample-pdf] Failed to generate sample PDF:', error);
+    return NextResponse.json(
+      { error: 'Failed to generate sample PDF' },
+      { status: 500 }
+    );
+  }
 }
 
 
