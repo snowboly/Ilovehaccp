@@ -12,6 +12,7 @@ import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
 import { fetchWithTimeout } from '@/lib/builder/utils/withTimeoutFetch';
+import { classifyControl, type ControlClassification } from '@/lib/builder/ccpDecisionTree';
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -772,20 +773,19 @@ export default function HACCPMasterFlow() {
   };
 
   // Helper: Evaluate CCP based on Codex Decision Tree
-  const evaluateCCP = (answers: any) => {
+  const evaluateCCP = (answers: any): ControlClassification => {
       const q1 = answers.q1_control_measure;
       const q2 = answers.q2_step_designed_to_eliminate;
       const q3 = answers.q3_contamination_possible;
       const q4 = answers.q4_subsequent_step;
 
-      if (q1 === false) return false;
-      if (q2 === true) return true;
-      if (q2 === false && q3 === true && q4 === false) return true;
-      return false;
+      return classifyControl({ q1, q2, q3, q4 });
   };
 
   const getIdentifiedCCPs = (answers = allAnswers) => {
-      return (answers.ccp_decisions || []).filter((d: any) => d.is_ccp === true);
+      return (answers.ccp_decisions || []).filter(
+        (d: any) => d.control_classification === 'CCP' || d.is_ccp === true
+      );
   };
 
   const handleSectionComplete = async (sectionKey: SectionKey, data: any) => {
@@ -918,12 +918,12 @@ export default function HACCPMasterFlow() {
          const currentHazard = sigHazards[currentCCPIndex];
 
          // Save decision for CURRENT hazard
-         const isCCPResult = evaluateCCP(data);
+          const classification = evaluateCCP(data);
           const decision = {
               step_name: currentHazard.step_name,
               hazard: currentHazard.hazards,
               ccp_id: buildCcpId(currentHazard.step_name, currentHazard.hazards),
-              is_ccp: isCCPResult,
+              control_classification: classification,
               answers: data
           };
          
@@ -939,7 +939,9 @@ export default function HACCPMasterFlow() {
              setAllAnswers(newAnswers);
              
              // Conditionally show CCP Management
-             const hasCCPs = updatedCCPs.some(ccp => ccp.is_ccp);
+             const hasCCPs = updatedCCPs.some(
+               (ccp) => ccp.control_classification === 'CCP' || ccp.is_ccp === true
+             );
              if (hasCCPs) {
                  triggerTransition("Critical Points Identified!", 'ccp_management', () => setCurrentCCPIndex(0));
              } else {
