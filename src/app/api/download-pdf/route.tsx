@@ -12,6 +12,7 @@ import { fetchLogoAssets } from '@/lib/export/logo';
 import { verifyExportToken } from '@/lib/export/auth';
 import { transformDraftToPlan } from '@/lib/export/transform';
 import { logAccess } from '@/lib/audit';
+import { validateCriticalLimits } from '@/lib/export/criticalLimitValidation';
 
 // Feature flag: Use Minneapolis-style template for PDF (matches DOCX structure)
 const PDF_USE_MINNEAPOLIS_TEMPLATE = process.env.PDF_USE_MINNEAPOLIS_TEMPLATE !== 'false';
@@ -140,6 +141,14 @@ export async function GET(req: Request) {
             ? baseFullPlan.hazard_analysis
             : plan.hazard_analysis || []
     };
+
+    const criticalLimitIssues = validateCriticalLimits(fullPlan);
+    if (criticalLimitIssues.length > 0) {
+        return NextResponse.json(
+          { error: 'Critical limits below standard require justification and reference.', issues: criticalLimitIssues },
+          { status: 422 }
+        );
+    }
     const productInputs = originalInputs.product || {};
     
     const pdfData = {
