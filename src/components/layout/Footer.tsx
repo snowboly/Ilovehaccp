@@ -32,7 +32,7 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-bold mb-4 uppercase text-xs tracking-widest">Resources</h4>
           <ul className="space-y-2 text-sm font-medium">
-            <li><Link href="/sample-haccp-plan-pdf" className="hover:text-blue-400 transition-colors text-emerald-400">Sample HACCP Plan PDF</Link></li>
+            <li><Link href="/sample-haccp-plan-pdf" className="hover:text-blue-400 transition-colors text-emerald-400">HACCP Plan Example PDF</Link></li>
             <li><Link href="/haccp-template" className="hover:text-blue-400 transition-colors">HACCP Template</Link></li>
             <li><Link href="/requirements-eu-uk" className="hover:text-blue-400 transition-colors">EU & UK Requirements</Link></li>
             <li><Link href="/resources" className="hover:text-blue-400 transition-colors">Knowledge Base</Link></li>
