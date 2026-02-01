@@ -19,7 +19,7 @@ export async function generateDocxBuffer(data: any, lang: string): Promise<Buffe
   return retryBuffer;
 }
 
-const ALLOWED_MEDIA_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'gif', 'bmp']);
+const ALLOWED_MEDIA_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'svg']);
 const RELS_TAG = /<Relationship\b[^>]*\/>/g;
 const DEFAULT_TAG = /<Default\b[^>]*>/g;
 
