@@ -1,47 +1,66 @@
-import React from 'react';
-import Link from 'next/link';
-import { Metadata } from 'next';
-import { FileText, Download, CheckCircle2, ArrowRight, FileCheck, Sparkles } from 'lucide-react';
-import JSONLD from '@/components/layout/JSONLD';
+"use client";
 
-export const metadata: Metadata = {
-  title: 'Sample HACCP Plan PDF | Free Preview & Download | iLoveHACCP',
-  description: 'View and download a sample HACCP plan PDF. See real document structure, hazard analysis tables, and CCP documentation. Export clean Word (DOCX) and PDF formats.',
-  keywords: 'HACCP plan PDF, sample HACCP plan, HACCP template PDF, HACCP document example, HACCP plan download, free HACCP template',
-  alternates: { canonical: 'https://www.ilovehaccp.com/sample-haccp-plan-pdf' },
-  openGraph: {
-    title: 'Sample HACCP Plan PDF | Free Preview',
-    description: 'View a complete HACCP plan document structure. Download watermarked preview or upgrade to clean Word export.',
-    type: 'website',
-    url: 'https://www.ilovehaccp.com/sample-haccp-plan-pdf'
-  }
-};
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { FileText, Download, CheckCircle2, ArrowRight, FileCheck, Sparkles, Loader2 } from 'lucide-react';
 
 export default function SampleHACCPPlanPage() {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Sample HACCP Plan PDF",
-    "description": "Free preview of a complete HACCP plan document with hazard analysis, CCPs, and monitoring procedures.",
-    "publisher": {
-      "@type": "Organization",
-      "name": "iLoveHACCP",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://www.ilovehaccp.com/icon.svg"
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    setDownloadError(null);
+    try {
+      const res = await fetch('/api/export/sample/pdf');
+      if (!res.ok) {
+        throw new Error('Failed to download PDF');
       }
-    },
-    "mainEntity": {
-      "@type": "DigitalDocument",
-      "name": "Sample HACCP Plan",
-      "description": "A complete HACCP plan document demonstrating hazard analysis, critical control points, and monitoring procedures.",
-      "fileFormat": "application/pdf"
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Sample_HACCP_Plan.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+      setDownloadError('Download failed. Please try again.');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      <JSONLD data={structuredData} />
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Sample HACCP Plan PDF",
+            "description": "Free preview of a complete HACCP plan document with hazard analysis, CCPs, and monitoring procedures.",
+            "publisher": {
+              "@type": "Organization",
+              "name": "iLoveHACCP",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.ilovehaccp.com/icon.svg"
+              }
+            },
+            "mainEntity": {
+              "@type": "DigitalDocument",
+              "name": "Sample HACCP Plan",
+              "description": "A complete HACCP plan document demonstrating hazard analysis, critical control points, and monitoring procedures.",
+              "fileFormat": "application/pdf"
+            }
+          })
+        }}
+      />
 
       {/* Hero Section */}
       <div className="bg-white border-b border-slate-200">
@@ -79,7 +98,7 @@ export default function SampleHACCPPlanPage() {
       <div className="container mx-auto px-4 py-12 max-w-5xl">
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           {/* Preview Header */}
-          <div className="bg-slate-900 px-6 py-4 flex items-center justify-between">
+          <div className="bg-slate-900 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <FileText className="w-5 h-5 text-white" />
               <span className="text-white font-bold">Sample_HACCP_Plan.pdf</span>
@@ -87,23 +106,52 @@ export default function SampleHACCPPlanPage() {
                 Watermarked Preview
               </span>
             </div>
-            <a
-              href="/api/export/sample/pdf"
-              download="Sample_HACCP_Plan.pdf"
-              className="flex items-center gap-2 bg-white text-slate-900 px-4 py-2 rounded-lg font-bold text-sm hover:bg-slate-100 transition-colors"
+            <button
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className="flex items-center gap-2 bg-white text-slate-900 px-4 py-2 rounded-lg font-bold text-sm hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Download className="w-4 h-4" />
-              Download PDF
-            </a>
+              {isDownloading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Downloading...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4" />
+                  Download PDF
+                </>
+              )}
+            </button>
           </div>
+          {downloadError && (
+            <div className="bg-red-50 text-red-700 px-6 py-2 text-sm">
+              {downloadError}
+            </div>
+          )}
 
           {/* PDF Embed */}
-          <div className="relative bg-slate-800">
-            <iframe
-              src="/api/export/sample/pdf"
-              className="w-full h-[700px] border-0"
+          <div className="relative bg-slate-200">
+            <object
+              data="/api/export/sample/pdf"
+              type="application/pdf"
+              className="w-full h-[700px]"
               title="Sample HACCP Plan PDF Preview"
-            />
+            >
+              <div className="flex flex-col items-center justify-center h-[700px] bg-slate-100 text-slate-600">
+                <FileText className="w-16 h-16 text-slate-400 mb-4" />
+                <p className="text-lg font-semibold mb-2">PDF Preview Unavailable</p>
+                <p className="text-sm mb-4">Your browser may not support inline PDF viewing.</p>
+                <button
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors"
+                >
+                  <Download className="w-5 h-5" />
+                  Download PDF Instead
+                </button>
+              </div>
+            </object>
           </div>
         </div>
 
