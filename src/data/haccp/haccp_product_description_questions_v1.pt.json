@@ -117,6 +117,7 @@
         "show_if": { "questionId": "allergen_controls", "includes": "Outro" },
         "placeholder": "ex.: Ferramentas codificadas por cor, verificação de mudança"
       },
+      {
         "id": "packaging_type",
         "text": "Tipo de embalagem primária",
         "description": "Exemplo: película de plástico, embalagem a vácuo, frasco de vidro, caixa de cartão.",
