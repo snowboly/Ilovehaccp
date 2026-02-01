@@ -72,7 +72,7 @@ export const translations = {
         subtitle: "From a free preview to professional document export.",
         free: {
           title: "Free Draft",
-          price: "â‚¬0",
+          price: "€0",
           desc: "Build and preview your HACCP plan draft.",
           f1: "Full HACCP Builder",
           f2: "Draft autosave",
@@ -84,7 +84,7 @@ export const translations = {
         starter: {
           badge: "Most Popular",
           title: "Document Export",
-          price: "â‚¬39",
+          price: "€39",
           desc: "Get clean PDF + Word files (no watermark).",
           f1: "PDF + Word export",
           f2: "Removes watermark",
@@ -95,7 +95,7 @@ export const translations = {
         },
         review: {
           title: "Plan Review & Feedback",
-          price: "â‚¬99",
+          price: "€99",
           desc: "Human feedback on your HACCP plan draft.",
           f1: "Completeness & consistency check",
           f2: "Gaps and unclear sections flagged",
@@ -436,7 +436,7 @@ export const translations = {
         subtitle: "Desde una verificaciÃ³n de preparaciÃ³n gratuita hasta archivos profesionales validados.",
         free: {
           title: "Gratis / Vista Previa",
-          price: "â‚¬0",
+          price: "€0",
           desc: "Cree y revise su plan HACCP de forma gratuita.",
           f1: "Constructor HACCP Completo",
           f2: "GeneraciÃ³n de Plan AutomÃ¡tica",
@@ -447,7 +447,7 @@ export const translations = {
         starter: {
           badge: "MÃ¡s Popular",
           title: "ExportaciÃ³n Profesional",
-          price: "â‚¬39",
+          price: "€39",
           desc: "ExportaciÃ³n de documentos profesionales para planes preparados internamente.",
           f1: "Eliminar todas las marcas de agua",
           f2: "PDF y Word (.docx) Limpios",
@@ -456,7 +456,7 @@ export const translations = {
         },
         review: {
           title: "RevisiÃ³n y Feedback del Plan",
-          price: "â‚¬99",
+          price: "€99",
           desc: "Obtenga ayuda de expertos para interpretar los resultados de la validaciÃ³n.",
           f1: "Todo lo de Profesional",
           f2: "RevisiÃ³n por Humano Experto",
@@ -795,7 +795,7 @@ export const translations = {
         subtitle: "D'une vÃ©rification de prÃ©paration gratuite Ã  des fichiers professionnels validÃ©s.",
         free: {
           title: "Gratuit / AperÃ§u",
-          price: "â‚¬0",
+          price: "€0",
           desc: "Construisez et rÃ©visez votre plan HACCP gratuitement.",
           f1: "GÃ©nÃ©rateur HACCP Complet",
           f2: "GÃ©nÃ©ration Automatique de Plan",
@@ -806,7 +806,7 @@ export const translations = {
         starter: {
           badge: "Plus Populaire",
           title: "Exportation Professionnelle",
-          price: "â‚¬39",
+          price: "€39",
           desc: "Exportation de documents professionnels pour les plans prÃ©parÃ©s en interne.",
           f1: "Supprimer tous les filigranes",
           f2: "PDF et Word (.docx) Propres",
@@ -815,7 +815,7 @@ export const translations = {
         },
         review: {
           title: "RÃ©vision et Retour du Plan",
-          price: "â‚¬99",
+          price: "€99",
           desc: "Obtenez de l'aide pour interprÃ©ter les rÃ©sultats de validation par des experts.",
           f1: "Tout ce qui est inclus dans Pro",
           f2: "RÃ©vision par un Expert Humain",
@@ -1164,7 +1164,7 @@ export const translations = {
         subtitle: "Desde uma verificaÃ§Ã£o de prontidÃ£o gratuita atÃ© ficheiros profissionais validados.",
         free: {
           title: "GrÃ¡tis / PrÃ©-visualizaÃ§Ã£o",
-          price: "â‚¬0",
+          price: "€0",
           desc: "Construa e reveja o seu plano HACCP gratuitamente.",
           f1: "Criador HACCP Completo",
           f2: "GeraÃ§Ã£o AutomÃ¡tica de Plano",
@@ -1175,7 +1175,7 @@ export const translations = {
         starter: {
           badge: "Mais Popular",
           title: "ExportaÃ§Ã£o Profissional",
-          price: "â‚¬39",
+          price: "€39",
           desc: "ExportaÃ§Ã£o de documentos profissionais para planos preparados internamente.",
           f1: "Remover todas as marcas de Ã¡gua",
           f2: "PDF e Word (.docx) Limpos",
@@ -1184,7 +1184,7 @@ export const translations = {
         },
         review: {
           title: "RevisÃ£o e Feedback do Plano",
-          price: "â‚¬99",
+          price: "€99",
           desc: "Obtenha ajuda de especialistas para interpretar os resultados da validaÃ§Ã£o.",
           f1: "Tudo o que estÃ¡ incluÃ­do no Pro",
           f2: "RevisÃ£o por Especialista Humano",
