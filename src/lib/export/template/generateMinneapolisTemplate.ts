@@ -305,6 +305,18 @@ function createProductSection(data: TemplateData): (Paragraph | Table)[] {
     })
   );
 
+  const allergenRows = [
+    { key: 'Allergens Present', value: data.allergens_present },
+    { key: 'Cross-contact Risks', value: data.allergen_cross_contact_risks },
+    { key: 'Controls', value: data.allergen_controls },
+    { key: 'Control Notes', value: data.allergen_controls_notes },
+  ].filter((row) => row.value && row.value !== '-' && row.value !== 'Not provided');
+
+  if (allergenRows.length > 0) {
+    elements.push(tableCaptionParagraph('Table 2A', 'Allergen Controls'));
+    elements.push(...keyValueTable(allergenRows, 35));
+  }
+
   return elements;
 }
 

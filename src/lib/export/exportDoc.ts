@@ -63,6 +63,22 @@ const resolveHazardSignificance = (hazard: any): boolean => {
   return isSignificant(hazard?.severity, hazard?.likelihood);
 };
 
+const formatAllergenList = (value: any): string => {
+  if (!value) return "";
+  if (Array.isArray(value)) return value.join("; ");
+  return String(value);
+};
+
+const appendAllergenContext = (hazard: any, allergensPresent: string): string => {
+  if (!allergensPresent) return hazard?.hazards || "-";
+  const type = String(hazard?.hazard_type || "").toLowerCase();
+  const hazardText = String(hazard?.hazards || "").toLowerCase();
+  if (type.includes("allergen") || hazardText.includes("allergen")) {
+    return `${hazard?.hazards || "-"} (Allergens: ${allergensPresent})`;
+  }
+  return hazard?.hazards || "-";
+};
+
 const formatValue = (value: any) => {
   if (value === null || value === undefined || value === "") return "Not provided";
   if (Array.isArray(value)) {
@@ -226,6 +242,7 @@ export function buildExportDoc({
   const consumerHandling = productInputs.cooking_required || data.consumerHandling || "";
   const isRte = isReadyToEat(consumerHandling) || isReadyToEat(intendedUse);
   const furtherHandlingLabel = dict.lbl_further_preparation || "Further Preparation/Handling";
+  const allergensPresent = formatAllergenList(productInputs.allergens_present || productInputs.allergens);
 
   const buildInputSection = (
     title: ExportText,
@@ -326,6 +343,32 @@ export function buildExportDoc({
     },
   ];
 
+  const allergenControlsRows: ExportText[][] = [];
+  if (allergensPresent) {
+    allergenControlsRows.push([t("Allergens Present"), allergensPresent]);
+  }
+  const allergenCrossContact = formatValue(productInputs.allergen_cross_contact_risks);
+  if (allergenCrossContact && allergenCrossContact !== "Not provided") {
+    allergenControlsRows.push([t("Cross-contact Risks"), allergenCrossContact]);
+  }
+  const allergenControls = formatValue(productInputs.allergen_controls);
+  if (allergenControls && allergenControls !== "Not provided") {
+    allergenControlsRows.push([t("Controls"), allergenControls]);
+  }
+  const allergenNotes = productInputs.allergen_controls_notes;
+  if (allergenNotes) {
+    allergenControlsRows.push([t("Control Notes"), formatValue(allergenNotes)]);
+  }
+  if (allergenControlsRows.length > 0) {
+    content.push({ type: "subheading", text: t("Allergen Controls") });
+    content.push({
+      type: "table",
+      headers: [t("Field"), t("Details")],
+      rows: allergenControlsRows,
+      colWidths: [35, 65],
+    });
+  }
+
   if (
     fullPlan?._original_inputs?.product?.plan_scope === "A Product Family / Category" ||
     fullPlan?._original_inputs?.product?.plan_scope === "A Process Line / Technology"
@@ -392,7 +435,7 @@ export function buildExportDoc({
           ],
           rows: analysis.map((hazard: any) => [
             hazard.step_name || "-",
-            hazard.hazards || "-",
+            appendAllergenContext(hazard, allergensPresent),
             hazard.severity || "-",
             hazard.likelihood || "-",
             resolveHazardSignificance(hazard) ? "Yes" : "No",

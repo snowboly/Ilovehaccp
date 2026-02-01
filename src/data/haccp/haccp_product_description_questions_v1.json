@@ -94,6 +94,36 @@
       ]
     },
     {
+      "id": "allergen_cross_contact_risks",
+      "text": "Allergen cross-contact risks (if any)",
+      "description": "Describe where unintended allergen contact could occur (e.g., shared equipment, rework, storage).",
+      "type": "multiline_text",
+      "required": false
+    },
+    {
+      "id": "allergen_controls",
+      "text": "Allergen cross-contact controls in place",
+      "description": "Select all applicable controls used to prevent cross-contact.",
+      "type": "multi_select",
+      "required": false,
+      "options": [
+        "Segregation",
+        "Cleaning validation",
+        "Labeling checks",
+        "Dedicated equipment",
+        "Other",
+        "None"
+      ]
+    },
+    {
+      "id": "allergen_controls_notes",
+      "text": "Allergen control details (Optional)",
+      "type": "text",
+      "required": false,
+      "show_if": { "questionId": "allergen_controls", "includes": "Other" },
+      "placeholder": "e.g., Color-coded tools, changeover verification"
+    },
+    {
       "id": "packaging_type",
       "text": "Primary packaging type",
       "description": "Example: plastic film, vacuum pack, glass jar, cardboard box.",
