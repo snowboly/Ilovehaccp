@@ -1,6 +1,12 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 
-const SECRET = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dev-secret';
+const getTokenSecret = (): string => {
+  const secret = process.env.EXPORT_TOKEN_SECRET || process.env.ACCESS_TOKEN_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!secret) {
+    throw new Error('EXPORT_TOKEN_SECRET is not configured');
+  }
+  return secret;
+};
 
 export interface ExportTokenPayload {
   id: string;
@@ -22,7 +28,7 @@ export function verifyExportToken(token: string): ExportTokenPayload | null {
     if (Date.now() > payload.exp * 1000) return null;
 
     // Verify Signature
-    const hmac = createHmac('sha256', SECRET);
+    const hmac = createHmac('sha256', getTokenSecret());
     hmac.update(payloadB64);
     const expectedSig = hmac.digest('hex');
 
