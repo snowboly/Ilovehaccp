@@ -371,7 +371,7 @@ function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
           step.step_name,
           step.step_description || PLACEHOLDERS.descriptionToComplete,
         ]),
-        columnWidths: [12, 28, 60],
+        columnWidths: [10, 24, 66],
         zebraStripe: true,
         introText: 'Each process step is described in the table below.',
         headerRepeat: true,

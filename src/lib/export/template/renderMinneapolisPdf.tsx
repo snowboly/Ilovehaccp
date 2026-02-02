@@ -499,7 +499,7 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
           step.step_name,
           step.step_description || 'Description to be completed by the food business.',
         ])}
-        colWidths={[12, 28, 60]}
+        colWidths={[10, 24, 66]}
       />
     ) : (
       <Text style={styles.paragraphItalic}>Process steps to be documented.</Text>
