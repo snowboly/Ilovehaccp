@@ -91,7 +91,7 @@ export const translations = {
           f3: "Ready to print and share",
           f4: "Instant download",
           cta: "Download PDF & Word",
-          note: "Document export only â€” no review, audit, verification, or approval."
+          note: "Document export only — no review, audit, verification, or approval."
         },
         review: {
           title: "Plan Review & Feedback",
@@ -1467,5 +1467,4 @@ export const translations = {
 export function getDictionary(lang: Language) {
   return translations[lang] || translations.en;
 }
-
 
