@@ -158,8 +158,8 @@ export const Spacing = {
 
   // Box/flow content
   boxPadding: 12,           // Boxed content internal padding
-  flowStepPadding: 10,      // Process flow step padding
-  flowArrowGap: 6,          // Gap around flow arrows
+  flowStepPadding: 5,       // Process flow step padding (compact)
+  flowArrowGap: 4,          // Gap around flow arrows
 } as const;
 
 // ============================================================================
