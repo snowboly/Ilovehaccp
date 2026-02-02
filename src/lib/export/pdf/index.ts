@@ -4,7 +4,13 @@ export {
   generatePreviewPdfFromDocx,
   type GeneratePdfOptions
 } from './generatePdf';
-export { convertDocxToPdf } from './convertDocxToPdf';
+export {
+  convertDocxToPdf,
+  LibreOfficeNotAvailableError,
+  isLibreOfficeNotAvailableError,
+  GotenbergConversionError,
+  isGotenbergConfigured
+} from './convertDocxToPdf';
 export { applyWatermark } from './watermark/applyWatermark';
 export { getDefaultWatermarkConfig, type WatermarkConfig } from './watermark/watermarkConfig';
 export { resolvePdfPipeline, type PdfPipeline } from './pipeline';

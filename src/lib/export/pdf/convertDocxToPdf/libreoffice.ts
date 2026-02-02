@@ -10,6 +10,17 @@ const execFileAsync = promisify(execFile);
 
 const DEFAULT_TIMEOUT_MS = 45_000;
 
+export class LibreOfficeNotAvailableError extends Error {
+  constructor(message: string = 'LibreOffice (soffice) is not installed or not available on PATH.') {
+    super(message);
+    this.name = 'LibreOfficeNotAvailableError';
+  }
+}
+
+export function isLibreOfficeNotAvailableError(error: unknown): error is LibreOfficeNotAvailableError {
+  return error instanceof LibreOfficeNotAvailableError;
+}
+
 export async function convertDocxToPdfWithLibreOffice(docxBuffer: Buffer): Promise<Buffer> {
   const runId = randomUUID();
   const tempDir = await fs.mkdtemp(path.join(tmpdir(), `ilovehaccp-export-${runId}-`));
@@ -37,11 +48,12 @@ export async function convertDocxToPdfWithLibreOffice(docxBuffer: Buffer): Promi
         { timeout: timeoutMs }
       );
     } catch (error: any) {
-      const message = error?.code === 'ENOENT'
-        ? 'LibreOffice (soffice) is not installed or not available on PATH.'
-        : error?.killed || error?.signal === 'SIGTERM'
-          ? `LibreOffice conversion timed out after ${timeoutMs}ms.`
-          : `LibreOffice conversion failed: ${error?.message || error}`;
+      if (error?.code === 'ENOENT') {
+        throw new LibreOfficeNotAvailableError();
+      }
+      const message = error?.killed || error?.signal === 'SIGTERM'
+        ? `LibreOffice conversion timed out after ${timeoutMs}ms.`
+        : `LibreOffice conversion failed: ${error?.message || error}`;
       throw new Error(message);
     }
 

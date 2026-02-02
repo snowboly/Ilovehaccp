@@ -20,6 +20,7 @@ import {
   applyWatermark,
   generateCleanPdfFromDocx,
   getDefaultWatermarkConfig,
+  isLibreOfficeNotAvailableError,
   resolvePdfPipeline
 } from '@/lib/export/pdf';
 
@@ -163,7 +164,7 @@ export async function POST(req: Request) {
         });
         pdfBuffer = await applyWatermark(legacyPdf, getDefaultWatermarkConfig());
       } else {
-        const { wordLogo } = await fetchLogoAssets(productInputs.logo_url);
+        const { wordLogo, pdfLogo } = await fetchLogoAssets(productInputs.logo_url);
         const exportPayload = {
           businessName: plan.business_name,
           full_plan: fullPlan,
@@ -178,9 +179,27 @@ export async function POST(req: Request) {
           logoUrl: productInputs.logo_url || null,
           isPaid: false
         };
-        const docxBuffer = await generateDocxBuffer({ ...exportPayload, logoBuffer: wordLogo }, lang);
-        const samplePdf = await generateCleanPdfFromDocx(docxBuffer);
-        pdfBuffer = await applyWatermark(samplePdf, getDefaultWatermarkConfig());
+        try {
+          const docxBuffer = await generateDocxBuffer({ ...exportPayload, logoBuffer: wordLogo }, lang);
+          const samplePdf = await generateCleanPdfFromDocx(docxBuffer);
+          pdfBuffer = await applyWatermark(samplePdf, getDefaultWatermarkConfig());
+        } catch (error) {
+          // Fall back to legacy PDF when LibreOffice is not available (e.g., on Vercel)
+          if (!isLibreOfficeNotAvailableError(error)) {
+            throw error;
+          }
+          logLegacyPipelineUsage({ planId: undefined, reason: 'LibreOffice unavailable - auto fallback (inline)' });
+          const legacyPdf = await renderLegacyPdf({
+            plan,
+            fullPlan,
+            lang,
+            template: templateVersion,
+            logo: pdfLogo,
+            productInputs,
+            isPaid: false
+          });
+          pdfBuffer = await applyWatermark(legacyPdf, getDefaultWatermarkConfig());
+        }
       }
       const fileName = sanitizeFileName(body?.fileName || 'HACCP_Plan.pdf');
       const responseBody = toBodyInit(pdfBuffer);
@@ -397,11 +416,20 @@ export async function POST(req: Request) {
       });
     } catch (error) {
       console.error('[export/pdf] DOCX conversion failed', { planId, userId, error });
-      if (!LEGACY_FALLBACK_ENABLED || pipelineConfig.isProd) {
+
+      // Allow legacy fallback when LibreOffice is not available (e.g., on Vercel)
+      const libreOfficeUnavailable = isLibreOfficeNotAvailableError(error);
+      const canFallback = libreOfficeUnavailable || (LEGACY_FALLBACK_ENABLED && !pipelineConfig.isProd);
+
+      if (!canFallback) {
         throw error;
       }
 
-      logLegacyPipelineUsage({ planId, reason: 'DOCX conversion failed - emergency fallback' });
+      const fallbackReason = libreOfficeUnavailable
+        ? 'LibreOffice unavailable - auto fallback'
+        : 'DOCX conversion failed - emergency fallback';
+      logLegacyPipelineUsage({ planId, reason: fallbackReason });
+
       let legacyPdf = await renderLegacyPdf({
         plan: { ...plan, planVersion },
         fullPlan,
