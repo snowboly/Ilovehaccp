@@ -137,6 +137,9 @@ ADMIN_REVIEW_INBOX=...
 # Application
 APP_URL=...                           # Base URL for email links
 API_RATE_LIMIT_ENABLED=true
+
+# PDF Export (optional - uses local LibreOffice if not set)
+GOTENBERG_URL=...                     # Gotenberg service URL for DOCX-to-PDF conversion
 ```
 
 ## Architecture Patterns
