@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Loader2, ShieldCheck, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface AuthFormProps {
   type: 'login' | 'signup';
@@ -131,7 +132,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
       <div className="w-full max-w-md mx-auto p-8 bg-white rounded-xl shadow-sm border text-center">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
-            <ShieldCheck className="h-8 w-8 text-blue-600" />
+            <Image src="/shield-heart.svg" alt="Shield with heart" width={32} height={32} />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Check your inbox</h2>
@@ -149,7 +150,7 @@ export default function AuthForm({ type: initialType }: AuthFormProps) {
     <div className="w-full max-w-md mx-auto p-8 bg-white rounded-xl shadow-sm border">
       <div className="flex flex-col items-center mb-8">
         <Link href="/" className="mb-4">
-          <ShieldCheck className="h-10 w-10 text-blue-600" />
+          <Image src="/shield-heart.svg" alt="Shield with heart" width={40} height={40} />
         </Link>
         <h1 className="text-2xl font-bold text-gray-900">
           {view === 'login' ? 'Welcome back' : view === 'signup' ? 'Create your account' : 'Reset Password'}
