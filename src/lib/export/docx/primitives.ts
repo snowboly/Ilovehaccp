@@ -854,8 +854,8 @@ export interface FlowStepOptions {
 export const flowStep = (options: FlowStepOptions): Table => {
   const { stepNumber, title, description, isCCP = false } = options;
 
-  // Increased padding for better visual presence
-  const stepPadding = toTwips(Spacing.flowStepPadding + 2);
+  // Compact padding for tighter flow steps
+  const stepPadding = toTwips(Spacing.flowStepPadding);
   const backgroundColor = isCCP ? "FEF3C7" : Colors.flowStepBg; // Amber tint for CCP
   const borderColor = isCCP ? Colors.warning : Colors.borderAccent;
 
@@ -960,15 +960,15 @@ export const flowArrow = (): Paragraph => {
   return new Paragraph({
     alignment: AlignmentType.CENTER,
     spacing: {
-      // Reduced spacing for tighter visual grouping
-      before: toTwips(Spacing.gapXs),
-      after: toTwips(Spacing.gapXs),
+      // Minimal spacing for compact flow diagram
+      before: toTwips(2),
+      after: toTwips(2),
     },
     children: [
       new TextRun({
         text: "\u2193", // Unicode down arrow
         font: Fonts.primary,
-        size: toHalfPoints(16), // Slightly smaller for compactness
+        size: toHalfPoints(12), // Compact arrow
         bold: true,
         color: Colors.primary,
       }),
