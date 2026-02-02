@@ -465,7 +465,7 @@ function DashboardContent() {
                     return getOrder(a) - getOrder(b);
                   }).map(plan => {
                     const draftName = plan.draft_id ? draftNamesByPlanId[plan.draft_id] : undefined;
-                    const planLabel = draftName?.trim() || plan.business_name || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
+                    const planLabel = plan.business_name || draftName?.trim() || `HACCP Plan – ${new Date(plan.created_at).toLocaleDateString()}`;
                     const isExportPaid = plan.export_paid || plan.payment_status === 'paid';
                     const pdfUrl = plan.pdf_url ?? plan.full_plan?.documents?.pdf_url ?? null;
                     const docxUrl = plan.docx_url ?? plan.full_plan?.documents?.docx_url ?? null;

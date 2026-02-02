@@ -122,7 +122,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
         return (
             <div className="space-y-4">
                 {value ? (
-                    <div className="relative w-full max-w-xs aspect-square rounded-xl overflow-hidden border-2 border-slate-200 bg-slate-50 group">
+                    <div className="relative w-full max-w-xs h-40 rounded-xl overflow-hidden border-2 border-slate-200 bg-slate-50 group">
                         <img src={value} alt="Uploaded logo" className="w-full h-full object-contain p-4" />
                         <button
                             onClick={() => onChange(question.id, null)}
@@ -390,22 +390,6 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                             {commonProcessSteps.map(s => <option key={s} value={s}>{s}</option>)}
                                             <option value="Other">Other (Custom)</option>
                                         </select>
-                                        {(!commonProcessSteps.includes(item.step_name) && item.step_name !== "" && !commonProcessSteps.includes("Other")) && (
-                                            // Handle case where existing data might be custom
-                                            <div className="mb-2">
-                                                <input
-                                                    type="text"
-                                                    value={item.step_name}
-                                                    onChange={(e) => {
-                                                        const newItems = [...items];
-                                                        newItems[idx] = { ...newItems[idx], step_name: e.target.value };
-                                                        onChange(question.id, newItems);
-                                                    }}
-                                                    placeholder="Enter custom step name..."
-                                                    className="w-full p-2 rounded-lg border border-slate-200 text-sm font-bold"
-                                                />
-                                            </div>
-                                        )}
                                         {/* If "Other" selected or empty (and not in list), show text input */}
                                         {(!commonProcessSteps.includes(item.step_name)) && (
                                              <input

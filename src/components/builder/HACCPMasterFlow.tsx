@@ -1817,6 +1817,7 @@ export default function HACCPMasterFlow() {
       return (
         <div className="space-y-6">
             <HACCPQuestionnaire 
+                key={`${currentHazard.step_name}-${currentHazard.hazards}-${currentCCPIndex}`}
                 sectionData={dynamicSchema} 
                 onComplete={(d) => handleSectionComplete('ccp_determination', d)} 
                 additionalContext={{ step_name: currentHazard.step_name }}
