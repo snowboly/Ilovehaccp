@@ -154,8 +154,16 @@ async function generateArticle(niche) {
 }
 
 async function main() {
-    // Process new batch of niches (indices 20 to 29)
-    for (let i = 20; i < 30; i++) {
+    // Allow optional CLI args: start end (inclusive)
+    const start = Number(process.argv[2] ?? 20);
+    const end = Number(process.argv[3] ?? 29);
+
+    if (Number.isNaN(start) || Number.isNaN(end) || start < 0 || end >= NICHES.length || start > end) {
+        console.error(`Invalid range. Provide start/end between 0 and ${NICHES.length - 1}, e.g. "10 16".`);
+        process.exit(1);
+    }
+
+    for (let i = start; i <= end; i++) {
         await generateArticle(NICHES[i]);
         await sleep(2000); // Respect rate limits
     }
