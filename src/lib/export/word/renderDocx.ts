@@ -629,7 +629,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
   const { labels } = doc.meta;
   const blocks: (Paragraph | Table)[] = [];
 
-  // Logo top-right (rendered as right-aligned paragraph)
+  // Logo top-left (rendered as left-aligned paragraph)
   if (doc.meta.logoBuffer) {
     const logoType = resolveDocxImageType(doc.meta.logoBuffer);
     if (!logoType) {
@@ -645,7 +645,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
             type: logoType,
           } as any),
         ],
-        alignment: AlignmentType.RIGHT,
+        alignment: AlignmentType.LEFT,
         spacing: { before: 400, after: 200 },
       })
     );
@@ -828,7 +828,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
             type: logoType,
           } as any),
         ],
-        alignment: AlignmentType.CENTER,
+        alignment: AlignmentType.LEFT,
         spacing: { before: 1000, after: 600 },
       })
     );
@@ -846,7 +846,7 @@ export async function generateModularWordDocument(doc: ExportDoc): Promise<Docum
         }),
       ],
       alignment: AlignmentType.CENTER,
-      spacing: { before: doc.meta.logoBuffer ? 0 : 2000, after: 400 },
+      spacing: { before: doc.meta.logoBuffer ? 400 : 2000, after: 400 },
     }),
     new Paragraph({
       children: [
