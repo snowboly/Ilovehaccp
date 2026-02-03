@@ -190,7 +190,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           "name": expert.name,
           "jobTitle": expert.role,
           "description": expert.credentials,
-          "url": `https://www.ilovehaccp.com/about/team/${expert.slug}`,
+          "url": "https://www.ilovehaccp.com/about",
           "worksFor": {
             "@type": "Organization",
             "name": "iLoveHACCP",
@@ -288,7 +288,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     <div className="text-sm text-slate-600">
                         <p className="mb-2">
                           This article was reviewed by{' '}
-                          <Link href={`/about/team/${expert.slug}`} className="text-blue-600 hover:underline font-semibold">
+                          <Link href="/about" className="text-blue-600 hover:underline font-semibold">
                             {expert.name}
                           </Link>{' '}
                           ({expert.role}).
