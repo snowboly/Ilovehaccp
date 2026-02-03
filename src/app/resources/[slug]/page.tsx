@@ -48,6 +48,27 @@ function injectHeaderIds(html: string) {
   });
 }
 
+function fixWhatYoullLearn(html: string) {
+  // Fix malformed "What you'll learn" sections that are plain text instead of lists
+  // Pattern: <h4>What you'll learn</h4> followed by plain text lines (not in <ul>)
+  return html.replace(
+    /<h4>What you[''']ll learn<\/h4>\s*(?!<ul>)([\s\S]*?)(?=<h[234]>|<p>(?![A-Z][a-z]+\s+(?:and|or|the|a)\s))/gi,
+    (match, content) => {
+      // Split content into lines and filter out empty ones
+      const lines = content
+        .replace(/<\/?p>/g, '\n')
+        .split(/\n/)
+        .map((line: string) => line.trim())
+        .filter((line: string) => line.length > 10 && !line.startsWith('<'));
+
+      if (lines.length === 0) return match;
+
+      const listItems = lines.map((line: string) => `<li>${line}</li>`).join('\n');
+      return `<h4>What you'll learn</h4>\n<ul>\n${listItems}\n</ul>\n`;
+    }
+  );
+}
+
 function highlightListTerms(html: string) {
   return html.replace(/<li>\s*(?:<strong>)?(.*?)(?:<\/strong>)?\s*:\s*([\s\S]*?)\s*<\/li>/g, (match, term, desc) => {
     const cleanTerm = term.replace(/<[^>]+>/g, '').trim();
@@ -195,7 +216,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!article) notFound();
 
   const headings = getHeadings(article.content);
-  const processedContent = transformBlockquotes(highlightListTerms(injectHeaderIds(article.content)));
+  const processedContent = transformBlockquotes(highlightListTerms(injectHeaderIds(fixWhatYoullLearn(article.content))));
   const expert = getExpertFromContent(article.content);
 
   // Calculate dateModified (use published date + 30 days as last review, or current date if recent)
