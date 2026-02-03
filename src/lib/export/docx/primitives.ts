@@ -35,6 +35,8 @@ import {
   ITableCellOptions,
 } from "docx";
 
+type ColumnAlignment = (typeof AlignmentType)[keyof typeof AlignmentType];
+
 import { sanitizeDocxText } from "../word/text";
 
 import {
@@ -533,6 +535,8 @@ export interface DataTableOptions {
   rows: string[][];
   /** Column width percentages (must sum to 100) */
   columnWidths: number[];
+  /** Column text alignments (per column). */
+  columnAlignments?: ColumnAlignment[];
   /** Use zebra striping for rows (default true; disable for hazard tables) */
   zebraStripe?: boolean;
   /** Header background color (hex without #) */
@@ -586,6 +590,7 @@ export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
     headers,
     rows,
     columnWidths,
+    columnAlignments = [],
     zebraStripe = true,
     headerBackground = Colors.tableHeaderBg,
     introText,
@@ -623,6 +628,7 @@ export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
             verticalAlign: VerticalAlign.CENTER,
             children: [
               new Paragraph({
+                alignment: columnAlignments[index] || AlignmentType.LEFT,
                 spacing: { before: 0, after: 0 },
                 children: [
                   new TextRun({
@@ -658,6 +664,7 @@ export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
               verticalAlign: VerticalAlign.TOP,
               children: [
                 new Paragraph({
+                  alignment: columnAlignments[cellIndex] || AlignmentType.LEFT,
                   spacing: { before: 0, after: 0 },
                   children: [
                     new TextRun({

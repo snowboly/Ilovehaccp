@@ -15,10 +15,11 @@ function requireEnv(name: string): string {
   return value;
 }
 
-const resend = new Resend(requireEnv('RESEND_API_KEY'));
+const getResend = () => new Resend(requireEnv('RESEND_API_KEY'));
 
 export async function sendEmail(args: SendEmailArgs) {
   const from = requireEnv('RESEND_FROM');
+  const resend = getResend();
 
   const result = await resend.emails.send({
     from,

@@ -3,7 +3,13 @@ import { Resend } from 'resend';
 import { supabaseService } from '@/lib/supabase';
 import { generateAccessToken } from '@/lib/token';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is missing. Email not sent.');
+  }
+  return new Resend(apiKey);
+};
 
 export async function POST(req: Request) {
   try {
@@ -28,6 +34,7 @@ export async function POST(req: Request) {
     const token = generateAccessToken(draftId, 'draft', 'view', 7 * 24 * 60 * 60);
     const magicLink = `${new URL(req.url).origin}/builder?id=${draftId}&token=${token}`;
 
+    const resend = getResend();
     const { error: emailError } = await resend.emails.send({
       from: 'iLoveHACCP <noreply@ilovehaccp.com>',
       to: email,

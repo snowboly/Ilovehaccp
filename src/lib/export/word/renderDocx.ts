@@ -635,7 +635,7 @@ function buildDocapescaCoverBlocks(doc: ExportDoc): (Paragraph | Table)[] {
     if (!logoType) {
       throw new Error("Unsupported logo format for DOCX export. Use PNG or JPEG.");
     }
-    const logoTransform = getLogoTransformation(doc.meta.logoBuffer, 140, 70);
+    const logoTransform = getLogoTransformation(doc.meta.logoBuffer, 140, 140);
     blocks.push(
       new Paragraph({
         children: [
