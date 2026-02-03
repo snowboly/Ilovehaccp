@@ -61,20 +61,11 @@ export const metadata: Metadata = {
     siteName: 'iLoveHACCP',
     title: 'iLoveHACCP | EU & UK Compliant Food Safety Plans',
     description: "Free online HACCP tool for food businesses. Build EC 852/2004 compliant plans, manage compliance, and prepare for audits with iLoveHACCP.",
-    images: [
-      {
-        url: '/og-image.jpg', // Ensure this exists in public/
-        width: 1200,
-        height: 630,
-        alt: 'iLoveHACCP Platform'
-      }
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'iLoveHACCP | Food Safety Plans',
     description: "Free online HACCP tool for food businesses in the UK & Europe. Build compliant HACCP plans and prepare for audits with iLoveHACCP.",
-    images: ['/og-image.jpg'],
   },
   icons: {
     icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],

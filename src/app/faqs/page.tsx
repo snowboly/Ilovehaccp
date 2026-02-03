@@ -7,7 +7,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'HACCP Frequently Asked Questions | Food Safety Help',
   description: 'Common questions about HACCP compliance, automated plan generation, and food safety regulations for restaurants and manufacturers.',
-  alternates: { canonical: '/faqs' }
+  alternates: { canonical: 'https://www.ilovehaccp.com/faqs' }
 };
 
 export default function FAQPage() {
