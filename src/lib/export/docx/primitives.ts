@@ -697,7 +697,7 @@ export const keyValueTable = (
   keyWidth: number = 30
 ): (Paragraph | Table)[] => {
   return dataTable({
-    headers: ["Field", "Value"],
+    headers: ["Item", "Details"],
     rows: pairs.map((p) => [p.key, p.value]),
     columnWidths: [keyWidth, 100 - keyWidth],
     zebraStripe: true,
