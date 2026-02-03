@@ -35,7 +35,7 @@ import {
   Packer,
 } from 'docx';
 import type { TemplateData, ProcessStep } from './buildTemplateData';
-import { resolveDocxImageType } from '../word/image';
+import { resolveDocxImageType, getImageDimensions, scaleToFit } from '../word/image';
 
 // Import design system and primitives
 import {
@@ -97,11 +97,18 @@ const buildLogoParagraph = (data: TemplateData, alignment: AlignmentTypeValue) =
   if (!logoType) {
     throw new Error('Unsupported logo format for DOCX export. Use PNG or JPEG.');
   }
+  // Calculate aspect-ratio-preserving dimensions (max 140x140)
+  const maxWidth = 140;
+  const maxHeight = 140;
+  const dimensions = getImageDimensions(data.logo);
+  const transformation = dimensions
+    ? scaleToFit(dimensions, maxWidth, maxHeight)
+    : { width: maxWidth, height: maxHeight };
   return new Paragraph({
     children: [
       new ImageRun({
         data: data.logo,
-        transformation: { width: 120, height: 60 },
+        transformation,
         type: logoType,
       } as any),
     ],
@@ -197,7 +204,7 @@ const createCoverPage = (data: TemplateData): (Paragraph | Table)[] => {
   });
   elements.push(topBand);
 
-  const logo = buildLogoParagraph(data, AlignmentType.RIGHT);
+  const logo = buildLogoParagraph(data, AlignmentType.LEFT);
   if (logo) elements.push(logo);
 
   elements.push(
