@@ -374,7 +374,7 @@ export function buildExportDoc({
             s.step_name,
             s.step_description || "-",
           ]),
-          colWidths: [10, 30, 60],
+          colWidths: [10, 20, 70],
         }
       : { type: "paragraph", text: t("Process follows standard flow.", "Standard flow.") },
     {
@@ -557,4 +557,3 @@ export function buildExportDoc({
     content,
   };
 }
-
