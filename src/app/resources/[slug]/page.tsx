@@ -52,7 +52,10 @@ function highlightListTerms(html: string) {
   return html.replace(/<li>\s*(?:<strong>)?(.*?)(?:<\/strong>)?\s*:\s*([\s\S]*?)\s*<\/li>/g, (match, term, desc) => {
     const cleanTerm = term.replace(/<[^>]+>/g, '').trim();
     const cleanDesc = desc.trim();
-    return `<li class="mb-3 pl-0"><span class="font-semibold text-slate-900">${cleanTerm}:</span> <span class="text-slate-600">${cleanDesc}</span></li>`;
+    return `<li class="mb-4 pl-0 list-none">
+      <span class="font-semibold text-slate-900">${cleanTerm}:</span>
+      <ul class="mt-2 ml-4"><li class="text-slate-600">${cleanDesc}</li></ul>
+    </li>`;
   });
 }
 
@@ -299,16 +302,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <h1 className="text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight tracking-tight mb-4">
                 {article.title}
               </h1>
-              <p className="text-lg text-slate-600 leading-relaxed mb-6">
+              <p className="text-lg text-slate-600 leading-relaxed">
                 {article.excerpt}
               </p>
-              <div className="flex items-center gap-4 pt-4 border-t border-slate-100">
-                <img src={expert.image} alt={expert.name} className="w-10 h-10 rounded-full bg-slate-100" />
-                <div>
-                  <div className="text-sm font-semibold text-slate-900">{expert.name}</div>
-                  <div className="text-xs text-slate-500">{expert.role} · {publishedDate}</div>
-                </div>
-              </div>
             </header>
 
             <div className="flex flex-col-reverse lg:flex-row gap-8 items-start">
