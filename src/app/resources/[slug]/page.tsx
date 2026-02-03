@@ -237,8 +237,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <h1 className="font-serif text-3xl md:text-4xl font-normal text-black leading-tight mb-2 italic border-b-0 wiki-title">
                 {article.title}
               </h1>
-              <div className="text-sm text-slate-500 font-sans">
-                From iLoveHACCP, the free encyclopedia of food safety.
+              <div className="text-sm text-slate-500 font-sans flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span>From iLoveHACCP, the free encyclopedia of food safety.</span>
+                <span className="text-xs text-slate-400">•</span>
+                <span className="text-xs text-slate-400">
+                  Last updated: {new Date(dateModified).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
+                </span>
               </div>
             </header>
 
