@@ -288,7 +288,7 @@ function createProductSection(data: TemplateData): (Paragraph | Table)[] {
 
   if (allergenRows.length > 0) {
     elements.push(tableCaptionParagraph('Table 2A', 'Allergen Controls'));
-    elements.push(...keyValueTable(allergenRows, 35));
+    elements.push(...keyValueTable(allergenRows, 35, ['Allergen', 'Details']));
   }
 
   return elements;
