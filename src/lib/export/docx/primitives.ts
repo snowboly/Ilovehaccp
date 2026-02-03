@@ -694,10 +694,11 @@ export const dataTable = (options: DataTableOptions): (Paragraph | Table)[] => {
  */
 export const keyValueTable = (
   pairs: Array<{ key: string; value: string }>,
-  keyWidth: number = 30
+  keyWidth: number = 30,
+  headers: [string, string] = ["Item", "Details"]
 ): (Paragraph | Table)[] => {
   return dataTable({
-    headers: ["Item", "Details"],
+    headers,
     rows: pairs.map((p) => [p.key, p.value]),
     columnWidths: [keyWidth, 100 - keyWidth],
     zebraStripe: true,
