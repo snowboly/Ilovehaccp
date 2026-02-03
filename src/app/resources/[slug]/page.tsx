@@ -1,8 +1,60 @@
 import { supabase } from '@/lib/supabase';
-import { articles as localArticles } from '@/data/articles';
+import { articles as localArticles, Article } from '@/data/articles';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import JSONLD from '@/components/layout/JSONLD';
+import ReadingProgress from '@/components/resources/ReadingProgress';
+
+// Get related articles by category (excluding current)
+function getRelatedArticles(currentSlug: string, category: string, limit: number = 3): Article[] {
+  return localArticles
+    .filter(a => a.category === category && a.slug !== currentSlug)
+    .slice(0, limit);
+}
+
+// Generate FAQs from article content
+function generateFAQs(title: string, content: string): { question: string; answer: string }[] {
+  const faqs: { question: string; answer: string }[] = [];
+
+  // Extract H2/H3 headings and their following paragraphs as Q&A
+  const sectionRegex = /<h[23][^>]*>([^<]+)<\/h[23]>\s*<p>([^<]+)<\/p>/gi;
+  let match;
+  let count = 0;
+
+  while ((match = sectionRegex.exec(content)) !== null && count < 5) {
+    const heading = match[1].trim();
+    const paragraph = match[2].trim();
+
+    // Skip if too short or generic
+    if (paragraph.length < 50 || heading.toLowerCase().includes('introduction')) continue;
+
+    // Convert heading to question format
+    let question = heading;
+    if (!heading.endsWith('?')) {
+      if (heading.toLowerCase().startsWith('how') ||
+          heading.toLowerCase().startsWith('what') ||
+          heading.toLowerCase().startsWith('why') ||
+          heading.toLowerCase().startsWith('when')) {
+        question = heading + '?';
+      } else {
+        question = `What is ${heading.toLowerCase()}?`;
+      }
+    }
+
+    faqs.push({ question, answer: paragraph.slice(0, 300) + (paragraph.length > 300 ? '...' : '') });
+    count++;
+  }
+
+  // Add a generic FAQ about the topic if we don't have enough
+  if (faqs.length < 3) {
+    faqs.push({
+      question: `Why is ${title.toLowerCase()} important for food safety?`,
+      answer: `Understanding ${title.toLowerCase()} is essential for maintaining food safety standards, ensuring regulatory compliance, and protecting consumers from foodborne illnesses.`
+    });
+  }
+
+  return faqs;
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -274,6 +326,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const headings = getHeadings(article.content);
   const processedContent = transformBlockquotes(highlightListTerms(injectHeaderIds(fixWhatYoullLearn(removeBoilerplate(article.content)))));
   const expert = getExpertFromContent(article.content);
+  const relatedArticles = getRelatedArticles(slug, article.category, 3);
+  const faqs = generateFAQs(article.title, article.content);
 
   // Calculate dateModified (use published date + 30 days as last review, or current date if recent)
   const publishedDate = article.published_at || article.publishedAt;
@@ -345,12 +399,25 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           "@type": "WebPage",
           "@id": `https://www.ilovehaccp.com/resources/${slug}`
         }
+      },
+      // FAQPage Schema for featured snippets
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqs.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.answer
+          }
+        }))
       }
     ]
   };
 
   return (
     <div className="min-h-screen bg-white">
+      <ReadingProgress />
       <JSONLD data={structuredData} />
 
       {/* Modern breadcrumb header */}
@@ -445,6 +512,58 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     </div>
                 </div>
 
+                {/* FAQ Section */}
+                {faqs.length > 0 && (
+                  <div className="mt-16">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-6">Frequently Asked Questions</h2>
+                    <div className="space-y-4">
+                      {faqs.map((faq, i) => (
+                        <details key={i} className="group bg-slate-50 rounded-lg border border-slate-100">
+                          <summary className="flex items-center justify-between p-4 cursor-pointer list-none">
+                            <span className="font-medium text-slate-900 pr-4">{faq.question}</span>
+                            <svg className="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </summary>
+                          <div className="px-4 pb-4 text-slate-600 text-[15px] leading-relaxed">
+                            {faq.answer}
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Related Articles */}
+                {relatedArticles.length > 0 && (
+                  <div className="mt-16">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-6">Related Articles</h2>
+                    <div className="grid gap-4">
+                      {relatedArticles.map((related) => (
+                        <Link
+                          key={related.slug}
+                          href={`/resources/${related.slug}`}
+                          className="group flex gap-4 p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-colors"
+                        >
+                          {related.image && (
+                            <img
+                              src={related.image}
+                              alt={related.title}
+                              className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs text-slate-500 mb-1">{related.category} · {related.readTime}</div>
+                            <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                              {related.title}
+                            </h3>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* CTA Section */}
                 <div className="mt-10 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
                   <h3 className="text-lg font-bold text-slate-900 mb-2">Ready to build your HACCP plan?</h3>
@@ -478,13 +597,30 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                       </nav>
                     </div>
 
-                    {/* Related Links */}
-                    <div className="text-sm">
-                      <div className="font-semibold text-slate-900 mb-3">Related</div>
+                    {/* Related Articles in Sidebar */}
+                    {relatedArticles.length > 0 && (
+                      <div className="text-sm">
+                        <div className="font-semibold text-slate-900 mb-3">Related Articles</div>
+                        <ul className="space-y-3">
+                          {relatedArticles.slice(0, 3).map((related) => (
+                            <li key={related.slug}>
+                              <Link
+                                href={`/resources/${related.slug}`}
+                                className="text-slate-600 hover:text-blue-600 transition-colors line-clamp-2 leading-snug"
+                              >
+                                {related.title}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Quick Links */}
+                    <div className="text-sm pt-4 border-t border-slate-100">
                       <ul className="space-y-2">
-                        <li><Link href="/resources" className="text-slate-600 hover:text-blue-600 transition-colors">All Resources</Link></li>
-                        <li><Link href="/builder" className="text-slate-600 hover:text-blue-600 transition-colors">HACCP Builder Tool</Link></li>
-                        <li><Link href="/about" className="text-slate-600 hover:text-blue-600 transition-colors">About the Experts</Link></li>
+                        <li><Link href="/resources" className="text-slate-500 hover:text-blue-600 transition-colors">All Resources</Link></li>
+                        <li><Link href="/builder" className="text-slate-500 hover:text-blue-600 transition-colors">HACCP Builder</Link></li>
                       </ul>
                     </div>
                 </div>
