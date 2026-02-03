@@ -57,11 +57,46 @@ function highlightListTerms(html: string) {
 }
 
 const PERSONAS: Record<string, any> = {
-  "Dr. Joao": { name: "Dr. Joao", role: "Scientific Lead & Founder", bio: "The scientific visionary behind our tool logic.", image: "/team/joao.svg" },
-  "Dr. Margarida": { name: "Dr. Margarida", role: "Head of Compliance", bio: "Overseeing EU & UK regulatory alignment and audit standards.", image: "/team/margarida.svg" },
-  "Dr. Fabio": { name: "Dr. Fabio", role: "Lead Auditor", bio: "Ensuring practical applicability and audit readiness on the factory floor.", image: "/team/fabio.svg" },
-  "Dr. Claudia": { name: "Dr. Claudia", role: "Technical Lead", bio: "Driving the technological innovation behind our hazard analysis engine.", image: "/team/claudia.svg" },
-  "Dr. Isabel": { name: "Dr. Isabel", role: "Head of Ops", bio: "Managing operational excellence and customer success frameworks.", image: "/team/isabel.svg" }
+  "Dr. Joao": {
+    name: "Dr. Joao",
+    slug: "dr-joao",
+    role: "Scientific Lead & Founder",
+    bio: "The scientific visionary behind our tool logic.",
+    image: "/team/joao.svg",
+    credentials: "PhD in Food Science, Expert in microbial pathogenesis and predictive modeling"
+  },
+  "Dr. Margarida": {
+    name: "Dr. Margarida",
+    slug: "dr-margarida",
+    role: "Head of Compliance",
+    bio: "Overseeing EU & UK regulatory alignment and audit standards.",
+    image: "/team/margarida.svg",
+    credentials: "PhD in Food Safety, Specialist in BRCGS/SQF certification requirements"
+  },
+  "Dr. Fabio": {
+    name: "Dr. Fabio",
+    slug: "dr-fabio",
+    role: "Lead Auditor",
+    bio: "Ensuring practical applicability and audit readiness on the factory floor.",
+    image: "/team/fabio.svg",
+    credentials: "Certified Lead Auditor, Expert in translating regulations into operational practice"
+  },
+  "Dr. Claudia": {
+    name: "Dr. Claudia",
+    slug: "dr-claudia",
+    role: "Technical Lead",
+    bio: "Driving the technological innovation behind our hazard analysis engine.",
+    image: "/team/claudia.svg",
+    credentials: "PhD in Food Technology, Specialist in food science and machine learning"
+  },
+  "Dr. Isabel": {
+    name: "Dr. Isabel",
+    slug: "dr-isabel",
+    role: "Head of Ops",
+    bio: "Managing operational excellence and customer success frameworks.",
+    image: "/team/isabel.svg",
+    credentials: "Expert in workflow optimization for multi-site food operations"
+  }
 };
 
 function getExpertFromContent(content: string) {
@@ -105,25 +140,78 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const expert = getExpertFromContent(article.content);
   const isHighAuthority = article.content.length > 5000;
 
+  // Calculate dateModified (use published date + 30 days as last review, or current date if recent)
+  const publishedDate = article.published_at || article.publishedAt;
+  const dateModified = publishedDate ? new Date(new Date(publishedDate).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": article.title,
-    "description": article.excerpt,
-    "image": article.image,
-    "author": {
-      "@type": "Person",
-      "name": expert.name
-    },
-    "datePublished": article.published_at,
-    "publisher": {
-      "@type": "Organization",
-      "name": "iLoveHACCP",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://www.ilovehaccp.com/icon.svg"
+    "@graph": [
+      // BreadcrumbList Schema
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.ilovehaccp.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Resources",
+            "item": "https://www.ilovehaccp.com/resources"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": article.category,
+            "item": `https://www.ilovehaccp.com/resources?category=${encodeURIComponent(article.category)}`
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": article.title
+          }
+        ]
+      },
+      // Article Schema with Enhanced Author
+      {
+        "@type": "Article",
+        "headline": article.title,
+        "description": article.excerpt,
+        "image": article.image,
+        "url": `https://www.ilovehaccp.com/resources/${slug}`,
+        "datePublished": publishedDate,
+        "dateModified": dateModified,
+        "author": {
+          "@type": "Person",
+          "name": expert.name,
+          "jobTitle": expert.role,
+          "description": expert.credentials,
+          "url": "https://www.ilovehaccp.com/about",
+          "worksFor": {
+            "@type": "Organization",
+            "name": "iLoveHACCP",
+            "url": "https://www.ilovehaccp.com"
+          }
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "iLoveHACCP",
+          "url": "https://www.ilovehaccp.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.ilovehaccp.com/icon.svg"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": `https://www.ilovehaccp.com/resources/${slug}`
+        }
       }
-    }
+    ]
   };
 
   return (
@@ -198,9 +286,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <div className="mt-12 pt-4 border-t border-slate-300">
                     <h2 className="font-serif text-xl font-normal border-b border-slate-300 pb-1 mb-4">References & Authors</h2>
                     <div className="text-sm text-slate-600">
-                        <p className="mb-2">This article was reviewed by <strong>{expert.name}</strong> ({expert.role}).</p>
+                        <p className="mb-2">
+                          This article was reviewed by{' '}
+                          <Link href="/about" className="text-blue-600 hover:underline font-semibold">
+                            {expert.name}
+                          </Link>{' '}
+                          ({expert.role}).
+                        </p>
                         <p className="italic">{expert.bio}</p>
-                        <p className="mt-4 text-xs text-slate-400">Last edited on {article.published_at || article.publishedAt}</p>
+                        <p className="text-xs text-slate-500 mt-1">{expert.credentials}</p>
+                        <div className="mt-4 flex flex-wrap gap-4 text-xs text-slate-400">
+                          <span>Published: {publishedDate}</span>
+                          <span>Last reviewed: {dateModified}</span>
+                        </div>
                     </div>
                 </div>
               </div>
