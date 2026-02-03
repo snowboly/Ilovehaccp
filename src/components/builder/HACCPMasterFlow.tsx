@@ -1368,6 +1368,35 @@ export default function HACCPMasterFlow() {
       }
   }, [currentSection]);
 
+  useEffect(() => {
+      if (currentSection !== 'ccp_determination') return;
+      const sigHazards = getSignificantHazards();
+      if (sigHazards.length > 0) return;
+
+      const returningToComplete = returnToCompleteRef.current;
+      if (returningToComplete) {
+          returnToCompleteRef.current = false;
+          const params = new URLSearchParams(window.location.search);
+          params.delete('returnTo');
+          params.delete('step');
+          window.history.replaceState({}, '', `?${params.toString()}`);
+      }
+
+      const nextSection: SectionKey = returningToComplete ? 'complete' : 'review_validation';
+      const message = returningToComplete
+          ? "No significant hazards identified. Returning to summary..."
+          : "No significant hazards identified. Moving to next section...";
+
+      setTransition({ show: true, message });
+      const timeoutId = window.setTimeout(() => {
+          setTransition({ show: false, message: '' });
+          setCurrentSection(nextSection);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1500);
+
+      return () => window.clearTimeout(timeoutId);
+  }, [currentSection, allAnswers]);
+
   const openCheckout = async (tier: 'professional' | 'expert') => {
       const actionKey = tier === 'professional' ? 'checkout_professional' : 'checkout_expert';
       if (busyAction) return;
