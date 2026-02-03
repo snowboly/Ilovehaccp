@@ -12,14 +12,6 @@ export const metadata: Metadata = {
     title: 'iLoveHACCP | Free HACCP Plan Generator',
     description: 'Create a professional HACCP plan in minutes. EC 852/2004 compliant food safety for restaurants, manufacturers, and catering.',
     url: 'https://www.ilovehaccp.com',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'iLoveHACCP Platform'
-      }
-    ],
   }
 };
 
