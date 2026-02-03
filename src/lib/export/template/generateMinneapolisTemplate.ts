@@ -185,7 +185,7 @@ const createCoverPage = (data: TemplateData): (Paragraph | Table)[] => {
         children: [
           new TableCell({
             borders: noBorders,
-            shading: { type: ShadingType.CLEAR, color: Colors.text, fill: Colors.text },
+            shading: { type: ShadingType.CLEAR, color: Colors.sectionBg, fill: Colors.sectionBg },
             children: [new Paragraph({})],
           }),
         ],
@@ -195,7 +195,7 @@ const createCoverPage = (data: TemplateData): (Paragraph | Table)[] => {
         children: [
           new TableCell({
             borders: noBorders,
-            shading: { type: ShadingType.CLEAR, color: Colors.primary, fill: Colors.primary },
+            shading: { type: ShadingType.CLEAR, color: Colors.sectionBg, fill: Colors.sectionBg },
             children: [new Paragraph({})],
           }),
         ],
