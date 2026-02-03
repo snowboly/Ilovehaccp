@@ -872,7 +872,7 @@ export const flowStep = (options: FlowStepOptions): Table => {
       spacing: { before: 0, after: isCCP || description ? toTwips(Spacing.gapXs) : 0 },
       children: [
         new TextRun({
-          text: `Step ${stepNumber}: `,
+          text: `${stepNumber}. `,
           font: Fonts.primary,
           size: toHalfPoints(FontSizes.flowStep),
           bold: true,
