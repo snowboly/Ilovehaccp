@@ -869,6 +869,7 @@ export const flowStep = (options: FlowStepOptions): Table => {
   const children: Paragraph[] = [
     // Step number and title line
     new Paragraph({
+      alignment: AlignmentType.CENTER,
       spacing: { before: 0, after: isCCP || description ? toTwips(Spacing.gapXs) : 0 },
       children: [
         new TextRun({
@@ -893,6 +894,7 @@ export const flowStep = (options: FlowStepOptions): Table => {
   if (isCCP) {
     children.push(
       new Paragraph({
+        alignment: AlignmentType.CENTER,
         spacing: { before: 0, after: description ? toTwips(Spacing.gapXs) : 0 },
         children: [
           new TextRun({
@@ -911,6 +913,7 @@ export const flowStep = (options: FlowStepOptions): Table => {
   if (description) {
     children.push(
       new Paragraph({
+        alignment: AlignmentType.CENTER,
         spacing: { before: 0, after: 0 },
         children: [
           new TextRun({
