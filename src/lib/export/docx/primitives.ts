@@ -869,10 +869,11 @@ export const flowStep = (options: FlowStepOptions): Table => {
   const children: Paragraph[] = [
     // Step number and title line
     new Paragraph({
+      alignment: AlignmentType.CENTER,
       spacing: { before: 0, after: isCCP || description ? toTwips(Spacing.gapXs) : 0 },
       children: [
         new TextRun({
-          text: `Step ${stepNumber}: `,
+          text: `${stepNumber}. `,
           font: Fonts.primary,
           size: toHalfPoints(FontSizes.flowStep),
           bold: true,
@@ -893,6 +894,7 @@ export const flowStep = (options: FlowStepOptions): Table => {
   if (isCCP) {
     children.push(
       new Paragraph({
+        alignment: AlignmentType.CENTER,
         spacing: { before: 0, after: description ? toTwips(Spacing.gapXs) : 0 },
         children: [
           new TextRun({
@@ -911,6 +913,7 @@ export const flowStep = (options: FlowStepOptions): Table => {
   if (description) {
     children.push(
       new Paragraph({
+        alignment: AlignmentType.CENTER,
         spacing: { before: 0, after: 0 },
         children: [
           new TextRun({
@@ -925,8 +928,9 @@ export const flowStep = (options: FlowStepOptions): Table => {
   }
 
   return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: { size: 70, type: WidthType.PERCENTAGE },
     layout: TableLayoutType.FIXED,
+    alignment: AlignmentType.CENTER,
     rows: [
       new TableRow({
         children: [
