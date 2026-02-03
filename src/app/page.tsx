@@ -4,7 +4,7 @@ import JSONLD from '@/components/layout/JSONLD';
 
 export const metadata: Metadata = {
   title: "iLoveHACCP | Free HACCP Plan Generator & Food Safety Tools",
-  description: "Create a professional HACCP plan in minutes. Our advanced system helps food businesses manage compliance, conduct hazard analysis, and prepare for audits for free.",
+  description: "Create a professional HACCP plan in minutes. Our free system helps food businesses manage compliance, run hazard analysis, and prepare for audits.",
   alternates: {
     canonical: 'https://www.ilovehaccp.com',
   },
