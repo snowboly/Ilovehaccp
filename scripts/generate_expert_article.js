@@ -96,22 +96,46 @@ async function generateSection(title, section, index, total, persona, previousCo
     You are ${persona.role}.
     Article Title: "${title}"
     Current Section: "${section.title}"
-    Sub-points to cover: ${JSON.stringify(section.points)} 
-    
+    Sub-points to cover: ${JSON.stringify(section.points)}
+
     Instructions:
     - Write this section with **extreme depth and journalistic authority**.
     - Target Word Count for this section: 400-600 words.
-    - Style: High-end editorial (e.g., Food Safety Magazine, Harvard Business Review). 
+    - Style: Modern editorial (clean, scannable, like Stripe or Linear documentation).
     - Use sophisticated transitions.
-    - **Formatting (MANDATORY):**
-      - Use <p> tags with **VERY SHORT paragraphs** (max 3-4 sentences). Add whitespace between ideas.
-      - Use <h3> and <h4> to nest information.
-      - Use <ul> or <ol> for checklists and complex lists.
-      - Use <strong> for emphasis on regulatory codes and critical terms.
-      - Add one <blockquote> with a "Leadership Insight" or "Auditor's Note".
-    - If relevant, suggest a place for an image with [IMAGE_SUGGESTION: description of a relevant food safety image].
-    
-    Output: HTML string ONLY.
+
+    **FORMATTING RULES (CRITICAL - FOLLOW EXACTLY):**
+
+    1. PARAGRAPHS:
+       - Maximum 2-3 sentences per <p> tag. NO WALLS OF TEXT.
+       - Each paragraph should cover ONE idea only.
+       - Add line breaks between paragraphs for readability.
+
+    2. HEADINGS:
+       - Use <h3> for subsections within this section.
+       - Keep heading text concise (3-6 words).
+
+    3. LISTS (use liberally):
+       - Use <ul> with <li> for any list of 3+ items.
+       - Each <li> should be concise (1-2 sentences max).
+       - For definition-style lists, use format: <li><strong>Term:</strong> Definition here.</li>
+
+    4. EMPHASIS:
+       - Use <strong> ONLY for regulatory codes (EC 852/2004, BRCGS, etc.) and critical terms.
+       - Do not overuse bold text.
+
+    5. EXPERT CALLOUTS:
+       - Include ONE <blockquote> per section with an expert insight.
+       - Start with context keyword for styling: "Audit Tip:", "Research Note:", or "Important:"
+       - Example: <blockquote><strong>Audit Tip:</strong> Always verify temperature logs are signed and dated.</blockquote>
+
+    6. DO NOT:
+       - Use markdown syntax (no ##, **, etc.)
+       - Create paragraphs longer than 3 sentences
+       - Use generic filler phrases
+       - Include [IMAGE_SUGGESTION] comments
+
+    Output: Clean HTML string ONLY. No markdown. No code blocks.
   `;
 
   return await safeAiCall([{ role: 'user', content: prompt }], 0.6);
@@ -123,15 +147,26 @@ async function generateIntroAndMeta(title, persona, outline) {
       You are ${persona.role}.
       Article Title: "${title}"
       Outline: ${JSON.stringify(outline)}
-      
+
       Task:
       1. Write a compelling, SEO-optimized Title (can be slightly different from the input if better).
-      2. Write a 2-sentence Excerpt/Meta Description.
-      3. Write the Introduction section (approx 400 words).
-         - Hook the reader immediately.
-         - Use **short paragraphs** (max 3 sentences).
-         - Use bullet points if listing what will be covered.
-      
+      2. Write a 2-sentence Excerpt/Meta Description (engaging, not generic).
+      3. Write the Introduction section (approx 300-400 words).
+
+      **Introduction Format (CRITICAL):**
+      - Start with a hook paragraph (2-3 sentences max) that addresses a pain point.
+      - Second paragraph: Brief context on why this matters.
+      - Include a "What you'll learn" section using this exact format:
+        <h4>What you'll learn</h4>
+        <ul>
+          <li>Point one - specific and actionable</li>
+          <li>Point two - specific and actionable</li>
+          <li>Point three - specific and actionable</li>
+        </ul>
+      - Final paragraph: Brief transition to the first section.
+      - NO paragraphs longer than 3 sentences.
+      - Use HTML only, no markdown.
+
       Output Format: JSON ONLY.
       {
         "finalTitle": "...",
@@ -179,11 +214,17 @@ async function main() {
     console.log("Generating Conclusion...");
     const conclusionPrompt = `
         You are ${persona.role}.
-        Wrap up the article "${targetTitle}".
-        Summarize key takeaways.
-        Use bullet points for the summary.
-        Call to action: "Audit your current plan today" or similar.
-        Output: HTML string.
+        Write the conclusion for the article "${targetTitle}".
+
+        **Format (CRITICAL):**
+        1. Start with <h2>Key Takeaways</h2>
+        2. Use a <ul> with 4-6 bullet points summarizing the most important points.
+        3. Each bullet should be 1 sentence, specific and actionable.
+        4. End with a brief (2-3 sentence) call-to-action paragraph encouraging readers to take action.
+        5. NO markdown. HTML only.
+        6. Keep total length under 200 words.
+
+        Output: Clean HTML string ONLY.
     `;
     const conclusionContent = await safeAiCall([{ role: 'user', content: conclusionPrompt }], 0.5);
     fullContent += `\n${conclusionContent}`;
