@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDF Preview</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      #viewer {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 16px 12px 48px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .page {
+        background: #ffffff;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .page canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .page-placeholder {
+        height: 720px;
+        background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+        background-size: 200% 100%;
+        animation: shimmer 1.2s ease-in-out infinite;
+      }
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      .error {
+        padding: 24px;
+        text-align: center;
+        color: #b91c1c;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viewer"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.js" integrity="sha512-T8f6qSLO5fN0b5bqE+2SHkw9X2g7M6M7eO4P1kMjCq9KT0E4N7QqB6L0H3rKp6b2qH8nv7Q0fRbQ4t3E0sG8NA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      (function () {
+        const viewer = document.getElementById('viewer');
+        const params = new URLSearchParams(window.location.search);
+        const file = params.get('file');
+        if (!file) {
+          viewer.innerHTML = '<div class="error">Missing PDF source.</div>';
+          return;
+        }
+
+        const pdfjsLib = window['pdfjsLib'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js';
+
+        const renderPage = async (pdf, pageNumber) => {
+          const page = await pdf.getPage(pageNumber);
+          const viewport = page.getViewport({ scale: 1 });
+          const containerWidth = Math.min(viewer.clientWidth, 960) - 24;
+          const scale = containerWidth / viewport.width;
+          const scaledViewport = page.getViewport({ scale });
+
+          const pageWrapper = document.createElement('div');
+          pageWrapper.className = 'page';
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d', { alpha: false });
+          canvas.width = Math.floor(scaledViewport.width);
+          canvas.height = Math.floor(scaledViewport.height);
+          pageWrapper.appendChild(canvas);
+          viewer.appendChild(pageWrapper);
+
+          await page.render({ canvasContext: context, viewport: scaledViewport }).promise;
+        };
+
+        const renderWithLazyLoad = async (pdf) => {
+          const totalPages = pdf.numPages;
+          const initialPages = Math.min(4, totalPages);
+          for (let i = 1; i <= initialPages; i += 1) {
+            await renderPage(pdf, i);
+          }
+
+          if (totalPages <= initialPages) return;
+
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(async (entry) => {
+              if (!entry.isIntersecting) return;
+              const target = entry.target;
+              const pageNumber = Number(target.getAttribute('data-page'));
+              observer.unobserve(target);
+              target.remove();
+              await renderPage(pdf, pageNumber);
+            });
+          }, { rootMargin: '400px 0px' });
+
+          for (let i = initialPages + 1; i <= totalPages; i += 1) {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'page page-placeholder';
+            placeholder.setAttribute('data-page', String(i));
+            viewer.appendChild(placeholder);
+            observer.observe(placeholder);
+          }
+        };
+
+        pdfjsLib.getDocument({ url: file, withCredentials: false }).promise
+          .then(renderWithLazyLoad)
+          .catch((error) => {
+            viewer.innerHTML = '<div class="error">Unable to load preview.</div>';
+            console.error(error);
+          });
+      })();
+    </script>
+  </body>
+</html>

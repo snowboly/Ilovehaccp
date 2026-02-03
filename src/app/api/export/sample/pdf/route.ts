@@ -14,7 +14,7 @@ import { samplePlanFixture } from '@/lib/export/sample/fixture';
 
 export const runtime = 'nodejs';
 
-const WATERMARK_TEXT = 'PREVIEW — NOT FOR OFFICIAL USE';
+const WATERMARK_TEXT = 'Sample Preview  Export to remove watermark';
 const SAMPLE_FILENAME = 'Sample_HACCP_Plan.pdf';
 
 const logLegacyPipelineUsage = (reason: string) => {
