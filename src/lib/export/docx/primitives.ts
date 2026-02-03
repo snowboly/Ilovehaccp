@@ -925,8 +925,9 @@ export const flowStep = (options: FlowStepOptions): Table => {
   }
 
   return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: { size: 70, type: WidthType.PERCENTAGE },
     layout: TableLayoutType.FIXED,
+    alignment: AlignmentType.CENTER,
     rows: [
       new TableRow({
         children: [
