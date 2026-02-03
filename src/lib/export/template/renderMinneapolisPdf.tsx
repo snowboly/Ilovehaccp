@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   coverLogo: {
     width: 140,
-    height: 70,
+    height: 140,
     marginBottom: 16,
     objectFit: 'contain',
   },
@@ -327,15 +327,19 @@ interface TableProps {
   headers: string[];
   rows: string[][];
   colWidths: number[];
+  colAlignments?: Array<'left' | 'center' | 'right'>;
 }
 
-const Table = ({ headers, rows, colWidths }: TableProps) => (
+const Table = ({ headers, rows, colWidths, colAlignments = [] }: TableProps) => (
   <View style={styles.table}>
     <View style={styles.tableHeaderRow}>
       {headers.map((header, i) => (
         <Text
           key={i}
-          style={[styles.tableCellHeader, { width: `${colWidths[i]}%` }]}
+          style={[
+            styles.tableCellHeader,
+            { width: `${colWidths[i]}%`, textAlign: colAlignments[i] || 'left' },
+          ]}
         >
           {sanitizeText(header)}
         </Text>
@@ -349,7 +353,13 @@ const Table = ({ headers, rows, colWidths }: TableProps) => (
         {row.map((cell, cellIndex) => (
           <Text
             key={cellIndex}
-            style={[styles.tableCell, { width: `${colWidths[cellIndex] || 20}%` }]}
+            style={[
+              styles.tableCell,
+              {
+                width: `${colWidths[cellIndex] || 20}%`,
+                textAlign: colAlignments[cellIndex] || 'left',
+              },
+            ]}
           >
             {sanitizeText(cell)}
           </Text>
@@ -499,7 +509,8 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
           step.step_name,
           step.step_description || 'Description to be completed by the food business.',
         ])}
-        colWidths={[12, 28, 60]}
+        colWidths={[8, 20, 72]}
+        colAlignments={['center', 'center', 'left']}
       />
     ) : (
       <Text style={styles.paragraphItalic}>Process steps to be documented.</Text>
