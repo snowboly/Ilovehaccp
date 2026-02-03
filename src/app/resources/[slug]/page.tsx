@@ -52,7 +52,7 @@ function highlightListTerms(html: string) {
   return html.replace(/<li>\s*(?:<strong>)?(.*?)(?:<\/strong>)?\s*:\s*([\s\S]*?)\s*<\/li>/g, (match, term, desc) => {
     const cleanTerm = term.replace(/<[^>]+>/g, '').trim();
     const cleanDesc = desc.trim();
-    return `<li class="mb-8"><span class="block font-black text-slate-900 text-xl mb-2">${cleanTerm}:</span><span class="block pl-6 relative before:content-['•'] before:absolute before:left-0 before:text-blue-600 before:font-black before:text-xl">${cleanDesc}</span></li>`;
+    return `<li class="mb-4"><span class="block font-bold text-slate-900 text-base mb-1">${cleanTerm}:</span><span class="block pl-5 relative before:content-[''•''] before:absolute before:left-0 before:text-blue-600 before:font-black before:text-base">${cleanDesc}</span></li>`;
   });
 }
 
@@ -138,7 +138,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const headings = getHeadings(article.content);
   const processedContent = highlightListTerms(injectHeaderIds(article.content));
   const expert = getExpertFromContent(article.content);
-  const isHighAuthority = article.content.length > 5000;
 
   // Calculate dateModified (use published date + 30 days as last review, or current date if recent)
   const publishedDate = article.published_at || article.publishedAt;
@@ -237,28 +236,41 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <h1 className="font-serif text-3xl md:text-4xl font-normal text-black leading-tight mb-2 italic border-b-0 wiki-title">
                 {article.title}
               </h1>
-              <div className="text-sm text-slate-500 font-sans flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span>From iLoveHACCP, the free encyclopedia of food safety.</span>
-                <span className="text-xs text-slate-400">•</span>
-                <span className="text-xs text-slate-400">
-                  Last updated: {new Date(dateModified).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
-                </span>
+              <div className="text-sm text-slate-500 font-sans mb-3">
+                From iLoveHACCP, the free encyclopedia of food safety.
+              </div>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 font-sans">
+                <span>Reviewed by {expert.name}</span>
+                <span>•</span>
+                <span>{article.readTime}</span>
+                {publishedDate && (
+                  <>
+                    <span>•</span>
+                    <span>Published: {publishedDate}</span>
+                  </>
+                )}
               </div>
             </header>
 
-            {/* Wiki-style warning/info banner if high authority */}
-            {isHighAuthority && (
-                <div className="mb-6 p-4 bg-slate-50 border border-slate-200 text-sm text-slate-800 flex gap-4 items-start">
-                    <div className="mt-1 min-w-[20px] text-center font-serif font-bold text-slate-500">i</div>
-                    <div className="italic">
-                      &quot;{article.excerpt}&quot;
-                    </div>
-                </div>
-            )}
+            {/* Wiki-style info banner */}
+            <div className="mb-6 p-4 bg-slate-50 border border-slate-200 text-sm text-slate-800 flex gap-4 items-start">
+              <div className="mt-1 min-w-[20px] text-center font-serif font-bold text-slate-500">i</div>
+              <div className="italic">
+                &quot;{article.excerpt}&quot;
+              </div>
+            </div>
 
             <div className="flex flex-col-reverse lg:flex-row gap-8 items-start">
               {/* Main Content Column */}
               <div className="flex-1 min-w-0">
+                 {article.image && (
+                   <figure className="mb-8 border border-slate-200 bg-slate-50 p-1 lg:hidden">
+                     <img src={article.image} alt={article.title} className="w-full bg-white" />
+                     <figcaption className="px-2 py-2 text-xs text-slate-600 text-center leading-tight">
+                       Figure 1: {article.title} visualization.
+                     </figcaption>
+                   </figure>
+                 )}
                  {/* TOC for Mobile */}
                  <div className="lg:hidden mb-8 p-3 bg-slate-50 border border-slate-200 inline-block rounded-sm min-w-[200px]">
                     <div className="font-sans font-bold text-center text-sm mb-2">Contents</div>
@@ -271,17 +283,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     </nav>
                  </div>
 
-                 <div 
-                  className="prose prose-slate max-w-none font-sans text-[15px] leading-7 text-[#202122]
+                 <div
+                  className="prose prose-slate max-w-none font-sans text-[16px] leading-8 text-[#202122]
                     prose-headings:font-serif prose-headings:font-normal prose-headings:text-black
                     prose-h2:text-2xl prose-h2:border-b prose-h2:border-[#a2a9b1] prose-h2:pb-1 prose-h2:mt-8 prose-h2:mb-4
                     prose-h3:text-lg prose-h3:font-bold prose-h3:mt-6 prose-h3:mb-2
-                    prose-p:my-3 prose-p:text-left
+                    prose-p:my-3 prose-p:text-justify
                     prose-a:text-[#3366cc] prose-a:no-underline hover:prose-a:underline
-                    prose-ul:list-disc prose-ul:pl-5 prose-ul:my-3
-                    prose-li:my-0.5
+                    prose-ul:list-disc prose-ul:pl-5 prose-ul:my-4
+                    prose-li:my-1
                     prose-img:my-6 prose-img:border prose-img:border-[#c8ccd1] prose-img:bg-[#f8f9fa] prose-img:p-1
-                    prose-blockquote:border-l-4 prose-blockquote:border-slate-200 prose-blockquote:pl-4 prose-blockquote:text-slate-600 prose-blockquote:italic
+                    prose-blockquote:border-l-4 prose-blockquote:border-slate-200 prose-blockquote:pl-4 prose-blockquote:text-slate-700 prose-blockquote:italic prose-blockquote:bg-slate-50 prose-blockquote:py-3 prose-blockquote:pr-4 prose-blockquote:rounded-sm
                     prose-strong:font-bold prose-strong:text-black"
                   dangerouslySetInnerHTML={{ __html: processedContent }}
                 />
@@ -355,3 +367,4 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     </div>
   );
 }
+

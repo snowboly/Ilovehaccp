@@ -98,27 +98,32 @@ async function generateArticle(niche) {
     
     // Intro
     const introPrompt = `Write a compelling Introduction for "${title}". Mention strict EU Regulation 852/2004 but emphasize practical compliance. Use <h3> headers.
-    IMPORTANT: Format the output as HTML. Use <p> tags for paragraphs. Keep paragraphs short (max 3-4 sentences).`;
+    IMPORTANT: Format the output as HTML. Use <p> tags for paragraphs. Keep paragraphs short (max 3-4 sentences).
+    Include a short <ul> with 3 bullets titled "What you'll learn" and one <blockquote><strong>Audit Tip:</strong> ...</blockquote>.`;
     fullContent += await safeAiCall([{ role: 'user', content: introPrompt }]);
 
     // Hazards
     const hazardsPrompt = `Write the "Specific Hazards" section for ${niche}. Focus on biological (Salmonella, Listeria), chemical (Cleaning agents), and physical risks relevant to this niche. Cite EC 852/2004. Use <h3> headers.
-    IMPORTANT: Format as HTML. Use <p> tags. Keep paragraphs short and readable.`;
+    IMPORTANT: Format as HTML. Use <p> tags. Keep paragraphs short and readable.
+    Add at least one <ul> list with 3-5 bullets of practical controls.`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: hazardsPrompt }]);
 
     // CCPs
     const ccpPrompt = `Write the "Critical Control Points" section for ${niche}. detailed practical examples of CCPs (e.g. Cooking temp >75C, Cooling). Use <h3> headers and a list.
-    IMPORTANT: Format as HTML. Use <p> tags. Use <ul>/<li> for lists. Keep paragraphs short.`;
+    IMPORTANT: Format as HTML. Use <p> tags. Use <ul>/<li> for lists. Keep paragraphs short.
+    Include one mini checklist list labeled "CCP Checklist".`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: ccpPrompt }]);
 
     // Monitoring
     const monPrompt = `Write the "Monitoring & Record Keeping" section for ${niche}. Explain how to keep digital or paper logs to satisfy a health inspector. Mention traceability. Use <h3> headers.
-    IMPORTANT: Format as HTML. Use <p> tags. Keep paragraphs short.`;
+    IMPORTANT: Format as HTML. Use <p> tags. Keep paragraphs short.
+    Add a <ul> list titled "Records to keep" (3-6 bullets).`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: monPrompt }]);
 
     // Conclusion
     const concPrompt = `Write a Conclusion for ${niche}. Call to action: "Use our free HACCP builder at ilovehaccp.com to generate your plan today."
-    IMPORTANT: Format as HTML. Use <p> tags.`;
+    IMPORTANT: Format as HTML. Use <p> tags.
+    End with a short <ul> of 3 key takeaways before the CTA.`;
     fullContent += "\n" + await safeAiCall([{ role: 'user', content: concPrompt }]);
 
     // 2. IMAGE
