@@ -69,6 +69,62 @@ function fixWhatYoullLearn(html: string) {
   );
 }
 
+function removeBoilerplate(html: string) {
+  let cleaned = html;
+
+  // Remove generic "Introduction to X" sections that just restate the title
+  cleaned = cleaned.replace(
+    /<h[23]>Introduction to [^<]+<\/h[23]>\s*<p>[^<]*(?:HACCP|Hazard Analysis)[^<]*(?:crucial|essential|important|vital)[^<]*<\/p>/gi,
+    ''
+  );
+
+  // Remove repetitive HACCP principle conclusions
+  cleaned = cleaned.replace(
+    /<p>As we conclude[^<]*(?:HACCP|Hazard Analysis)[^<]*reiterate[^<]*<\/p>/gi,
+    ''
+  );
+  cleaned = cleaned.replace(
+    /<p>By adopting a proactive and science-based methodology[^<]*<\/p>/gi,
+    ''
+  );
+  cleaned = cleaned.replace(
+    /<p>A thorough understanding of the HACCP principles[^<]*<\/p>/gi,
+    ''
+  );
+  cleaned = cleaned.replace(
+    /<p>By doing so,[^<]*minimize the risk[^<]*<\/p>/gi,
+    ''
+  );
+  cleaned = cleaned.replace(
+    /<p>In light of these findings[^<]*<\/p>/gi,
+    ''
+  );
+
+  // Remove in-content CTAs (we have a CTA card at the bottom)
+  cleaned = cleaned.replace(
+    /<p>[^<]*(?:Use our free HACCP builder|ilovehaccp\.com|generate your plan today)[^<]*<\/p>/gi,
+    ''
+  );
+
+  // Remove "In summary, the key takeaways" paragraphs (redundant with Key Takeaways section)
+  cleaned = cleaned.replace(
+    /<p>In summary, the key takeaways[^<]*<\/p>/gi,
+    ''
+  );
+
+  // Remove generic concluding statements about commitment/reputation
+  cleaned = cleaned.replace(
+    /<p>By embracing these principles[^<]*customer satisfaction[^<]*<\/p>/gi,
+    ''
+  );
+
+  // Clean up multiple consecutive empty paragraphs or whitespace
+  cleaned = cleaned.replace(/(<\/p>\s*){2,}/g, '</p>\n');
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+
+  return cleaned;
+}
+
 function highlightListTerms(html: string) {
   return html.replace(/<li>\s*(?:<strong>)?(.*?)(?:<\/strong>)?\s*:\s*([\s\S]*?)\s*<\/li>/g, (match, term, desc) => {
     const cleanTerm = term.replace(/<[^>]+>/g, '').trim();
@@ -216,7 +272,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!article) notFound();
 
   const headings = getHeadings(article.content);
-  const processedContent = transformBlockquotes(highlightListTerms(injectHeaderIds(fixWhatYoullLearn(article.content))));
+  const processedContent = transformBlockquotes(highlightListTerms(injectHeaderIds(fixWhatYoullLearn(removeBoilerplate(article.content)))));
   const expert = getExpertFromContent(article.content);
 
   // Calculate dateModified (use published date + 30 days as last review, or current date if recent)
