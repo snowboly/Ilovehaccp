@@ -35,6 +35,8 @@ import {
   ITableCellOptions,
 } from "docx";
 
+type ColumnAlignment = (typeof AlignmentType)[keyof typeof AlignmentType];
+
 import { sanitizeDocxText } from "../word/text";
 
 import {
@@ -534,7 +536,7 @@ export interface DataTableOptions {
   /** Column width percentages (must sum to 100) */
   columnWidths: number[];
   /** Column text alignments (per column). */
-  columnAlignments?: AlignmentType[];
+  columnAlignments?: ColumnAlignment[];
   /** Use zebra striping for rows (default true; disable for hazard tables) */
   zebraStripe?: boolean;
   /** Header background color (hex without #) */

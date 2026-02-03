@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Merriweather } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import ConditionalFooter from "@/components/layout/ConditionalFooter";
@@ -18,11 +18,24 @@ if (typeof window === "undefined") {
   console.log("[startup] NEXT_PUBLIC_SUPABASE_ANON_KEY prefix:", anonKeyPrefix);
 }
 
-const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
-const merriweather = Merriweather({ 
-  weight: ['300', '400', '700', '900'],
-  subsets: ["latin"],
-  variable: '--font-merriweather'
+const inter = localFont({
+  src: [
+    { path: "../../public/fonts/Roboto-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/Roboto-Italic.ttf", weight: "400", style: "italic" },
+    { path: "../../public/fonts/Roboto-Bold.ttf", weight: "700", style: "normal" },
+    { path: "../../public/fonts/Roboto-BoldItalic.ttf", weight: "700", style: "italic" },
+  ],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const merriweather = localFont({
+  src: [
+    { path: "../../public/fonts/Roboto-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/Roboto-Bold.ttf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-merriweather",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
