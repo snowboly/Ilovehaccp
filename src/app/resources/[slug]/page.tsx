@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import JSONLD from '@/components/layout/JSONLD';
 import ReadingProgress from '@/components/resources/ReadingProgress';
+import { getAvatarUrl } from '@/components/team/TeamAvatars';
 
 // Get related articles by category (excluding current)
 function getRelatedArticles(currentSlug: string, category: string, limit: number = 3): Article[] {
@@ -256,7 +257,7 @@ const PERSONAS: Record<string, any> = {
     slug: "dr-joao",
     role: "Scientific Lead & Founder",
     bio: "The scientific visionary behind our tool logic.",
-    image: "/team/joao.svg",
+    image: getAvatarUrl("Dr. Joao"),
     credentials: "PhD in Food Science, Expert in microbial pathogenesis and predictive modeling"
   },
   "Dr. Margarida": {
@@ -264,7 +265,7 @@ const PERSONAS: Record<string, any> = {
     slug: "dr-margarida",
     role: "Head of Compliance",
     bio: "Overseeing EU & UK regulatory alignment and audit standards.",
-    image: "/team/margarida.svg",
+    image: getAvatarUrl("Dr. Margarida"),
     credentials: "PhD in Food Safety, Specialist in BRCGS/SQF certification requirements"
   },
   "Dr. Fabio": {
@@ -272,7 +273,7 @@ const PERSONAS: Record<string, any> = {
     slug: "dr-fabio",
     role: "Lead Auditor",
     bio: "Ensuring practical applicability and audit readiness on the factory floor.",
-    image: "/team/fabio.svg",
+    image: getAvatarUrl("Dr. Fabio"),
     credentials: "Certified Lead Auditor, Expert in translating regulations into operational practice"
   },
   "Dr. Claudia": {
@@ -280,7 +281,7 @@ const PERSONAS: Record<string, any> = {
     slug: "dr-claudia",
     role: "Technical Lead",
     bio: "Driving the technological innovation behind our hazard analysis engine.",
-    image: "/team/claudia.svg",
+    image: getAvatarUrl("Dr. Claudia"),
     credentials: "PhD in Food Technology, Specialist in food science and machine learning"
   },
   "Dr. Isabel": {
@@ -288,7 +289,7 @@ const PERSONAS: Record<string, any> = {
     slug: "dr-isabel",
     role: "Head of Ops",
     bio: "Managing operational excellence and customer success frameworks.",
-    image: "/team/isabel.svg",
+    image: getAvatarUrl("Dr. Isabel"),
     credentials: "Expert in workflow optimization for multi-site food operations"
   }
 };
