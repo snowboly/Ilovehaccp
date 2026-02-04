@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { User, LogOut, LayoutDashboard, Settings, ChevronDown } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 export default function UserMenu({ mobile = false }: { mobile?: boolean }) {
   const supabase = createClient();
+  const { t } = useLanguage();
   const [user, setUser] = useState<any>(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -52,34 +54,34 @@ export default function UserMenu({ mobile = false }: { mobile?: boolean }) {
     if (mobile) {
       return (
         <div className="flex flex-col gap-4">
-            <Link 
+            <Link
               href="/login"
               className="text-base font-bold text-slate-600 py-2"
             >
-              Log in
+              {t('nav.login')}
             </Link>
             <Link
               href="/signup"
               className="bg-blue-600 text-white px-5 py-3 rounded-xl font-bold text-center shadow-lg shadow-blue-500/20"
             >
-              Registration
+              {t('nav.getStarted')}
             </Link>
         </div>
       );
     }
     return (
       <>
-        <Link 
+        <Link
           href="/login"
           className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors"
         >
-          Log in
+          {t('nav.login')}
         </Link>
         <Link
           href="/signup"
           className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 hover:-translate-y-0.5"
         >
-          Registration
+          {t('nav.getStarted')}
         </Link>
       </>
     );
@@ -95,19 +97,19 @@ export default function UserMenu({ mobile = false }: { mobile?: boolean }) {
                       {initial}
                   </div>
                   <div className="overflow-hidden">
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Signed in as</p>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('nav.signedInAs')}</p>
                       <p className="text-sm font-bold text-slate-900 truncate">{user.email}</p>
                   </div>
               </div>
               <div className="flex flex-col gap-2">
                   <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-xl font-bold">
-                      <LayoutDashboard className="w-4 h-4" /> Dashboard
+                      <LayoutDashboard className="w-4 h-4" /> {t('nav.dashboard')}
                   </Link>
                   <Link href="/dashboard/settings" className="flex items-center gap-3 px-4 py-3 text-slate-600 font-bold hover:bg-slate-50 rounded-xl">
-                      <Settings className="w-4 h-4" /> Settings
+                      <Settings className="w-4 h-4" /> {t('nav.settings')}
                   </Link>
                   <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 text-red-500 font-bold hover:bg-red-50 rounded-xl text-left">
-                      <LogOut className="w-4 h-4" /> Log Out
+                      <LogOut className="w-4 h-4" /> {t('nav.logout')}
                   </button>
               </div>
           </div>
@@ -129,34 +131,34 @@ export default function UserMenu({ mobile = false }: { mobile?: boolean }) {
       {isOpen && (
         <div className="absolute top-[120%] right-0 w-64 bg-white border border-slate-100 rounded-2xl shadow-2xl p-2 z-[60] animate-in fade-in zoom-in duration-200 origin-top-right">
           <div className="px-4 py-3 border-b border-slate-50 mb-1">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Signed in as</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{t('nav.signedInAs')}</p>
             <p className="text-sm font-bold text-slate-900 truncate">{user.email}</p>
           </div>
-          
-          <Link 
-            href="/dashboard" 
+
+          <Link
+            href="/dashboard"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors"
           >
             <LayoutDashboard className="w-4 h-4" />
-            Dashboard
+            {t('nav.dashboard')}
           </Link>
-          
-          <Link 
-            href="/dashboard/settings" 
+
+          <Link
+            href="/dashboard/settings"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors"
           >
             <Settings className="w-4 h-4" />
-            Settings
+            {t('nav.settings')}
           </Link>
-          
-          <button 
+
+          <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors mt-1"
           >
             <LogOut className="w-4 h-4" />
-            Log Out
+            {t('nav.logout')}
           </button>
         </div>
       )}

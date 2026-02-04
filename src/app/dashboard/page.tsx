@@ -15,9 +15,11 @@ import {
 } from 'lucide-react';
 import { Suspense } from 'react';
 import type { Plan, Draft } from '@/types/plan';
+import { useLanguage } from '@/lib/i18n';
 
 function DashboardContent() {
   const supabase = createClient();
+  const { t } = useLanguage();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [draftNamesByPlanId, setDraftNamesByPlanId] = useState<Record<string, string>>({});
@@ -139,7 +141,7 @@ function DashboardContent() {
   };
 
   const handleDeleteDraft = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this draft? This cannot be undone.')) return;
+    if (!confirm(t('messages.confirmDeleteDraft'))) return;
     const prev = drafts;
     setDrafts(drafts.filter(draft => draft.id !== id));
     try {
@@ -153,19 +155,19 @@ function DashboardContent() {
       console.error('Error deleting draft:', err);
       setDrafts(prev);
       if (err.code === '23503') {
-        notify('error', 'Cannot delete: It has active dependencies. Please contact support.');
+        notify('error', t('messages.cannotDeleteDependencies'));
       } else {
-        notify('error', err.message || 'Failed to delete. Please try again.');
+        notify('error', err.message || t('messages.deleteFailed'));
       }
     }
   };
 
   const handleRenameDraft = async (id: string, currentName?: string | null) => {
-    const nextName = prompt('Enter a new draft name:', currentName || '');
+    const nextName = prompt(t('messages.enterNewDraftName'), currentName || '');
     if (nextName === null) return;
     const trimmedName = nextName.trim();
     if (!trimmedName) {
-      notify('error', 'Draft name cannot be empty.');
+      notify('error', t('messages.draftNameEmpty'));
       return;
     }
 
@@ -180,12 +182,12 @@ function DashboardContent() {
       setDrafts(drafts.map(draft => (draft.id === id ? { ...draft, name: trimmedName } : draft)));
     } catch (err: any) {
       console.error('Error renaming draft:', err);
-      notify('error', err.message || 'Failed to rename draft. Please try again.');
+      notify('error', err.message || t('messages.renameFailed'));
     }
   };
 
   const handleDeletePlan = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this plan? This cannot be undone.')) return;
+    if (!confirm(t('messages.confirmDeletePlan'))) return;
     const prev = plans;
     setPlans(plans.filter(plan => plan.id !== id));
     try {
@@ -203,14 +205,14 @@ function DashboardContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => null);
-        throw new Error(err?.error || 'Failed to delete plan');
+        throw new Error(err?.error || t('messages.deleteFailed'));
       }
 
-      notify('success', 'Plan deleted successfully.');
+      notify('success', t('messages.deleteSuccess'));
     } catch (err: any) {
       console.error('Error deleting plan:', err);
       setPlans(prev);
-      notify('error', err.message || 'Failed to delete. Please try again.');
+      notify('error', err.message || t('messages.deleteFailed'));
     }
   };
   const handleLogout = async () => {
@@ -230,7 +232,7 @@ function DashboardContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => null);
-        notify('error', err?.error || `Failed to download ${format.toUpperCase()}`);
+        notify('error', err?.error || `${t('messages.downloadFailed')} ${format.toUpperCase()}`);
         return;
       }
 
@@ -245,7 +247,7 @@ function DashboardContent() {
       a.remove();
       URL.revokeObjectURL(url);
     } catch {
-      notify('error', `Failed to download ${format.toUpperCase()}`);
+      notify('error', `${t('messages.downloadFailed')} ${format.toUpperCase()}`);
     }
   };
 
@@ -267,11 +269,11 @@ function DashboardContent() {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            notify('error', data.error || "Failed to start checkout");
+            notify('error', data.error || t('messages.checkoutFailed'));
         }
     } catch (e) {
         console.error(e);
-        notify('error', "System error starting checkout.");
+        notify('error', t('messages.systemError'));
     }
   };
 
@@ -302,16 +304,16 @@ function DashboardContent() {
             },
             body: JSON.stringify({ planId: importConfirmation })
         });
-        
+
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to import');
-        
-        notify('success', 'Plan imported successfully!');
+        if (!res.ok) throw new Error(data.error || t('messages.importFailed'));
+
+        notify('success', t('messages.importSuccess'));
         setImportId('');
         setImportConfirmation(null);
         fetchPlans();
     } catch (err: any) {
-        notify('error', err.message || 'Import failed.');
+        notify('error', err.message || t('messages.importFailed'));
     } finally {
         setImporting(false);
     }
@@ -329,21 +331,21 @@ function DashboardContent() {
     <div className="min-h-screen bg-[#F9FAFB]">
       <nav className="bg-white border-b border-slate-200/70 px-4 lg:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-          <span className="text-sm font-medium">← Back to Home</span>
+          <span className="text-sm font-medium">← {t('dashboard.backToHome')}</span>
         </Link>
         <div className="flex items-center gap-4">
           <div className="hidden md:flex flex-col items-end mr-2">
-             <span className="text-xs text-gray-400 font-medium">Logged in as</span>
+             <span className="text-xs text-gray-400 font-medium">{t('nav.loggedInAs')}</span>
              <span className="text-sm font-bold text-gray-700">{user?.email}</span>
           </div>
           <Link href="/dashboard/settings" className="text-gray-400 hover:text-gray-600 transition-colors p-2">
             <Settings className="h-5 w-5" />
           </Link>
-          <button 
+          <button
             onClick={handleLogout}
             className="flex items-center gap-2 text-gray-500 hover:text-red-600 transition-colors bg-gray-100 hover:bg-red-50 px-3 py-2 rounded-lg text-sm font-medium"
           >
-            <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Log Out</span>
+            <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">{t('nav.logout')}</span>
           </button>
         </div>
       </nav>
@@ -354,9 +356,9 @@ function DashboardContent() {
             <span className="text-sm font-medium">
               {(() => {
                 const plan = plans.find(p => p.id === searchParams.get('plan_id'));
-                if (plan?.review_paid) return 'Review requested successfully.';
-                if (plan?.export_paid) return 'Export unlocked successfully.';
-                return 'Payment processed successfully.';
+                if (plan?.review_paid) return t('messages.reviewRequested');
+                if (plan?.export_paid) return t('messages.exportUnlocked');
+                return t('messages.paymentSuccess');
               })()}
             </span>
             <button onClick={() => setShowSuccess(false)} className="text-emerald-600">
@@ -380,31 +382,31 @@ function DashboardContent() {
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">My Dashboard</h1>
-            <p className="text-gray-500 text-sm">Manage your food safety documentation</p>
+            <h1 className="text-2xl font-bold text-gray-900">{t('dashboard.title')}</h1>
+            <p className="text-gray-500 text-sm">{t('dashboard.subtitle')}</p>
           </div>
           <Link
             href="/builder?new=true"
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Create New Plan
+            {t('dashboard.createNewPlan')}
           </Link>
         </div>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Active Drafts</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('dashboard.activeDrafts')}</h2>
           {drafts.length === 0 ? (
-            <div className="text-sm text-gray-500">No active drafts.</div>
+            <div className="text-sm text-gray-500">{t('dashboard.noActiveDrafts')}</div>
           ) : (
             <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
               <table className="min-w-full text-sm">
                 <thead className="bg-slate-50 text-slate-600">
                   <tr>
-                    <th className="text-left px-4 py-2 font-medium">Draft</th>
-                    <th className="text-left px-4 py-2 font-medium">Business</th>
-                    <th className="text-left px-4 py-2 font-medium">Updated</th>
-                    <th className="text-right px-4 py-2 font-medium">Actions</th>
+                    <th className="text-left px-4 py-2 font-medium">{t('dashboard.tableHeaders.draft')}</th>
+                    <th className="text-left px-4 py-2 font-medium">{t('dashboard.tableHeaders.business')}</th>
+                    <th className="text-left px-4 py-2 font-medium">{t('dashboard.tableHeaders.updated')}</th>
+                    <th className="text-right px-4 py-2 font-medium">{t('dashboard.tableHeaders.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -413,20 +415,20 @@ function DashboardContent() {
                       <td className="px-4 py-3">
                         {draft.name?.trim() || `HACCP Draft – ${new Date(draft.created_at).toLocaleDateString()}`}
                       </td>
-                      <td className="px-4 py-3">{draft.business_name || 'Draft'}</td>
+                      <td className="px-4 py-3">{draft.business_name || t('dashboard.tableHeaders.draft')}</td>
                       <td className="px-4 py-3">{new Date(draft.created_at).toLocaleDateString()}</td>
                       <td className="px-4 py-3 text-right space-x-3">
                         <Link href={`/builder?draft=${draft.id}`} className="text-blue-600 hover:underline">
-                          Resume
+                          {t('actions.resume')}
                         </Link>
                         <button
                           onClick={() => handleRenameDraft(draft.id, draft.name)}
                           className="text-blue-600 hover:underline"
                         >
-                          Rename
+                          {t('actions.rename')}
                         </button>
                         <button onClick={() => handleDeleteDraft(draft.id)} className="text-red-600 hover:underline">
-                          Delete
+                          {t('actions.delete')}
                         </button>
                       </td>
                     </tr>
@@ -438,20 +440,20 @@ function DashboardContent() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Documents &amp; Reviews</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('dashboard.documentsReviews')}</h2>
           {plans.length === 0 ? (
-            <div className="text-sm text-gray-500">No generated plans yet.</div>
+            <div className="text-sm text-gray-500">{t('dashboard.noPlansYet')}</div>
           ) : (
             <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
               <table className="min-w-full text-sm">
                 <thead className="bg-slate-50 text-slate-600">
                   <tr>
-                    <th className="text-left px-4 py-2 font-medium">Plan</th>
-                    <th className="text-left px-4 py-2 font-medium">Date</th>
-                    <th className="text-left px-4 py-2 font-medium">Files</th>
-                    <th className="text-left px-4 py-2 font-medium">Review</th>
-                    <th className="text-left px-4 py-2 font-medium">Summary</th>
-                    <th className="text-right px-4 py-2 font-medium">Actions</th>
+                    <th className="text-left px-4 py-2 font-medium">{t('dashboard.tableHeaders.plan')}</th>
+                    <th className="text-left px-4 py-2 font-medium">{t('dashboard.tableHeaders.date')}</th>
+                    <th className="text-left px-4 py-2 font-medium">{t('dashboard.tableHeaders.files')}</th>
+                    <th className="text-left px-4 py-2 font-medium">{t('dashboard.tableHeaders.review')}</th>
+                    <th className="text-left px-4 py-2 font-medium">{t('dashboard.tableHeaders.summary')}</th>
+                    <th className="text-right px-4 py-2 font-medium">{t('dashboard.tableHeaders.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -474,13 +476,14 @@ function DashboardContent() {
                     const isReviewInProgress = plan.review_status === 'in_progress' || plan.review_status === 'pending' || (plan.review_requested && !plan.review_status);
                     const isReviewConcluded = plan.review_status === 'completed' || plan.review_status === 'concluded';
                     const showUnderReview = !isReviewConcluded && (plan.review_requested || plan.review_status === 'pending' || plan.review_status === 'in_progress');
-                    const reviewLabel = isReviewConcluded
-                      ? 'Review concluded'
+                    const reviewLabelKey = isReviewConcluded
+                      ? 'concluded'
                       : showUnderReview
-                        ? 'Review in progress'
+                        ? 'inProgress'
                         : plan.review_paid
-                          ? 'Paid'
-                          : 'Not requested';
+                          ? 'paid'
+                          : 'notRequested';
+                    const reviewLabel = t(`dashboard.reviewStatus.${reviewLabelKey}`);
 
                     return (
                       <tr key={plan.id} className="border-t border-slate-100 hover:bg-slate-50/70 transition-colors">
@@ -526,26 +529,26 @@ function DashboardContent() {
                         <td className="px-4 py-3">
                           <span
                             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${
-                              reviewLabel === 'Review concluded'
+                              reviewLabelKey === 'concluded'
                                 ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                                : reviewLabel === 'Review in progress'
+                                : reviewLabelKey === 'inProgress'
                                   ? 'border-purple-200 bg-purple-50 text-purple-700'
-                                  : reviewLabel === 'Paid'
+                                  : reviewLabelKey === 'paid'
                                     ? 'border-blue-200 bg-blue-50 text-blue-700'
                                     : 'border-slate-200 bg-slate-50 text-slate-600'
                             }`}
                           >
-                            {reviewLabel === 'Review concluded' && <span className="text-emerald-500">&#x1F7E2;</span>}
-                            {reviewLabel === 'Review in progress' && <span className="text-purple-500">&#x1F7E3;</span>}
+                            {reviewLabelKey === 'concluded' && <span className="text-emerald-500">&#x1F7E2;</span>}
+                            {reviewLabelKey === 'inProgress' && <span className="text-purple-500">&#x1F7E3;</span>}
                             {reviewLabel}
                           </span>
                         </td>
                         <td className="px-4 py-3">
                           {showUnderReview ? (
-                            <span className="text-xs text-slate-500">Sent by email</span>
+                            <span className="text-xs text-slate-500">{t('dashboard.reviewStatus.sentByEmail')}</span>
                           ) : isReviewConcluded && hasReviewNotes ? (
                             <Link href={`/dashboard/plans/${plan.id}/review`} className="text-blue-600 hover:underline text-sm">
-                              View summary
+                              {t('dashboard.viewSummary')}
                             </Link>
                           ) : (
                             <span className="text-gray-400">—</span>
@@ -555,38 +558,38 @@ function DashboardContent() {
                           <div className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-2">
                             {plan.export_paid ? (
                               <span className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold px-2 py-1 border border-emerald-200">
-                                PAID
+                                {t('actions.paid')}
                               </span>
                             ) : (
                               <button onClick={() => handleUpgrade(plan, 'professional')} className="text-blue-600 hover:underline text-sm font-medium">
-                                Unlock export
+                                {t('actions.unlockExport')}
                               </button>
                             )}
 
                             {showUnderReview ? (
                               <span className="inline-flex items-center rounded-full bg-purple-50 text-purple-700 text-[11px] font-semibold px-2 py-1 border border-purple-200">
-                                IN REVIEW
+                                {t('dashboard.reviewStatus.inReview')}
                               </span>
                             ) : plan.review_paid ? (
                               <span className="inline-flex items-center rounded-full bg-blue-50 text-blue-700 text-[11px] font-semibold px-2 py-1 border border-blue-200">
-                                PAID
+                                {t('actions.paid')}
                               </span>
                             ) : (
                               <button onClick={() => handleUpgrade(plan, 'expert')} className="text-blue-600 hover:underline text-sm font-medium">
-                                Request review
+                                {t('actions.requestReview')}
                               </button>
                             )}
 
                             {isReviewInProgress ? (
                               <span
                                 className="text-slate-400 text-xs cursor-not-allowed"
-                                title="Cannot delete while review is in progress"
+                                title={t('messages.cannotDeleteReviewInProgress')}
                               >
-                                Delete
+                                {t('actions.delete')}
                               </span>
                             ) : (
                               <button onClick={() => handleDeletePlan(plan.id)} className="text-slate-400 hover:text-slate-600 text-xs">
-                                Delete
+                                {t('actions.delete')}
                               </button>
                             )}
                           </div>
@@ -602,28 +605,28 @@ function DashboardContent() {
 
         <div className="mt-12 border-t pt-8">
             <div className="max-w-xl">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Missing a plan?</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{t('dashboard.missingPlan')}</h3>
                 <p className="text-gray-500 text-sm mb-4">
-                    If you generated a plan before signing up, enter the Plan ID below to add it to your dashboard.
+                    {t('dashboard.missingPlanDesc')}
                 </p>
                 <form onSubmit={handleImport} className="flex gap-3">
                     <div className="relative flex-1">
                         <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input 
-                            type="text" 
-                            placeholder="Paste Plan ID..." 
+                        <input
+                            type="text"
+                            placeholder={t('dashboard.pastePlanId')}
                             value={importId}
                             onChange={(e) => setImportId(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                             disabled={importing}
                         />
                     </div>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         disabled={importing || !importId}
                         className="bg-gray-900 text-white px-6 py-2 rounded-lg font-medium hover:bg-black transition-colors disabled:opacity-50"
                     >
-                        {importing ? 'Importing...' : 'Import Plan'}
+                        {importing ? t('dashboard.importing') : t('dashboard.importPlan')}
                     </button>
                 </form>
             </div>
@@ -635,27 +638,27 @@ function DashboardContent() {
                 <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
                     <div className="flex items-center gap-3 mb-4 text-amber-600">
                         <AlertTriangle className="w-8 h-8" />
-                        <h3 className="font-bold text-lg">Confirm Import</h3>
+                        <h3 className="font-bold text-lg">{t('dashboard.confirmImport')}</h3>
                     </div>
                     <p className="text-gray-600 mb-6">
-                        You are about to import HACCP plan ID <span className="font-mono bg-gray-100 px-2 py-0.5 rounded font-bold text-gray-800">{importConfirmation}</span>.
+                        {t('dashboard.confirmImportDesc')} <span className="font-mono bg-gray-100 px-2 py-0.5 rounded font-bold text-gray-800">{importConfirmation}</span>.
                         <br/><br/>
-                        Ensure this is the correct ID before proceeding.
+                        {t('dashboard.ensureCorrectId')}
                     </p>
                     <div className="flex gap-3 justify-end">
-                        <button 
+                        <button
                             onClick={() => setImportConfirmation(null)}
                             className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-100 rounded-lg transition-colors"
                         >
-                            Cancel
+                            {t('actions.cancel')}
                         </button>
-                        <button 
+                        <button
                             onClick={confirmImport}
                             disabled={importing}
                             className="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
                         >
                             {importing && <Loader2 className="w-4 h-4 animate-spin" />}
-                            {importing ? 'Importing...' : 'Yes, Import Plan'}
+                            {importing ? t('dashboard.importing') : t('dashboard.yesImportPlan')}
                         </button>
                     </div>
                 </div>
