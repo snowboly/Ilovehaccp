@@ -5,7 +5,7 @@
  */
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import styles from "./MiniBuilderDemoCard.module.css";
 
 type StepKey = "product" | "process" | "hazards" | "review";
@@ -36,11 +36,6 @@ export default function MiniBuilderDemoCard() {
   const [processSteps, setProcessSteps] = useState(DEFAULT_STATE.processSteps);
   const [hazards, setHazards] = useState(DEFAULT_STATE.hazards);
   const [newStep, setNewStep] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-
-  const modalRef = useRef<HTMLDivElement | null>(null);
-  const lastFocusedRef = useRef<HTMLElement | null>(null);
 
   const currentIndex = STEPS.findIndex((s) => s.key === activeStep);
   const isReview = activeStep === "review";
@@ -88,50 +83,6 @@ export default function MiniBuilderDemoCard() {
     setHazards(DEFAULT_STATE.hazards);
     setNewStep("");
   };
-
-  const openModal = () => {
-    lastFocusedRef.current = document.activeElement as HTMLElement;
-    setVideoError(false);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    lastFocusedRef.current?.focus();
-  };
-
-  useEffect(() => {
-    if (!isModalOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        closeModal();
-      }
-      if (e.key === "Tab" && modalRef.current) {
-        const focusables = modalRef.current.querySelectorAll<HTMLElement>(
-          'a[href], button, textarea, input, select, video, [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusables.length === 0) return;
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    const timer = setTimeout(() => {
-      modalRef.current?.querySelector<HTMLElement>("button, video")?.focus();
-    }, 0);
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [isModalOpen]);
 
   return (
     <section className={styles.card} aria-label="Mini HACCP builder demo">
@@ -293,9 +244,6 @@ export default function MiniBuilderDemoCard() {
             <a className={styles.linkButton} href="/builder">
               Open full builder
             </a>
-            <button className={styles.secondaryButton} type="button" onClick={openModal}>
-              Watch 20s demo
-            </button>
           </div>
         </div>
 
@@ -326,44 +274,6 @@ export default function MiniBuilderDemoCard() {
           </div>
         </aside>
       </div>
-
-      {isModalOpen && (
-        <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-label="Watch 20 second demo">
-          <div className={styles.modal} ref={modalRef}>
-            <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Mini Builder Walkthrough</h3>
-              <button className={styles.modalClose} type="button" onClick={closeModal} aria-label="Close video">
-                ×
-              </button>
-            </div>
-            {videoError ? (
-              <div className={styles.videoFallback} role="status" aria-live="polite">
-                <p className={styles.videoFallbackTitle}>Video temporarily unavailable</p>
-                <p className={styles.videoFallbackCopy}>
-                  We couldn’t load the 20s demo video just now. Please try again in a moment, or jump straight into
-                  the full builder.
-                </p>
-                <a className={styles.videoFallbackLink} href="/builder">
-                  Open full builder
-                </a>
-              </div>
-            ) : (
-              <video
-                className={styles.video}
-                controls
-                preload="metadata"
-                playsInline
-                poster="/demo-poster.svg"
-                onError={() => setVideoError(true)}
-                onLoadedData={() => setVideoError(false)}
-              >
-                <source src="/demo.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            )}
-          </div>
-        </div>
-      )}
     </section>
   );
 }
