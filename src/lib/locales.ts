@@ -2678,7 +2678,7 @@ export const translations = {
         'Food Manufacturer': 'Produttore alimentare',
         'Catering Service': 'Servizio catering',
         'Food Truck / Mobile Unit': 'Food truck / unità mobile',
-        'Hotel Kitchen': 'Cucina d'hotel',
+        'Hotel Kitchen': "Cucina d'hotel",
         'School / Canteen': 'Scuola / Mensa',
         'Hospital Kitchen': 'Cucina ospedaliera',
         'Ghost Kitchen': 'Ghost kitchen',
@@ -3282,4 +3282,3 @@ export const translations = {
 export function getDictionary(lang: Language) {
   return translations[lang] || translations.en;
 }
-
