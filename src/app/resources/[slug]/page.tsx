@@ -170,6 +170,12 @@ function removeBoilerplate(html: string) {
     ''
   );
 
+  // Remove "Further Reading & Tools" section (h3 + p + ul)
+  cleaned = cleaned.replace(
+    /<h3>Further Reading (?:&amp;|&) Tools<\/h3>\s*<p>[^<]*<\/p>\s*<ul>[\s\S]*?<\/ul>/gi,
+    ''
+  );
+
   // Clean up multiple consecutive empty paragraphs or whitespace
   cleaned = cleaned.replace(/(<\/p>\s*){2,}/g, '</p>\n');
   cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
@@ -503,7 +509,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                           {expert.name}
                         </Link>
                         <div className="text-sm text-slate-600 mt-1">{expert.role}</div>
-                        <p className="text-sm text-slate-500 mt-2">{expert.credentials}</p>
                       </div>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-200 flex flex-wrap gap-4 text-xs text-slate-400">
