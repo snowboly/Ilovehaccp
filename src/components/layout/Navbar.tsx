@@ -57,7 +57,7 @@ export default function Navbar() {
                   <div className="bg-blue-100 dark:bg-blue-900/40 p-1.5 rounded-lg">
                     <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   </div>
-                  Articles
+                  {t('nav.articles')}
                 </Link>
                 <Link
                   href="/faqs"
@@ -66,7 +66,7 @@ export default function Navbar() {
                   <div className="bg-indigo-100 dark:bg-indigo-900/40 p-1.5 rounded-lg">
                     <HelpCircle className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                   </div>
-                  FAQs
+                  {t('nav.faqs')}
                 </Link>
               </div>
             </div>
@@ -122,8 +122,8 @@ export default function Navbar() {
               </button>
               {resourcesOpen && (
                 <div className="pl-4 mt-2 space-y-2 border-l-2 border-slate-100 dark:border-slate-700 ml-1">
-                  <Link href="/resources#articles" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500 dark:text-slate-400">Articles</Link>
-                  <Link href="/resources#faqs" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500 dark:text-slate-400">FAQs</Link>
+                  <Link href="/resources#articles" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500 dark:text-slate-400">{t('nav.articles')}</Link>
+                  <Link href="/resources#faqs" onClick={() => setIsOpen(false)} className="block py-1 text-slate-500 dark:text-slate-400">{t('nav.faqs')}</Link>
                 </div>
               )}
             </div>
