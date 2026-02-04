@@ -59,7 +59,7 @@ export default function MiniBuilderDemoCard() {
   };
 
   const handleBack = () => {
-    const prev = STEPS[Math.max(currentIndex - 1, 0)].key;
+    const prev = steps[Math.max(currentIndex - 1, 0)].key;
     setActiveStep(prev);
   };
 
