@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight, AlertTriangle, CheckCircle2, Loader2, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useLanguage } from '@/lib/i18n';
 
 const ALL_EXAMPLES = [
   // Bakery
@@ -33,10 +34,12 @@ const ALL_EXAMPLES = [
 ];
 
 export default function InteractiveDemo() {
+  const { language } = useLanguage();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{hazard: string; control: string} | null>(null);
   const [examples, setExamples] = useState<string[]>([]);
+  const copy = DEMO_COPY[language] ?? DEMO_COPY.en;
 
   useEffect(() => {
     // Pick 5 random examples on mount
@@ -77,13 +80,13 @@ export default function InteractiveDemo() {
         
         <div className="text-center space-y-3 relative z-10">
           <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-blue-500/20">
-            <Sparkles className="w-3 h-3" /> Live Preview
+            <Sparkles className="w-3 h-3" /> {copy.badge}
           </div>
           <h3 className="text-white text-3xl font-black tracking-tight">
-            Try it right now
+            {copy.title}
           </h3>
           <p className="text-slate-400 font-medium">
-            Enter a product to see how our tool identifies specific hazards.
+            {copy.subtitle}
           </p>
         </div>
 
@@ -93,7 +96,7 @@ export default function InteractiveDemo() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="e.g., Cold Brew Coffee..."
+                    placeholder={copy.placeholder}
                     className="w-full bg-slate-900 border-2 border-slate-800 group-focus-within:border-blue-500 text-white rounded-2xl px-6 py-5 pr-36 focus:outline-none transition-all text-lg font-medium shadow-inner"
                 />
                 <button
@@ -102,12 +105,12 @@ export default function InteractiveDemo() {
                     className="absolute right-2 top-2 bottom-2 bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-xl font-black transition-all disabled:opacity-50 flex items-center gap-2 shadow-lg"
                 >
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
-                    {loading ? 'Analyzing' : 'Analyze'}
+                    {loading ? copy.analyzing : copy.analyze}
                 </button>
             </form>
 
             <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mr-2">Quick Start:</span>
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mr-2">{copy.quickStart}</span>
                 {examples.map(ex => (
                     <button 
                         key={ex} 
@@ -139,7 +142,7 @@ export default function InteractiveDemo() {
                         />
                     ))}
                 </div>
-                <p className="text-blue-400 font-mono text-xs uppercase tracking-[0.3em] animate-pulse">Scanning Bio-Hazards...</p>
+                <p className="text-blue-400 font-mono text-xs uppercase tracking-[0.3em] animate-pulse">{copy.scanning}</p>
             </motion.div>
           ) : result && (
             <motion.div
@@ -153,7 +156,7 @@ export default function InteractiveDemo() {
               <div className="grid gap-8 relative z-10">
                 <div className="space-y-3">
                   <div className="text-[10px] text-amber-500 font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4" /> Detected Hazard
+                    <AlertTriangle className="h-4 w-4" /> {copy.detectedHazard}
                   </div>
                   <p className="text-white text-xl font-bold leading-tight">{result.hazard}</p>
                 </div>
@@ -162,7 +165,7 @@ export default function InteractiveDemo() {
 
                 <div className="space-y-3">
                   <div className="text-[10px] text-emerald-400 font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" /> Recommended Control
+                    <CheckCircle2 className="h-4 w-4" /> {copy.recommendedControl}
                   </div>
                   <p className="text-slate-300 text-lg font-medium leading-relaxed italic">&quot;{result.control}&quot;</p>
                 </div>
@@ -172,7 +175,7 @@ export default function InteractiveDemo() {
                         href="/builder"
                         className="w-full bg-white text-slate-950 py-4 rounded-xl font-black text-center transition-all hover:bg-blue-50 flex items-center justify-center gap-2 group shadow-xl"
                     >
-                        Generate Full {input} Plan
+                        {copy.generatePlan.replace('{{product}}', input || copy.genericProduct)}
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
@@ -185,3 +188,117 @@ export default function InteractiveDemo() {
     </div>
   );
 }
+
+const DEMO_COPY: Record<string, {
+  badge: string;
+  title: string;
+  subtitle: string;
+  placeholder: string;
+  analyzing: string;
+  analyze: string;
+  quickStart: string;
+  scanning: string;
+  detectedHazard: string;
+  recommendedControl: string;
+  generatePlan: string;
+  genericProduct: string;
+}> = {
+  en: {
+    badge: 'Live Preview',
+    title: 'Try it right now',
+    subtitle: 'Enter a product to see how our tool identifies specific hazards.',
+    placeholder: 'e.g., Cold Brew Coffee...',
+    analyzing: 'Analyzing',
+    analyze: 'Analyze',
+    quickStart: 'Quick Start:',
+    scanning: 'Scanning Bio-Hazards...',
+    detectedHazard: 'Detected Hazard',
+    recommendedControl: 'Recommended Control',
+    generatePlan: 'Generate Full {{product}} Plan',
+    genericProduct: 'HACCP'
+  },
+  es: {
+    badge: 'Vista previa en vivo',
+    title: 'Pruébalo ahora mismo',
+    subtitle: 'Introduce un producto para ver cómo nuestra herramienta identifica peligros específicos.',
+    placeholder: 'p. ej., Café Cold Brew...',
+    analyzing: 'Analizando',
+    analyze: 'Analizar',
+    quickStart: 'Inicio rápido:',
+    scanning: 'Escaneando bio‑peligros...',
+    detectedHazard: 'Peligro detectado',
+    recommendedControl: 'Control recomendado',
+    generatePlan: 'Generar plan completo de {{product}}',
+    genericProduct: 'HACCP'
+  },
+  fr: {
+    badge: 'Aperçu en direct',
+    title: 'Essayez maintenant',
+    subtitle: 'Saisissez un produit pour voir comment notre outil identifie les dangers spécifiques.',
+    placeholder: 'ex. Café Cold Brew...',
+    analyzing: 'Analyse en cours',
+    analyze: 'Analyser',
+    quickStart: 'Démarrage rapide :',
+    scanning: 'Analyse des bio‑dangers...',
+    detectedHazard: 'Danger détecté',
+    recommendedControl: 'Contrôle recommandé',
+    generatePlan: 'Générer le plan {{product}}',
+    genericProduct: 'HACCP'
+  },
+  pt: {
+    badge: 'Prévia ao vivo',
+    title: 'Experimente agora',
+    subtitle: 'Digite um produto para ver como a ferramenta identifica perigos específicos.',
+    placeholder: 'ex.: Café Cold Brew...',
+    analyzing: 'Analisando',
+    analyze: 'Analisar',
+    quickStart: 'Início rápido:',
+    scanning: 'A analisar bio‑perigos...',
+    detectedHazard: 'Perigo detetado',
+    recommendedControl: 'Controlo recomendado',
+    generatePlan: 'Gerar plano completo de {{product}}',
+    genericProduct: 'HACCP'
+  },
+  de: {
+    badge: 'Live‑Vorschau',
+    title: 'Jetzt ausprobieren',
+    subtitle: 'Geben Sie ein Produkt ein, um zu sehen, wie unser Tool spezifische Gefahren erkennt.',
+    placeholder: 'z. B. Cold Brew Coffee...',
+    analyzing: 'Analysiert',
+    analyze: 'Analysieren',
+    quickStart: 'Schnellstart:',
+    scanning: 'Bio‑Gefahren werden gescannt...',
+    detectedHazard: 'Erkannte Gefahr',
+    recommendedControl: 'Empfohlene Maßnahme',
+    generatePlan: 'Vollständigen {{product}}‑Plan erstellen',
+    genericProduct: 'HACCP'
+  },
+  it: {
+    badge: 'Anteprima live',
+    title: 'Provalo subito',
+    subtitle: 'Inserisci un prodotto per vedere come lo strumento identifica i pericoli specifici.',
+    placeholder: 'es. Cold Brew Coffee...',
+    analyzing: 'Analisi in corso',
+    analyze: 'Analizza',
+    quickStart: 'Avvio rapido:',
+    scanning: 'Scansione dei bio‑pericoli...',
+    detectedHazard: 'Pericolo rilevato',
+    recommendedControl: 'Controllo consigliato',
+    generatePlan: 'Genera il piano completo {{product}}',
+    genericProduct: 'HACCP'
+  },
+  lt: {
+    badge: 'Tiesioginė peržiūra',
+    title: 'Išbandykite dabar',
+    subtitle: 'Įveskite produktą ir pamatykite, kaip įrankis nustato konkrečius pavojus.',
+    placeholder: 'pvz., Cold Brew Coffee...',
+    analyzing: 'Analizuojama',
+    analyze: 'Analizuoti',
+    quickStart: 'Greita pradžia:',
+    scanning: 'Skenuojami bio‑pavojai...',
+    detectedHazard: 'Nustatytas pavojus',
+    recommendedControl: 'Rekomenduojama kontrolė',
+    generatePlan: 'Sukurti pilną {{product}} planą',
+    genericProduct: 'HACCP'
+  }
+};

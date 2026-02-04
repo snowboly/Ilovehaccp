@@ -5,12 +5,15 @@ import { FileText, HelpCircle, Mail, Plus, Minus, Search, X } from 'lucide-react
 import Link from 'next/link';
 import { Article } from '@/data/articles';
 import { FAQItem } from '@/data/faqs';
+import { useLanguage } from '@/lib/i18n';
 
 interface ResourceTabsProps {
   articles: any[];
 }
 
 export default function ResourceTabs({ articles }: ResourceTabsProps) {
+  const { language } = useLanguage();
+  const copy = RESOURCE_TABS_COPY[language] ?? RESOURCE_TABS_COPY.en;
   return (
     <div>
       <div className="space-y-24">
@@ -21,7 +24,7 @@ export default function ResourceTabs({ articles }: ResourceTabsProps) {
               <div className="bg-blue-100 p-2 rounded-xl">
                 <FileText className="w-6 h-6 text-blue-600" />
               </div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tight">Articles</h2>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tight">{copy.articlesTitle}</h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {articles.map((article) => (
@@ -44,7 +47,7 @@ export default function ResourceTabs({ articles }: ResourceTabsProps) {
                     <h3 className="text-2xl font-black text-slate-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">{article.title}</h3>
                     <p className="text-slate-500 leading-relaxed line-clamp-3 mb-8 font-medium text-sm">{article.excerpt}</p>
                     <div className="mt-auto flex items-center text-slate-900 font-black text-xs uppercase tracking-[0.2em]">
-                      Read Analysis
+                      {copy.readAnalysis}
                       <Plus className="w-4 h-4 ml-2 group-hover:rotate-90 transition-transform text-blue-600" />
                     </div>
                   </div>
@@ -60,16 +63,16 @@ export default function ResourceTabs({ articles }: ResourceTabsProps) {
             <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
               <Search className="w-10 h-10 text-slate-300" />
             </div>
-            <h3 className="text-2xl font-bold text-slate-900 mb-2">No results found</h3>
+            <h3 className="text-2xl font-bold text-slate-900 mb-2">{copy.noResultsTitle}</h3>
             <p className="text-slate-500 max-w-sm mx-auto mb-8 text-lg font-medium">
-              We couldn&apos;t find matching articles. Try different keywords or contact our experts directly.
+              {copy.noResultsSubtitle}
             </p>
             <Link 
               href="/contact" 
               className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl"
             >
               <Mail className="w-5 h-5" />
-              Contact for Support
+              {copy.contactSupport}
             </Link>
           </div>
         )}
@@ -77,16 +80,16 @@ export default function ResourceTabs({ articles }: ResourceTabsProps) {
         {/* Persistent CTA */}
         <div className="text-center p-12 bg-blue-600 rounded-[3rem] text-white shadow-2xl shadow-blue-500/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-            <h3 className="text-3xl font-black mb-4 relative z-10">Still have questions?</h3>
+            <h3 className="text-3xl font-black mb-4 relative z-10">{copy.ctaTitle}</h3>
             <p className="text-blue-100 text-lg mb-10 max-w-lg mx-auto relative z-10 font-medium leading-relaxed">
-              Our food safety experts are standing by to help you with your specific HACCP challenges.
+              {copy.ctaSubtitle}
             </p>
             <Link 
               href="/contact" 
               className="relative z-10 inline-flex items-center gap-2 bg-white text-blue-600 px-10 py-4 rounded-2xl font-black text-lg hover:bg-blue-50 transition-all shadow-xl hover:scale-[1.02]"
             >
               <Mail className="w-6 h-6" />
-              Get Expert Advice
+              {copy.ctaButton}
             </Link>
         </div>
       </div>
@@ -120,3 +123,85 @@ function FAQAccordion({ faq }: { faq: FAQItem }) {
     </div>
   );
 }
+
+const RESOURCE_TABS_COPY: Record<string, {
+  articlesTitle: string;
+  readAnalysis: string;
+  noResultsTitle: string;
+  noResultsSubtitle: string;
+  contactSupport: string;
+  ctaTitle: string;
+  ctaSubtitle: string;
+  ctaButton: string;
+}> = {
+  en: {
+    articlesTitle: 'Articles',
+    readAnalysis: 'Read Analysis',
+    noResultsTitle: 'No results found',
+    noResultsSubtitle: "We couldn't find matching articles. Try different keywords or contact our experts directly.",
+    contactSupport: 'Contact for Support',
+    ctaTitle: 'Still have questions?',
+    ctaSubtitle: 'Our food safety experts are standing by to help you with your specific HACCP challenges.',
+    ctaButton: 'Get Expert Advice'
+  },
+  es: {
+    articlesTitle: 'Artículos',
+    readAnalysis: 'Leer análisis',
+    noResultsTitle: 'No se encontraron resultados',
+    noResultsSubtitle: 'No encontramos artículos que coincidan. Prueba otras palabras clave o contacta a nuestros expertos.',
+    contactSupport: 'Contactar soporte',
+    ctaTitle: '¿Aún tienes preguntas?',
+    ctaSubtitle: 'Nuestros expertos en seguridad alimentaria están listos para ayudarte con tus desafíos HACCP.',
+    ctaButton: 'Obtener asesoría experta'
+  },
+  fr: {
+    articlesTitle: 'Articles',
+    readAnalysis: 'Lire l’analyse',
+    noResultsTitle: 'Aucun résultat',
+    noResultsSubtitle: "Aucun article correspondant. Essayez d'autres mots‑clés ou contactez nos experts.",
+    contactSupport: 'Contacter le support',
+    ctaTitle: 'Encore des questions ?',
+    ctaSubtitle: 'Nos experts en sécurité alimentaire sont prêts à vous aider pour vos défis HACCP.',
+    ctaButton: 'Obtenir un avis d’expert'
+  },
+  pt: {
+    articlesTitle: 'Artigos',
+    readAnalysis: 'Ler análise',
+    noResultsTitle: 'Nenhum resultado encontrado',
+    noResultsSubtitle: 'Não encontrámos artigos correspondentes. Tente outras palavras‑chave ou contacte os nossos especialistas.',
+    contactSupport: 'Contactar suporte',
+    ctaTitle: 'Ainda tem dúvidas?',
+    ctaSubtitle: 'Os nossos especialistas estão disponíveis para ajudar nos seus desafios HACCP.',
+    ctaButton: 'Obter aconselhamento'
+  },
+  de: {
+    articlesTitle: 'Artikel',
+    readAnalysis: 'Analyse lesen',
+    noResultsTitle: 'Keine Ergebnisse gefunden',
+    noResultsSubtitle: 'Keine passenden Artikel gefunden. Versuchen Sie andere Suchbegriffe oder kontaktieren Sie unsere Experten.',
+    contactSupport: 'Support kontaktieren',
+    ctaTitle: 'Noch Fragen?',
+    ctaSubtitle: 'Unsere Lebensmittelsicherheits‑Experten helfen gern bei Ihren HACCP‑Herausforderungen.',
+    ctaButton: 'Expertenrat erhalten'
+  },
+  it: {
+    articlesTitle: 'Articoli',
+    readAnalysis: 'Leggi analisi',
+    noResultsTitle: 'Nessun risultato',
+    noResultsSubtitle: 'Nessun articolo corrispondente. Prova altre parole chiave o contatta i nostri esperti.',
+    contactSupport: 'Contatta il supporto',
+    ctaTitle: 'Hai ancora domande?',
+    ctaSubtitle: 'I nostri esperti di sicurezza alimentare sono pronti ad aiutarti con le tue sfide HACCP.',
+    ctaButton: 'Ricevi consulenza'
+  },
+  lt: {
+    articlesTitle: 'Straipsniai',
+    readAnalysis: 'Skaityti analizę',
+    noResultsTitle: 'Nieko nerasta',
+    noResultsSubtitle: 'Neradome tinkamų straipsnių. Pabandykite kitus raktažodžius arba susisiekite su ekspertais.',
+    contactSupport: 'Susisiekti dėl pagalbos',
+    ctaTitle: 'Dar turite klausimų?',
+    ctaSubtitle: 'Mūsų maisto saugos ekspertai pasirengę padėti su HACCP iššūkiais.',
+    ctaButton: 'Gauti ekspertų pagalbą'
+  }
+};
