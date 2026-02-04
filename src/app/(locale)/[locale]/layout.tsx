@@ -78,22 +78,23 @@ export default async function LocaleLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const locale = params.locale as Language;
-  if (!SUPPORTED_LOCALES.includes(locale)) {
+  const { locale } = await params;
+  const language = locale as Language;
+  if (!SUPPORTED_LOCALES.includes(language)) {
     notFound();
   }
-  const dictionary = await getDictionary(locale);
+  const dictionary = await getDictionary(language);
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={language} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('app-theme');if(t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()` }} />
       </head>
       <body className={`${inter.variable} ${merriweather.variable} font-sans`}>
-        <Providers initialLanguage={locale} initialDictionary={dictionary}>
+        <Providers initialLanguage={language} initialDictionary={dictionary}>
           <ScrollToTop />
           <CookieConsent />
           <Suspense fallback={<div className="h-16 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800" />}>
