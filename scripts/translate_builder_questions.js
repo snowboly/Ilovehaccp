@@ -6,7 +6,7 @@ require('dotenv').config({ path: '.env.local' });
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const SOURCE_DIR = path.join(__dirname, '../src/data/haccp');
-const LANGUAGES = ['es', 'fr', 'pt'];
+const LANGUAGES = ['de', 'it', 'lt'];
 
 // Helper to translate object keys
 async function translateObject(obj, targetLang) {
@@ -40,7 +40,7 @@ async function translateObject(obj, targetLang) {
 }
 
 async function main() {
-    const files = fs.readdirSync(SOURCE_DIR).filter(f => f.endsWith('.json') && !f.includes('.es.') && !f.includes('.fr.') && !f.includes('.pt.'));
+    const files = fs.readdirSync(SOURCE_DIR).filter(f => f.endsWith('.json') && !f.includes('.de.') && !f.includes('.it.') && !f.includes('.lt.'));
 
     console.log(`Found ${files.length} source files to translate.`);
 

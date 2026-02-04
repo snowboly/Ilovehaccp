@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { fetchLogoAssets } from '@/lib/export/logo';
 import { isExportAllowed } from '@/lib/export/permissions';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
+import { SUPPORTED_LOCALES, type Language } from '@/lib/locales';
 import {
   buildStoragePath,
   buildDocxTemplateVersion,
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     planId = body?.planId as string | undefined;
-    const lang = (body?.lang || 'en') as 'en' | 'es' | 'fr' | 'pt';
+    const lang = SUPPORTED_LOCALES.includes(body?.lang as Language) ? (body?.lang as Language) : 'en';
 
     if (!planId) {
       return NextResponse.json({ error: 'Missing planId' }, { status: 400 });

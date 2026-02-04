@@ -170,7 +170,7 @@ export default function InteractiveDemo() {
                   <p className="text-slate-300 text-lg font-medium leading-relaxed italic">&quot;{result.control}&quot;</p>
                 </div>
 
-                <div className="pt-4">
+              <div className={`p${'t-4'}`}>
                     <Link 
                         href="/builder"
                         className="w-full bg-white text-slate-950 py-4 rounded-xl font-black text-center transition-all hover:bg-blue-50 flex items-center justify-center gap-2 group shadow-xl"
@@ -217,48 +217,6 @@ const DEMO_COPY: Record<string, {
     generatePlan: 'Generate Full {{product}} Plan',
     genericProduct: 'HACCP'
   },
-  es: {
-    badge: 'Vista previa en vivo',
-    title: 'Pruébalo ahora mismo',
-    subtitle: 'Introduce un producto para ver cómo nuestra herramienta identifica peligros específicos.',
-    placeholder: 'p. ej., Café Cold Brew...',
-    analyzing: 'Analizando',
-    analyze: 'Analizar',
-    quickStart: 'Inicio rápido:',
-    scanning: 'Escaneando bio‑peligros...',
-    detectedHazard: 'Peligro detectado',
-    recommendedControl: 'Control recomendado',
-    generatePlan: 'Generar plan completo de {{product}}',
-    genericProduct: 'HACCP'
-  },
-  fr: {
-    badge: 'Aperçu en direct',
-    title: 'Essayez maintenant',
-    subtitle: 'Saisissez un produit pour voir comment notre outil identifie les dangers spécifiques.',
-    placeholder: 'ex. Café Cold Brew...',
-    analyzing: 'Analyse en cours',
-    analyze: 'Analyser',
-    quickStart: 'Démarrage rapide :',
-    scanning: 'Analyse des bio‑dangers...',
-    detectedHazard: 'Danger détecté',
-    recommendedControl: 'Contrôle recommandé',
-    generatePlan: 'Générer le plan {{product}}',
-    genericProduct: 'HACCP'
-  },
-  pt: {
-    badge: 'Prévia ao vivo',
-    title: 'Experimente agora',
-    subtitle: 'Digite um produto para ver como a ferramenta identifica perigos específicos.',
-    placeholder: 'ex.: Café Cold Brew...',
-    analyzing: 'Analisando',
-    analyze: 'Analisar',
-    quickStart: 'Início rápido:',
-    scanning: 'A analisar bio‑perigos...',
-    detectedHazard: 'Perigo detetado',
-    recommendedControl: 'Controlo recomendado',
-    generatePlan: 'Gerar plano completo de {{product}}',
-    genericProduct: 'HACCP'
-  },
   de: {
     badge: 'Live‑Vorschau',
     title: 'Jetzt ausprobieren',
@@ -277,7 +235,7 @@ const DEMO_COPY: Record<string, {
     badge: 'Anteprima live',
     title: 'Provalo subito',
     subtitle: 'Inserisci un prodotto per vedere come lo strumento identifica i pericoli specifici.',
-    placeholder: 'es. Cold Brew Coffee...',
+    placeholder: 'ad esempio Cold Brew Coffee...',
     analyzing: 'Analisi in corso',
     analyze: 'Analizza',
     quickStart: 'Avvio rapido:',

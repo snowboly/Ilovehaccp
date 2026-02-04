@@ -74,18 +74,6 @@ const RESOURCE_CONTENT_COPY: Record<string, { searchPlaceholder: string; loading
     searchPlaceholder: 'Search guides, regulations, and hazards...',
     loading: 'Scanning Knowledge Base...'
   },
-  es: {
-    searchPlaceholder: 'Buscar guías, regulaciones y peligros...',
-    loading: 'Escaneando la base de conocimiento...'
-  },
-  fr: {
-    searchPlaceholder: 'Rechercher des guides, réglementations et dangers...',
-    loading: 'Analyse de la base de connaissances...'
-  },
-  pt: {
-    searchPlaceholder: 'Pesquisar guias, regulações e perigos...',
-    loading: 'A analisar a base de conhecimento...'
-  },
   de: {
     searchPlaceholder: 'Leitfäden, Vorschriften und Gefahren suchen...',
     loading: 'Wissensdatenbank wird durchsucht...'

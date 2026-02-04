@@ -6,7 +6,7 @@ import { getDictionary } from "./locales";
 
 export const generateHACCPWordDoc = async (data: any) => {
   const lang = data?.lang || "en";
-  const dict = getDictionary(lang as any).pdf;
+  const dict = (await getDictionary(lang as any)).pdf;
   const exportDoc = buildExportDoc({ data, dict, lang });
   const doc = await generateModularWordDocument(exportDoc);
   const blob = await Packer.toBlob(doc);

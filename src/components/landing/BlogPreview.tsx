@@ -84,24 +84,6 @@ const BLOG_COPY: Record<string, { title: string; subtitle: string; viewAll: stri
     viewAll: 'View all articles',
     readAnalysis: 'Read Analysis'
   },
-  es: {
-    title: 'Últimos recursos',
-    subtitle: 'Insights de expertos para ayudarte a mantener el cumplimiento.',
-    viewAll: 'Ver todos los artículos',
-    readAnalysis: 'Leer análisis'
-  },
-  fr: {
-    title: 'Dernières ressources',
-    subtitle: 'Des analyses d’experts pour rester conforme.',
-    viewAll: 'Voir tous les articles',
-    readAnalysis: 'Lire l’analyse'
-  },
-  pt: {
-    title: 'Recursos mais recentes',
-    subtitle: 'Insights de especialistas para manter a conformidade.',
-    viewAll: 'Ver todos os artigos',
-    readAnalysis: 'Ler análise'
-  },
   de: {
     title: 'Neueste Ressourcen',
     subtitle: 'Expertenwissen, das Ihnen hilft, compliant zu bleiben.',

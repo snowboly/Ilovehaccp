@@ -22,7 +22,7 @@ export async function generateWordDocument(data: any, lang: string = 'en'): Prom
   }
 
   // Fallback: programmatic document generation
-  const dict = getDictionary(lang as any).pdf;
+  const dict = (await getDictionary(lang as any)).pdf;
   const exportDoc = buildExportDoc({ data, dict, lang });
   const doc = await generateModularWordDocument(exportDoc);
   return Packer.toBuffer(doc);
