@@ -7,6 +7,7 @@ import { fetchLogoAssets } from '@/lib/export/logo';
 import { verifyExportToken } from '@/lib/export/auth';
 import { transformDraftToPlan } from '@/lib/export/transform';
 import { logAccess } from '@/lib/audit';
+import { SUPPORTED_LOCALES, type Language } from '@/lib/locales';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -16,7 +17,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const planId = searchParams.get('planId');
     const tokenParam = searchParams.get('token');
-    const lang = (searchParams.get('lang') || 'en') as 'en' | 'es' | 'fr' | 'pt';
+    const langParam = searchParams.get('lang');
+    const lang = SUPPORTED_LOCALES.includes(langParam as Language) ? (langParam as Language) : 'en';
 
     if (!planId) return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
 
@@ -177,4 +179,3 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Failed to generate document. Please try again.' }, { status: 500 });
   }
 }
-

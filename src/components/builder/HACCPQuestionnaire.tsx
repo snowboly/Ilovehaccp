@@ -375,102 +375,9 @@ const QUESTIONNAIRE_COPY: Record<string, {
     },
     descriptionFallback: 'Please answer accurately to ensure compliance.'
   },
-  es: {
-    validation: {
-      required: 'Este campo es obligatorio.',
-      selectOne: 'Selecciona al menos una opción.',
-      selectYesNo: 'Selecciona Sí o No.',
-      noHazardsJustification: 'Proporciona justificación cuando no hay peligros.',
-      processControlRequired: 'La descripción del control de proceso es obligatoria para el peligro {{hazard}} cuando se selecciona Control de proceso.'
-    },
-    hazardLabels: {
-      bio: 'Biológico',
-      chem: 'Químico',
-      phys: 'Físico',
-      allergen: 'Alérgeno'
-    },
-    sectionTitles: {
-      'Product Description': 'Describe tu producto',
-      'Process Flow': 'Mapea tu proceso',
-      'Prerequisite Programs': 'Establece prerrequisitos',
-      'Hazard Analysis': 'Analiza peligros',
-      'CCP Determination': 'Identifica puntos críticos',
-      'CCP Management': 'Gestiona puntos críticos',
-      'Verification, Validation, Review & Records': 'Verifica y valida'
-    },
-    warnings: {
-      ingredientDetail: 'La identificación de peligros depende de los ingredientes declarados. Poca información puede omitir peligros.',
-      shelfLife: 'La vida útil no ha sido validada. Usar este borrador sin validación puede resultar en alimentos inseguros.',
-      highRiskRte: 'Alto riesgo — producto listo para comer refrigerado/congelado. Se asocia a riesgos microbiológicos serios (p. ej., Listeria).',
-      vulnerableConsumers: 'Productos para consumidores vulnerables pueden requerir controles y validación adicionales.',
-      misuse: 'Riesgo aumentado — uso indebido previsible. Debe considerarse en el análisis de peligros.'
-    },
-    descriptionFallback: 'Responde con precisión para asegurar el cumplimiento.'
-  },
-  fr: {
-    validation: {
-      required: 'Ce champ est obligatoire.',
-      selectOne: 'Veuillez sélectionner au moins une option.',
-      selectYesNo: 'Veuillez sélectionner Oui ou Non.',
-      noHazardsJustification: 'Veuillez justifier l’absence de dangers.',
-      processControlRequired: 'La description du contrôle de procédé est requise pour le danger {{hazard}} lorsque le contrôle de procédé est sélectionné.'
-    },
-    hazardLabels: {
-      bio: 'Biologique',
-      chem: 'Chimique',
-      phys: 'Physique',
-      allergen: 'Allergène'
-    },
-    sectionTitles: {
-      'Product Description': 'Décrivez votre produit',
-      'Process Flow': 'Cartographiez votre processus',
-      'Prerequisite Programs': 'Établir les prérequis',
-      'Hazard Analysis': 'Analyser les dangers',
-      'CCP Determination': 'Identifier les points critiques',
-      'CCP Management': 'Gérer les points critiques',
-      'Verification, Validation, Review & Records': 'Vérifier et valider'
-    },
-    warnings: {
-      ingredientDetail: 'L’identification des dangers dépend des ingrédients déclarés. Un manque de détails peut en omettre.',
-      shelfLife: 'La durée de conservation n’a pas été validée. Utiliser ce brouillon sans validation peut être dangereux.',
-      highRiskRte: 'Risque élevé — produit prêt à consommer réfrigéré/congelé. Risques microbiologiques sérieux (ex. Listeria).',
-      vulnerableConsumers: 'Les produits destinés aux consommateurs vulnérables peuvent nécessiter des contrôles et validations supplémentaires.',
-      misuse: 'Risque accru — mauvais usage prévisible. À prendre en compte dans l’analyse des dangers.'
-    },
-    descriptionFallback: 'Veuillez répondre avec précision pour assurer la conformité.'
-  },
-  pt: {
-    validation: {
-      required: 'Este campo é obrigatório.',
-      selectOne: 'Selecione pelo menos uma opção.',
-      selectYesNo: 'Selecione Sim ou Não.',
-      noHazardsJustification: 'Forneça uma justificação quando não há perigos.',
-      processControlRequired: 'A descrição do controlo de processo é obrigatória para o perigo {{hazard}} quando o controlo de processo é selecionado.'
-    },
-    hazardLabels: {
-      bio: 'Biológico',
-      chem: 'Químico',
-      phys: 'Físico',
-      allergen: 'Alergénio'
-    },
-    sectionTitles: {
-      'Product Description': 'Descreva o seu produto',
-      'Process Flow': 'Mapeie o seu processo',
-      'Prerequisite Programs': 'Estabeleça pré‑requisitos',
-      'Hazard Analysis': 'Analisar perigos',
-      'CCP Determination': 'Identificar pontos críticos',
-      'CCP Management': 'Gerir pontos críticos',
-      'Verification, Validation, Review & Records': 'Verificar e validar'
-    },
-    warnings: {
-      ingredientDetail: 'A identificação de perigos depende dos ingredientes declarados. Pouco detalhe pode omitir perigos.',
-      shelfLife: 'A vida útil não foi validada. Usar este rascunho sem validação pode ser inseguro.',
-      highRiskRte: 'Risco elevado — produto pronto a comer refrigerado/congelado. Associado a riscos microbiológicos graves (ex.: Listeria).',
-      vulnerableConsumers: 'Produtos para consumidores vulneráveis podem exigir controlos e validação adicionais.',
-      misuse: 'Risco aumentado — mau uso previsível. Deve ser considerado na análise de perigos.'
-    },
-    descriptionFallback: 'Responda com precisão para garantir a conformidade.'
-  },
+
+
+
   de: {
     validation: {
       required: 'Dieses Feld ist erforderlich.',
@@ -529,7 +436,7 @@ const QUESTIONNAIRE_COPY: Record<string, {
     warnings: {
       ingredientDetail: 'L’identificazione dei pericoli dipende dagli ingredienti dichiarati. Pochi dettagli possono omettere pericoli.',
       shelfLife: 'La shelf life non è stata validata. Usare questa bozza senza validazione può essere rischioso.',
-      highRiskRte: 'Alto rischio — prodotto pronto al consumo refrigerato/congelato. Rischi microbiologici seri (es. Listeria).',
+      highRiskRte: 'Alto rischio — prodotto pronto al consumo refrigerato/congelato. Rischi microbiologici seri (ad esempio Listeria).',
       vulnerableConsumers: 'Prodotti per consumatori vulnerabili possono richiedere controlli e validazioni aggiuntive.',
       misuse: 'Rischio aumentato — uso improprio prevedibile. Da considerare nell’analisi dei pericoli.'
     },

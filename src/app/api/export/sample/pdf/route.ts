@@ -30,7 +30,7 @@ const logLegacyPipelineUsage = (reason: string) => {
  * Rollback docx conversion with EXPORT_PDF_PIPELINE=legacy.
  */
 async function renderLegacySamplePdf(): Promise<Buffer> {
-  const dict = getDictionary('en').pdf;
+  const dict = (await getDictionary('en')).pdf;
   const pdfData = {
     businessName: samplePlanFixture.businessName,
     productName: samplePlanFixture.productName,
@@ -100,5 +100,4 @@ export async function GET() {
     );
   }
 }
-
 

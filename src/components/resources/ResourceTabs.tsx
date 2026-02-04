@@ -144,36 +144,6 @@ const RESOURCE_TABS_COPY: Record<string, {
     ctaSubtitle: 'Our food safety experts are standing by to help you with your specific HACCP challenges.',
     ctaButton: 'Get Expert Advice'
   },
-  es: {
-    articlesTitle: 'Artículos',
-    readAnalysis: 'Leer análisis',
-    noResultsTitle: 'No se encontraron resultados',
-    noResultsSubtitle: 'No encontramos artículos que coincidan. Prueba otras palabras clave o contacta a nuestros expertos.',
-    contactSupport: 'Contactar soporte',
-    ctaTitle: '¿Aún tienes preguntas?',
-    ctaSubtitle: 'Nuestros expertos en seguridad alimentaria están listos para ayudarte con tus desafíos HACCP.',
-    ctaButton: 'Obtener asesoría experta'
-  },
-  fr: {
-    articlesTitle: 'Articles',
-    readAnalysis: 'Lire l’analyse',
-    noResultsTitle: 'Aucun résultat',
-    noResultsSubtitle: "Aucun article correspondant. Essayez d'autres mots‑clés ou contactez nos experts.",
-    contactSupport: 'Contacter le support',
-    ctaTitle: 'Encore des questions ?',
-    ctaSubtitle: 'Nos experts en sécurité alimentaire sont prêts à vous aider pour vos défis HACCP.',
-    ctaButton: 'Obtenir un avis d’expert'
-  },
-  pt: {
-    articlesTitle: 'Artigos',
-    readAnalysis: 'Ler análise',
-    noResultsTitle: 'Nenhum resultado encontrado',
-    noResultsSubtitle: 'Não encontrámos artigos correspondentes. Tente outras palavras‑chave ou contacte os nossos especialistas.',
-    contactSupport: 'Contactar suporte',
-    ctaTitle: 'Ainda tem dúvidas?',
-    ctaSubtitle: 'Os nossos especialistas estão disponíveis para ajudar nos seus desafios HACCP.',
-    ctaButton: 'Obter aconselhamento'
-  },
   de: {
     articlesTitle: 'Artikel',
     readAnalysis: 'Analyse lesen',

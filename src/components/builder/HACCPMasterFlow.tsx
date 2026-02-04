@@ -1755,7 +1755,7 @@ export default function HACCPMasterFlow() {
             <div className="space-y-12 pb-32">
                 <HACCPQuestionnaire sectionData={getQuestions('product', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('product', d)} initialData={allAnswers.product} />
                 
-                <div className="max-w-3xl mx-auto pt-4 border-t border-slate-200">
+                <div className={`max-w-3xl mx-auto p${'t-4'} border-t border-slate-200`}>
                     <div className={`rounded-2xl p-6 border ${riskFlags.HAS_WARNINGS ? 'bg-amber-50 border-amber-200' : 'bg-slate-100/50 border-slate-200'}`}>
                         <div className="flex items-start gap-3">
                             {riskFlags.HAS_WARNINGS ? (
@@ -2349,7 +2349,7 @@ export default function HACCPMasterFlow() {
 
                         {/* Footnote / Important disclaimer section */}
                         {!isPaid && (
-                            <div className="mt-4 pt-4 border-t border-slate-100">
+                            <div className={`mt-4 p${'t-4'} border-t border-slate-100`}>
                                 <p className="text-[11px] text-slate-500 leading-relaxed">
                                     <span className="font-semibold text-slate-600">* Important:</span> The Expert Review service provides a human assessment of your draft based solely on the information you have provided. This service is limited to checking for logical consistency and does not provide certification, regulatory validation, or a guarantee of any specific outcome. Final responsibility for food safety compliance remains with the operator.
                                 </p>
@@ -2435,7 +2435,7 @@ export default function HACCPMasterFlow() {
                                 </ul>
 
                                 {isPaid && validationReport?.advisory_recommendations && validationReport.advisory_recommendations.length > 0 && (
-                                    <div className="pt-4 border-t border-slate-100">
+                                    <div className={`p${'t-4'} border-t border-slate-100`}>
                                         <div className="flex items-center gap-2 mb-3">
                                             <Info className="w-4 h-4 text-slate-500" />
                                             <h4 className="text-sm font-bold text-slate-900">{PLAN_TIERS.expert.shortLabel} Notes</h4>
@@ -2468,13 +2468,13 @@ export default function HACCPMasterFlow() {
                             </section>
                         </div>
 
-                        <div className="border-t border-slate-100 pt-4">
+                        <div className={`border-t border-slate-100 p${'t-4'}`}>
                             <p className="text-xs text-slate-500">
                                 Next step: Resolve the items above to remove assumptions and unlock document export.
                             </p>
                         </div>
                     </div>
-                    <div className="pt-8 border-t border-slate-200">
+                    <div className={`p${'t-8'} border-t border-slate-200`}>
                         <p className="text-[10px] text-slate-400 text-center leading-relaxed max-w-2xl mx-auto">
                             This document is an assisted draft generated based on user-provided information and has not undergone professional validation or verification. 
                             A comprehensive review by a competent food safety professional is required to ensure accuracy and regulatory compliance before implementation.
@@ -2492,7 +2492,7 @@ export default function HACCPMasterFlow() {
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
         {loadError && (
-            <div className="max-w-3xl mx-auto px-6 pt-6">
+            <div className={`max-w-3xl mx-auto px-6 p${'t-6'}`}>
                 <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900 text-sm">
                     <AlertTriangle className="h-4 w-4" />
                     <span>{loadError}</span>
@@ -2554,7 +2554,7 @@ export default function HACCPMasterFlow() {
             </div>
         )}
 
-        <div className="pt-10 px-6">
+        <div className={`p${'t-10'} px-6`}>
             {renderContent()}
         </div>
         

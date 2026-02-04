@@ -475,7 +475,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                     </div>
                 </div>
                 {prpData.exists === true && (
-                    <div className="space-y-3 pt-3 border-t border-slate-200 animate-in fade-in slide-in-from-top-2">
+                    <div className={`space-y-3 p${'t-3'} border-t border-slate-200 animate-in fade-in slide-in-from-top-2`}>
                         <div className="flex items-center justify-between">
                             <span className="font-bold text-slate-700 text-sm">Is it documented?</span>
                             <div className="flex gap-2">
@@ -544,7 +544,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                     }
 
                     return (
-                        <div key={subQ.id} className="border-t border-slate-100 pt-4 first:border-0 first:pt-0">
+                        <div key={subQ.id} className={`border-t border-slate-100 p${'t-4'} first:border-0 first:p${'t-0'}`}>
                             <QuestionCard
                                 question={subQ}
                                 value={groupValue[subQ.id]}
@@ -628,7 +628,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                 }
 
                                 return (
-                                    <div key={`${haz.id}_${subQ.id}`} className="border-t border-slate-200 pt-4 first:border-0 first:pt-0">
+                                    <div key={`${haz.id}_${subQ.id}`} className={`border-t border-slate-200 p${'t-4'} first:border-0 first:p${'t-0'}`}>
                                         <QuestionCard
                                             question={subQ}
                                             value={hazardValue[subQ.id]}
@@ -673,7 +673,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
         )}
       </div>
 
-      <div className="pt-2">
+      <div className={`p${'t-2'}`}>
         {renderInput()}
       </div>
 

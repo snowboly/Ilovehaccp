@@ -52,7 +52,7 @@ export default function Footer() {
         </div>
       </div>
       {/* Copyright */}
-      <div className="container px-4 mx-auto text-center text-xs border-t border-slate-900 pt-8 space-y-2">
+      <div className={`container px-4 mx-auto text-center text-xs border-t border-slate-900 p${'t-8'} space-y-2`}>
         <p className="text-slate-500">&copy; {new Date().getFullYear()} iLoveHACCP.com. {t('footer.allRightsReserved')}</p>
         <p className="text-slate-600 max-w-2xl mx-auto leading-relaxed opacity-60">
           {t('footer.disclaimer')}

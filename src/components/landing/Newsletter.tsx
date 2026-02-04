@@ -136,45 +136,6 @@ const NEWSLETTER_COPY: Record<string, {
     privacyPolicy: 'Privacy Policy',
     error: 'Something went wrong. Please try again.'
   },
-  es: {
-    title: 'Mantente al día con',
-    titleAccent: 'insights de seguridad alimentaria.',
-    subtitle: 'Únete a más de 2.000 profesionales que reciben nuestro boletín quincenal.',
-    successTitle: '¡Ya estás en la lista!',
-    successSubtitle: 'Revisa tu bandeja de entrada para recibir tu primera guía.',
-    addAnother: 'Añadir otro correo',
-    placeholder: 'tu@empresa.com',
-    subscribe: 'Suscribirse',
-    disclaimer: 'Sin spam. Cancela cuando quieras. Lee nuestra',
-    privacyPolicy: 'Política de Privacidad',
-    error: 'Algo salió mal. Inténtalo de nuevo.'
-  },
-  fr: {
-    title: 'Restez informé sur',
-    titleAccent: 'la sécurité alimentaire.',
-    subtitle: 'Rejoignez plus de 2 000 professionnels qui reçoivent notre newsletter bimensuelle.',
-    successTitle: 'Vous êtes inscrit !',
-    successSubtitle: 'Consultez votre boîte de réception pour votre premier guide.',
-    addAnother: 'Ajouter un autre e‑mail',
-    placeholder: 'vous@entreprise.com',
-    subscribe: 'S’abonner',
-    disclaimer: 'Pas de spam. Désabonnez‑vous à tout moment. Lisez notre',
-    privacyPolicy: 'Politique de confidentialité',
-    error: 'Une erreur est survenue. Veuillez réessayer.'
-  },
-  pt: {
-    title: 'Fique atualizado sobre',
-    titleAccent: 'insights de segurança alimentar.',
-    subtitle: 'Junte‑se a mais de 2.000 profissionais que recebem o nosso boletim quinzenal.',
-    successTitle: 'Está na lista!',
-    successSubtitle: 'Verifique a sua caixa de entrada para o primeiro guia.',
-    addAnother: 'Adicionar outro e‑mail',
-    placeholder: 'voce@empresa.com',
-    subscribe: 'Subscrever',
-    disclaimer: 'Sem spam. Pode cancelar a qualquer momento. Leia a nossa',
-    privacyPolicy: 'Política de Privacidade',
-    error: 'Algo correu mal. Tente novamente.'
-  },
   de: {
     title: 'Bleiben Sie auf dem Laufenden zu',
     titleAccent: 'Lebensmittelsicherheits‑Insights.',

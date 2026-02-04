@@ -4,7 +4,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { renderToBuffer } from '@react-pdf/renderer';
 import HACCPDocument from '@/components/pdf/HACCPDocument';
-import { getDictionary } from '@/lib/locales';
+import { getDictionary, SUPPORTED_LOCALES, type Language } from '@/lib/locales';
 import { fetchLogoAssets } from '@/lib/export/logo';
 import { isExportAllowed } from '@/lib/export/permissions';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
@@ -74,13 +74,13 @@ async function renderLegacyPdf({
 }: {
   plan: any;
   fullPlan: any;
-  lang: 'en' | 'es' | 'fr' | 'pt';
+  lang: Language;
   template: string;
   logo: string | null;
   productInputs: Record<string, any>;
   isPaid: boolean;
 }): Promise<Buffer> {
-  const dict = getDictionary(lang).pdf;
+  const dict = (await getDictionary(lang)).pdf;
   const pdfData = {
     businessName: plan.business_name,
     productName: productInputs.product_name || plan.product_name || 'HACCP Plan',
@@ -116,7 +116,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     planId = body?.planId as string | undefined;
-    const lang = (body?.lang || 'en') as 'en' | 'es' | 'fr' | 'pt';
+    const lang = SUPPORTED_LOCALES.includes(body?.lang as Language) ? (body?.lang as Language) : 'en';
     const pipelineConfig = resolvePdfPipeline(process.env);
 
     if (!planId && body?.data) {

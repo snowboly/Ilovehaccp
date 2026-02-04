@@ -8,6 +8,7 @@ import { transformDraftToPlan } from '@/lib/export/transform';
 import { logAccess } from '@/lib/audit';
 import { generateDocxBuffer } from '@/lib/export/docx/generateDocx';
 import { applyWatermark, generateCleanPdfFromDocx, getDefaultWatermarkConfig } from '@/lib/export/pdf';
+import { SUPPORTED_LOCALES, type Language } from '@/lib/locales';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,7 +18,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const planId = searchParams.get('planId');
     const tokenParam = searchParams.get('token');
-    const lang = (searchParams.get('lang') || 'en') as 'en' | 'es' | 'fr' | 'pt';
+    const langParam = searchParams.get('lang');
+    const lang = SUPPORTED_LOCALES.includes(langParam as Language) ? (langParam as Language) : 'en';
 
     if (!planId) return NextResponse.json({ error: 'Missing planId' }, { status: 400 });
 
