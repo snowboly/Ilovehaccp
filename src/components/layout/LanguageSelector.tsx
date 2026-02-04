@@ -13,11 +13,14 @@ export default function LanguageSelector() {
         <span className="uppercase font-bold text-xs">{language}</span>
       </button>
       
-      <div className="absolute right-0 top-full mt-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+      <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
         <button onClick={() => setLanguage('en')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇺🇸 English</button>
         <button onClick={() => setLanguage('es')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇪🇸 Español</button>
         <button onClick={() => setLanguage('fr')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇫🇷 Français</button>
         <button onClick={() => setLanguage('pt')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇵🇹 Português</button>
+        <button onClick={() => setLanguage('de')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇩🇪 Deutsch</button>
+        <button onClick={() => setLanguage('it')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇮🇹 Italiano</button>
+        <button onClick={() => setLanguage('lt')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇱🇹 Lietuvių</button>
       </div>
     </div>
   );
