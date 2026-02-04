@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { HACCPSectionData } from '@/types/haccp';
 import { QuestionCard } from './QuestionCard';
 import { ChevronRight } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 interface QuestionnaireProps {
   sectionData: HACCPSectionData;
@@ -16,6 +17,8 @@ interface QuestionnaireProps {
 }
 
 export default function HACCPQuestionnaire({ sectionData, onComplete, initialData, additionalContext, title, description }: QuestionnaireProps) {
+  const { language } = useLanguage();
+  const copy = QUESTIONNAIRE_COPY[language] ?? QUESTIONNAIRE_COPY.en;
   const [answers, setAnswers] = useState<any>(initialData || {});
   const [errors, setErrors] = useState<Record<string, string>>({});
   
@@ -114,20 +117,20 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
         
         // Basic required check
         if (val === undefined || val === null || val === '') {
-             newErrors[q.id] = "This field is required.";
+             newErrors[q.id] = copy.validation.required;
              isValid = false;
         }
         
         // Array check
         if (Array.isArray(val) && val.length === 0) {
-            newErrors[q.id] = "Please select at least one option.";
+            newErrors[q.id] = copy.validation.selectOne;
             isValid = false;
         }
 
         // PRP Group check
         if (q.type === 'prp_group') {
             if (!val || typeof val.exists !== 'boolean') {
-                newErrors[q.id] = "Please select Yes or No.";
+                newErrors[q.id] = copy.validation.selectYesNo;
                 isValid = false;
             }
         }
@@ -143,7 +146,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
               if (allFalse) {
                   const val = groupAnswers[hazGroup.id];
                   if (!val || val === '') {
-                      newErrors[q.id] = "Please provide justification for no hazards.";
+                      newErrors[q.id] = copy.validation.noHazardsJustification;
                       isValid = false;
                   }
               }
@@ -166,7 +169,8 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
                   if (hasProcessControl) {
                       const description = hazardData.process_control_description;
                       if (!description || description.trim() === '') {
-                          newErrors[q.id] = `Process control description is required for ${hazType === 'bio' ? 'Biological' : hazType === 'chem' ? 'Chemical' : hazType === 'phys' ? 'Physical' : 'Allergen'} hazard when Process control is selected.`;
+                          const hazardLabel = copy.hazardLabels[hazType as keyof typeof copy.hazardLabels];
+                          newErrors[q.id] = copy.validation.processControlRequired.replace('{{hazard}}', hazardLabel);
                           isValid = false;
                           break; // Report first error only
                       }
@@ -191,16 +195,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
   };
 
   const getTitle = (section: string) => {
-    const map: Record<string, string> = {
-      'Product Description': 'Describe Your Product',
-      'Process Flow': 'Map Your Process',
-      'Prerequisite Programs': 'Establish Prerequisites',
-      'Hazard Analysis': 'Analyze Hazards',
-      'CCP Determination': 'Identify Critical Points',
-      'CCP Management': 'Manage Critical Points',
-      'Verification, Validation, Review & Records': 'Verify & Validate'
-    };
-    return map[section] || section;
+    return copy.sectionTitles[section] || section;
   };
 
   const checkIngredientVagueness = (val: string) => {
@@ -216,14 +211,14 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
           if (issue) {
               return {
                   level: 'assumption' as const,
-                  text: "Hazard identification relies on the ingredients declared. Limited detail may result in missing hazards."
+                  text: copy.warnings.ingredientDetail
               };
           }
       }
       if (qId === 'shelf_life_basis' && (val === 'Assumption (not validated)' || val === 'Suposição (não validada)' || val === 'Suposición (no validada)' || val === 'Hypothèse (non validée)')) {
           return {
               level: 'risk' as const,
-              text: "Shelf life has not been validated. Use of this HACCP draft without validation may result in unsafe food."
+              text: copy.warnings.shelfLife
           };
       }
 
@@ -248,7 +243,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
           if (isRTE && isCold) {
               return {
                   level: 'risk' as const,
-                  text: "High Risk — Chilled / Frozen Ready-to-Eat Product. These products are commonly associated with serious microbiological hazards (e.g. Listeria). Enhanced controls and validation are typically required."
+                  text: copy.warnings.highRiskRte
               };
           }
       }
@@ -263,7 +258,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
       )) {
           return {
               level: 'risk' as const,
-              text: "Products intended for vulnerable consumers may require additional controls, validation, and regulatory oversight."
+              text: copy.warnings.vulnerableConsumers
           };
       }
 
@@ -275,7 +270,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
       )) {
           return {
               level: 'assumption' as const,
-              text: "Increased Risk — Foreseeable Misuse. Misuse scenarios must be considered during hazard analysis."
+              text: copy.warnings.misuse
           };
       }
 
@@ -294,7 +289,7 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
             {title || getTitle(sectionData.section)}
         </h2>
         <div className="text-slate-500 font-medium">
-            {description || "Please answer accurately to ensure compliance."}
+            {description || copy.descriptionFallback}
         </div>
       </div>
 
@@ -323,3 +318,253 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
     </div>
   );
 }
+
+const QUESTIONNAIRE_COPY: Record<string, {
+  validation: {
+    required: string;
+    selectOne: string;
+    selectYesNo: string;
+    noHazardsJustification: string;
+    processControlRequired: string;
+  };
+  hazardLabels: {
+    bio: string;
+    chem: string;
+    phys: string;
+    allergen: string;
+  };
+  sectionTitles: Record<string, string>;
+  warnings: {
+    ingredientDetail: string;
+    shelfLife: string;
+    highRiskRte: string;
+    vulnerableConsumers: string;
+    misuse: string;
+  };
+  descriptionFallback: string;
+}> = {
+  en: {
+    validation: {
+      required: 'This field is required.',
+      selectOne: 'Please select at least one option.',
+      selectYesNo: 'Please select Yes or No.',
+      noHazardsJustification: 'Please provide justification for no hazards.',
+      processControlRequired: 'Process control description is required for {{hazard}} hazard when Process control is selected.'
+    },
+    hazardLabels: {
+      bio: 'Biological',
+      chem: 'Chemical',
+      phys: 'Physical',
+      allergen: 'Allergen'
+    },
+    sectionTitles: {
+      'Product Description': 'Describe Your Product',
+      'Process Flow': 'Map Your Process',
+      'Prerequisite Programs': 'Establish Prerequisites',
+      'Hazard Analysis': 'Analyze Hazards',
+      'CCP Determination': 'Identify Critical Points',
+      'CCP Management': 'Manage Critical Points',
+      'Verification, Validation, Review & Records': 'Verify & Validate'
+    },
+    warnings: {
+      ingredientDetail: 'Hazard identification relies on the ingredients declared. Limited detail may result in missing hazards.',
+      shelfLife: 'Shelf life has not been validated. Use of this HACCP draft without validation may result in unsafe food.',
+      highRiskRte: 'High Risk — Chilled / Frozen Ready-to-Eat Product. These products are commonly associated with serious microbiological hazards (e.g. Listeria). Enhanced controls and validation are typically required.',
+      vulnerableConsumers: 'Products intended for vulnerable consumers may require additional controls, validation, and regulatory oversight.',
+      misuse: 'Increased Risk — Foreseeable Misuse. Misuse scenarios must be considered during hazard analysis.'
+    },
+    descriptionFallback: 'Please answer accurately to ensure compliance.'
+  },
+  es: {
+    validation: {
+      required: 'Este campo es obligatorio.',
+      selectOne: 'Selecciona al menos una opción.',
+      selectYesNo: 'Selecciona Sí o No.',
+      noHazardsJustification: 'Proporciona justificación cuando no hay peligros.',
+      processControlRequired: 'La descripción del control de proceso es obligatoria para el peligro {{hazard}} cuando se selecciona Control de proceso.'
+    },
+    hazardLabels: {
+      bio: 'Biológico',
+      chem: 'Químico',
+      phys: 'Físico',
+      allergen: 'Alérgeno'
+    },
+    sectionTitles: {
+      'Product Description': 'Describe tu producto',
+      'Process Flow': 'Mapea tu proceso',
+      'Prerequisite Programs': 'Establece prerrequisitos',
+      'Hazard Analysis': 'Analiza peligros',
+      'CCP Determination': 'Identifica puntos críticos',
+      'CCP Management': 'Gestiona puntos críticos',
+      'Verification, Validation, Review & Records': 'Verifica y valida'
+    },
+    warnings: {
+      ingredientDetail: 'La identificación de peligros depende de los ingredientes declarados. Poca información puede omitir peligros.',
+      shelfLife: 'La vida útil no ha sido validada. Usar este borrador sin validación puede resultar en alimentos inseguros.',
+      highRiskRte: 'Alto riesgo — producto listo para comer refrigerado/congelado. Se asocia a riesgos microbiológicos serios (p. ej., Listeria).',
+      vulnerableConsumers: 'Productos para consumidores vulnerables pueden requerir controles y validación adicionales.',
+      misuse: 'Riesgo aumentado — uso indebido previsible. Debe considerarse en el análisis de peligros.'
+    },
+    descriptionFallback: 'Responde con precisión para asegurar el cumplimiento.'
+  },
+  fr: {
+    validation: {
+      required: 'Ce champ est obligatoire.',
+      selectOne: 'Veuillez sélectionner au moins une option.',
+      selectYesNo: 'Veuillez sélectionner Oui ou Non.',
+      noHazardsJustification: 'Veuillez justifier l’absence de dangers.',
+      processControlRequired: 'La description du contrôle de procédé est requise pour le danger {{hazard}} lorsque le contrôle de procédé est sélectionné.'
+    },
+    hazardLabels: {
+      bio: 'Biologique',
+      chem: 'Chimique',
+      phys: 'Physique',
+      allergen: 'Allergène'
+    },
+    sectionTitles: {
+      'Product Description': 'Décrivez votre produit',
+      'Process Flow': 'Cartographiez votre processus',
+      'Prerequisite Programs': 'Établir les prérequis',
+      'Hazard Analysis': 'Analyser les dangers',
+      'CCP Determination': 'Identifier les points critiques',
+      'CCP Management': 'Gérer les points critiques',
+      'Verification, Validation, Review & Records': 'Vérifier et valider'
+    },
+    warnings: {
+      ingredientDetail: 'L’identification des dangers dépend des ingrédients déclarés. Un manque de détails peut en omettre.',
+      shelfLife: 'La durée de conservation n’a pas été validée. Utiliser ce brouillon sans validation peut être dangereux.',
+      highRiskRte: 'Risque élevé — produit prêt à consommer réfrigéré/congelé. Risques microbiologiques sérieux (ex. Listeria).',
+      vulnerableConsumers: 'Les produits destinés aux consommateurs vulnérables peuvent nécessiter des contrôles et validations supplémentaires.',
+      misuse: 'Risque accru — mauvais usage prévisible. À prendre en compte dans l’analyse des dangers.'
+    },
+    descriptionFallback: 'Veuillez répondre avec précision pour assurer la conformité.'
+  },
+  pt: {
+    validation: {
+      required: 'Este campo é obrigatório.',
+      selectOne: 'Selecione pelo menos uma opção.',
+      selectYesNo: 'Selecione Sim ou Não.',
+      noHazardsJustification: 'Forneça uma justificação quando não há perigos.',
+      processControlRequired: 'A descrição do controlo de processo é obrigatória para o perigo {{hazard}} quando o controlo de processo é selecionado.'
+    },
+    hazardLabels: {
+      bio: 'Biológico',
+      chem: 'Químico',
+      phys: 'Físico',
+      allergen: 'Alergénio'
+    },
+    sectionTitles: {
+      'Product Description': 'Descreva o seu produto',
+      'Process Flow': 'Mapeie o seu processo',
+      'Prerequisite Programs': 'Estabeleça pré‑requisitos',
+      'Hazard Analysis': 'Analisar perigos',
+      'CCP Determination': 'Identificar pontos críticos',
+      'CCP Management': 'Gerir pontos críticos',
+      'Verification, Validation, Review & Records': 'Verificar e validar'
+    },
+    warnings: {
+      ingredientDetail: 'A identificação de perigos depende dos ingredientes declarados. Pouco detalhe pode omitir perigos.',
+      shelfLife: 'A vida útil não foi validada. Usar este rascunho sem validação pode ser inseguro.',
+      highRiskRte: 'Risco elevado — produto pronto a comer refrigerado/congelado. Associado a riscos microbiológicos graves (ex.: Listeria).',
+      vulnerableConsumers: 'Produtos para consumidores vulneráveis podem exigir controlos e validação adicionais.',
+      misuse: 'Risco aumentado — mau uso previsível. Deve ser considerado na análise de perigos.'
+    },
+    descriptionFallback: 'Responda com precisão para garantir a conformidade.'
+  },
+  de: {
+    validation: {
+      required: 'Dieses Feld ist erforderlich.',
+      selectOne: 'Bitte mindestens eine Option auswählen.',
+      selectYesNo: 'Bitte Ja oder Nein auswählen.',
+      noHazardsJustification: 'Bitte begründen, warum keine Gefahren vorliegen.',
+      processControlRequired: 'Eine Prozesskontrollbeschreibung ist für die Gefahr {{hazard}} erforderlich, wenn Prozesskontrolle gewählt ist.'
+    },
+    hazardLabels: {
+      bio: 'Biologisch',
+      chem: 'Chemisch',
+      phys: 'Physikalisch',
+      allergen: 'Allergen'
+    },
+    sectionTitles: {
+      'Product Description': 'Beschreiben Sie Ihr Produkt',
+      'Process Flow': 'Prozess abbilden',
+      'Prerequisite Programs': 'Voraussetzungen festlegen',
+      'Hazard Analysis': 'Gefahrenanalyse',
+      'CCP Determination': 'CCPs bestimmen',
+      'CCP Management': 'CCPs steuern',
+      'Verification, Validation, Review & Records': 'Verifizieren & validieren'
+    },
+    warnings: {
+      ingredientDetail: 'Die Gefahrenidentifikation basiert auf den angegebenen Zutaten. Zu wenig Details können Gefahren übersehen.',
+      shelfLife: 'Die Haltbarkeit wurde nicht validiert. Nutzung dieses Entwurfs ohne Validierung kann unsicher sein.',
+      highRiskRte: 'Hohes Risiko — gekühltes/gefrorenes verzehrfertiges Produkt. Häufige mikrobiologische Risiken (z. B. Listeria).',
+      vulnerableConsumers: 'Produkte für vulnerable Verbraucher erfordern ggf. zusätzliche Kontrollen und Validierung.',
+      misuse: 'Erhöhtes Risiko — vorhersehbarer Fehlgebrauch. Muss in der Gefahrenanalyse berücksichtigt werden.'
+    },
+    descriptionFallback: 'Bitte beantworten Sie die Fragen sorgfältig zur Einhaltung der Vorschriften.'
+  },
+  it: {
+    validation: {
+      required: 'Questo campo è obbligatorio.',
+      selectOne: 'Seleziona almeno un’opzione.',
+      selectYesNo: 'Seleziona Sì o No.',
+      noHazardsJustification: 'Fornisci una giustificazione per l’assenza di pericoli.',
+      processControlRequired: 'La descrizione del controllo di processo è obbligatoria per il pericolo {{hazard}} quando è selezionato il controllo di processo.'
+    },
+    hazardLabels: {
+      bio: 'Biologico',
+      chem: 'Chimico',
+      phys: 'Fisico',
+      allergen: 'Allergene'
+    },
+    sectionTitles: {
+      'Product Description': 'Descrivi il prodotto',
+      'Process Flow': 'Mappa il processo',
+      'Prerequisite Programs': 'Stabilisci i prerequisiti',
+      'Hazard Analysis': 'Analizza i pericoli',
+      'CCP Determination': 'Identifica i punti critici',
+      'CCP Management': 'Gestisci i punti critici',
+      'Verification, Validation, Review & Records': 'Verifica e valida'
+    },
+    warnings: {
+      ingredientDetail: 'L’identificazione dei pericoli dipende dagli ingredienti dichiarati. Pochi dettagli possono omettere pericoli.',
+      shelfLife: 'La shelf life non è stata validata. Usare questa bozza senza validazione può essere rischioso.',
+      highRiskRte: 'Alto rischio — prodotto pronto al consumo refrigerato/congelato. Rischi microbiologici seri (es. Listeria).',
+      vulnerableConsumers: 'Prodotti per consumatori vulnerabili possono richiedere controlli e validazioni aggiuntive.',
+      misuse: 'Rischio aumentato — uso improprio prevedibile. Da considerare nell’analisi dei pericoli.'
+    },
+    descriptionFallback: 'Rispondi con precisione per garantire la conformità.'
+  },
+  lt: {
+    validation: {
+      required: 'Šis laukas privalomas.',
+      selectOne: 'Pasirinkite bent vieną parinktį.',
+      selectYesNo: 'Pasirinkite Taip arba Ne.',
+      noHazardsJustification: 'Pateikite paaiškinimą, jei pavojų nėra.',
+      processControlRequired: 'Proceso kontrolės aprašymas privalomas, kai pasirinktas {{hazard}} pavojus ir proceso kontrolė.'
+    },
+    hazardLabels: {
+      bio: 'Biologinis',
+      chem: 'Cheminis',
+      phys: 'Fizinis',
+      allergen: 'Alergenas'
+    },
+    sectionTitles: {
+      'Product Description': 'Aprašykite produktą',
+      'Process Flow': 'Nubraižykite procesą',
+      'Prerequisite Programs': 'Nustatykite išankstines programas',
+      'Hazard Analysis': 'Analizuokite pavojus',
+      'CCP Determination': 'Nustatykite CCP',
+      'CCP Management': 'Valdykite CCP',
+      'Verification, Validation, Review & Records': 'Tikrinkite ir validuokite'
+    },
+    warnings: {
+      ingredientDetail: 'Pavojų identifikavimas priklauso nuo deklaruotų ingredientų. Trūkstant detalių, gali būti praleisti pavojai.',
+      shelfLife: 'Tinkamumo laikas nebuvo validuotas. Naudojant šį juodraštį be validavimo, gali kilti rizika.',
+      highRiskRte: 'Didelė rizika — atšaldytas/šaldytas paruoštas vartoti produktas. Dažnai siejamas su rimtais mikrobiologiniais pavojais.',
+      vulnerableConsumers: 'Produktams, skirtiems pažeidžiamiems vartotojams, gali reikėti papildomų kontrolės priemonių.',
+      misuse: 'Padidėjusi rizika — numatomas netinkamas naudojimas. Tai turi būti įvertinta pavojų analizėje.'
+    },
+    descriptionFallback: 'Atsakykite tiksliai, kad užtikrintumėte atitiktį.'
+  }
+};
