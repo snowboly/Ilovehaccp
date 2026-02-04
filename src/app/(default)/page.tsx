@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
-import HomeClient from './HomeClient';
-import JSONLD from '@/components/layout/JSONLD';
+import HomePage from '@/components/landing/HomePage';
 
 export const metadata: Metadata = {
   title: "iLoveHACCP | Free HACCP Plan Generator & Food Safety Tools",
@@ -16,23 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "iLoveHACCP",
-    "url": "https://www.ilovehaccp.com",
-    "logo": "https://www.ilovehaccp.com/icon.svg",
-    "description": "Professional HACCP plan generator for food businesses.",
-    "sameAs": [
-      "https://twitter.com/ilovehaccp", 
-      "https://linkedin.com/company/ilovehaccp"
-    ]
-  };
-
-  return (
-    <>
-      <JSONLD data={structuredData} />
-      <HomeClient />
-    </>
-  );
+  return <HomePage />;
 }

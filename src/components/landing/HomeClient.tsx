@@ -14,7 +14,6 @@ import SampleDownload from '@/components/landing/SampleDownload';
 import FounderNote from '@/components/landing/FounderNote';
 import TrustSection from '@/components/landing/TrustSection';
 import MiniBuilderDemoCard from '@/components/landing/MiniBuilderDemoCard';
-import JSONLD from '@/components/layout/JSONLD';
 import { useLanguage } from '@/lib/i18n';
 
 export default function Home() {
