@@ -91,14 +91,12 @@ function getHeadings(html: string) {
 function injectHeaderIds(html: string) {
   return html.replace(/<(h[23])>(.*?)<\/h[23]>/g, (match, tag, text) => {
     const id = text.replace(/<[^>]*>?/gm, '').toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-
-    // Modern Editorial style: bold sans-serif, no borders, clean spacing
-    const style = tag === 'h2'
-      ? 'margin-top: 2.5rem; margin-bottom: 1rem; font-family: system-ui, -apple-system, sans-serif; font-weight: 700; font-size: 1.5rem; color: #0f172a; letter-spacing: -0.025em;'
-      : 'margin-top: 2rem; margin-bottom: 0.75rem; font-family: system-ui, -apple-system, sans-serif; font-weight: 600; font-size: 1.125rem; color: #1e293b;';
-
-    return `<${tag} id="${id}" style="${style}">${text}</${tag}>`;
+    return `<${tag} id="${id}">${text}</${tag}>`;
   });
+}
+
+function normalizeContent(html: string) {
+  return html.replace(/\\'/g, "'").replace(/\\"/g, '"');
 }
 
 function fixWhatYoullLearn(html: string) {
@@ -330,11 +328,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   if (!article) notFound();
 
-  const headings = getHeadings(article.content);
-  const processedContent = transformBlockquotes(highlightListTerms(injectHeaderIds(fixWhatYoullLearn(removeBoilerplate(article.content)))));
-  const expert = getExpertFromContent(article.content);
+  const normalizedContent = normalizeContent(article.content);
+  const headings = getHeadings(normalizedContent);
+  const processedContent = transformBlockquotes(highlightListTerms(injectHeaderIds(fixWhatYoullLearn(removeBoilerplate(normalizedContent)))));
+  const expert = getExpertFromContent(normalizedContent);
   const relatedArticles = getRelatedArticles(slug, article.category, 3);
-  const faqs = generateFAQs(article.title, article.content);
+  const faqs = generateFAQs(article.title, normalizedContent);
 
   // Calculate dateModified (use published date + 30 days as last review, or current date if recent)
   const publishedDate = article.published_at || article.publishedAt;
