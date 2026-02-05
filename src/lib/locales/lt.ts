@@ -513,6 +513,74 @@ const dictionary = {
           ]
         },
         note: "Sukurkite kartą ir atnaujinkite, kai keičiasi meniu."
+      },
+      template: {
+        metaTitle: "HACCP šablonas | Word ir PDF eksportas | iLoveHACCP",
+        metaDescription: "Sukurkite HACCP šabloną savo verslui ir eksportuokite į Word arba PDF. Pritaikyta ES ir JK atitikčiai.",
+        hero: {
+          eyebrow: "Šablonų generatorius",
+          title: "HACCP šablonas",
+          subtitle: "Sukurkite praktinį HACCP šabloną savo veiklai ir eksportuokite į Word bei PDF."
+        },
+        ctas: {
+          primary: { label: "Kurti šabloną", href: "/builder" },
+          secondary: { label: "Peržiūrėti pavyzdinį PDF", href: "/sample-haccp-plan-pdf" }
+        },
+        highlights: {
+          title: "Ką gaunate",
+          items: [
+            { title: "Redaguojama struktūra", description: "Atnaujinkite rizikas, CCP ir SOP keičiantis procesams." },
+            { title: "Atitiktis", description: "Sudaryta pagal EC 852/2004 ir JK higienos lūkesčius." },
+            { title: "Paruošta auditui", description: "Aiškios skiltys įrašams, stebėsenai ir korekciniams veiksmams." }
+          ]
+        },
+        checklist: {
+          title: "Geriausiai tinka",
+          items: [
+            "Pasiruošimui patikroms",
+            "Maisto saugos dokumentacijos standartizavimui",
+            "HACCP versijų valdymui",
+            "Plano dalijimuisi su komanda"
+          ]
+        },
+        note: "Reikia teisinių gairių? Žr. ES/JK reikalavimus."
+      },
+      euUkRequirements: {
+        metaTitle: "ES ir JK HACCP reikalavimai | Reglamentas 852/2004",
+        metaDescription: "Supraskite ES ir JK HACCP reikalavimus pagal Reglamentą 852/2004 ir ko tikisi inspektoriai.",
+        hero: {
+          eyebrow: "Reglamentavimo gidas",
+          title: "ES ir JK HACCP reikalavimai",
+          subtitle: "Praktinė 852/2004 reglamento ir patikrose reikalaujamų įrašų apžvalga."
+        },
+        ctas: {
+          primary: { label: "Kurti atitinkantį planą", href: "/builder" },
+          secondary: { label: "Peržiūrėti HACCP šabloną", href: "/haccp-template" }
+        },
+        highlights: {
+          title: "Gide aptariama",
+          items: [
+            { title: "7 HACCP principai", description: "Rizikų analizė, CCP, ribos, stebėsena, korekcijos, patikra, dokumentai." },
+            { title: "Patikrų lūkesčiai", description: "Ką dažniausiai tikrina vietos institucijos." },
+            { title: "Praktinė atitiktis", description: "Kaip dokumentaciją išlaikyti aktualią ir proporcingą." }
+          ]
+        },
+        checklist: {
+          title: "Turėkite paruošta",
+          items: [
+            "Temperatūrų stebėsenos žurnalus",
+            "Valymo ir dezinfekcijos įrašus",
+            "Alergenų ir kryžminės taršos kontrolę",
+            "Mokymų ir peržiūrų įrodymus"
+          ]
+        },
+        note: "Šis puslapis informacinis ir nepakeičia profesionalios teisinės konsultacijos."
+      },
+      faqs: {
+        metaTitle: "HACCP DUK | Atsakymai apie maisto saugą",
+        metaDescription: "Atsakymai į dažniausius HACCP klausimus apie atitiktį, patikras, dokumentaciją ir platformos naudojimą.",
+        title: "Dažniausiai užduodami klausimai",
+        subtitle: "Dažni klausimai apie HACCP atitiktį, mūsų kūrimo įrankį ir maisto saugos dokumentaciją."
       }
     },
     pdf: {

@@ -120,7 +120,7 @@ export const faqs: FAQItem[] = [
     a: "Email support@ilovehaccp.com for general inquiries, technical issues, or privacy requests. We aim to respond within 1-2 business days."
   },
   {
-    q: "What languages is the platform available in?",
-    a: "The interface and generated plans are available in English, Portuguese, Spanish, and French. Select your language from the dropdown in the navigation bar."
+    q: "Which languages are available?",
+    a: "Our marketing pages are available in English, German, Italian, and Lithuanian. The HACCP builder is currently in English, but you can use your browser's translation feature, and Word exports can be translated locally if needed."
   }
 ];
