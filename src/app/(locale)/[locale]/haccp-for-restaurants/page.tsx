@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation';
 import { buildLocaleMetadata } from '@/lib/seo';
 import { withLocalePrefix } from '@/lib/locale-routing';
 
-export async function generateMetadata({ params }: { params: { locale: string } }) {
-  const { locale } = params;
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const language = locale as Language;
   if (!SUPPORTED_LOCALES.includes(language)) {
     return {};
@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   });
 }
 
-export default async function HaccpForRestaurantsLocalePage({ params }: { params: { locale: string } }) {
-  const { locale } = params;
+export default async function HaccpForRestaurantsLocalePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const language = locale as Language;
   if (!SUPPORTED_LOCALES.includes(language)) {
     notFound();
