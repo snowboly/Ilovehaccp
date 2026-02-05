@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { replaceLocaleInPath, isSupportedLocale } from '@/lib/locale-routing';
 import { type Language } from '@/lib/locales';
 
-const MARKETING_PATH_REGEX = /^(?:\/(?:en|de|it|lt)(?:$|\/haccp-[^/]+)|\/)$/;
+const MARKETING_PATH_REGEX = /^(?:\/(?:en|de|it|lt)(?:$|\/(?:haccp-[^/]+|haccp-template|eu-uk-requirements|faqs))|\/)$/;
 
 export default function LanguageSelector() {
   const router = useRouter();
