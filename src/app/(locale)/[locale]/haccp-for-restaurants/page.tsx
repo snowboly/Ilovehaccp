@@ -5,14 +5,15 @@ import { buildLocaleMetadata } from '@/lib/seo';
 import { withLocalePrefix } from '@/lib/locale-routing';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
-  const locale = params.locale as Language;
-  if (!SUPPORTED_LOCALES.includes(locale)) {
+  const { locale } = params;
+  const language = locale as Language;
+  if (!SUPPORTED_LOCALES.includes(language)) {
     return {};
   }
-  const dict = await getDictionary(locale);
+  const dict = await getDictionary(language);
   const content = dict.marketing.restaurants;
   return buildLocaleMetadata({
-    locale,
+    locale: language,
     pathname: '/haccp-for-restaurants',
     title: content.metaTitle,
     description: content.metaDescription,
@@ -20,23 +21,24 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 }
 
 export default async function HaccpForRestaurantsLocalePage({ params }: { params: { locale: string } }) {
-  const locale = params.locale as Language;
-  if (!SUPPORTED_LOCALES.includes(locale)) {
+  const { locale } = params;
+  const language = locale as Language;
+  if (!SUPPORTED_LOCALES.includes(language)) {
     notFound();
   }
-  const dict = await getDictionary(locale);
+  const dict = await getDictionary(language);
   const content = dict.marketing.restaurants;
   const localizedContent = {
     ...content,
     ctas: {
       primary: {
         ...content.ctas.primary,
-        href: withLocalePrefix(content.ctas.primary.href, locale),
+        href: withLocalePrefix(content.ctas.primary.href, language),
       },
       secondary: content.ctas.secondary
         ? {
             ...content.ctas.secondary,
-            href: withLocalePrefix(content.ctas.secondary.href, locale),
+            href: withLocalePrefix(content.ctas.secondary.href, language),
           }
         : undefined,
     },
