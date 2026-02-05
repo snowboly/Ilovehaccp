@@ -7,9 +7,9 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   safelist: [
-    // Ensure prose utilities are never purged, even if not explicitly matched
+    // Ensure prose utilities are never purged, including all variants (md:, lg:, hover:, etc.)
     { pattern: /^prose/ },
-    { pattern: /^prose-(p|h[234]|ul|ol|li|img|blockquote|code|hr|table|th|td|strong|a)(:.*)?/ },
+    { pattern: /^(hover:|focus:|md:|lg:|xl:|2xl:)?prose-(p|h[234]|ul|ol|li|img|blockquote|code|hr|table|th|td|strong|a)(:.*)?/ },
   ],
   theme: {
     extend: {
