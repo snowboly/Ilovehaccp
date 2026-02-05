@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { replaceLocaleInPath, isSupportedLocale } from '@/lib/locale-routing';
 import { type Language } from '@/lib/locales';
 
-const MARKETING_PATH_REGEX = /^(?:\/(?:en|de|it|lt)(?:$|\/(?:haccp-[^/]+|haccp-template|eu-uk-requirements|faqs))|\/)$/;
+const MARKETING_PATH_REGEX = /^(?:\/(?:en|de|it|lt|pt|es|fr)(?:$|\/(?:haccp-[^/]+|haccp-template|eu-uk-requirements|faqs))|\/)$/;
 
 export default function LanguageSelector() {
   const router = useRouter();
@@ -37,6 +37,9 @@ export default function LanguageSelector() {
         <button onClick={() => handleLocaleChange('de')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇩🇪 Deutsch</button>
         <button onClick={() => handleLocaleChange('it')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇮🇹 Italiano</button>
         <button onClick={() => handleLocaleChange('lt')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇱🇹 Lietuvių</button>
+        <button onClick={() => handleLocaleChange('pt')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇵🇹 Português</button>
+        <button onClick={() => handleLocaleChange('es')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇪🇸 Español</button>
+        <button onClick={() => handleLocaleChange('fr')} className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2">🇫🇷 Français</button>
       </div>
     </div>
   );
