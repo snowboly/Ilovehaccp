@@ -513,6 +513,74 @@ const dictionary = {
           ]
         },
         note: "Einmal erstellen und bei Menüänderungen aktuell halten."
+      },
+      template: {
+        metaTitle: "HACCP-Vorlage | Word- & PDF-Export | iLoveHACCP",
+        metaDescription: "Erstellen Sie eine HACCP-Vorlage für Ihren Betrieb und exportieren Sie sie als Word oder PDF. Für UK- und EU-Compliance.",
+        hero: {
+          eyebrow: "Vorlagen-Generator",
+          title: "HACCP-Vorlage",
+          subtitle: "Erstellen Sie eine praktische HACCP-Vorlage für Ihren Betrieb und exportieren Sie sie in Word und PDF."
+        },
+        ctas: {
+          primary: { label: "Vorlage erstellen", href: "/builder" },
+          secondary: { label: "Beispiel-PDF ansehen", href: "/sample-haccp-plan-pdf" }
+        },
+        highlights: {
+          title: "Was enthalten ist",
+          items: [
+            { title: "Bearbeitbare Struktur", description: "Aktualisieren Sie Gefahren, CCPs und SOPs bei Prozessänderungen." },
+            { title: "Compliance-orientiert", description: "Ausgerichtet an EC 852/2004 und UK-Hygieneanforderungen." },
+            { title: "Audit-bereit", description: "Klare Abschnitte für Nachweise, Überwachung und Korrekturmaßnahmen." }
+          ]
+        },
+        checklist: {
+          title: "Ideal für",
+          items: [
+            "Vorbereitung auf Inspektionen",
+            "Standardisierte Lebensmittelsicherheitsdokumentation",
+            "Versionierte HACCP-Nachweise",
+            "Teamweite Abstimmung"
+          ]
+        },
+        note: "Rechtlicher Kontext: EU/UK-Anforderungen ansehen."
+      },
+      euUkRequirements: {
+        metaTitle: "EU- & UK-HACCP-Anforderungen | Verordnung 852/2004",
+        metaDescription: "Verstehen Sie die HACCP-Anforderungen in EU und UK nach Verordnung 852/2004 und was Inspektoren erwarten.",
+        hero: {
+          eyebrow: "Regulatorischer Leitfaden",
+          title: "EU- & UK-HACCP-Anforderungen",
+          subtitle: "Praktischer Überblick über Verordnung 852/2004 und die Nachweise, die bei Kontrollen erwartet werden."
+        },
+        ctas: {
+          primary: { label: "Konformen Plan erstellen", href: "/builder" },
+          secondary: { label: "HACCP-Vorlage ansehen", href: "/haccp-template" }
+        },
+        highlights: {
+          title: "Inhalte dieses Leitfadens",
+          items: [
+            { title: "7 HACCP-Grundsätze", description: "Gefahrenanalyse, CCPs, Grenzwerte, Überwachung, Korrektur, Verifizierung, Dokumentation." },
+            { title: "Inspektionsfokus", description: "Was EHOs und Behörden vor Ort typischerweise prüfen." },
+            { title: "Praktische Compliance", description: "Wie Sie HACCP-Dokumentation aktuell und verhältnismäßig halten." }
+          ]
+        },
+        checklist: {
+          title: "Diese Unterlagen bereithalten",
+          items: [
+            "Temperaturprotokolle",
+            "Reinigungs- und Desinfektionsnachweise",
+            "Allergen- und Kreuzkontaminationskontrollen",
+            "Schulungs- und Review-Nachweise"
+          ]
+        },
+        note: "Diese Seite dient nur zur Information und ersetzt keine Rechtsberatung."
+      },
+      faqs: {
+        metaTitle: "HACCP-FAQs | Antworten zur Lebensmittelsicherheit",
+        metaDescription: "Antworten auf häufige HACCP-Fragen zu Compliance, Inspektionen, Dokumentation und Plattformnutzung.",
+        title: "Häufig gestellte Fragen",
+        subtitle: "Häufige Fragen zu HACCP-Compliance, unserem Builder und der Lebensmittelsicherheitsdokumentation."
       }
     },
     pdf: {

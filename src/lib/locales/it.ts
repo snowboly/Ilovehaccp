@@ -513,6 +513,74 @@ const dictionary = {
           ]
         },
         note: "Genera una volta e aggiorna quando il menu cambia."
+      },
+      template: {
+        metaTitle: "Modello HACCP | Export Word e PDF | iLoveHACCP",
+        metaDescription: "Crea un modello HACCP per la tua attività e esportalo in Word o PDF. Pensato per conformità UE e Regno Unito.",
+        hero: {
+          eyebrow: "Generatore di modelli",
+          title: "Modello HACCP",
+          subtitle: "Crea un modello HACCP pratico per la tua attività ed esportalo in Word e PDF."
+        },
+        ctas: {
+          primary: { label: "Crea il mio modello", href: "/builder" },
+          secondary: { label: "Vedi PDF di esempio", href: "/sample-haccp-plan-pdf" }
+        },
+        highlights: {
+          title: "Cosa ottieni",
+          items: [
+            { title: "Struttura modificabile", description: "Aggiorna pericoli, CCP e SOP quando il processo cambia." },
+            { title: "Orientato alla conformità", description: "Allineato alla CE 852/2004 e ai requisiti UK." },
+            { title: "Pronto per audit", description: "Sezioni chiare per registri, monitoraggi e azioni correttive." }
+          ]
+        },
+        checklist: {
+          title: "Ideale per",
+          items: [
+            "Prepararsi alle ispezioni",
+            "Standardizzare la documentazione di sicurezza alimentare",
+            "Mantenere versioni del piano HACCP",
+            "Condividere il piano con il team"
+          ]
+        },
+        note: "Serve contesto normativo? Vedi i requisiti UE/UK."
+      },
+      euUkRequirements: {
+        metaTitle: "Requisiti HACCP UE e UK | Regolamento 852/2004",
+        metaDescription: "Comprendi i requisiti HACCP UE e UK secondo il Regolamento 852/2004 e cosa si aspettano gli ispettori.",
+        hero: {
+          eyebrow: "Guida normativa",
+          title: "Requisiti HACCP UE e UK",
+          subtitle: "Panoramica pratica del Regolamento 852/2004 e dei registri richiesti durante le ispezioni."
+        },
+        ctas: {
+          primary: { label: "Crea un piano conforme", href: "/builder" },
+          secondary: { label: "Vedi modello HACCP", href: "/haccp-template" }
+        },
+        highlights: {
+          title: "Cosa copre la guida",
+          items: [
+            { title: "7 principi HACCP", description: "Analisi dei pericoli, CCP, limiti, monitoraggio, azioni correttive, verifica, registrazioni." },
+            { title: "Aspettative ispettive", description: "Cosa controllano di solito ASL e autorità locali." },
+            { title: "Conformità pratica", description: "Come mantenere la documentazione HACCP proporzionata e aggiornata." }
+          ]
+        },
+        checklist: {
+          title: "Documenti da tenere pronti",
+          items: [
+            "Registri di monitoraggio temperature",
+            "Registri di pulizia e sanificazione",
+            "Controlli allergeni e contaminazione crociata",
+            "Evidenze di formazione e riesame"
+          ]
+        },
+        note: "Questa pagina è informativa e non sostituisce la consulenza legale professionale."
+      },
+      faqs: {
+        metaTitle: "FAQ HACCP | Risposte su sicurezza alimentare",
+        metaDescription: "Risposte alle domande più comuni su HACCP: conformità, ispezioni, documentazione e uso della piattaforma.",
+        title: "Domande frequenti",
+        subtitle: "Domande comuni su conformità HACCP, sul nostro builder e sulla documentazione di sicurezza alimentare."
       }
     },
     pdf: {
