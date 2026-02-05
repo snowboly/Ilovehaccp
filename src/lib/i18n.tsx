@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Language, SUPPORTED_LOCALES, getDictionary } from './locales';
+import { Language, getDictionary } from './locales';
 
 interface LanguageContextType {
   language: Language;
@@ -23,14 +23,6 @@ export function LanguageProvider({
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [dictionary, setDictionary] = useState<any | null>(initialDictionary ?? null);
 
-  // Load language from localStorage on client mount
-  useEffect(() => {
-    const savedLang = localStorage.getItem('app-language') as Language;
-    if (savedLang && SUPPORTED_LOCALES.includes(savedLang)) {
-      setTimeout(() => setLanguage(savedLang), 0);
-    }
-  }, []);
-
   useEffect(() => {
     let isActive = true;
     getDictionary(language).then((dict) => {
@@ -45,7 +37,6 @@ export function LanguageProvider({
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang);
-    localStorage.setItem('app-language', lang);
   };
 
   // Helper to get nested values (e.g., 'nav.builder')
