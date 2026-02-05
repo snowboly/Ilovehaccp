@@ -119,23 +119,26 @@ export default function ArticleLayout({
                   className="prose prose-slate max-w-none
                     prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-slate-700 prose-p:my-3 md:prose-p:my-4
                     prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900
-                    prose-h2:text-2xl prose-h2:mt-7 md:prose-h2:mt-8 prose-h2:mb-2 prose-h2:border-0
-                    prose-h3:text-xl prose-h3:mt-5 md:prose-h3:mt-6 prose-h3:mb-1
+                    prose-h2:text-2xl prose-h2:mt-7 md:prose-h2:mt-8 prose-h2:mb-2 prose-h2:border-0 prose-h2:scroll-mt-24
+                    prose-h3:text-xl prose-h3:mt-5 md:prose-h3:mt-6 prose-h3:mb-1 prose-h3:scroll-mt-24
                     prose-h4:text-lg prose-h4:mt-4 prose-h4:mb-1 prose-h4:font-semibold
                     prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:font-medium
                     prose-ul:my-4 prose-ul:pl-0 prose-ul:list-none prose-ul:space-y-1
                     prose-li:text-[17px] prose-li:leading-[1.8] prose-li:text-slate-700 prose-li:pl-6 prose-li:relative
                     prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[0.65em] prose-li:before:w-1.5 prose-li:before:h-1.5 prose-li:before:bg-blue-500 prose-li:before:rounded-full
                     prose-blockquote:border-l-4 prose-blockquote:border-slate-300 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-600 prose-blockquote:my-4
-                    prose-img:rounded-xl prose-img:shadow-sm prose-img:my-6
+                    prose-img:rounded-xl prose-img:shadow-sm prose-img:my-5 md:prose-img:my-6
                     prose-strong:font-semibold prose-strong:text-slate-900
                     prose-code:text-sm prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-slate-800
-                    prose-hr:my-6 prose-hr:border-slate-200"
+                    prose-hr:my-6 prose-hr:border-slate-200
+                    prose-first:mt-0 prose-last:mb-0"
                   dangerouslySetInnerHTML={{ __html: content }}
                 />
 
-                {/* Author Card */}
-                <div className="mt-12 p-5 bg-slate-50 rounded-xl border border-slate-100">
+                {/* Post-Content Sections: Author, FAQ, Related, CTA */}
+                <div className="mt-10 space-y-8">
+                  {/* Author Card */}
+                  <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
                   <div className="flex items-start gap-4">
                     <img
                       src={expert.image}
@@ -163,9 +166,9 @@ export default function ArticleLayout({
                   )}
                 </div>
 
-                {/* FAQ Section */}
-                {faqs.length > 0 && (
-                  <div className="mt-16">
+                  {/* FAQ Section */}
+                  {faqs.length > 0 && (
+                    <div>
                     <h2 className="text-2xl font-bold text-slate-900 mb-4">
                       Frequently Asked Questions
                     </h2>
@@ -199,12 +202,12 @@ export default function ArticleLayout({
                         </details>
                       ))}
                     </div>
-                  </div>
-                )}
+                    </div>
+                  )}
 
-                {/* Related Articles */}
-                {relatedArticles.length > 0 && (
-                  <div className="mt-16">
+                  {/* Related Articles */}
+                  {relatedArticles.length > 0 && (
+                    <div>
                     <h2 className="text-2xl font-bold text-slate-900 mb-4">
                       Related Articles
                     </h2>
@@ -233,11 +236,11 @@ export default function ArticleLayout({
                         </Link>
                       ))}
                     </div>
-                  </div>
-                )}
+                    </div>
+                  )}
 
-                {/* CTA Section */}
-                <div className="mt-8 p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                  {/* CTA Section */}
+                  <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
                   <h3 className="text-lg font-bold text-slate-900 mb-2">
                     Ready to build your HACCP plan?
                   </h3>
@@ -264,6 +267,7 @@ export default function ArticleLayout({
                       />
                     </svg>
                   </Link>
+                  </div>
                 </div>
               </div>
 
