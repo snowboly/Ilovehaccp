@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import ReadingProgress from '@/components/resources/ReadingProgress';
+import { ArticleHero } from '@/components/resources/ArticleHero';
+import { ArticleTableOfContents } from '@/components/resources/ArticleTableOfContents';
 
 interface Heading {
   id: string;
@@ -61,8 +63,6 @@ export default function ArticleLayout({
   showBreadcrumb = true,
   breadcrumbCategory,
 }: ArticleLayoutProps) {
-  const h2Headings = headings.filter(h => h.level === 2);
-
   return (
     <div className="min-h-screen bg-white">
       <ReadingProgress />
@@ -110,59 +110,32 @@ export default function ArticleLayout({
             <div className="flex flex-col-reverse lg:flex-row gap-8 items-start">
               {/* Main Content Column */}
               <div className="flex-1 min-w-0 max-w-3xl">
-                {/* Hero image - Mobile */}
-                {article.image && (
-                  <figure className="mb-10 lg:hidden">
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="w-full rounded-xl shadow-sm"
-                    />
-                  </figure>
-                )}
-
-                {/* Table of Contents - Mobile */}
-                {h2Headings.length > 0 && (
-                  <div className="lg:hidden mb-8 p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                    <div className="font-semibold text-slate-900 text-sm mb-3">
-                      In this article
-                    </div>
-                    <nav className="text-sm space-y-2">
-                      {h2Headings.map((h, i) => (
-                        <a
-                          key={i}
-                          href={`#${h.id}`}
-                          className="block text-slate-600 hover:text-blue-600 transition-colors"
-                        >
-                          {h.text}
-                        </a>
-                      ))}
-                    </nav>
-                  </div>
-                )}
+                {/* Hero image & Table of Contents - Mobile */}
+                <ArticleHero image={article.image} title={article.title} layout="mobile" />
+                <ArticleTableOfContents headings={headings} layout="mobile" />
 
                 {/* Article Content */}
                 <div
                   className="prose prose-slate max-w-none
-                    prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-slate-700 prose-p:my-5
+                    prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-slate-700 prose-p:my-3 md:prose-p:my-4
                     prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900
-                    prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:border-0
-                    prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-                    prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-2 prose-h4:font-semibold
+                    prose-h2:text-2xl prose-h2:mt-7 md:prose-h2:mt-8 prose-h2:mb-2 prose-h2:border-0
+                    prose-h3:text-xl prose-h3:mt-5 md:prose-h3:mt-6 prose-h3:mb-1
+                    prose-h4:text-lg prose-h4:mt-4 prose-h4:mb-1 prose-h4:font-semibold
                     prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:font-medium
-                    prose-ul:my-6 prose-ul:pl-0 prose-ul:list-none
-                    prose-li:text-[17px] prose-li:leading-[1.8] prose-li:text-slate-700 prose-li:my-2 prose-li:pl-6 prose-li:relative
-                    prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[0.7em] prose-li:before:w-1.5 prose-li:before:h-1.5 prose-li:before:bg-blue-500 prose-li:before:rounded-full
-                    prose-ol:my-6 prose-ol:pl-0 prose-ol:list-none prose-ol:counter-reset-[item]
-                    prose-img:rounded-xl prose-img:shadow-sm prose-img:my-8
+                    prose-ul:my-4 prose-ul:pl-0 prose-ul:list-none prose-ul:space-y-1
+                    prose-li:text-[17px] prose-li:leading-[1.8] prose-li:text-slate-700 prose-li:pl-6 prose-li:relative
+                    prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[0.65em] prose-li:before:w-1.5 prose-li:before:h-1.5 prose-li:before:bg-blue-500 prose-li:before:rounded-full
+                    prose-blockquote:border-l-4 prose-blockquote:border-slate-300 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-600 prose-blockquote:my-4
+                    prose-img:rounded-xl prose-img:shadow-sm prose-img:my-6
                     prose-strong:font-semibold prose-strong:text-slate-900
                     prose-code:text-sm prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-slate-800
-                    prose-hr:my-10 prose-hr:border-slate-200"
+                    prose-hr:my-6 prose-hr:border-slate-200"
                   dangerouslySetInnerHTML={{ __html: content }}
                 />
 
                 {/* Author Card */}
-                <div className="mt-16 p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="mt-12 p-5 bg-slate-50 rounded-xl border border-slate-100">
                   <div className="flex items-start gap-4">
                     <img
                       src={expert.image}
@@ -193,16 +166,16 @@ export default function ArticleLayout({
                 {/* FAQ Section */}
                 {faqs.length > 0 && (
                   <div className="mt-16">
-                    <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-4">
                       Frequently Asked Questions
                     </h2>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {faqs.map((faq, i) => (
                         <details
                           key={i}
                           className="group bg-slate-50 rounded-lg border border-slate-100"
                         >
-                          <summary className="flex items-center justify-between p-4 cursor-pointer list-none">
+                          <summary className="flex items-center justify-between px-4 py-3 cursor-pointer list-none">
                             <span className="font-medium text-slate-900 pr-4">
                               {faq.question}
                             </span>
@@ -220,7 +193,7 @@ export default function ArticleLayout({
                               />
                             </svg>
                           </summary>
-                          <div className="px-4 pb-4 text-slate-600 text-[15px] leading-relaxed">
+                          <div className="px-4 py-3 text-slate-600 text-[15px] leading-relaxed border-t border-slate-200">
                             {faq.answer}
                           </div>
                         </details>
@@ -232,15 +205,15 @@ export default function ArticleLayout({
                 {/* Related Articles */}
                 {relatedArticles.length > 0 && (
                   <div className="mt-16">
-                    <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-4">
                       Related Articles
                     </h2>
-                    <div className="grid gap-4">
+                    <div className="grid gap-3">
                       {relatedArticles.map((related) => (
                         <Link
                           key={related.slug}
                           href={`/resources/${related.slug}`}
-                          className="group flex gap-4 p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-colors"
+                          className="group flex gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-colors"
                         >
                           {related.image && (
                             <img
@@ -264,7 +237,7 @@ export default function ArticleLayout({
                 )}
 
                 {/* CTA Section */}
-                <div className="mt-10 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                <div className="mt-8 p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
                   <h3 className="text-lg font-bold text-slate-900 mb-2">
                     Ready to build your HACCP plan?
                   </h3>
@@ -297,32 +270,9 @@ export default function ArticleLayout({
               {/* Desktop Sidebar */}
               <aside className="hidden lg:block w-[280px] shrink-0">
                 <div className="sticky top-8 space-y-6">
-                  {/* Hero image - Desktop */}
-                  {article.image && (
-                    <div className="rounded-xl overflow-hidden shadow-sm">
-                      <img src={article.image} alt={article.title} className="w-full" />
-                    </div>
-                  )}
-
-                  {/* Table of Contents - Desktop */}
-                  {h2Headings.length > 0 && (
-                    <div className="bg-slate-50 border border-slate-100 p-5 rounded-xl">
-                      <div className="font-semibold text-slate-900 text-sm mb-4">
-                        In this article
-                      </div>
-                      <nav className="space-y-2 max-h-[50vh] overflow-y-auto custom-scrollbar pr-2">
-                        {h2Headings.map((h, i) => (
-                          <a
-                            key={i}
-                            href={`#${h.id}`}
-                            className="block text-sm text-slate-600 hover:text-blue-600 transition-colors py-1 border-l-2 border-transparent hover:border-blue-600 pl-3 -ml-px"
-                          >
-                            {h.text}
-                          </a>
-                        ))}
-                      </nav>
-                    </div>
-                  )}
+                  {/* Hero image & Table of Contents - Desktop */}
+                  <ArticleHero image={article.image} title={article.title} layout="desktop" />
+                  <ArticleTableOfContents headings={headings} layout="desktop" />
 
                   {/* Related Articles Sidebar */}
                   {relatedArticles.length > 0 && (
