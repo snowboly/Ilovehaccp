@@ -119,8 +119,8 @@ export default function ArticleLayout({
                   className="prose prose-slate max-w-none
                     prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-slate-700 prose-p:my-3 md:prose-p:my-4
                     prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900
-                    prose-h2:text-2xl prose-h2:mt-7 md:prose-h2:mt-8 prose-h2:mb-2 prose-h2:border-0 prose-h2:scroll-mt-24
-                    prose-h3:text-xl prose-h3:mt-5 md:prose-h3:mt-6 prose-h3:mb-1 prose-h3:scroll-mt-24
+                    prose-h2:text-2xl prose-h2:mt-7 md:prose-h2:mt-8 prose-h2:mb-2 prose-h2:border-0
+                    prose-h3:text-xl prose-h3:mt-5 md:prose-h3:mt-6 prose-h3:mb-1
                     prose-h4:text-lg prose-h4:mt-4 prose-h4:mb-1 prose-h4:font-semibold
                     prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:font-medium
                     prose-ul:my-4 prose-ul:pl-0 prose-ul:list-none prose-ul:space-y-1
@@ -131,7 +131,7 @@ export default function ArticleLayout({
                     prose-strong:font-semibold prose-strong:text-slate-900
                     prose-code:text-sm prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-slate-800
                     prose-hr:my-6 prose-hr:border-slate-200
-                    prose-first:mt-0 prose-last:mb-0"
+                    prose-[&>:first-child]:mt-0 prose-[&>:last-child]:mb-0"
                   dangerouslySetInnerHTML={{ __html: content }}
                 />
 
