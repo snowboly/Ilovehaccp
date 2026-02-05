@@ -117,15 +117,13 @@ export default function ArticleLayout({
                 {/* Article Content */}
                 <div
                   className="prose prose-slate max-w-none
-                    prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-slate-700 prose-p:my-3 md:prose-p:my-4
+                    prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-slate-700 prose-p:my-4 md:prose-p:my-6
                     prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900
-                    prose-h2:text-2xl prose-h2:mt-7 md:prose-h2:mt-8 prose-h2:mb-2 prose-h2:border-0
-                    prose-h3:text-xl prose-h3:mt-5 md:prose-h3:mt-6 prose-h3:mb-1
-                    prose-h4:text-lg prose-h4:mt-4 prose-h4:mb-1 prose-h4:font-semibold
+                    prose-h2:text-2xl prose-h2:mt-7 md:prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-0
+                    prose-h3:text-xl prose-h3:mt-5 md:prose-h3:mt-6 prose-h3:mb-3
+                    prose-h4:text-lg prose-h4:mt-4 prose-h4:mb-2 prose-h4:font-semibold
                     prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:font-medium
-                    prose-ul:my-4 prose-ul:pl-0 prose-ul:list-none prose-ul:space-y-1
-                    prose-li:text-[17px] prose-li:leading-[1.8] prose-li:text-slate-700 prose-li:pl-6 prose-li:relative
-                    prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[0.65em] prose-li:before:w-1.5 prose-li:before:h-1.5 prose-li:before:bg-blue-500 prose-li:before:rounded-full
+                    prose-ul:my-6 prose-ol:my-6 prose-li:my-2
                     prose-blockquote:border-l-4 prose-blockquote:border-slate-300 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-600 prose-blockquote:my-4
                     prose-img:rounded-xl prose-img:shadow-sm prose-img:my-5 md:prose-img:my-6
                     prose-strong:font-semibold prose-strong:text-slate-900

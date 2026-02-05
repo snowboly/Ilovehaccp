@@ -330,13 +330,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const normalizedContent = normalizeContent(article.content);
   const headings = getHeadings(normalizedContent);
   const processedContent = transformBlockquotes(highlightListTerms(injectHeaderIds(fixWhatYoullLearn(removeBoilerplate(normalizedContent)))));
-
-  // Debug: inspect content structure
-  console.log('=== ARTICLE CONTENT DEBUG ===');
-  console.log('First 1500 chars of processedContent:');
-  console.log(processedContent.slice(0, 1500));
-  console.log('=== END DEBUG ===');
-
   const expert = getExpertFromContent(normalizedContent);
   const relatedArticles = getRelatedArticles(slug, article.category, 3);
   const faqs = generateFAQs(article.title, normalizedContent);
