@@ -5,6 +5,9 @@ const LOCALIZED_PATHS = new Set([
   '/haccp-plan-word-docx',
   '/haccp-plan-example-pdf',
   '/haccp-for-restaurants',
+  '/haccp-template',
+  '/eu-uk-requirements',
+  '/faqs',
 ]);
 
 export const isSupportedLocale = (value?: string): value is Language =>
@@ -15,6 +18,9 @@ export const withLocalePrefix = (path: string, locale: Language) => {
     return path;
   }
   const normalized = path.startsWith('/') ? path : `/${path}`;
+  if (!LOCALIZED_PATHS.has(normalized)) {
+    return normalized;
+  }
   return `/${locale}${normalized}`;
 };
 

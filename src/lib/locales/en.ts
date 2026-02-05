@@ -503,6 +503,74 @@ const dictionary = {
           ]
         },
         note: "Generate once, then keep it current as menus change."
+      },
+      template: {
+        metaTitle: "HACCP Template | Word & PDF Export | iLoveHACCP",
+        metaDescription: "Generate a HACCP template for your food business and export to Word or PDF. Built for UK and EU compliance.",
+        hero: {
+          eyebrow: "Template Generator",
+          title: "HACCP Template",
+          subtitle: "Create a practical HACCP template tailored to your operation, then export to Word and PDF."
+        },
+        ctas: {
+          primary: { label: "Generate my template", href: "/builder" },
+          secondary: { label: "View sample PDF", href: "/sample-haccp-plan-pdf" }
+        },
+        highlights: {
+          title: "What you get",
+          items: [
+            { title: "Editable structure", description: "Update hazards, CCPs, and SOPs as your process evolves." },
+            { title: "Compliance-focused", description: "Aligned with EC 852/2004 and UK food hygiene expectations." },
+            { title: "Audit-ready", description: "Clean sections for records, monitoring, and corrective actions." }
+          ]
+        },
+        checklist: {
+          title: "Best used for",
+          items: [
+            "Preparing for inspections",
+            "Standardizing food safety documentation",
+            "Keeping versioned HACCP records",
+            "Sharing plans with your team"
+          ]
+        },
+        note: "Need legal context? See EU/UK requirements guidance."
+      },
+      euUkRequirements: {
+        metaTitle: "EU & UK HACCP Requirements | Regulation 852/2004",
+        metaDescription: "Understand EU and UK HACCP requirements under Regulation 852/2004 and what inspectors typically expect.",
+        hero: {
+          eyebrow: "Regulatory Guide",
+          title: "EU & UK HACCP Requirements",
+          subtitle: "Get a practical overview of Regulation 852/2004 and the food safety records expected during inspections."
+        },
+        ctas: {
+          primary: { label: "Build a compliant plan", href: "/builder" },
+          secondary: { label: "See HACCP template", href: "/haccp-template" }
+        },
+        highlights: {
+          title: "Covered in this guide",
+          items: [
+            { title: "7 HACCP principles", description: "Hazard analysis, CCPs, limits, monitoring, corrective actions, verification, records." },
+            { title: "Inspection expectations", description: "What EHOs and local authorities usually review on-site." },
+            { title: "Practical compliance", description: "How to keep your HACCP documentation proportionate and current." }
+          ]
+        },
+        checklist: {
+          title: "Keep these ready",
+          items: [
+            "Temperature monitoring logs",
+            "Cleaning and sanitation records",
+            "Allergen and cross-contamination controls",
+            "Staff training and review evidence"
+          ]
+        },
+        note: "This page is informational and does not replace professional legal advice."
+      },
+      faqs: {
+        metaTitle: "HACCP FAQs | Food Safety Questions Answered",
+        metaDescription: "Answers to common HACCP questions about compliance, inspections, documentation, and platform usage.",
+        title: "Frequently Asked Questions",
+        subtitle: "Common questions about HACCP compliance, our builder, and food safety documentation."
       }
     },
     pdf: {

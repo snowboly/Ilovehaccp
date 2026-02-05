@@ -1,13 +1,14 @@
 import { MetadataRoute } from 'next';
 import { articles } from '@/data/articles';
-import { SUPPORTED_LOCALES } from '@/lib/locales';
+import { SUPPORTED_LOCALES, type Language } from '@/lib/locales';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.ilovehaccp.com';
+  const now = new Date();
 
   const articleEntries: MetadataRoute.Sitemap = articles.map((article) => ({
     url: `${baseUrl}/resources/${article.slug}`,
-    lastModified: new Date(),
+    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
@@ -15,98 +16,104 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
-      url: `${baseUrl}/builder`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
       url: `${baseUrl}/sample-haccp-plan-pdf`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/haccp-template`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/resources`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/faqs`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
       url: `${baseUrl}/contact`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.5,
     },
     {
       url: `${baseUrl}/about`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.5,
     },
     {
       url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: `${baseUrl}/terms`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: `${baseUrl}/cookies`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: `${baseUrl}/refund-policy`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
   ];
 
-  const localizedMarketing = SUPPORTED_LOCALES.flatMap((locale) => [
-    {
-      url: `${baseUrl}/${locale}/haccp-plan-word-docx`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/${locale}/haccp-plan-example-pdf`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/${locale}/haccp-for-restaurants`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    },
+  const localizedPathsByLocale = new Map<Language, string[]>([
+    ['en', ['', '/haccp-plan-word-docx', '/haccp-plan-example-pdf', '/haccp-for-restaurants', '/haccp-template', '/eu-uk-requirements', '/faqs']],
+    ['de', ['', '/haccp-plan-word-docx', '/haccp-plan-example-pdf', '/haccp-for-restaurants', '/haccp-template', '/eu-uk-requirements', '/faqs']],
+    ['it', ['', '/haccp-plan-word-docx', '/haccp-plan-example-pdf', '/haccp-for-restaurants', '/haccp-template', '/eu-uk-requirements', '/faqs']],
+    ['lt', ['', '/haccp-plan-word-docx', '/haccp-plan-example-pdf', '/haccp-for-restaurants', '/haccp-template', '/eu-uk-requirements', '/faqs']],
+    ['pt', ['', '/haccp-plan-example-pdf', '/haccp-template', '/eu-uk-requirements', '/faqs']],
+    ['es', ['', '/haccp-plan-example-pdf', '/haccp-template', '/eu-uk-requirements', '/faqs']],
+    ['fr', ['', '/haccp-plan-example-pdf', '/haccp-template', '/eu-uk-requirements', '/faqs']],
   ]);
 
-  return [...routes, ...localizedMarketing, ...articleEntries];
+  const priorityByPath = (path: string) => {
+    if (path === '') return 0.95;
+    if (path === '/faqs') return 0.7;
+    if (path === '/haccp-template' || path === '/eu-uk-requirements') return 0.75;
+    return 0.8;
+  };
+
+  const localizedMarketing: MetadataRoute.Sitemap = SUPPORTED_LOCALES.flatMap((locale) => {
+    const localePaths = localizedPathsByLocale.get(locale) ?? [];
+
+    return localePaths.map((path) => ({
+      url: `${baseUrl}/${locale}${path}`,
+      lastModified: now,
+      changeFrequency: path === '' ? ('weekly' as const) : ('monthly' as const),
+      priority: priorityByPath(path),
+    }));
+  });
+
+  const deduped = new Map<string, MetadataRoute.Sitemap[number]>();
+  for (const entry of [...routes, ...localizedMarketing, ...articleEntries]) {
+    deduped.set(entry.url, entry);
+  }
+
+  return Array.from(deduped.values());
 }

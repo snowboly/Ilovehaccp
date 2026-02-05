@@ -11,23 +11,23 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     return {};
   }
   const dict = await getDictionary(language);
-  const content = dict.marketing.examplePdf;
+  const content = dict.marketing.euUkRequirements;
   return buildLocaleMetadata({
     locale: language,
-    pathname: '/haccp-plan-example-pdf',
+    pathname: '/eu-uk-requirements',
     title: content.metaTitle,
     description: content.metaDescription,
   });
 }
 
-export default async function HaccpPlanExamplePdfLocalePage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function EuUkRequirementsLocalePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const language = locale as Language;
   if (!SUPPORTED_LOCALES.includes(language)) {
     notFound();
   }
   const dict = await getDictionary(language);
-  const content = dict.marketing.examplePdf;
+  const content = dict.marketing.euUkRequirements;
   const localizedContent = {
     ...content,
     ctas: {
