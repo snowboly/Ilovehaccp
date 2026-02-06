@@ -94,43 +94,6 @@
       ]
     },
     {
-      "id": "allergen_cross_contact_risks",
-      "text": "Allergen cross-contact risks (if any)",
-      "description": "Describe where unintended allergen contact could occur (e.g., shared equipment, rework, storage).",
-      "type": "multiline_text",
-      "required": false,
-      "show_if": { "questionId": "allergens_present", "excludes": "None" }
-    },
-    {
-      "id": "allergen_controls",
-      "text": "Allergen cross-contact controls in place",
-      "description": "Select all applicable controls used to prevent cross-contact.",
-      "type": "multi_select",
-      "required": false,
-      "show_if": { "questionId": "allergens_present", "excludes": "None" },
-      "options": [
-        "Segregation",
-        "Cleaning validation",
-        "Labeling checks",
-        "Dedicated equipment",
-        "Other",
-        "None"
-      ]
-    },
-    {
-      "id": "allergen_controls_notes",
-      "text": "Allergen control details (Optional)",
-      "type": "text",
-      "required": false,
-      "show_if": {
-        "all": [
-          { "questionId": "allergens_present", "excludes": "None" },
-          { "questionId": "allergen_controls", "includes": "Other" }
-        ]
-      },
-      "placeholder": "e.g., Color-coded tools, changeover verification"
-    },
-    {
       "id": "packaging_type",
       "text": "Primary packaging type",
       "description": "Example: plastic film, vacuum pack, glass jar, cardboard box.",
@@ -178,13 +141,6 @@
       ]
     },
     {
-      "id": "intended_use",
-      "text": "Intended use of the product",
-      "tooltip": "Intended use describes how the product is expected to be used by the consumer, including whether it is ready-to-eat or requires further preparation.",
-      "type": "text",
-      "required": true
-    },
-    {
       "id": "intended_consumer_group",
       "text": "Intended consumer group",
       "description": "Products intended for vulnerable consumers may require additional control measures and validation.",
@@ -208,18 +164,6 @@
           "Mixed consumer groups"
         ]
       }
-    },
-    {
-      "id": "cooking_required",
-      "text": "Further preparation/handling (if not ready-to-eat)",
-      "description": "If the product is not ready-to-eat, describe the consumer preparation or handling required before safe consumption.",
-      "type": "single_select",
-      "required": true,
-      "options": [
-        "Ready-to-eat (no further cooking required)",
-        "Requires cooking before consumption",
-        "Consumer preparation unclear or variable"
-      ]
     },
     {
       "id": "foreseeable_misuse",

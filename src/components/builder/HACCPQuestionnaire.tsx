@@ -222,18 +222,18 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
           };
       }
 
-      // High Risk RTE Check
-      if (qId === 'cooking_required' || qId === 'storage_conditions') {
-          const cooking = qId === 'cooking_required' ? val : answers['cooking_required'];
+      // High Risk RTE Check (derived from product_category + storage_conditions)
+      if (qId === 'product_category' || qId === 'storage_conditions') {
+          const category = qId === 'product_category' ? val : answers['product_category'];
           const storage = qId === 'storage_conditions' ? val : answers['storage_conditions'];
-          
-          const isRTE = cooking && (
-              cooking.includes('Ready-to-eat') || 
-              cooking.includes('Pronto a comer') || 
-              cooking.includes('Listo para comer') || 
-              cooking.includes('Prêt à consommer')
+
+          const isRTE = category && (
+              category.includes('Ready-to-eat') ||
+              category.includes('Pronto a comer') ||
+              category.includes('Listo para comer') ||
+              category.includes('Prêt à consommer')
           );
-          
+
           const isCold = storage && (
               storage.includes('Refrigerated') || storage.includes('Frozen') ||
               storage.includes('Refrigerado') || storage.includes('Congelado') ||

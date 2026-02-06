@@ -56,15 +56,11 @@ export interface TemplateData {
   ingredients: string;
   allergens: string;
   allergens_present: string;
-  allergen_cross_contact_risks: string;
-  allergen_controls: string;
-  allergen_controls_notes: string;
   packaging: string;
   shelf_life: string;
   storage_conditions: string;
   intended_use: string;
   intended_consumer: string;
-  consumer_handling: string;
   is_rte: boolean;
 
   // Process
@@ -324,8 +320,8 @@ export function buildTemplateData(
   });
   const ccps = extractCCPs(fullPlan);
   const intendedUseRaw = productInputs.intended_use || data.intendedUse || '';
-  const consumerHandlingRaw = productInputs.cooking_required || data.consumerHandling || '';
-  const isRte = isReadyToEat(consumerHandlingRaw) || isReadyToEat(intendedUseRaw);
+  const productCategory = productInputs.product_category || data.productDescription || '';
+  const isRte = isReadyToEat(productCategory) || isReadyToEat(intendedUseRaw);
 
   return {
     // Cover
@@ -341,15 +337,11 @@ export function buildTemplateData(
     ingredients: formatValue(productInputs.key_ingredients || data.mainIngredients, 'As per recipe'),
     allergens: allergensPresent,
     allergens_present: allergensPresent,
-    allergen_cross_contact_risks: formatValue(productInputs.allergen_cross_contact_risks, 'Not provided'),
-    allergen_controls: formatValue(productInputs.allergen_controls, 'Not provided'),
-    allergen_controls_notes: formatValue(productInputs.allergen_controls_notes, '-'),
     packaging: formatValue(productInputs.packaging_type || productInputs.packaging),
     shelf_life: formatValue(productInputs.shelf_life || data.shelfLife, 'As per label'),
     storage_conditions: formatValue(productInputs.storage_conditions || data.storageType, 'As per label'),
     intended_use: formatValue(productInputs.intended_use || data.intendedUse, 'General consumption'),
     intended_consumer: formatValue(productInputs.intended_consumer || productInputs.target_consumer, 'General public'),
-    consumer_handling: formatValue(consumerHandlingRaw, '-'),
     is_rte: isRte,
 
     // Process

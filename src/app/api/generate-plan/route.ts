@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       language = 'en',
       businessLegalName, tradingName, country, businessType, productionScale,
       plan_scope, scope_description, productStates, storageTypes, shelfLife, shelf_life_basis,
-      intended_use, intended_consumer_group, cooking_required, foreseeable_misuse,
+      intended_consumer_group, foreseeable_misuse,
       isVulnerable,
       INGREDIENT_DETAIL_LOW, SHELF_LIFE_UNVALIDATED, HIGH_RISK_RTE, VULNERABLE_CONSUMER, FORESEEABLE_MISUSE,
       mainIngredients, allergens, allergenSegregation, allergenLabeling,
