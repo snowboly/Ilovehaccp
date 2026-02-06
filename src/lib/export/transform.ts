@@ -4,13 +4,18 @@
 export function transformDraftToPlan(draft: any) {
   const answers = draft.answers || {};
 
-  // Create a sensible full_plan structure even if plan_data is null
-  // This ensures PDF rendering has the minimum required structure
-  const fullPlan = draft.plan_data || {
-    _original_inputs: answers,
-    hazard_analysis: [],
-    validation: null,
-  };
+  // plan_data may be the raw API response wrapper { analysis, full_plan }
+  // or the full plan object directly { hazard_analysis, ccp_summary, ... }.
+  // Detect the wrapper shape and unwrap if needed.
+  const rawPlanData = draft.plan_data;
+  const fullPlan =
+    rawPlanData?.full_plan && typeof rawPlanData.full_plan === 'object'
+      ? rawPlanData.full_plan
+      : rawPlanData || {
+          _original_inputs: answers,
+          hazard_analysis: [],
+          validation: null,
+        };
 
   // Ensure _original_inputs is populated from answers if missing
   if (fullPlan && !fullPlan._original_inputs) {
