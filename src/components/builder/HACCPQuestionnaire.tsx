@@ -301,8 +301,9 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
             value={answers[q.id]}
             onChange={handleAnswerChange}
             error={errors[q.id]}
-            context={fullContext} 
+            context={fullContext}
             customWarning={getDynamicWarning(q.id, answers[q.id])}
+            allAnswers={answers}
           />
         ))}
       </div>

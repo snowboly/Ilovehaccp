@@ -424,11 +424,68 @@ export function buildExportDoc({
           colWidths: [20, 30, 10, 10, 10, 20],
         }
       : { type: "paragraph", text: t("Hazard analysis pending completion.", "Hazard analysis pending.") },
-    { type: "section", title: t("SECTION 6 — CCP DETERMINATION", dict.s6_title) },
-    {
+    { type: "section", title: t("SECTION 6 — CCP DETERMINATION", dict.s6_title) }
+  );
+
+  // CCP Decision Tree table
+  const ccpDecisions = Array.isArray(originalInputs.ccp_decisions) ? originalInputs.ccp_decisions : [];
+  const ynDash = (v: any): string => (v === true ? "Yes" : v === false ? "No" : "-");
+
+  if (ccpDecisions.length > 0) {
+    content.push({
+      type: "paragraph",
+      text: t(
+        "CCP determination performed using Codex Alimentarius decision tree. " +
+        "Q1: Control measure exists? Q2: Step designed to eliminate? Q3: Contamination could increase? Q4: Subsequent step eliminates?",
+        dict.s7_desc
+      ),
+    });
+    content.push({
+      type: "table",
+      headers: [t("Step"), t("Hazard"), "Q1", "Q2", "Q3", "Q4", t("Outcome")],
+      rows: ccpDecisions.map((d: any) => {
+        const a = d.answers || {};
+        return [
+          d.step_name || "-",
+          d.hazard || "-",
+          ynDash(a.q1_control_measure),
+          ynDash(a.q2_step_designed_to_eliminate),
+          ynDash(a.q3_contamination_possible),
+          ynDash(a.q4_subsequent_step),
+          d.control_classification || "-",
+        ];
+      }),
+      colWidths: [16, 20, 8, 8, 8, 8, 12],
+    });
+
+    // Justification table if any provided
+    const justRows: string[][] = [];
+    for (const d of ccpDecisions) {
+      const a = d.answers || {};
+      if (a.q1_control_measure_justification) justRows.push([d.step_name || "-", d.hazard || "-", "Q1", a.q1_control_measure_justification]);
+      if (a.q2_step_designed_to_eliminate_justification) justRows.push([d.step_name || "-", d.hazard || "-", "Q2", a.q2_step_designed_to_eliminate_justification]);
+      if (a.q3_contamination_possible_justification) justRows.push([d.step_name || "-", d.hazard || "-", "Q3", a.q3_contamination_possible_justification]);
+      if (a.q4_subsequent_step_justification) justRows.push([d.step_name || "-", d.hazard || "-", "Q4", a.q4_subsequent_step_justification]);
+    }
+    if (justRows.length > 0) {
+      content.push(
+        { type: "subheading", text: t("Decision Tree Justifications") },
+        {
+          type: "table",
+          headers: [t("Step"), t("Hazard"), "Q", t("Justification")],
+          rows: justRows,
+          colWidths: [16, 20, 8, 56],
+        }
+      );
+    }
+  } else {
+    content.push({
       type: "paragraph",
       text: t("CCPs determined using Codex Decision Tree.", dict.s7_desc),
-    },
+    });
+  }
+
+  content.push(
     { type: "section", title: t("SECTION 7 — CCP MANAGEMENT", dict.s7_title) }
   );
 

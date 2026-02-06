@@ -25,9 +25,10 @@ interface QuestionCardProps {
   error?: string;
   context?: any;
   customWarning?: { level: 'info' | 'assumption' | 'risk', text: string };
+  allAnswers?: Record<string, any>;
 }
 
-export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onChange, error, context, customWarning }) => {
+export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onChange, error, context, customWarning, allAnswers }) => {
   const [isUploading, setIsUploading] = useState(false);
 
   /**
@@ -248,27 +249,41 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
 
       case 'boolean':
         return (
-          <div className="flex gap-4">
-            <button
-              onClick={() => onChange(question.id, true)}
-              className={`flex-1 p-4 rounded-xl border-2 font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                value === true 
-                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700' 
-                  : 'border-slate-200 text-slate-500 hover:border-slate-300'
-              }`}
-            >
-              <CheckCircle2 className="w-5 h-5" /> Yes
-            </button>
-            <button
-              onClick={() => onChange(question.id, false)}
-              className={`flex-1 p-4 rounded-xl border-2 font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                value === false 
-                  ? 'border-red-500 bg-red-50 text-red-700' 
-                  : 'border-slate-200 text-slate-500 hover:border-slate-300'
-              }`}
-            >
-              <X className="w-5 h-5" /> No
-            </button>
+          <div className="space-y-3">
+            <div className="flex gap-4">
+              <button
+                onClick={() => onChange(question.id, true)}
+                className={`flex-1 p-4 rounded-xl border-2 font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  value === true
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                    : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                }`}
+              >
+                <CheckCircle2 className="w-5 h-5" /> Yes
+              </button>
+              <button
+                onClick={() => onChange(question.id, false)}
+                className={`flex-1 p-4 rounded-xl border-2 font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  value === false
+                    ? 'border-red-500 bg-red-50 text-red-700'
+                    : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                }`}
+              >
+                <X className="w-5 h-5" /> No
+              </button>
+            </div>
+            {question.justification && value !== undefined && value !== null && (
+              <div className="animate-in fade-in slide-in-from-top-2">
+                <label className="block text-xs font-bold text-slate-500 mb-1">Justification (for auditor trail)</label>
+                <textarea
+                  value={allAnswers?.[`${question.id}_justification`] || ''}
+                  onChange={(e) => onChange(`${question.id}_justification`, e.target.value)}
+                  className="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-blue-600 outline-none font-bold text-sm resize-none"
+                  rows={2}
+                  placeholder={question.justification.placeholder || 'Briefly explain why you answered this way...'}
+                />
+              </div>
+            )}
           </div>
         );
 
