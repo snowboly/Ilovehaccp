@@ -36,6 +36,8 @@ export interface CCPRow {
   hazard: string;
   critical_limit: string;
   monitoring: string;
+  monitoring_instrument: string;
+  calibration_frequency: string;
   frequency: string;
   corrective_action: string;
   verification: string;
@@ -122,6 +124,7 @@ export interface TemplateData {
   // Traceability & Recall
   traceability: TraceabilityData;
   has_traceability: boolean;
+  traceability_intro: string;
 
   // Generated content sections
   team_scope_summary: string;
@@ -317,17 +320,30 @@ const extractCCPs = (fullPlan: any): CCPRow[] => {
   const ccps = fullPlan?.ccp_summary;
   if (!Array.isArray(ccps) || ccps.length === 0) return [];
 
-  return ccps.map((ccp: any, index: number) => ({
-    ccp_id: `CCP ${index + 1}`,
-    step: formatValue(ccp.ccp_step || ccp.step),
-    hazard: formatValue(ccp.hazard),
-    critical_limit: formatValue(ccp.critical_limit),
-    monitoring: formatValue(ccp.monitoring),
-    frequency: formatValue(ccp.frequency, 'Per Batch'),
-    corrective_action: formatValue(ccp.corrective_action),
-    verification: formatValue(ccp.verification),
-    records: formatValue(ccp.records),
-  }));
+  // Raw user CCP management inputs keyed by CCP ID
+  const mgmt = fullPlan?._original_inputs?.ccp_management || {};
+
+  return ccps.map((ccp: any, index: number) => {
+    // Try to match raw management entry by step+hazard or ccp_id
+    const mgmtEntry = Object.values(mgmt).find((m: any) =>
+      (m.step_name === ccp.ccp_step || m.step_name === ccp.step) && m.hazard === ccp.hazard
+    ) as any || {};
+    const mon = mgmtEntry.monitoring || {};
+
+    return {
+      ccp_id: `CCP ${index + 1}`,
+      step: formatValue(ccp.ccp_step || ccp.step),
+      hazard: formatValue(ccp.hazard),
+      critical_limit: formatValue(ccp.critical_limit),
+      monitoring: formatValue(ccp.monitoring),
+      monitoring_instrument: formatValue(mon.monitoring_instrument, '-'),
+      calibration_frequency: formatValue(mon.calibration_frequency, '-'),
+      frequency: formatValue(ccp.frequency, 'Per Batch'),
+      corrective_action: formatValue(ccp.corrective_action),
+      verification: formatValue(ccp.verification),
+      records: formatValue(ccp.records),
+    };
+  });
 };
 
 const ynDash = (v: any): string => {
@@ -428,6 +444,25 @@ export function buildTemplateData(
   };
   const hasTraceability = tg.batch_coding_method !== undefined || tg.supplier_traceability !== undefined || tg.recall_procedure_documented !== undefined;
 
+  // Compute traceability intro based on actual answers
+  let traceabilityIntro = '';
+  if (hasTraceability) {
+    const gaps: string[] = [];
+    const noBatchCoding = typeof tg.batch_coding_method === 'string' &&
+      tg.batch_coding_method.toLowerCase().includes('no batch coding');
+    if (noBatchCoding) gaps.push('batch coding is not in place');
+    if (tg.supplier_traceability === false) gaps.push('supplier (one-step-back) traceability is not established');
+    if (tg.customer_traceability === false) gaps.push('customer (one-step-forward) traceability is not established');
+    if (tg.recall_procedure_documented === false) gaps.push('recall/withdrawal procedure is not documented');
+
+    if (gaps.length === 0) {
+      traceabilityIntro = fullPlan.traceability_recall ||
+        'Traceability procedures are established in accordance with EC Regulation 178/2002 Articles 18–19, enabling one-step-back and one-step-forward traceability throughout the supply chain.';
+    } else {
+      traceabilityIntro = `The following traceability gaps were identified against EC Regulation 178/2002 Articles 18–19: ${gaps.join('; ')}. These must be addressed before the HACCP plan can be considered compliant.`;
+    }
+  }
+
   return {
     // Cover
     business_name: businessName || 'Food Business',
@@ -476,6 +511,7 @@ export function buildTemplateData(
     // Traceability & Recall
     traceability,
     has_traceability: hasTraceability,
+    traceability_intro: traceabilityIntro,
 
     // Generated content
     team_scope_summary: formatValue(

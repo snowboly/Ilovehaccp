@@ -494,6 +494,7 @@ export function buildExportDoc({
     { type: "section", title: t("SECTION 7 — CCP MANAGEMENT", dict.s7_title) }
   );
 
+  const ccpMgmtRaw = originalInputs.ccp_management || {};
   if (ccps.length > 0) {
     content.push(
       { type: "subheading", text: t("CCP Summary") },
@@ -524,6 +525,29 @@ export function buildExportDoc({
         colWidths: [10, 30, 15, 45],
       }
     );
+
+    // Equipment & calibration table — only if user provided instrument data
+    const equipRows: string[][] = [];
+    ccps.forEach((c: any, i: number) => {
+      const entry = Object.values(ccpMgmtRaw).find((m: any) =>
+        (m.step_name === c.ccp_step || m.step_name === c.step) && m.hazard === c.hazard
+      ) as any || {};
+      const mon = entry.monitoring || {};
+      if (mon.monitoring_instrument || mon.calibration_frequency) {
+        equipRows.push([`CCP ${i + 1}`, mon.monitoring_instrument || "-", mon.calibration_frequency || "-"]);
+      }
+    });
+    if (equipRows.length > 0) {
+      content.push(
+        { type: "subheading", text: t("Monitoring Equipment & Calibration") },
+        {
+          type: "table",
+          headers: [t("ID"), t("Instrument / Equipment"), t("Calibration Frequency")],
+          rows: equipRows,
+          colWidths: [15, 50, 35],
+        }
+      );
+    }
   } else {
     content.push({
       type: "paragraph",
@@ -548,10 +572,20 @@ export function buildExportDoc({
   const ynTrace = (v: any): string => (v === true ? "Yes" : v === false ? "No" : "TBD");
 
   if (hasTrace) {
+    // Compute intro based on actual answers — avoid claiming compliance when gaps exist
+    const traceGaps: string[] = [];
+    if (typeof traceGroup.batch_coding_method === 'string' && traceGroup.batch_coding_method.toLowerCase().includes('no batch coding')) traceGaps.push('batch coding is not in place');
+    if (traceGroup.supplier_traceability === false) traceGaps.push('supplier (one-step-back) traceability is not established');
+    if (traceGroup.customer_traceability === false) traceGaps.push('customer (one-step-forward) traceability is not established');
+    if (traceGroup.recall_procedure_documented === false) traceGaps.push('recall/withdrawal procedure is not documented');
+    const traceIntro = traceGaps.length === 0
+      ? fullPlan?.traceability_recall || "Traceability procedures established per EC Regulation 178/2002 Articles 18–19."
+      : `The following traceability gaps were identified against EC Regulation 178/2002 Articles 18–19: ${traceGaps.join('; ')}. These must be addressed before the HACCP plan can be considered compliant.`;
+
     content.push(
       {
         type: "paragraph",
-        text: t("Traceability procedures established per EC Regulation 178/2002 Articles 18–19."),
+        text: t(traceIntro),
       },
       { type: "subheading", text: t("Batch Coding & Lot Identification") },
       {
