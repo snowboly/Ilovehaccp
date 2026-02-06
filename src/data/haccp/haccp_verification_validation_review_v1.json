@@ -122,6 +122,91 @@
           "placeholder": "e.g., Version numbers, Date markings, Old copies destroyed"
         }
       ]
+    },
+    {
+      "id": "traceability_group",
+      "text": "Traceability & Recall (Regulation 178/2002 Art. 18–19)",
+      "description": "EC Regulation 178/2002 requires food businesses to trace raw materials one step back and finished products one step forward, and to have documented recall/withdrawal procedures.",
+      "type": "group",
+      "questions": [
+        {
+          "id": "batch_coding_method",
+          "text": "How are your products batch-coded or lot-numbered?",
+          "tooltip": "Batch/lot coding is essential for targeted recalls. Without it, a recall may require withdrawing ALL product rather than a specific batch.",
+          "type": "single_select",
+          "options": [
+            "Date code (e.g., DDMMYY)",
+            "Sequential lot number",
+            "Production run ID",
+            "Combination (date + line + sequence)",
+            "No batch coding in place"
+          ],
+          "required": true
+        },
+        {
+          "id": "batch_code_example",
+          "text": "Example batch code format",
+          "type": "text",
+          "required": false,
+          "placeholder": "e.g., 060225-L1-001 (date-line-sequence)"
+        },
+        {
+          "id": "supplier_traceability",
+          "text": "Can you trace each raw material/ingredient back to its supplier and delivery batch?",
+          "tooltip": "Article 18(2) — 'one step back': you must be able to identify who supplied each ingredient and when.",
+          "type": "boolean",
+          "required": true,
+          "conditional_questions": [
+            {
+              "id": "method",
+              "text": "How is supplier traceability achieved?",
+              "type": "text",
+              "required": true,
+              "show_if": true,
+              "placeholder": "e.g., Delivery notes retained, supplier CoAs filed, digital goods-in log"
+            }
+          ]
+        },
+        {
+          "id": "customer_traceability",
+          "text": "Can you trace finished products forward to the immediate customer or point of sale?",
+          "tooltip": "Article 18(3) — 'one step forward': you must be able to identify who you supplied product to.",
+          "type": "boolean",
+          "required": true,
+          "conditional_questions": [
+            {
+              "id": "method",
+              "text": "How is customer/forward traceability achieved?",
+              "type": "text",
+              "required": true,
+              "show_if": true,
+              "placeholder": "e.g., Dispatch records, delivery manifests, POS system"
+            }
+          ]
+        },
+        {
+          "id": "recall_procedure_documented",
+          "text": "Is there a documented product recall/withdrawal procedure?",
+          "tooltip": "Article 19 requires food businesses to have procedures to withdraw unsafe products from the market and notify competent authorities.",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "id": "recall_last_tested",
+          "text": "When was the recall procedure last tested (mock recall)?",
+          "tooltip": "Best practice (BRC/SALSA/ISO 22000) recommends testing recall procedures at least annually via a mock recall exercise.",
+          "type": "text",
+          "required": false,
+          "placeholder": "e.g., March 2025, Not yet tested"
+        },
+        {
+          "id": "recall_coordinator",
+          "text": "Who is responsible for initiating a product recall?",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g., QA Manager, Business Owner, HACCP Team Leader"
+        }
+      ]
     }
   ],
   "rules": [

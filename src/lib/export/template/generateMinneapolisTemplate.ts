@@ -13,6 +13,7 @@
  * - Section 6: CCP Management
  * - Section 7: Verification & Validation
  * - Section 8: Records & Documentation
+ * - Section 9: Traceability & Recall (EC 178/2002)
  */
 
 import {
@@ -593,6 +594,57 @@ function createVerificationSection(data: TemplateData): (Paragraph | Table)[] {
 
   elements.push(sectionHeading({ text: 'RECORDS & DOCUMENTATION', number: 'SECTION 8 -' }));
   elements.push(bodyParagraph({ text: data.record_keeping }));
+
+  // Section 9 — Traceability & Recall (Regulation 178/2002)
+  elements.push(sectionHeading({ text: 'TRACEABILITY & RECALL', number: 'SECTION 9 -' }));
+
+  if (data.has_traceability) {
+    elements.push(
+      introParagraph({
+        text: data.traceability_narrative || 'Traceability procedures are established in accordance with EC Regulation 178/2002 Articles 18–19, enabling one-step-back and one-step-forward traceability throughout the supply chain.',
+      })
+    );
+
+    elements.push(subsectionHeading({ text: 'Batch Coding & Lot Identification', number: '9.1' }));
+    elements.push(tableCaptionParagraph('Table 9.1', 'Batch Coding'));
+    elements.push(
+      ...keyValueTable([
+        { key: 'Batch coding method', value: data.traceability.batch_coding_method },
+        { key: 'Example batch code', value: data.traceability.batch_code_example },
+      ])
+    );
+
+    elements.push(subsectionHeading({ text: 'Supply Chain Traceability', number: '9.2' }));
+    elements.push(tableCaptionParagraph('Table 9.2', 'Traceability Capabilities'));
+    elements.push(
+      ...keyValueTable([
+        { key: 'Supplier traceability (one step back)', value: data.traceability.supplier_traceability },
+        ...(data.traceability.supplier_traceability_method !== '-'
+          ? [{ key: 'Supplier traceability method', value: data.traceability.supplier_traceability_method }]
+          : []),
+        { key: 'Customer traceability (one step forward)', value: data.traceability.customer_traceability },
+        ...(data.traceability.customer_traceability_method !== '-'
+          ? [{ key: 'Customer traceability method', value: data.traceability.customer_traceability_method }]
+          : []),
+      ])
+    );
+
+    elements.push(subsectionHeading({ text: 'Recall & Withdrawal', number: '9.3' }));
+    elements.push(tableCaptionParagraph('Table 9.3', 'Recall Procedures'));
+    elements.push(
+      ...keyValueTable([
+        { key: 'Recall procedure documented', value: data.traceability.recall_procedure_documented },
+        { key: 'Last mock recall', value: data.traceability.recall_last_tested },
+        { key: 'Recall coordinator', value: data.traceability.recall_coordinator },
+      ])
+    );
+  } else {
+    elements.push(
+      bodyParagraph({
+        text: 'Traceability and recall procedures to be documented during HACCP implementation. EC Regulation 178/2002 Articles 18–19 require one-step-back and one-step-forward traceability and documented recall/withdrawal procedures.',
+      })
+    );
+  }
 
   return elements;
 }

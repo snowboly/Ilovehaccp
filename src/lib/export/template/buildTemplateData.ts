@@ -62,6 +62,18 @@ export interface CCPDecisionRow {
   outcome: string;
 }
 
+export interface TraceabilityData {
+  batch_coding_method: string;
+  batch_code_example: string;
+  supplier_traceability: string;
+  supplier_traceability_method: string;
+  customer_traceability: string;
+  customer_traceability_method: string;
+  recall_procedure_documented: string;
+  recall_last_tested: string;
+  recall_coordinator: string;
+}
+
 export interface TemplateData {
   // Cover
   business_name: string;
@@ -107,11 +119,16 @@ export interface TemplateData {
   ccps: CCPRow[];
   has_ccps: boolean;
 
+  // Traceability & Recall
+  traceability: TraceabilityData;
+  has_traceability: boolean;
+
   // Generated content sections
   team_scope_summary: string;
   process_description: string;
   verification_procedures: string;
   record_keeping: string;
+  traceability_narrative: string;
   executive_summary: string;
   intended_use_narrative: string;
 
@@ -360,7 +377,15 @@ export function buildTemplateData(
   });
 
   const processSteps = extractProcessSteps(fullPlan);
-  const prpPrograms = extractPRPPrograms(fullPlan);
+  const prpProgramsRaw = extractPRPPrograms(fullPlan);
+  // Annotate the traceability PRP row with a cross-reference to Section 9
+  const prpPrograms = prpProgramsRaw.map((prp) => {
+    const lower = prp.program.toLowerCase();
+    if (lower.includes('traceab') || lower.includes('recall')) {
+      return { ...prp, program: `${prp.program} (see Section 9)` };
+    }
+    return prp;
+  });
   const allergensPresent = formatValue(productInputs.allergens_present || productInputs.allergens, 'None');
   const hazardAnalysisBase = extractHazardAnalysis(fullPlan);
   const hazardAnalysis = hazardAnalysisBase.map((row) => {
@@ -386,6 +411,22 @@ export function buildTemplateData(
     member_role: formatValue(m.member_role, '-'),
     member_competence: formatValue(m.member_competence, '-'),
   }));
+
+  // Traceability — lives under review_validation.traceability_group
+  const validationInputs = originalInputs.review_validation || originalInputs.validation || {};
+  const tg = validationInputs.traceability_group || {};
+  const traceability: TraceabilityData = {
+    batch_coding_method: formatValue(tg.batch_coding_method, 'Not specified'),
+    batch_code_example: formatValue(tg.batch_code_example, '-'),
+    supplier_traceability: yn(tg.supplier_traceability),
+    supplier_traceability_method: formatValue(tg.supplier_traceability_method, '-'),
+    customer_traceability: yn(tg.customer_traceability),
+    customer_traceability_method: formatValue(tg.customer_traceability_method, '-'),
+    recall_procedure_documented: yn(tg.recall_procedure_documented),
+    recall_last_tested: formatValue(tg.recall_last_tested, 'Not tested / Not recorded'),
+    recall_coordinator: formatValue(tg.recall_coordinator, 'Not specified'),
+  };
+  const hasTraceability = tg.batch_coding_method !== undefined || tg.supplier_traceability !== undefined || tg.recall_procedure_documented !== undefined;
 
   return {
     // Cover
@@ -432,6 +473,10 @@ export function buildTemplateData(
     ccps: ccps,
     has_ccps: ccps.length > 0,
 
+    // Traceability & Recall
+    traceability,
+    has_traceability: hasTraceability,
+
     // Generated content
     team_scope_summary: formatValue(
       fullPlan.team_scope || fullPlan.executive_summary,
@@ -448,6 +493,10 @@ export function buildTemplateData(
     record_keeping: formatValue(
       fullPlan.record_keeping,
       'Records maintained as per food safety requirements.'
+    ),
+    traceability_narrative: formatValue(
+      fullPlan.traceability_recall,
+      ''
     ),
     executive_summary: formatValue(
       fullPlan.executive_summary,

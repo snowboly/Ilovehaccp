@@ -397,7 +397,12 @@ export function buildExportDoc({
       ? {
           type: "table",
           headers: [t("Program", dict.col_program), t("Control Details", dict.col_details)],
-          rows: prerequisitePrograms.map((p: any) => [p.program || "-", p.details || "-"]),
+          rows: prerequisitePrograms.map((p: any) => {
+            const name = p.program || "-";
+            const lower = name.toLowerCase();
+            const label = (lower.includes('traceab') || lower.includes('recall')) ? `${name} (see Section 10)` : name;
+            return [label, p.details || "-"];
+          }),
           colWidths: [30, 70],
         }
       : { type: "paragraph", text: t("Prerequisite programs to be documented.", "PRPs pending.") },
@@ -534,6 +539,62 @@ export function buildExportDoc({
     { type: "paragraph", text: fullPlan?.verification_validation || "Procedures established." },
     { type: "section", title: t("SECTION 9 — RECORDS & REVIEW", dict.s9_title) },
     { type: "paragraph", text: fullPlan?.record_keeping || "Records maintained." },
+    { type: "section", title: t("SECTION 10 — TRACEABILITY & RECALL") }
+  );
+
+  // Traceability & Recall (Regulation 178/2002)
+  const traceGroup = (originalInputs.review_validation || originalInputs.validation || {}).traceability_group || {};
+  const hasTrace = traceGroup.batch_coding_method !== undefined || traceGroup.supplier_traceability !== undefined || traceGroup.recall_procedure_documented !== undefined;
+  const ynTrace = (v: any): string => (v === true ? "Yes" : v === false ? "No" : "TBD");
+
+  if (hasTrace) {
+    content.push(
+      {
+        type: "paragraph",
+        text: t("Traceability procedures established per EC Regulation 178/2002 Articles 18–19."),
+      },
+      { type: "subheading", text: t("Batch Coding & Lot Identification") },
+      {
+        type: "table",
+        headers: [t("Field"), t("Value")],
+        rows: [
+          [t("Batch coding method"), traceGroup.batch_coding_method || "Not specified"],
+          [t("Example batch code"), traceGroup.batch_code_example || "-"],
+        ],
+        colWidths: [40, 60],
+      },
+      { type: "subheading", text: t("Supply Chain Traceability") },
+      {
+        type: "table",
+        headers: [t("Field"), t("Value")],
+        rows: [
+          [t("Supplier traceability (one step back)"), ynTrace(traceGroup.supplier_traceability)],
+          ...(traceGroup.supplier_traceability_method ? [[t("Supplier traceability method"), traceGroup.supplier_traceability_method]] : []),
+          [t("Customer traceability (one step forward)"), ynTrace(traceGroup.customer_traceability)],
+          ...(traceGroup.customer_traceability_method ? [[t("Customer traceability method"), traceGroup.customer_traceability_method]] : []),
+        ],
+        colWidths: [40, 60],
+      },
+      { type: "subheading", text: t("Recall & Withdrawal") },
+      {
+        type: "table",
+        headers: [t("Field"), t("Value")],
+        rows: [
+          [t("Recall procedure documented"), ynTrace(traceGroup.recall_procedure_documented)],
+          [t("Last mock recall"), traceGroup.recall_last_tested || "Not tested / Not recorded"],
+          [t("Recall coordinator"), traceGroup.recall_coordinator || "Not specified"],
+        ],
+        colWidths: [40, 60],
+      }
+    );
+  } else {
+    content.push({
+      type: "paragraph",
+      text: t("Traceability and recall procedures to be documented during HACCP implementation. EC Regulation 178/2002 Articles 18–19 require one-step-back and one-step-forward traceability and documented recall/withdrawal procedures."),
+    });
+  }
+
+  content.push(
     {
       type: "signature",
       left: t(dict.sign_prepared),
