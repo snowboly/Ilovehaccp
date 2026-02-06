@@ -16,7 +16,7 @@ import {
 import type { FontSource } from '@react-pdf/font';
 import fs from 'fs';
 import path from 'path';
-import { TemplateData, ProcessStep, PRPProgram, HazardAnalysisRow, CCPRow } from './buildTemplateData';
+import { TemplateData, ProcessStep, PRPProgram, HazardAnalysisRow, CCPRow, CCPDecisionRow } from './buildTemplateData';
 
 // Register fonts
 const fontsDir = path.join(process.cwd(), 'public/fonts');
@@ -569,9 +569,49 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
     ) : (
       <Text style={styles.paragraphItalic}>Hazard analysis to be completed.</Text>
     )}
-    <Text style={styles.paragraphItalic}>
-      CCP determination was performed using Codex Alimentarius decision tree methodology.
-    </Text>
+    {/* CCP Determination — Decision Tree */}
+    <SubsectionHeader title="5.3 CCP Determination — Codex Decision Tree" />
+    {data.has_ccp_decisions ? (
+      <>
+        <Text style={styles.paragraphItalic}>
+          Q1: Control measure exists? Q2: Step designed to eliminate? Q3: Contamination could increase? Q4: Subsequent step eliminates?
+        </Text>
+        <Table
+          headers={['Step', 'Hazard', 'Q1', 'Q2', 'Q3', 'Q4', 'Outcome']}
+          rows={data.ccp_decisions.map((d: CCPDecisionRow) => [
+            d.step, d.hazard, d.q1, d.q2, d.q3, d.q4, d.outcome,
+          ])}
+          colWidths={[18, 22, 8, 8, 8, 8, 12]}
+        />
+        {data.ccp_decisions.some(
+          (d: CCPDecisionRow) =>
+            (d.q1_justification && d.q1_justification !== '-') ||
+            (d.q2_justification && d.q2_justification !== '-') ||
+            (d.q3_justification && d.q3_justification !== '-') ||
+            (d.q4_justification && d.q4_justification !== '-')
+        ) && (
+          <>
+            <Text style={styles.subsectionHeader}>Decision Tree Justifications</Text>
+            <Table
+              headers={['Step', 'Hazard', 'Q', 'Justification']}
+              rows={data.ccp_decisions.flatMap((d: CCPDecisionRow) => {
+                const rows: string[][] = [];
+                if (d.q1_justification !== '-') rows.push([d.step, d.hazard, 'Q1', d.q1_justification]);
+                if (d.q2_justification !== '-') rows.push([d.step, d.hazard, 'Q2', d.q2_justification]);
+                if (d.q3_justification !== '-') rows.push([d.step, d.hazard, 'Q3', d.q3_justification]);
+                if (d.q4_justification !== '-') rows.push([d.step, d.hazard, 'Q4', d.q4_justification]);
+                return rows;
+              })}
+              colWidths={[16, 20, 8, 56]}
+            />
+          </>
+        )}
+      </>
+    ) : (
+      <Text style={styles.paragraphItalic}>
+        CCP determination was performed using Codex Alimentarius decision tree methodology.
+      </Text>
+    )}
 
     {/* SECTION 6 - CCP MANAGEMENT */}
     <SectionHeader title="SECTION 6 - CCP MANAGEMENT" />

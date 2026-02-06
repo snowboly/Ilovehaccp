@@ -52,6 +52,7 @@ export interface HACCPQuestion {
   fields?: QuestionField[]; // For prp_group
   min_items?: number; // For repeatable_list
   item_schema?: RepeatableItemSchema; // For repeatable_list
+  justification?: { placeholder?: string }; // For boolean questions requiring audit trail
   show_if_all_false?: string[]; // For special conditions
   show_if?: {
     questionId?: string;

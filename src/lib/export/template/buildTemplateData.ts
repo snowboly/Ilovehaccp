@@ -48,6 +48,20 @@ export interface HACCPTeamMember {
   member_competence: string;
 }
 
+export interface CCPDecisionRow {
+  step: string;
+  hazard: string;
+  q1: string;
+  q1_justification: string;
+  q2: string;
+  q2_justification: string;
+  q3: string;
+  q3_justification: string;
+  q4: string;
+  q4_justification: string;
+  outcome: string;
+}
+
 export interface TemplateData {
   // Cover
   business_name: string;
@@ -84,6 +98,10 @@ export interface TemplateData {
   // Hazard Analysis
   hazard_analysis: HazardAnalysisRow[];
   has_hazard_analysis: boolean;
+
+  // CCP Decision Tree
+  ccp_decisions: CCPDecisionRow[];
+  has_ccp_decisions: boolean;
 
   // CCPs
   ccps: CCPRow[];
@@ -295,6 +313,34 @@ const extractCCPs = (fullPlan: any): CCPRow[] => {
   }));
 };
 
+const ynDash = (v: any): string => {
+  if (v === true) return 'Yes';
+  if (v === false) return 'No';
+  return '-';
+};
+
+const extractCCPDecisions = (fullPlan: any): CCPDecisionRow[] => {
+  const decisions = fullPlan?._original_inputs?.ccp_decisions;
+  if (!Array.isArray(decisions) || decisions.length === 0) return [];
+
+  return decisions.map((d: any) => {
+    const a = d.answers || {};
+    return {
+      step: formatValue(d.step_name),
+      hazard: formatValue(d.hazard),
+      q1: ynDash(a.q1_control_measure),
+      q1_justification: formatValue(a.q1_control_measure_justification, '-'),
+      q2: ynDash(a.q2_step_designed_to_eliminate),
+      q2_justification: formatValue(a.q2_step_designed_to_eliminate_justification, '-'),
+      q3: ynDash(a.q3_contamination_possible),
+      q3_justification: formatValue(a.q3_contamination_possible_justification, '-'),
+      q4: ynDash(a.q4_subsequent_step),
+      q4_justification: formatValue(a.q4_subsequent_step_justification, '-'),
+      outcome: formatValue(d.control_classification, '-'),
+    };
+  });
+};
+
 export function buildTemplateData(
   data: any,
   isPaid: boolean,
@@ -329,6 +375,7 @@ export function buildTemplateData(
     return row;
   });
   const ccps = extractCCPs(fullPlan);
+  const ccpDecisions = extractCCPDecisions(fullPlan);
   const intendedUseRaw = productInputs.intended_use || data.intendedUse || '';
   const productCategory = productInputs.product_category || data.productDescription || '';
   const isRte = isReadyToEat(productCategory) || isReadyToEat(intendedUseRaw);
@@ -376,6 +423,10 @@ export function buildTemplateData(
     // Hazard Analysis
     hazard_analysis: hazardAnalysis,
     has_hazard_analysis: hazardAnalysis.length > 0,
+
+    // CCP Decision Tree
+    ccp_decisions: ccpDecisions,
+    has_ccp_decisions: ccpDecisions.length > 0,
 
     // CCPs
     ccps: ccps,

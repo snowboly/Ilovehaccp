@@ -34,7 +34,7 @@ import {
   HeightRule,
   Packer,
 } from 'docx';
-import type { TemplateData, ProcessStep } from './buildTemplateData';
+import type { TemplateData, ProcessStep, CCPDecisionRow } from './buildTemplateData';
 import { resolveDocxImageType, getImageDimensions, scaleToFit } from '../word/image';
 
 // Import design system and primitives
@@ -478,11 +478,59 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
     elements.push(introParagraph({ text: PLACEHOLDERS.hazardToBeCompleted, italic: true, muted: true }));
   }
 
-  // CCP Determination methodology note (merged from former standalone section)
+  // CCP Determination (Codex Decision Tree)
   elements.push(spacerParagraph(Spacing.gapMd));
-  elements.push(
-    captionParagraph('CCP determination was performed using Codex Alimentarius decision tree methodology.')
-  );
+  elements.push(subsectionHeading({ text: 'CCP Determination — Codex Decision Tree', number: '5.3' }));
+
+  if (data.has_ccp_decisions) {
+    elements.push(tableCaptionParagraph('Table 5.3', 'CCP Decision Tree Results'));
+    elements.push(
+      ...dataTable({
+        headers: ['Step', 'Hazard', 'Q1', 'Q2', 'Q3', 'Q4', 'Outcome'],
+        rows: data.ccp_decisions.map((d: CCPDecisionRow) => [
+          d.step, d.hazard, d.q1, d.q2, d.q3, d.q4, d.outcome,
+        ]),
+        columnWidths: [16, 20, 8, 8, 8, 8, 12],
+        zebraStripe: true,
+        introText:
+          'CCP determination was performed using Codex Alimentarius decision tree methodology. ' +
+          'Q1: Control measure exists? Q2: Step designed to eliminate? Q3: Contamination could increase? Q4: Subsequent step eliminates?',
+      })
+    );
+
+    // Justification table — only if at least one justification was provided
+    const hasAnyJustification = data.ccp_decisions.some(
+      (d: CCPDecisionRow) =>
+        (d.q1_justification && d.q1_justification !== '-') ||
+        (d.q2_justification && d.q2_justification !== '-') ||
+        (d.q3_justification && d.q3_justification !== '-') ||
+        (d.q4_justification && d.q4_justification !== '-')
+    );
+    if (hasAnyJustification) {
+      elements.push(spacerParagraph(Spacing.gapSm));
+      elements.push(tableCaptionParagraph('Table 5.4', 'Decision Tree Justifications'));
+      const justRows: string[][] = [];
+      for (const d of data.ccp_decisions) {
+        if (d.q1_justification !== '-') justRows.push([d.step, d.hazard, 'Q1', d.q1_justification]);
+        if (d.q2_justification !== '-') justRows.push([d.step, d.hazard, 'Q2', d.q2_justification]);
+        if (d.q3_justification !== '-') justRows.push([d.step, d.hazard, 'Q3', d.q3_justification]);
+        if (d.q4_justification !== '-') justRows.push([d.step, d.hazard, 'Q4', d.q4_justification]);
+      }
+      elements.push(
+        ...dataTable({
+          headers: ['Step', 'Hazard', 'Question', 'Justification'],
+          rows: justRows,
+          columnWidths: [16, 20, 10, 54],
+          zebraStripe: true,
+          introText: 'The HACCP team provided the following justifications for each decision tree answer.',
+        })
+      );
+    }
+  } else {
+    elements.push(
+      captionParagraph('CCP determination was performed using Codex Alimentarius decision tree methodology.')
+    );
+  }
 
   return elements;
 }
