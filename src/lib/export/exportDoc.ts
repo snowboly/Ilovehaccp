@@ -330,28 +330,12 @@ export function buildExportDoc({
     },
   ];
 
-  const allergenControlsRows: ExportText[][] = [];
   if (allergensPresent) {
-    allergenControlsRows.push([t("Allergens Present"), allergensPresent]);
-  }
-  const allergenCrossContact = formatValue(productInputs.allergen_cross_contact_risks);
-  if (allergenCrossContact && allergenCrossContact !== "Not provided") {
-    allergenControlsRows.push([t("Cross-contact Risks"), allergenCrossContact]);
-  }
-  const allergenControls = formatValue(productInputs.allergen_controls);
-  if (allergenControls && allergenControls !== "Not provided") {
-    allergenControlsRows.push([t("Controls"), allergenControls]);
-  }
-  const allergenNotes = productInputs.allergen_controls_notes;
-  if (allergenNotes) {
-    allergenControlsRows.push([t("Control Notes"), formatValue(allergenNotes)]);
-  }
-  if (allergenControlsRows.length > 0) {
     content.push({ type: "subheading", text: t("Allergen Controls") });
     content.push({
       type: "table",
       headers: [t("Field"), t("Details")],
-      rows: allergenControlsRows,
+      rows: [[t("Allergens Present"), allergensPresent]],
       colWidths: [35, 65],
     });
   }

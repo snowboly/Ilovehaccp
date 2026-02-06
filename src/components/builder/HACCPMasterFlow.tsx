@@ -683,10 +683,10 @@ export default function HACCPMasterFlow() {
                                      shelfLifeBasis.includes("Suposición") || 
                                      shelfLifeBasis.includes("Hypothèse");
 
-      // 4. High Risk RTE
-      const cooking = product.cooking_required || "";
+      // 4. High Risk RTE (derived from product_category + storage_conditions)
+      const category = product.product_category || "";
       const storage = product.storage_conditions || "";
-      const isRTE = cooking.includes('Ready-to-eat') || cooking.includes('Pronto a comer') || cooking.includes('Listo para comer') || cooking.includes('Prêt à consommer');
+      const isRTE = category.includes('Ready-to-eat') || category.includes('Pronto a comer') || category.includes('Listo para comer') || category.includes('Prêt à consommer');
       const isCold = storage.includes('Refrigerated') || storage.includes('Frozen') || storage.includes('Refrigerado') || storage.includes('Congelado') || storage.includes('Réfrigéré') || storage.includes('Congelé');
       const HIGH_RISK_RTE = isRTE && isCold;
 
@@ -843,7 +843,7 @@ export default function HACCPMasterFlow() {
       case 'product':
         // Critical Change Detection
         const oldProduct = allAnswers.product || {};
-        const productKeys = ['plan_scope', 'product_category', 'intended_consumer_group', 'shelf_life_basis', 'cooking_required'];
+        const productKeys = ['plan_scope', 'product_category', 'intended_consumer_group', 'shelf_life_basis'];
         const productChanged = productKeys.some(k => oldProduct[k] !== data[k]);
 
         if (productChanged && (allAnswers.hazard_analysis?.length > 0 || allAnswers.ccp_decisions?.length > 0)) {
