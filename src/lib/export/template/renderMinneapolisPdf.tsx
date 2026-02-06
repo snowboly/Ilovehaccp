@@ -643,6 +643,56 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
     <SectionHeader title="SECTION 8 - RECORDS & DOCUMENTATION" />
     <Text style={styles.paragraph}>{sanitizeText(data.record_keeping)}</Text>
 
+    {/* SECTION 9 - TRACEABILITY & RECALL */}
+    <SectionHeader title="SECTION 9 - TRACEABILITY & RECALL" />
+    {data.has_traceability ? (
+      <>
+        <Text style={styles.paragraphItalic}>
+          Traceability procedures established per EC Regulation 178/2002 Articles 18–19.
+        </Text>
+        <SubsectionHeader title="9.1 Batch Coding & Lot Identification" />
+        <Table
+          headers={['Field', 'Value']}
+          rows={[
+            ['Batch coding method', data.traceability.batch_coding_method],
+            ['Example batch code', data.traceability.batch_code_example],
+          ]}
+          colWidths={[40, 60]}
+        />
+        <SubsectionHeader title="9.2 Supply Chain Traceability" />
+        <Table
+          headers={['Field', 'Value']}
+          rows={[
+            ['Supplier traceability (one step back)', data.traceability.supplier_traceability],
+            ...(data.traceability.supplier_traceability_method !== '-'
+              ? [['Supplier traceability method', data.traceability.supplier_traceability_method]]
+              : []),
+            ['Customer traceability (one step forward)', data.traceability.customer_traceability],
+            ...(data.traceability.customer_traceability_method !== '-'
+              ? [['Customer traceability method', data.traceability.customer_traceability_method]]
+              : []),
+          ]}
+          colWidths={[40, 60]}
+        />
+        <SubsectionHeader title="9.3 Recall & Withdrawal" />
+        <Table
+          headers={['Field', 'Value']}
+          rows={[
+            ['Recall procedure documented', data.traceability.recall_procedure_documented],
+            ['Last mock recall', data.traceability.recall_last_tested],
+            ['Recall coordinator', data.traceability.recall_coordinator],
+          ]}
+          colWidths={[40, 60]}
+        />
+      </>
+    ) : (
+      <Text style={styles.paragraphItalic}>
+        Traceability and recall procedures to be documented during HACCP implementation.
+        EC Regulation 178/2002 Articles 18–19 require one-step-back and one-step-forward
+        traceability and documented recall/withdrawal procedures.
+      </Text>
+    )}
+
     <Footer version={data.version} />
   </Page>
 );

@@ -347,6 +347,7 @@ export async function POST(req: Request) {
     SECTION 8 - CCP Management
     SECTION 9 - Verification & Validation
     SECTION 10 - Records & Review
+    SECTION 11 - Traceability & Recall (EC 178/2002)
 
     You MUST NOT add, rename, merge, or remove sections.
 
@@ -434,6 +435,7 @@ export async function POST(req: Request) {
       ],
       "verification_validation": "Section 9 (Legacy Key): Summary of validation status (Unvalidated).",
       "record_keeping": "Section 10 (Legacy Key): Summary of records (Not defined/User declared).",
+      "traceability_recall": "Section 11: Summary of traceability and recall procedures per EC Regulation 178/2002 Art. 18–19. Reference the user-declared batch coding method, supplier/customer traceability, and recall procedures from the traceability_group inputs. If no traceability data declared, state: 'Traceability and recall procedures have not been declared and require documentation.'",
       "assumptions_limitations": "Section 8: Bulleted list of ALL assumptions (grouped scope, unverified flow, shelf life, ingredients, vulnerable consumers). State unidentified hazards may exist.",
       "next_steps": "Section 9: List of professional actions required (Flow verification, Hazard review, CCP determination, Shelf life validation, PRP verification).",
       "auditor_review": "Section 10: Auditor-style summary. 'Based on info provided, draft identifies key hazards but requires review...'. Highlight strengths/weaknesses. No approval.",
