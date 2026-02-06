@@ -42,6 +42,12 @@ export interface CCPRow {
   records: string;
 }
 
+export interface HACCPTeamMember {
+  member_name: string;
+  member_role: string;
+  member_competence: string;
+}
+
 export interface TemplateData {
   // Cover
   business_name: string;
@@ -49,6 +55,10 @@ export interface TemplateData {
   version: string;
   created_by: string;
   approved_by: string;
+
+  // HACCP Team
+  haccp_team: HACCPTeamMember[];
+  has_haccp_team: boolean;
 
   // Product
   product_name: string;
@@ -323,6 +333,13 @@ export function buildTemplateData(
   const productCategory = productInputs.product_category || data.productDescription || '';
   const isRte = isReadyToEat(productCategory) || isReadyToEat(intendedUseRaw);
 
+  const rawTeam = Array.isArray(productInputs.haccp_team) ? productInputs.haccp_team : [];
+  const haccpTeam: HACCPTeamMember[] = rawTeam.map((m: any) => ({
+    member_name: formatValue(m.member_name, '-'),
+    member_role: formatValue(m.member_role, '-'),
+    member_competence: formatValue(m.member_competence, '-'),
+  }));
+
   return {
     // Cover
     business_name: businessName || 'Food Business',
@@ -330,6 +347,10 @@ export function buildTemplateData(
     version: `v${planVersion}`,
     created_by: '', // Blank for signature
     approved_by: '', // Blank for signature
+
+    // HACCP Team
+    haccp_team: haccpTeam,
+    has_haccp_team: haccpTeam.length > 0,
 
     // Product
     product_name: formatValue(productInputs.product_name || data.productName, 'Product'),

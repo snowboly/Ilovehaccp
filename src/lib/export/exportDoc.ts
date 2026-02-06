@@ -308,8 +308,26 @@ export function buildExportDoc({
     return blocks;
   };
 
+  const haccpTeam = Array.isArray(productInputs.haccp_team) ? productInputs.haccp_team : [];
+
   const content: ExportBlock[] = [
     { type: "section", title: t("SECTION 1 — HACCP TEAM & SCOPE", dict.s1_title) },
+  ];
+
+  if (haccpTeam.length > 0) {
+    content.push({
+      type: "table",
+      headers: [t("Name"), t("Role / Job Title"), t("Competence / Qualifications")],
+      rows: haccpTeam.map((m: any) => [
+        m.member_name || "-",
+        m.member_role || "-",
+        m.member_competence || "-",
+      ]),
+      colWidths: [30, 35, 35],
+    });
+  }
+
+  content.push(
     {
       type: "paragraph",
       text: fullPlan?.team_scope || fullPlan?.executive_summary || "Defined by operator.",
@@ -328,7 +346,7 @@ export function buildExportDoc({
       ],
       colWidths: [35, 65],
     },
-  ];
+  );
 
   if (allergensPresent) {
     content.push({ type: "subheading", text: t("Allergen Controls") });
