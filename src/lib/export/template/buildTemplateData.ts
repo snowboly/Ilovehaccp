@@ -124,6 +124,7 @@ export interface TemplateData {
   // Traceability & Recall
   traceability: TraceabilityData;
   has_traceability: boolean;
+  traceability_intro: string;
 
   // Generated content sections
   team_scope_summary: string;
@@ -443,6 +444,25 @@ export function buildTemplateData(
   };
   const hasTraceability = tg.batch_coding_method !== undefined || tg.supplier_traceability !== undefined || tg.recall_procedure_documented !== undefined;
 
+  // Compute traceability intro based on actual answers
+  let traceabilityIntro = '';
+  if (hasTraceability) {
+    const gaps: string[] = [];
+    const noBatchCoding = typeof tg.batch_coding_method === 'string' &&
+      tg.batch_coding_method.toLowerCase().includes('no batch coding');
+    if (noBatchCoding) gaps.push('batch coding is not in place');
+    if (tg.supplier_traceability === false) gaps.push('supplier (one-step-back) traceability is not established');
+    if (tg.customer_traceability === false) gaps.push('customer (one-step-forward) traceability is not established');
+    if (tg.recall_procedure_documented === false) gaps.push('recall/withdrawal procedure is not documented');
+
+    if (gaps.length === 0) {
+      traceabilityIntro = fullPlan.traceability_recall ||
+        'Traceability procedures are established in accordance with EC Regulation 178/2002 Articles 18–19, enabling one-step-back and one-step-forward traceability throughout the supply chain.';
+    } else {
+      traceabilityIntro = `The following traceability gaps were identified against EC Regulation 178/2002 Articles 18–19: ${gaps.join('; ')}. These must be addressed before the HACCP plan can be considered compliant.`;
+    }
+  }
+
   return {
     // Cover
     business_name: businessName || 'Food Business',
@@ -491,6 +511,7 @@ export function buildTemplateData(
     // Traceability & Recall
     traceability,
     has_traceability: hasTraceability,
+    traceability_intro: traceabilityIntro,
 
     // Generated content
     team_scope_summary: formatValue(

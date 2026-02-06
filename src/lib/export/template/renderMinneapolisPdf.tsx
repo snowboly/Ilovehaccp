@@ -660,7 +660,7 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
     {data.has_traceability ? (
       <>
         <Text style={styles.paragraphItalic}>
-          Traceability procedures established per EC Regulation 178/2002 Articles 18–19.
+          {data.traceability_intro}
         </Text>
         <SubsectionHeader title="9.1 Batch Coding & Lot Identification" />
         <Table

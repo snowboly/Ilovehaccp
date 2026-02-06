@@ -572,10 +572,20 @@ export function buildExportDoc({
   const ynTrace = (v: any): string => (v === true ? "Yes" : v === false ? "No" : "TBD");
 
   if (hasTrace) {
+    // Compute intro based on actual answers — avoid claiming compliance when gaps exist
+    const traceGaps: string[] = [];
+    if (typeof traceGroup.batch_coding_method === 'string' && traceGroup.batch_coding_method.toLowerCase().includes('no batch coding')) traceGaps.push('batch coding is not in place');
+    if (traceGroup.supplier_traceability === false) traceGaps.push('supplier (one-step-back) traceability is not established');
+    if (traceGroup.customer_traceability === false) traceGaps.push('customer (one-step-forward) traceability is not established');
+    if (traceGroup.recall_procedure_documented === false) traceGaps.push('recall/withdrawal procedure is not documented');
+    const traceIntro = traceGaps.length === 0
+      ? fullPlan?.traceability_recall || "Traceability procedures established per EC Regulation 178/2002 Articles 18–19."
+      : `The following traceability gaps were identified against EC Regulation 178/2002 Articles 18–19: ${traceGaps.join('; ')}. These must be addressed before the HACCP plan can be considered compliant.`;
+
     content.push(
       {
         type: "paragraph",
-        text: t("Traceability procedures established per EC Regulation 178/2002 Articles 18–19."),
+        text: t(traceIntro),
       },
       { type: "subheading", text: t("Batch Coding & Lot Identification") },
       {

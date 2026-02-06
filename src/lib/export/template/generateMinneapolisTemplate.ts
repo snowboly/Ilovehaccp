@@ -619,7 +619,7 @@ function createVerificationSection(data: TemplateData): (Paragraph | Table)[] {
   if (data.has_traceability) {
     elements.push(
       introParagraph({
-        text: data.traceability_narrative || 'Traceability procedures are established in accordance with EC Regulation 178/2002 Articles 18–19, enabling one-step-back and one-step-forward traceability throughout the supply chain.',
+        text: data.traceability_intro,
       })
     );
 
