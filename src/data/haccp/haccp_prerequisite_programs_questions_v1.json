@@ -82,7 +82,7 @@
     },
     {
       "id": "prp_traceability_recall",
-      "text": "Traceability and recall (detail in Section 9 of plan output)",
+      "text": "Traceability and recall",
       "type": "prp_group",
       "required": true,
       "fields": [

@@ -377,7 +377,15 @@ export function buildTemplateData(
   });
 
   const processSteps = extractProcessSteps(fullPlan);
-  const prpPrograms = extractPRPPrograms(fullPlan);
+  const prpProgramsRaw = extractPRPPrograms(fullPlan);
+  // Annotate the traceability PRP row with a cross-reference to Section 9
+  const prpPrograms = prpProgramsRaw.map((prp) => {
+    const lower = prp.program.toLowerCase();
+    if (lower.includes('traceab') || lower.includes('recall')) {
+      return { ...prp, program: `${prp.program} (see Section 9)` };
+    }
+    return prp;
+  });
   const allergensPresent = formatValue(productInputs.allergens_present || productInputs.allergens, 'None');
   const hazardAnalysisBase = extractHazardAnalysis(fullPlan);
   const hazardAnalysis = hazardAnalysisBase.map((row) => {

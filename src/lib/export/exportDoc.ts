@@ -397,7 +397,12 @@ export function buildExportDoc({
       ? {
           type: "table",
           headers: [t("Program", dict.col_program), t("Control Details", dict.col_details)],
-          rows: prerequisitePrograms.map((p: any) => [p.program || "-", p.details || "-"]),
+          rows: prerequisitePrograms.map((p: any) => {
+            const name = p.program || "-";
+            const lower = name.toLowerCase();
+            const label = (lower.includes('traceab') || lower.includes('recall')) ? `${name} (see Section 10)` : name;
+            return [label, p.details || "-"];
+          }),
           colWidths: [30, 70],
         }
       : { type: "paragraph", text: t("Prerequisite programs to be documented.", "PRPs pending.") },
