@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { HACCPQuestion, QuestionType } from '@/types/haccp';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { shouldEscalateSeverity } from '@/lib/haccp/vulnerableSeverityEscalation';
+import { getStepExamples } from '@/lib/builder/stepExamples';
 import { 
   AlertCircle, 
   CheckCircle2, 
@@ -28,7 +29,32 @@ interface QuestionCardProps {
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onChange, error, context, customWarning }) => {
   const [isUploading, setIsUploading] = useState(false);
-  
+
+  /**
+   * Resolve step-specific placeholder for hazard analysis fields.
+   * Falls back to the static JSON placeholder when no step context exists.
+   */
+  const resolveStepPlaceholder = (fallback?: string): string => {
+    const stepName = context?.step_name;
+    if (!stepName) return fallback || '';
+
+    const examples = getStepExamples(stepName);
+
+    // Process control description — show step-appropriate control examples
+    if (question.id === 'process_control_description') {
+      return examples.processControl;
+    }
+
+    // Per-hazard description fields — show step-appropriate hazard examples
+    const hazardId = context?.hazard_id as string | undefined;
+    if (hazardId && question.id.endsWith('_hazards_description')) {
+      const hazardExamples = examples.hazards as Record<string, string>;
+      if (hazardExamples[hazardId]) return hazardExamples[hazardId];
+    }
+
+    return fallback || '';
+  };
+
   const renderDescription = () => {
     // Priority: Custom Warning > Static Warning > Static Description
     const activeWarning = customWarning || (question.warningLevel ? { level: question.warningLevel, text: question.description || '' } : null);
@@ -165,7 +191,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
             value={value || ''}
             onChange={(e) => onChange(question.id, e.target.value)}
             className="w-full p-4 rounded-xl border-2 border-slate-200 focus:border-blue-600 outline-none font-bold text-slate-700 transition-colors"
-            placeholder={question.placeholder || "Type your answer here..."}
+            placeholder={resolveStepPlaceholder(question.placeholder) || "Type your answer here..."}
           />
         );
       
@@ -193,7 +219,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                 value={value || ''}
                 onChange={(e) => onChange(question.id, e.target.value)}
                 className="w-full p-4 rounded-xl border-2 border-slate-200 focus:border-blue-600 outline-none font-bold text-slate-700 min-h-[120px] transition-colors resize-y"
-                placeholder={question.placeholder || "Enter details..."}
+                placeholder={resolveStepPlaceholder(question.placeholder) || "Enter details..."}
             />
             {question.id === 'key_ingredients' && (
                 <div className="animate-in fade-in slide-in-from-top-2 duration-300">
@@ -420,7 +446,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                             onChange(question.id, newItems);
                                         }}
                                         className={`w-full p-2 rounded-lg border text-sm font-bold ${isCritical ? 'border-amber-300 bg-amber-50 focus:border-amber-500' : 'border-slate-200'}`}
-                                        placeholder={isCritical ? "e.g. 75°C for 2 mins, <4°C" : "e.g. Visual check"}
+                                        placeholder={getStepExamples(item.step_name).description}
                                     />
                                 </div>
                             </>
@@ -549,6 +575,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                                 question={subQ}
                                 value={groupValue[subQ.id]}
                                 onChange={(id, val) => onChange(question.id, { ...groupValue, [id]: val })}
+                                context={context}
                             />
                         </div>
                     );
@@ -689,12 +716,18 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, value, onC
                       {subQ.type === 'text' && (
                            <input
                             type="text"
-                            // Note: This needs complex state handling in parent to merge nested keys. 
-                            // For simplicity, we might store this in a separate key or a nested object in the parent value.
-                            // Assuming parent handles flattened keys or nested objects based on ID.
-                            // Here we just emit a key like "parentID_subID" or leave it to parent logic.
-                            onChange={(e) => onChange(`${question.id}_${subQ.id}`, e.target.value)} 
+                            onChange={(e) => onChange(`${question.id}_${subQ.id}`, e.target.value)}
                             className="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-blue-600 outline-none font-bold text-sm"
+                            placeholder={(() => {
+                              // Step-specific hazard description placeholders
+                              const stepName = context?.step_name;
+                              if (stepName && subQ.id?.endsWith('_hazards_description')) {
+                                const examples = getStepExamples(stepName);
+                                const hazardKey = subQ.id.replace('_hazards_description', '') as keyof typeof examples.hazards;
+                                if (examples.hazards[hazardKey]) return examples.hazards[hazardKey];
+                              }
+                              return subQ.placeholder || '';
+                            })()}
                           />
                       )}
                   </div>
