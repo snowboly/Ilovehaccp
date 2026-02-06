@@ -25,6 +25,38 @@
       "required": false
     },
     {
+      "id": "haccp_team",
+      "text": "HACCP Team Members",
+      "tooltip": "Codex Step 1 requires a multidisciplinary HACCP team. Include at least the team leader and one member with food safety competence.",
+      "type": "repeatable_list",
+      "required": true,
+      "min_items": 1,
+      "item_schema": {
+        "fields": [
+          {
+            "id": "member_name",
+            "text": "Name",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "member_role",
+            "text": "Role / Job Title",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., HACCP Team Leader, Production Manager, Head Chef"
+          },
+          {
+            "id": "member_competence",
+            "text": "Competence / Qualifications",
+            "type": "text",
+            "required": false,
+            "placeholder": "e.g., Level 3 Food Safety, HACCP trained, 10 years experience"
+          }
+        ]
+      }
+    },
+    {
       "id": "plan_scope",
       "text": "This HACCP draft applies to:",
       "type": "single_select",

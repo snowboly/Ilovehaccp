@@ -694,6 +694,18 @@ export async function generateMinneapolisDocument(data: TemplateData): Promise<B
 
     // Section 1 - Team & Scope
     sectionHeading({ text: 'HACCP TEAM & SCOPE', number: 'SECTION 1 -' }),
+    ...(data.has_haccp_team
+      ? [
+          tableCaptionParagraph('Table 1', 'HACCP Team'),
+          ...dataTable({
+            headers: ['Name', 'Role / Job Title', 'Competence / Qualifications'],
+            rows: data.haccp_team.map((m) => [m.member_name, m.member_role, m.member_competence]),
+            columnWidths: [30, 35, 35],
+            zebraStripe: true,
+            introText: 'The HACCP team responsible for this plan comprises the following members.',
+          }),
+        ]
+      : []),
     bodyParagraph({ text: data.team_scope_summary }),
 
     // Section 2 - Product Description

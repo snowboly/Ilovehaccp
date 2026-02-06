@@ -438,6 +438,13 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
 
     {/* SECTION 1 - HACCP TEAM & SCOPE */}
     <SectionHeader title="SECTION 1 - HACCP TEAM & SCOPE" />
+    {data.has_haccp_team && (
+      <Table
+        headers={['Name', 'Role / Job Title', 'Competence / Qualifications']}
+        rows={data.haccp_team.map((m) => [m.member_name, m.member_role, m.member_competence])}
+        colWidths={[30, 35, 35]}
+      />
+    )}
     <Text style={styles.paragraph}>{sanitizeText(data.team_scope_summary)}</Text>
 
     {/* SECTION 2 - PRODUCT DESCRIPTION */}
