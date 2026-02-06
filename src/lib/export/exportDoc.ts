@@ -494,6 +494,7 @@ export function buildExportDoc({
     { type: "section", title: t("SECTION 7 — CCP MANAGEMENT", dict.s7_title) }
   );
 
+  const ccpMgmtRaw = originalInputs.ccp_management || {};
   if (ccps.length > 0) {
     content.push(
       { type: "subheading", text: t("CCP Summary") },
@@ -524,6 +525,29 @@ export function buildExportDoc({
         colWidths: [10, 30, 15, 45],
       }
     );
+
+    // Equipment & calibration table — only if user provided instrument data
+    const equipRows: string[][] = [];
+    ccps.forEach((c: any, i: number) => {
+      const entry = Object.values(ccpMgmtRaw).find((m: any) =>
+        (m.step_name === c.ccp_step || m.step_name === c.step) && m.hazard === c.hazard
+      ) as any || {};
+      const mon = entry.monitoring || {};
+      if (mon.monitoring_instrument || mon.calibration_frequency) {
+        equipRows.push([`CCP ${i + 1}`, mon.monitoring_instrument || "-", mon.calibration_frequency || "-"]);
+      }
+    });
+    if (equipRows.length > 0) {
+      content.push(
+        { type: "subheading", text: t("Monitoring Equipment & Calibration") },
+        {
+          type: "table",
+          headers: [t("ID"), t("Instrument / Equipment"), t("Calibration Frequency")],
+          rows: equipRows,
+          colWidths: [15, 50, 35],
+        }
+      );
+    }
   } else {
     content.push({
       type: "paragraph",

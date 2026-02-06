@@ -571,6 +571,24 @@ function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
         introText: 'Monitoring procedures and corrective actions for each CCP are detailed below.',
       })
     );
+
+    // Monitoring equipment table — only if any instrument data was provided
+    const hasEquipmentData = data.ccps.some((c) => c.monitoring_instrument !== '-' || c.calibration_frequency !== '-');
+    if (hasEquipmentData) {
+      elements.push(subsectionHeading({ text: 'Monitoring Equipment & Calibration', number: '6.3' }));
+      elements.push(tableCaptionParagraph('Table 6.3', 'Equipment Validation'));
+      elements.push(
+        ...dataTable({
+          headers: ['CCP ID', 'Instrument / Equipment', 'Calibration Frequency'],
+          rows: data.ccps
+            .filter((c) => c.monitoring_instrument !== '-' || c.calibration_frequency !== '-')
+            .map((c) => [c.ccp_id, c.monitoring_instrument, c.calibration_frequency]),
+          columnWidths: [15, 50, 35],
+          zebraStripe: true,
+          introText: 'Monitoring instruments and calibration schedules per EC 852/2004 Annex II Ch. IX.',
+        })
+      );
+    }
   } else {
     elements.push(
       bodyParagraph({

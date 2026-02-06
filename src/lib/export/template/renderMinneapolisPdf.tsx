@@ -630,6 +630,18 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
           ])}
           colWidths={[8, 14, 18, 20, 20, 20]}
         />
+        {data.ccps.some((ccp: CCPRow) => ccp.monitoring_instrument !== '-' || ccp.calibration_frequency !== '-') && (
+          <>
+            <SubsectionHeader title="Monitoring Equipment & Calibration" />
+            <Table
+              headers={['CCP', 'Instrument / Equipment', 'Calibration Frequency']}
+              rows={data.ccps
+                .filter((ccp: CCPRow) => ccp.monitoring_instrument !== '-' || ccp.calibration_frequency !== '-')
+                .map((ccp: CCPRow) => [ccp.ccp_id, ccp.monitoring_instrument, ccp.calibration_frequency])}
+              colWidths={[15, 50, 35]}
+            />
+          </>
+        )}
       </>
     ) : (
       <Text style={styles.paragraphItalic}>No CCPs identified or CCP management to be documented.</Text>

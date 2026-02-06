@@ -65,6 +65,30 @@
           "placeholder": "e.g., Probe thermometer check, visual inspection"
         },
         {
+          "id": "monitoring_instrument",
+          "text": "Instrument / equipment used (Optional)",
+          "tooltip": "Specify the measurement device. Auditors need to see that the instrument is appropriate for the parameter and has a known accuracy.",
+          "type": "text",
+          "required": false,
+          "placeholder": "e.g., Calibrated digital probe thermometer (±0.5 °C accuracy)"
+        },
+        {
+          "id": "calibration_frequency",
+          "text": "Calibration frequency (Optional)",
+          "tooltip": "How often is the monitoring instrument checked or calibrated? EC 852/2004 Annex II Ch. IX requires measurement equipment to be calibrated at appropriate intervals.",
+          "type": "single_select",
+          "options": [
+            "Daily (ice-point check)",
+            "Weekly",
+            "Monthly",
+            "Quarterly",
+            "Annually (external lab)",
+            "Per manufacturer schedule",
+            "Not applicable (visual check)"
+          ],
+          "required": false
+        },
+        {
           "id": "monitoring_frequency",
           "text": "Monitoring frequency",
           "type": "single_select",

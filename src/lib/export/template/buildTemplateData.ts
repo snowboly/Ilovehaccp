@@ -36,6 +36,8 @@ export interface CCPRow {
   hazard: string;
   critical_limit: string;
   monitoring: string;
+  monitoring_instrument: string;
+  calibration_frequency: string;
   frequency: string;
   corrective_action: string;
   verification: string;
@@ -317,17 +319,30 @@ const extractCCPs = (fullPlan: any): CCPRow[] => {
   const ccps = fullPlan?.ccp_summary;
   if (!Array.isArray(ccps) || ccps.length === 0) return [];
 
-  return ccps.map((ccp: any, index: number) => ({
-    ccp_id: `CCP ${index + 1}`,
-    step: formatValue(ccp.ccp_step || ccp.step),
-    hazard: formatValue(ccp.hazard),
-    critical_limit: formatValue(ccp.critical_limit),
-    monitoring: formatValue(ccp.monitoring),
-    frequency: formatValue(ccp.frequency, 'Per Batch'),
-    corrective_action: formatValue(ccp.corrective_action),
-    verification: formatValue(ccp.verification),
-    records: formatValue(ccp.records),
-  }));
+  // Raw user CCP management inputs keyed by CCP ID
+  const mgmt = fullPlan?._original_inputs?.ccp_management || {};
+
+  return ccps.map((ccp: any, index: number) => {
+    // Try to match raw management entry by step+hazard or ccp_id
+    const mgmtEntry = Object.values(mgmt).find((m: any) =>
+      (m.step_name === ccp.ccp_step || m.step_name === ccp.step) && m.hazard === ccp.hazard
+    ) as any || {};
+    const mon = mgmtEntry.monitoring || {};
+
+    return {
+      ccp_id: `CCP ${index + 1}`,
+      step: formatValue(ccp.ccp_step || ccp.step),
+      hazard: formatValue(ccp.hazard),
+      critical_limit: formatValue(ccp.critical_limit),
+      monitoring: formatValue(ccp.monitoring),
+      monitoring_instrument: formatValue(mon.monitoring_instrument, '-'),
+      calibration_frequency: formatValue(mon.calibration_frequency, '-'),
+      frequency: formatValue(ccp.frequency, 'Per Batch'),
+      corrective_action: formatValue(ccp.corrective_action),
+      verification: formatValue(ccp.verification),
+      records: formatValue(ccp.records),
+    };
+  });
 };
 
 const ynDash = (v: any): string => {
