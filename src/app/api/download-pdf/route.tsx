@@ -117,12 +117,19 @@ export async function GET(req: Request) {
     const planVersion = latestVersion?.version_number || 1;
 
     // 5. Generate PDF via DOCX pipeline
+    // Defensive: unwrap API response wrapper { analysis, full_plan } if present
+    const rawFullPlan = plan.full_plan || {};
+    const unwrappedFullPlan =
+        rawFullPlan?.full_plan && typeof rawFullPlan.full_plan === 'object' && !Array.isArray(rawFullPlan.full_plan)
+            ? rawFullPlan.full_plan
+            : rawFullPlan;
     const baseFullPlan =
-        plan.full_plan ||
-        ({
-            _original_inputs: plan.answers || {},
-            hazard_analysis: plan.hazard_analysis || []
-        } as any);
+        (unwrappedFullPlan && Object.keys(unwrappedFullPlan).length > 0)
+            ? unwrappedFullPlan
+            : ({
+                _original_inputs: plan.answers || {},
+                hazard_analysis: plan.hazard_analysis || []
+              } as any);
     const originalInputs = {
         ...(baseFullPlan?._original_inputs || {}),
         ...(plan.answers || {})
@@ -134,6 +141,15 @@ export async function GET(req: Request) {
             ? baseFullPlan.hazard_analysis
             : plan.hazard_analysis || []
     };
+
+    if (!Array.isArray(fullPlan.hazard_analysis) || fullPlan.hazard_analysis.length === 0) {
+        console.warn('[download-pdf] empty hazard_analysis detected', {
+            planId,
+            resourceType,
+            hasRawFullPlan: Boolean(plan.full_plan),
+            rawKeys: plan.full_plan ? Object.keys(plan.full_plan).slice(0, 10) : [],
+        });
+    }
 
     const productInputs = originalInputs.product || {};
     const isPaid = plan.payment_status === 'paid' || plan.export_paid || plan.review_paid || isAdmin;

@@ -200,7 +200,13 @@ export function buildExportDoc({
   logoDataUri?: string | null;
   template?: string;
 }): ExportDoc {
-  const fullPlan = data.fullPlan ?? data.full_plan ?? {};
+  // Defensive: if fullPlan is the API response wrapper { analysis, full_plan },
+  // unwrap to the actual plan object so table arrays are at the top level.
+  const rawFullPlan = data.fullPlan ?? data.full_plan ?? {};
+  const fullPlan =
+    rawFullPlan?.full_plan && typeof rawFullPlan.full_plan === 'object' && !Array.isArray(rawFullPlan.full_plan)
+      ? rawFullPlan.full_plan
+      : rawFullPlan;
   const businessName = data.businessName || fullPlan.businessName || "";
   const planVersion = data.planVersion ?? fullPlan.planVersion ?? 1;
   const isPaid = data.isPaid ?? false;
