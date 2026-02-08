@@ -16,7 +16,7 @@ import {
 import type { FontSource } from '@react-pdf/font';
 import fs from 'fs';
 import path from 'path';
-import { TemplateData, ProcessStep, PRPProgram, HazardAnalysisRow, CCPRow, CCPDecisionRow } from './buildTemplateData';
+import { TemplateData, ProcessStep, PRPProgram, HazardAnalysisRow, CCPRow } from './buildTemplateData';
 
 // Register fonts
 const fontsDir = path.join(process.cwd(), 'public/fonts');
@@ -528,89 +528,31 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
     <SectionHeader title="SECTION 5 - HAZARD ANALYSIS & CCP DETERMINATION" />
     {data.has_hazard_analysis ? (
       <>
-        <SubsectionHeader title="Table 5A — Hazard Identification" />
+        <SubsectionHeader title="5.1 Hazard Identification" />
         <Table
-          headers={['Step', 'Hazard', 'Type']}
+          headers={['Step', 'Type of Hazard', 'Description']}
           rows={data.hazard_analysis.map((h: HazardAnalysisRow) => [
             h.step,
-            h.hazard,
             h.hazard_type,
+            h.hazard,
           ])}
-          colWidths={[20, 55, 25]}
+          colWidths={[20, 20, 60]}
         />
 
-        <SubsectionHeader title="Table 5B — Risk & Controls" />
+        <SubsectionHeader title="5.2 Risk Assessment & Controls" />
         <Table
-          headers={['Step', 'Sev.', 'Lik.', 'Sig?', 'Control Measure']}
+          headers={['Step', 'Type of Hazard', 'Likelihood', 'Control Measures']}
           rows={data.hazard_analysis.map((h: HazardAnalysisRow) => [
             h.step,
-            h.severity,
+            h.hazard_type,
             h.likelihood,
-            h.significant,
-            h.control_measure,
+            h.control_measure_detail,
           ])}
-          colWidths={[20, 10, 10, 12, 48]}
+          colWidths={[18, 16, 14, 52]}
         />
-
-        {/* Control Measure Descriptions */}
-        {data.hazard_analysis.some((h: HazardAnalysisRow) => h.control_measure_description && h.control_measure_description !== '-') && (
-          <>
-            <SubsectionHeader title="Control Measure Descriptions" />
-            <Table
-              headers={['Step', 'Control Measure Description']}
-              rows={data.hazard_analysis
-                .filter((h: HazardAnalysisRow) => h.control_measure_description && h.control_measure_description !== '-')
-                .map((h: HazardAnalysisRow) => [h.step, h.control_measure_description])}
-              colWidths={[25, 75]}
-            />
-          </>
-        )}
       </>
     ) : (
       <Text style={styles.paragraphItalic}>Hazard analysis to be completed.</Text>
-    )}
-    {/* CCP Determination — Decision Tree */}
-    <SubsectionHeader title="5.3 CCP Determination — Codex Decision Tree" />
-    {data.has_ccp_decisions ? (
-      <>
-        <Text style={styles.paragraphItalic}>
-          Q1: Control measure exists? Q2: Step designed to eliminate? Q3: Contamination could increase? Q4: Subsequent step eliminates?
-        </Text>
-        <Table
-          headers={['Step', 'Hazard', 'Q1', 'Q2', 'Q3', 'Q4', 'Outcome']}
-          rows={data.ccp_decisions.map((d: CCPDecisionRow) => [
-            d.step, d.hazard, d.q1, d.q2, d.q3, d.q4, d.outcome,
-          ])}
-          colWidths={[18, 22, 8, 8, 8, 8, 12]}
-        />
-        {data.ccp_decisions.some(
-          (d: CCPDecisionRow) =>
-            (d.q1_justification && d.q1_justification !== '-') ||
-            (d.q2_justification && d.q2_justification !== '-') ||
-            (d.q3_justification && d.q3_justification !== '-') ||
-            (d.q4_justification && d.q4_justification !== '-')
-        ) && (
-          <>
-            <Text style={styles.subsectionHeader}>Decision Tree Justifications</Text>
-            <Table
-              headers={['Step', 'Hazard', 'Q', 'Justification']}
-              rows={data.ccp_decisions.flatMap((d: CCPDecisionRow) => {
-                const rows: string[][] = [];
-                if (d.q1_justification !== '-') rows.push([d.step, d.hazard, 'Q1', d.q1_justification]);
-                if (d.q2_justification !== '-') rows.push([d.step, d.hazard, 'Q2', d.q2_justification]);
-                if (d.q3_justification !== '-') rows.push([d.step, d.hazard, 'Q3', d.q3_justification]);
-                if (d.q4_justification !== '-') rows.push([d.step, d.hazard, 'Q4', d.q4_justification]);
-                return rows;
-              })}
-              colWidths={[16, 20, 8, 56]}
-            />
-          </>
-        )}
-      </>
-    ) : (
-      <Text style={styles.paragraphItalic}>
-        CCP determination was performed using Codex Alimentarius decision tree methodology.
-      </Text>
     )}
 
     {/* SECTION 6 - CCP MANAGEMENT */}
@@ -649,11 +591,44 @@ const ContentPages = ({ data }: { data: TemplateData }) => (
 
     {/* SECTION 7 - VERIFICATION & VALIDATION */}
     <SectionHeader title="SECTION 7 - VERIFICATION & VALIDATION" />
-    <Text style={styles.paragraph}>{sanitizeText(data.verification_procedures)}</Text>
+    {data.has_verification_data && (
+      <Table
+        headers={['Field', 'Value']}
+        rows={[
+          ['HACCP Plan Validated', data.verification_data.is_validated],
+          ...(data.verification_data.validation_date !== 'Not recorded'
+            ? [['Validation Date', data.verification_data.validation_date]] : []),
+          ...(data.verification_data.validated_by !== 'Not recorded'
+            ? [['Validated By', data.verification_data.validated_by]] : []),
+          ['Verification Activities', data.verification_data.verification_activities],
+          ['Verification Frequency', data.verification_data.verification_frequency],
+          ['Verification Responsibility', data.verification_data.verification_responsibility],
+          ['HACCP Review Frequency', data.verification_data.review_frequency],
+          ['Review Triggers', data.verification_data.review_triggers],
+        ]}
+        colWidths={[40, 60]}
+      />
+    )}
+    {data.verification_procedures && data.verification_procedures !== '-' && (
+      <Text style={styles.paragraph}>{sanitizeText(data.verification_procedures)}</Text>
+    )}
 
     {/* SECTION 8 - RECORDS & DOCUMENTATION */}
     <SectionHeader title="SECTION 8 - RECORDS & DOCUMENTATION" />
-    <Text style={styles.paragraph}>{sanitizeText(data.record_keeping)}</Text>
+    {data.has_records_data && (
+      <Table
+        headers={['Field', 'Value']}
+        rows={[
+          ['Record Storage Location', data.records_data.record_storage_location],
+          ['Retention Period', data.records_data.record_retention_period],
+          ['Document Control Method', data.records_data.document_control_method],
+        ]}
+        colWidths={[40, 60]}
+      />
+    )}
+    {data.record_keeping && data.record_keeping !== '-' && (
+      <Text style={styles.paragraph}>{sanitizeText(data.record_keeping)}</Text>
+    )}
 
     {/* SECTION 9 - TRACEABILITY & RECALL */}
     <SectionHeader title="SECTION 9 - TRACEABILITY & RECALL" />
