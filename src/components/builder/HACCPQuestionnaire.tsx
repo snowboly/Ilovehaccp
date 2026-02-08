@@ -4,19 +4,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HACCPSectionData } from '@/types/haccp';
 import { QuestionCard } from './QuestionCard';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 
 interface QuestionnaireProps {
   sectionData: HACCPSectionData;
   onComplete: (data: any) => void;
+  onBack?: (currentData: any) => void;
   initialData?: any;
   additionalContext?: any;
   title?: string;
   description?: string | React.ReactNode;
 }
 
-export default function HACCPQuestionnaire({ sectionData, onComplete, initialData, additionalContext, title, description }: QuestionnaireProps) {
+export default function HACCPQuestionnaire({ sectionData, onComplete, onBack, initialData, additionalContext, title, description }: QuestionnaireProps) {
   const { language } = useLanguage();
   const copy = QUESTIONNAIRE_COPY[language] ?? QUESTIONNAIRE_COPY.en;
   const [answers, setAnswers] = useState<any>(initialData || {});
@@ -308,7 +309,15 @@ export default function HACCPQuestionnaire({ sectionData, onComplete, initialDat
         ))}
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 p-4 flex justify-center z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 p-4 flex justify-center gap-3 z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+        {onBack && (
+          <button
+              onClick={() => onBack(answers)}
+              className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-4 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2"
+          >
+              <ChevronLeft className="w-5 h-5" /> {copy.backButton}
+          </button>
+        )}
         <button
             onClick={handleSubmit}
             className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-black text-lg shadow-xl shadow-blue-500/20 transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2"
@@ -343,6 +352,7 @@ const QUESTIONNAIRE_COPY: Record<string, {
     misuse: string;
   };
   descriptionFallback: string;
+  backButton: string;
 }> = {
   en: {
     validation: {
@@ -374,7 +384,8 @@ const QUESTIONNAIRE_COPY: Record<string, {
       vulnerableConsumers: 'Products intended for vulnerable consumers may require additional controls, validation, and regulatory oversight.',
       misuse: 'Increased Risk — Foreseeable Misuse. Misuse scenarios must be considered during hazard analysis.'
     },
-    descriptionFallback: 'Please answer accurately to ensure compliance.'
+    descriptionFallback: 'Please answer accurately to ensure compliance.',
+    backButton: 'Back'
   },
 
 
@@ -409,7 +420,8 @@ const QUESTIONNAIRE_COPY: Record<string, {
       vulnerableConsumers: 'Produkte für vulnerable Verbraucher erfordern ggf. zusätzliche Kontrollen und Validierung.',
       misuse: 'Erhöhtes Risiko — vorhersehbarer Fehlgebrauch. Muss in der Gefahrenanalyse berücksichtigt werden.'
     },
-    descriptionFallback: 'Bitte beantworten Sie die Fragen sorgfältig zur Einhaltung der Vorschriften.'
+    descriptionFallback: 'Bitte beantworten Sie die Fragen sorgfältig zur Einhaltung der Vorschriften.',
+    backButton: 'Zurück'
   },
   it: {
     validation: {
@@ -441,7 +453,8 @@ const QUESTIONNAIRE_COPY: Record<string, {
       vulnerableConsumers: 'Prodotti per consumatori vulnerabili possono richiedere controlli e validazioni aggiuntive.',
       misuse: 'Rischio aumentato — uso improprio prevedibile. Da considerare nell’analisi dei pericoli.'
     },
-    descriptionFallback: 'Rispondi con precisione per garantire la conformità.'
+    descriptionFallback: 'Rispondi con precisione per garantire la conformità.',
+    backButton: 'Indietro'
   },
   lt: {
     validation: {
@@ -473,6 +486,7 @@ const QUESTIONNAIRE_COPY: Record<string, {
       vulnerableConsumers: 'Produktams, skirtiems pažeidžiamiems vartotojams, gali reikėti papildomų kontrolės priemonių.',
       misuse: 'Padidėjusi rizika — numatomas netinkamas naudojimas. Tai turi būti įvertinta pavojų analizėje.'
     },
-    descriptionFallback: 'Atsakykite tiksliai, kad užtikrintumėte atitiktį.'
+    descriptionFallback: 'Atsakykite tiksliai, kad užtikrintumėte atitiktį.',
+    backButton: 'Atgal'
   }
 };
