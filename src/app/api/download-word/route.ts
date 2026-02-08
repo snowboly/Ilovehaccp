@@ -151,7 +151,8 @@ export async function GET(req: Request) {
         productName: productInputs.product_name || plan.product_name || "HACCP Plan",
         productDescription: productInputs.product_category || plan.product_description || "Generated Plan",
         mainIngredients: productInputs.key_ingredients || "Standard",
-        intendedUse: productInputs.intended_use || plan.intended_use || "General",
+        intendedUse: productInputs.intended_consumer_group || productInputs.intended_use || plan.intended_use || "General",
+        intendedConsumer: productInputs.intended_consumer_group || "General public",
         storageType: productInputs.storage_conditions || plan.storage_type || "Standard",
         shelfLife: productInputs.shelf_life || "As per label",
         logoBuffer: wordLogo

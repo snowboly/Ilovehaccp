@@ -417,7 +417,7 @@ export function buildTemplateData(
   });
   const ccps = extractCCPs(fullPlan);
   const ccpDecisions = extractCCPDecisions(fullPlan);
-  const intendedUseRaw = productInputs.intended_use || data.intendedUse || '';
+  const intendedUseRaw = productInputs.intended_consumer_group || productInputs.intended_use || data.intendedUse || '';
   const productCategory = productInputs.product_category || data.productDescription || '';
   const isRte = isReadyToEat(productCategory) || isReadyToEat(intendedUseRaw);
 
@@ -484,8 +484,8 @@ export function buildTemplateData(
     packaging: formatValue(productInputs.packaging_type || productInputs.packaging),
     shelf_life: formatValue(productInputs.shelf_life || data.shelfLife, 'As per label'),
     storage_conditions: formatValue(productInputs.storage_conditions || data.storageType, 'As per label'),
-    intended_use: formatValue(productInputs.intended_use || data.intendedUse, 'General consumption'),
-    intended_consumer: formatValue(productInputs.intended_consumer || productInputs.target_consumer, 'General public'),
+    intended_use: formatValue(productInputs.intended_consumer_group || productInputs.intended_use || data.intendedUse, 'General consumption'),
+    intended_consumer: formatValue(productInputs.intended_consumer_group || data.intendedConsumer, 'General public'),
     is_rte: isRte,
 
     // Process
