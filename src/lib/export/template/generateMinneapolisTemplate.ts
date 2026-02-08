@@ -35,7 +35,7 @@ import {
   HeightRule,
   Packer,
 } from 'docx';
-import type { TemplateData, ProcessStep, CCPDecisionRow } from './buildTemplateData';
+import type { TemplateData, ProcessStep } from './buildTemplateData';
 import { resolveDocxImageType, getImageDimensions, scaleToFit } from '../word/image';
 
 // Import design system and primitives
@@ -82,6 +82,13 @@ const PLACEHOLDERS = {
   hazardToBeCompleted: 'Hazard analysis to be completed by the HACCP team.',
   descriptionToComplete: 'Description to be completed by the food business.',
 };
+
+// ============================================================================
+// TABLE COUNTER — sequential numbering across entire document
+// ============================================================================
+type TableCounter = { n: number };
+const nextTable = (c: TableCounter, caption: string) =>
+  tableCaptionParagraph(`Table ${++c.n}`, caption);
 
 // ============================================================================
 // COVER PAGE
@@ -254,11 +261,11 @@ const createCoverPage = (data: TemplateData): (Paragraph | Table)[] => {
 // SECTION 2 - PRODUCT DESCRIPTION
 // ============================================================================
 
-function createProductSection(data: TemplateData): (Paragraph | Table)[] {
+function createProductSection(data: TemplateData, tc: TableCounter): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
   elements.push(sectionHeading({ text: 'PRODUCT DESCRIPTION', number: 'SECTION 2 -' }));
-  elements.push(tableCaptionParagraph('Table 2', 'Product Description'));
+  elements.push(nextTable(tc, 'Product Description'));
 
   elements.push(
     ...dataTable({
@@ -285,7 +292,7 @@ function createProductSection(data: TemplateData): (Paragraph | Table)[] {
   ].filter((row) => row.value && row.value !== '-' && row.value !== 'Not provided');
 
   if (allergenRows.length > 0) {
-    elements.push(tableCaptionParagraph('Table 2A', 'Allergen Controls'));
+    elements.push(nextTable(tc, 'Allergen Controls'));
     elements.push(...keyValueTable(allergenRows, 35, ['Allergen', 'Details']));
   }
 
@@ -296,13 +303,13 @@ function createProductSection(data: TemplateData): (Paragraph | Table)[] {
 // SECTION 3 - PREREQUISITE PROGRAMS (PRPs)
 // ============================================================================
 
-function createPRPSection(data: TemplateData): (Paragraph | Table)[] {
+function createPRPSection(data: TemplateData, tc: TableCounter): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
   elements.push(sectionHeading({ text: 'PREREQUISITE PROGRAMS (PRPs)', number: 'SECTION 3 -' }));
 
   if (data.has_prp_programs && data.prp_programs.length > 0) {
-    elements.push(tableCaptionParagraph('Table 3', 'Prerequisite Programs'));
+    elements.push(nextTable(tc, 'Prerequisite Programs'));
     elements.push(
       ...dataTable({
         headers: ['Program', 'In Place', 'Documented', 'Reference'],
@@ -323,7 +330,7 @@ function createPRPSection(data: TemplateData): (Paragraph | Table)[] {
 // SECTION 4 - PROCESS FLOW
 // ============================================================================
 
-function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
+function createProcessSection(data: TemplateData, tc: TableCounter): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
   elements.push(sectionHeading({ text: 'PROCESS FLOW', number: 'SECTION 4 -' }));
@@ -367,7 +374,7 @@ function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
   elements.push(subsectionHeading({ text: 'Process Steps Description', number: '4.2' }));
 
   if (data.has_process_steps && data.process_steps.length > 0) {
-    elements.push(tableCaptionParagraph('Table 4.2', 'Process Steps'));
+    elements.push(nextTable(tc, 'Process Steps'));
     elements.push(
       ...dataTable({
         headers: ['Step No.', 'Step Name', 'Description'],
@@ -401,136 +408,48 @@ function createProcessSection(data: TemplateData): (Paragraph | Table)[] {
 // SECTION 5 - HAZARD ANALYSIS & CCP DETERMINATION
 // ============================================================================
 
-function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] {
+function createHazardAnalysisSection(data: TemplateData, tc: TableCounter): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
   elements.push(sectionHeading({ text: 'HAZARD ANALYSIS & CCP DETERMINATION', number: 'SECTION 5 -' }));
 
   if (data.has_hazard_analysis && data.hazard_analysis.length > 0) {
-    // Collect descriptions that need to be shown
-    const descriptionsToShow = data.hazard_analysis.filter(
-      (h) => h.control_measure_description && h.control_measure_description !== '-'
-    );
-
-    const hazardRows = data.hazard_analysis.map((h) => ({
-      step: h.step,
-      hazard: h.hazard,
-      type: h.hazard_type,
-      severity: h.severity,
-      likelihood: h.likelihood,
-      significant: h.significant,
-      control: h.control_measure,
-    }));
-
-    elements.push(subsectionHeading({ text: 'Table 5A — Hazard Identification' }));
+    // --- Table 5A: Hazard Identification ---
+    elements.push(subsectionHeading({ text: 'Hazard Identification', number: '5.1' }));
+    elements.push(nextTable(tc, 'Hazard Identification'));
     elements.push(
       ...dataTable({
-        headers: ['Step', 'Hazard', 'Type'],
-        rows: hazardRows.map((h) => [h.step, h.hazard, h.type]),
-        columnWidths: [20, 55, 25],
+        headers: ['Step', 'Type of Hazard', 'Description'],
+        rows: data.hazard_analysis.map((h) => [h.step, h.hazard_type, h.hazard]),
+        columnWidths: [20, 20, 60],
         zebraStripe: false,
         introText: 'Identified hazards are summarized by process step.',
+        headerRepeat: true,
+        cantSplitRows: true,
       })
     );
 
-    elements.push(subsectionHeading({ text: 'Table 5B — Risk & Controls' }));
+    // --- Table 5B: Risk & Controls ---
+    elements.push(subsectionHeading({ text: 'Risk Assessment & Controls', number: '5.2' }));
+    elements.push(nextTable(tc, 'Risk Assessment & Controls'));
     elements.push(
       ...dataTable({
-        headers: ['Step', 'Sev.', 'Lik.', 'Sig?', 'Control Measure'],
-        rows: hazardRows.map((h) => [h.step, h.severity, h.likelihood, h.significant, h.control]),
-        columnWidths: [20, 10, 10, 12, 48],
+        headers: ['Step', 'Type of Hazard', 'Likelihood', 'Control Measures'],
+        rows: data.hazard_analysis.map((h) => [
+          h.step,
+          h.hazard_type,
+          h.likelihood,
+          h.control_measure_detail,
+        ]),
+        columnWidths: [18, 16, 14, 52],
         zebraStripe: false,
-        introText: 'Risk ratings and declared controls are shown per step.',
+        introText: 'Risk ratings and declared controls are shown per hazard.',
+        headerRepeat: true,
+        cantSplitRows: true,
       })
     );
-
-    // Control Measure Descriptions - conditional display based on count
-    // ≤2 descriptions: append as notes under the main table (reduces fragmentation)
-    // >2 descriptions: separate 6.1 subsection with its own table
-    if (descriptionsToShow.length > 0) {
-      if (descriptionsToShow.length <= 2) {
-        // Append as compact notes under the hazard table
-        elements.push(spacerParagraph(Spacing.gapSm));
-        elements.push(sectionLeadParagraph('Control Measure Notes:'));
-        descriptionsToShow.forEach((h) => {
-          elements.push(
-            bodyParagraph({
-              text: `${h.step} — ${h.control_measure}: ${h.control_measure_description}`,
-              spacingAfter: Spacing.gapSm,
-            })
-          );
-        });
-      } else {
-        // Separate subsection for better organization
-        elements.push(subsectionHeading({ text: 'Control Measure Descriptions', number: '5.1' }));
-        elements.push(tableCaptionParagraph('Table 5.1', 'Control Measure Details'));
-        elements.push(
-          ...dataTable({
-            headers: ['Step', 'Control Measure', 'Description'],
-            rows: descriptionsToShow.map((h) => [h.step, h.control_measure, h.control_measure_description]),
-            columnWidths: [15, 25, 60],
-            zebraStripe: true,
-            introText: 'Detailed descriptions of control measures are provided below.',
-          })
-        );
-      }
-    }
   } else {
     elements.push(introParagraph({ text: PLACEHOLDERS.hazardToBeCompleted, italic: true, muted: true }));
-  }
-
-  // CCP Determination (Codex Decision Tree)
-  elements.push(spacerParagraph(Spacing.gapMd));
-  elements.push(subsectionHeading({ text: 'CCP Determination — Codex Decision Tree', number: '5.3' }));
-
-  if (data.has_ccp_decisions) {
-    elements.push(tableCaptionParagraph('Table 5.3', 'CCP Decision Tree Results'));
-    elements.push(
-      ...dataTable({
-        headers: ['Step', 'Hazard', 'Q1', 'Q2', 'Q3', 'Q4', 'Outcome'],
-        rows: data.ccp_decisions.map((d: CCPDecisionRow) => [
-          d.step, d.hazard, d.q1, d.q2, d.q3, d.q4, d.outcome,
-        ]),
-        columnWidths: [16, 20, 8, 8, 8, 8, 12],
-        zebraStripe: true,
-        introText:
-          'CCP determination was performed using Codex Alimentarius decision tree methodology. ' +
-          'Q1: Control measure exists? Q2: Step designed to eliminate? Q3: Contamination could increase? Q4: Subsequent step eliminates?',
-      })
-    );
-
-    // Justification table — only if at least one justification was provided
-    const hasAnyJustification = data.ccp_decisions.some(
-      (d: CCPDecisionRow) =>
-        (d.q1_justification && d.q1_justification !== '-') ||
-        (d.q2_justification && d.q2_justification !== '-') ||
-        (d.q3_justification && d.q3_justification !== '-') ||
-        (d.q4_justification && d.q4_justification !== '-')
-    );
-    if (hasAnyJustification) {
-      elements.push(spacerParagraph(Spacing.gapSm));
-      elements.push(tableCaptionParagraph('Table 5.4', 'Decision Tree Justifications'));
-      const justRows: string[][] = [];
-      for (const d of data.ccp_decisions) {
-        if (d.q1_justification !== '-') justRows.push([d.step, d.hazard, 'Q1', d.q1_justification]);
-        if (d.q2_justification !== '-') justRows.push([d.step, d.hazard, 'Q2', d.q2_justification]);
-        if (d.q3_justification !== '-') justRows.push([d.step, d.hazard, 'Q3', d.q3_justification]);
-        if (d.q4_justification !== '-') justRows.push([d.step, d.hazard, 'Q4', d.q4_justification]);
-      }
-      elements.push(
-        ...dataTable({
-          headers: ['Step', 'Hazard', 'Question', 'Justification'],
-          rows: justRows,
-          columnWidths: [16, 20, 10, 54],
-          zebraStripe: true,
-          introText: 'The HACCP team provided the following justifications for each decision tree answer.',
-        })
-      );
-    }
-  } else {
-    elements.push(
-      captionParagraph('CCP determination was performed using Codex Alimentarius decision tree methodology.')
-    );
   }
 
   return elements;
@@ -540,14 +459,14 @@ function createHazardAnalysisSection(data: TemplateData): (Paragraph | Table)[] 
 // SECTION 6 - CCP MANAGEMENT
 // ============================================================================
 
-function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
+function createCCPSection(data: TemplateData, tc: TableCounter): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
   elements.push(sectionHeading({ text: 'CCP MANAGEMENT', number: 'SECTION 6 -' }));
 
   if (data.has_ccps && data.ccps.length > 0) {
     elements.push(subsectionHeading({ text: 'CCP Summary', number: '6.1' }));
-    elements.push(tableCaptionParagraph('Table 6.1', 'Critical Control Points'));
+    elements.push(nextTable(tc, 'Critical Control Points'));
 
     elements.push(
       ...dataTable({
@@ -560,7 +479,7 @@ function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
     );
 
     elements.push(subsectionHeading({ text: 'Monitoring & Corrective Actions', number: '6.2' }));
-    elements.push(tableCaptionParagraph('Table 6.2', 'CCP Monitoring'));
+    elements.push(nextTable(tc, 'CCP Monitoring'));
 
     elements.push(
       ...dataTable({
@@ -576,7 +495,7 @@ function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
     const hasEquipmentData = data.ccps.some((c) => c.monitoring_instrument !== '-' || c.calibration_frequency !== '-');
     if (hasEquipmentData) {
       elements.push(subsectionHeading({ text: 'Monitoring Equipment & Calibration', number: '6.3' }));
-      elements.push(tableCaptionParagraph('Table 6.3', 'Equipment Validation'));
+      elements.push(nextTable(tc, 'Equipment Validation'));
       elements.push(
         ...dataTable({
           headers: ['CCP ID', 'Instrument / Equipment', 'Calibration Frequency'],
@@ -604,16 +523,57 @@ function createCCPSection(data: TemplateData): (Paragraph | Table)[] {
 // SECTIONS 7 & 8 - VERIFICATION AND RECORDS
 // ============================================================================
 
-function createVerificationSection(data: TemplateData): (Paragraph | Table)[] {
+function createVerificationSection(data: TemplateData, tc: TableCounter): (Paragraph | Table)[] {
   const elements: (Paragraph | Table)[] = [];
 
+  // --- Section 7: Verification & Validation ---
   elements.push(sectionHeading({ text: 'VERIFICATION & VALIDATION', number: 'SECTION 7 -' }));
-  elements.push(bodyParagraph({ text: data.verification_procedures }));
 
+  if (data.has_verification_data) {
+    elements.push(nextTable(tc, 'Verification & Validation'));
+    elements.push(
+      ...keyValueTable([
+        { key: 'HACCP Plan Validated', value: data.verification_data.is_validated },
+        ...(data.verification_data.validation_date !== 'Not recorded'
+          ? [{ key: 'Validation Date', value: data.verification_data.validation_date }]
+          : []),
+        ...(data.verification_data.validated_by !== 'Not recorded'
+          ? [{ key: 'Validated By', value: data.verification_data.validated_by }]
+          : []),
+        { key: 'Verification Activities', value: data.verification_data.verification_activities },
+        { key: 'Verification Frequency', value: data.verification_data.verification_frequency },
+        { key: 'Verification Responsibility', value: data.verification_data.verification_responsibility },
+        { key: 'HACCP Review Frequency', value: data.verification_data.review_frequency },
+        { key: 'Review Triggers', value: data.verification_data.review_triggers },
+      ])
+    );
+  }
+
+  // Include AI-generated narrative as supplementary text
+  if (data.verification_procedures && data.verification_procedures !== '-') {
+    elements.push(bodyParagraph({ text: data.verification_procedures }));
+  }
+
+  // --- Section 8: Records & Documentation ---
   elements.push(sectionHeading({ text: 'RECORDS & DOCUMENTATION', number: 'SECTION 8 -' }));
-  elements.push(bodyParagraph({ text: data.record_keeping }));
 
-  // Section 9 — Traceability & Recall (Regulation 178/2002)
+  if (data.has_records_data) {
+    elements.push(nextTable(tc, 'Records & Documentation'));
+    elements.push(
+      ...keyValueTable([
+        { key: 'Record Storage Location', value: data.records_data.record_storage_location },
+        { key: 'Retention Period', value: data.records_data.record_retention_period },
+        { key: 'Document Control Method', value: data.records_data.document_control_method },
+      ])
+    );
+  }
+
+  // Include AI-generated narrative as supplementary text
+  if (data.record_keeping && data.record_keeping !== '-') {
+    elements.push(bodyParagraph({ text: data.record_keeping }));
+  }
+
+  // --- Section 9: Traceability & Recall ---
   elements.push(sectionHeading({ text: 'TRACEABILITY & RECALL', number: 'SECTION 9 -' }));
 
   if (data.has_traceability) {
@@ -624,7 +584,7 @@ function createVerificationSection(data: TemplateData): (Paragraph | Table)[] {
     );
 
     elements.push(subsectionHeading({ text: 'Batch Coding & Lot Identification', number: '9.1' }));
-    elements.push(tableCaptionParagraph('Table 9.1', 'Batch Coding'));
+    elements.push(nextTable(tc, 'Batch Coding'));
     elements.push(
       ...keyValueTable([
         { key: 'Batch coding method', value: data.traceability.batch_coding_method },
@@ -633,7 +593,7 @@ function createVerificationSection(data: TemplateData): (Paragraph | Table)[] {
     );
 
     elements.push(subsectionHeading({ text: 'Supply Chain Traceability', number: '9.2' }));
-    elements.push(tableCaptionParagraph('Table 9.2', 'Traceability Capabilities'));
+    elements.push(nextTable(tc, 'Traceability Capabilities'));
     elements.push(
       ...keyValueTable([
         { key: 'Supplier traceability (one step back)', value: data.traceability.supplier_traceability },
@@ -648,7 +608,7 @@ function createVerificationSection(data: TemplateData): (Paragraph | Table)[] {
     );
 
     elements.push(subsectionHeading({ text: 'Recall & Withdrawal', number: '9.3' }));
-    elements.push(tableCaptionParagraph('Table 9.3', 'Recall Procedures'));
+    elements.push(nextTable(tc, 'Recall Procedures'));
     elements.push(
       ...keyValueTable([
         { key: 'Recall procedure documented', value: data.traceability.recall_procedure_documented },
@@ -806,6 +766,8 @@ function createFooter(version: string): Footer {
  * Uses design system primitives for all layout and styling.
  */
 export async function generateMinneapolisDocument(data: TemplateData): Promise<Buffer> {
+  const tc: TableCounter = { n: 0 };
+
   const allContent: (Paragraph | Table)[] = [
     // Cover page
     ...createCoverPage(data),
@@ -814,7 +776,7 @@ export async function generateMinneapolisDocument(data: TemplateData): Promise<B
     sectionHeading({ text: 'HACCP TEAM & SCOPE', number: 'SECTION 1 -' }),
     ...(data.has_haccp_team
       ? [
-          tableCaptionParagraph('Table 1', 'HACCP Team'),
+          nextTable(tc, 'HACCP Team'),
           ...dataTable({
             headers: ['Name', 'Role / Job Title', 'Competence / Qualifications'],
             rows: data.haccp_team.map((m) => [m.member_name, m.member_role, m.member_competence]),
@@ -827,22 +789,22 @@ export async function generateMinneapolisDocument(data: TemplateData): Promise<B
     bodyParagraph({ text: data.team_scope_summary }),
 
     // Section 2 - Product Description
-    ...createProductSection(data),
+    ...createProductSection(data, tc),
 
     // Section 3 - PRPs
-    ...createPRPSection(data),
+    ...createPRPSection(data, tc),
 
     // Section 4 - Process Flow (with 4.1 Diagram and 4.2 Steps Table)
-    ...createProcessSection(data),
+    ...createProcessSection(data, tc),
 
-    // Section 5 - Hazard Analysis & CCP Determination (merged)
-    ...createHazardAnalysisSection(data),
+    // Section 5 - Hazard Analysis & CCP Determination
+    ...createHazardAnalysisSection(data, tc),
 
     // Section 6 - CCP Management
-    ...createCCPSection(data),
+    ...createCCPSection(data, tc),
 
-    // Sections 7 & 8 - Verification and Records
-    ...createVerificationSection(data),
+    // Sections 7, 8 & 9 - Verification, Records, Traceability
+    ...createVerificationSection(data, tc),
   ];
 
   const doc = new Document({

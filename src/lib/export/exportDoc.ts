@@ -400,98 +400,58 @@ export function buildExportDoc({
           rows: prerequisitePrograms.map((p: any) => {
             const name = p.program || "-";
             const lower = name.toLowerCase();
-            const label = (lower.includes('traceab') || lower.includes('recall')) ? `${name} (see Section 10)` : name;
+            const label = (lower.includes('traceab') || lower.includes('recall')) ? `${name} (see Section 9)` : name;
             return [label, p.details || "-"];
           }),
           colWidths: [30, 70],
         }
       : { type: "paragraph", text: t("Prerequisite programs to be documented.", "PRPs pending.") },
-    { type: "section", title: t("SECTION 5 — HAZARD ANALYSIS", dict.s5_title) },
+    { type: "section", title: t("SECTION 5 — HAZARD ANALYSIS & CCP DETERMINATION", dict.s5_title) },
+    { type: "subheading", text: t("5.1 Hazard Identification") },
     analysis.length > 0
       ? {
           type: "table",
           headers: [
             t("Step", dict.col_step),
-            t("Hazard", dict.lbl_hazard),
-            t("Sev"),
-            t("Lik"),
-            t("Sig?", dict.col_ccp),
-            t("Control", dict.col_control),
+            t("Type of Hazard"),
+            t("Description"),
           ],
           rows: analysis.map((hazard: any) => [
             hazard.step_name || "-",
+            hazard.hazard_type || hazard.type || "-",
             appendAllergenContext(hazard, allergensPresent),
-            hazard.severity || "-",
-            hazard.likelihood || "-",
-            resolveHazardSignificance(hazard) ? "Yes" : "No",
-            hazard.control_measure || "-",
           ]),
-          colWidths: [20, 30, 10, 10, 10, 20],
+          colWidths: [20, 20, 60],
         }
       : { type: "paragraph", text: t("Hazard analysis pending completion.", "Hazard analysis pending.") },
-    { type: "section", title: t("SECTION 6 — CCP DETERMINATION", dict.s6_title) }
+    { type: "subheading", text: t("5.2 Risk Assessment & Controls") },
+    analysis.length > 0
+      ? {
+          type: "table",
+          headers: [
+            t("Step", dict.col_step),
+            t("Type of Hazard"),
+            t("Likelihood"),
+            t("Control Measures"),
+          ],
+          rows: analysis.map((hazard: any) => {
+            const controlLabel = hazard.control_measure || "-";
+            const desc = hazard.control_measure_description || hazard.process_control_description || "";
+            const controlDetail = desc ? `${controlLabel} — ${desc}` : controlLabel;
+            return [
+              hazard.step_name || "-",
+              hazard.hazard_type || hazard.type || "-",
+              hazard.likelihood || "-",
+              controlDetail,
+            ];
+          }),
+          colWidths: [18, 16, 14, 52],
+        }
+      : { type: "paragraph", text: t("Risk assessment pending.", "Risk assessment pending.") }
   );
 
-  // CCP Decision Tree table
-  const ccpDecisions = Array.isArray(originalInputs.ccp_decisions) ? originalInputs.ccp_decisions : [];
-  const ynDash = (v: any): string => (v === true ? "Yes" : v === false ? "No" : "-");
-
-  if (ccpDecisions.length > 0) {
-    content.push({
-      type: "paragraph",
-      text: t(
-        "CCP determination performed using Codex Alimentarius decision tree. " +
-        "Q1: Control measure exists? Q2: Step designed to eliminate? Q3: Contamination could increase? Q4: Subsequent step eliminates?",
-        dict.s7_desc
-      ),
-    });
-    content.push({
-      type: "table",
-      headers: [t("Step"), t("Hazard"), "Q1", "Q2", "Q3", "Q4", t("Outcome")],
-      rows: ccpDecisions.map((d: any) => {
-        const a = d.answers || {};
-        return [
-          d.step_name || "-",
-          d.hazard || "-",
-          ynDash(a.q1_control_measure),
-          ynDash(a.q2_step_designed_to_eliminate),
-          ynDash(a.q3_contamination_possible),
-          ynDash(a.q4_subsequent_step),
-          d.control_classification || "-",
-        ];
-      }),
-      colWidths: [16, 20, 8, 8, 8, 8, 12],
-    });
-
-    // Justification table if any provided
-    const justRows: string[][] = [];
-    for (const d of ccpDecisions) {
-      const a = d.answers || {};
-      if (a.q1_control_measure_justification) justRows.push([d.step_name || "-", d.hazard || "-", "Q1", a.q1_control_measure_justification]);
-      if (a.q2_step_designed_to_eliminate_justification) justRows.push([d.step_name || "-", d.hazard || "-", "Q2", a.q2_step_designed_to_eliminate_justification]);
-      if (a.q3_contamination_possible_justification) justRows.push([d.step_name || "-", d.hazard || "-", "Q3", a.q3_contamination_possible_justification]);
-      if (a.q4_subsequent_step_justification) justRows.push([d.step_name || "-", d.hazard || "-", "Q4", a.q4_subsequent_step_justification]);
-    }
-    if (justRows.length > 0) {
-      content.push(
-        { type: "subheading", text: t("Decision Tree Justifications") },
-        {
-          type: "table",
-          headers: [t("Step"), t("Hazard"), "Q", t("Justification")],
-          rows: justRows,
-          colWidths: [16, 20, 8, 56],
-        }
-      );
-    }
-  } else {
-    content.push({
-      type: "paragraph",
-      text: t("CCPs determined using Codex Decision Tree.", dict.s7_desc),
-    });
-  }
-
   content.push(
-    { type: "section", title: t("SECTION 7 — CCP MANAGEMENT", dict.s7_title) }
+    { type: "section", title: t("SECTION 6 — CCP MANAGEMENT", dict.s7_title) }
   );
 
   const ccpMgmtRaw = originalInputs.ccp_management || {};
@@ -558,12 +518,66 @@ export function buildExportDoc({
     });
   }
 
+  // Section 7 — Verification & Validation (user answers + AI narrative)
   content.push(
-    { type: "section", title: t("SECTION 8 — VERIFICATION & VALIDATION", dict.s8_title) },
-    { type: "paragraph", text: fullPlan?.verification_validation || "Procedures established." },
-    { type: "section", title: t("SECTION 9 — RECORDS & REVIEW", dict.s9_title) },
-    { type: "paragraph", text: fullPlan?.record_keeping || "Records maintained." },
-    { type: "section", title: t("SECTION 10 — TRACEABILITY & RECALL") }
+    { type: "section", title: t("SECTION 7 — VERIFICATION & VALIDATION", dict.s8_title) }
+  );
+
+  const veriGroup = validationInputs.verification_group || {};
+  const valGroup = validationInputs.validation_group || {};
+  const revGroup = validationInputs.review_group || {};
+  const hasVeriData = veriGroup.system_verification_activities || valGroup.is_validated !== undefined;
+
+  if (hasVeriData) {
+    const ynVal = (v: any): string => (v === true ? "Yes" : v === false ? "No" : "TBD");
+    content.push({
+      type: "table",
+      headers: [t("Field"), t("Value")],
+      rows: [
+        [t("HACCP Plan Validated"), ynVal(valGroup.is_validated)],
+        ...(valGroup.validation_date ? [[t("Validation Date"), valGroup.validation_date]] : []),
+        ...(valGroup.validated_by ? [[t("Validated By"), valGroup.validated_by]] : []),
+        [t("Verification Activities"), formatValue(veriGroup.system_verification_activities)],
+        [t("Verification Frequency"), formatValue(veriGroup.system_verification_frequency)],
+        [t("Verification Responsibility"), formatValue(veriGroup.system_verification_responsibility)],
+        [t("HACCP Review Frequency"), formatValue(revGroup.review_frequency)],
+        [t("Review Triggers"), formatValue(revGroup.review_triggers)],
+      ],
+      colWidths: [40, 60],
+    });
+  }
+
+  if (fullPlan?.verification_validation) {
+    content.push({ type: "paragraph", text: fullPlan.verification_validation });
+  }
+
+  // Section 8 — Records & Documentation (user answers + AI narrative)
+  content.push(
+    { type: "section", title: t("SECTION 8 — RECORDS & DOCUMENTATION", dict.s9_title) }
+  );
+
+  const recGroup = validationInputs.records_group || {};
+  const hasRecData = recGroup.record_storage_location || recGroup.record_retention_period;
+
+  if (hasRecData) {
+    content.push({
+      type: "table",
+      headers: [t("Field"), t("Value")],
+      rows: [
+        [t("Record Storage Location"), formatValue(recGroup.record_storage_location)],
+        [t("Retention Period"), formatValue(recGroup.record_retention_period)],
+        [t("Document Control Method"), formatValue(recGroup.document_control_method)],
+      ],
+      colWidths: [40, 60],
+    });
+  }
+
+  if (fullPlan?.record_keeping) {
+    content.push({ type: "paragraph", text: fullPlan.record_keeping });
+  }
+
+  content.push(
+    { type: "section", title: t("SECTION 9 — TRACEABILITY & RECALL") }
   );
 
   // Traceability & Recall (Regulation 178/2002)

@@ -28,6 +28,8 @@ export interface HazardAnalysisRow {
   significant: string;
   control_measure: string;
   control_measure_description: string;
+  /** Combined "PRP — description" or "Process control — description" for display */
+  control_measure_detail: string;
 }
 
 export interface CCPRow {
@@ -50,18 +52,21 @@ export interface HACCPTeamMember {
   member_competence: string;
 }
 
-export interface CCPDecisionRow {
-  step: string;
-  hazard: string;
-  q1: string;
-  q1_justification: string;
-  q2: string;
-  q2_justification: string;
-  q3: string;
-  q3_justification: string;
-  q4: string;
-  q4_justification: string;
-  outcome: string;
+export interface VerificationValidationData {
+  is_validated: string;
+  validation_date: string;
+  validated_by: string;
+  verification_activities: string;
+  verification_frequency: string;
+  verification_responsibility: string;
+  review_frequency: string;
+  review_triggers: string;
+}
+
+export interface RecordsData {
+  record_storage_location: string;
+  record_retention_period: string;
+  document_control_method: string;
 }
 
 export interface TraceabilityData {
@@ -113,13 +118,17 @@ export interface TemplateData {
   hazard_analysis: HazardAnalysisRow[];
   has_hazard_analysis: boolean;
 
-  // CCP Decision Tree
-  ccp_decisions: CCPDecisionRow[];
-  has_ccp_decisions: boolean;
-
   // CCPs
   ccps: CCPRow[];
   has_ccps: boolean;
+
+  // Verification & Validation (user answers)
+  verification_data: VerificationValidationData;
+  has_verification_data: boolean;
+
+  // Records (user answers)
+  records_data: RecordsData;
+  has_records_data: boolean;
 
   // Traceability & Recall
   traceability: TraceabilityData;
@@ -303,6 +312,13 @@ const extractHazardAnalysis = (fullPlan: any): HazardAnalysisRow[] => {
       ? Boolean(hazard.is_significant)
       : isSignificant(hazard.severity, hazard.likelihood);
 
+    // Build combined control measure detail: "PRP — description" or "Process control — description"
+    const controlLabel = formatValue(controlMeasure);
+    let controlDetail = controlLabel;
+    if (description && description !== '-') {
+      controlDetail = `${controlLabel} — ${description}`;
+    }
+
     return {
       step: formatValue(hazard.step_name || hazard.step),
       hazard: formatValue(hazard.hazards || hazard.hazard),
@@ -312,6 +328,7 @@ const extractHazardAnalysis = (fullPlan: any): HazardAnalysisRow[] => {
       significant: significant ? 'Yes' : 'No',
       control_measure: formatValue(controlMeasure),
       control_measure_description: description || '-',
+      control_measure_detail: controlDetail,
     };
   });
 };
@@ -346,32 +363,31 @@ const extractCCPs = (fullPlan: any): CCPRow[] => {
   });
 };
 
-const ynDash = (v: any): string => {
-  if (v === true) return 'Yes';
-  if (v === false) return 'No';
-  return '-';
+const extractVerificationData = (originalInputs: any): VerificationValidationData => {
+  const vi = originalInputs.review_validation || originalInputs.validation || {};
+  const vg = vi.verification_group || {};
+  const valg = vi.validation_group || {};
+  const rg = vi.review_group || {};
+  return {
+    is_validated: valg.is_validated === true ? 'Yes' : valg.is_validated === false ? 'No' : 'TBD',
+    validation_date: formatValue(valg.validation_date, 'Not recorded'),
+    validated_by: formatValue(valg.validated_by, 'Not recorded'),
+    verification_activities: formatValue(vg.system_verification_activities, 'Not specified'),
+    verification_frequency: formatValue(vg.system_verification_frequency, 'Not specified'),
+    verification_responsibility: formatValue(vg.system_verification_responsibility, 'Not specified'),
+    review_frequency: formatValue(rg.review_frequency, 'Not specified'),
+    review_triggers: formatValue(rg.review_triggers, 'Not specified'),
+  };
 };
 
-const extractCCPDecisions = (fullPlan: any): CCPDecisionRow[] => {
-  const decisions = fullPlan?._original_inputs?.ccp_decisions;
-  if (!Array.isArray(decisions) || decisions.length === 0) return [];
-
-  return decisions.map((d: any) => {
-    const a = d.answers || {};
-    return {
-      step: formatValue(d.step_name),
-      hazard: formatValue(d.hazard),
-      q1: ynDash(a.q1_control_measure),
-      q1_justification: formatValue(a.q1_control_measure_justification, '-'),
-      q2: ynDash(a.q2_step_designed_to_eliminate),
-      q2_justification: formatValue(a.q2_step_designed_to_eliminate_justification, '-'),
-      q3: ynDash(a.q3_contamination_possible),
-      q3_justification: formatValue(a.q3_contamination_possible_justification, '-'),
-      q4: ynDash(a.q4_subsequent_step),
-      q4_justification: formatValue(a.q4_subsequent_step_justification, '-'),
-      outcome: formatValue(d.control_classification, '-'),
-    };
-  });
+const extractRecordsData = (originalInputs: any): RecordsData => {
+  const vi = originalInputs.review_validation || originalInputs.validation || {};
+  const rg = vi.records_group || {};
+  return {
+    record_storage_location: formatValue(rg.record_storage_location, 'Not specified'),
+    record_retention_period: formatValue(rg.record_retention_period, 'Not specified'),
+    document_control_method: formatValue(rg.document_control_method, 'Not specified'),
+  };
 };
 
 export function buildTemplateData(
@@ -403,6 +419,13 @@ export function buildTemplateData(
     return prp;
   });
   const allergensPresent = formatValue(productInputs.allergens_present || productInputs.allergens, 'None');
+  const verificationData = extractVerificationData(originalInputs);
+  const hasVerificationData = verificationData.verification_activities !== 'Not specified' ||
+    verificationData.is_validated !== 'TBD';
+  const recordsData = extractRecordsData(originalInputs);
+  const hasRecordsData = recordsData.record_storage_location !== 'Not specified' ||
+    recordsData.record_retention_period !== 'Not specified';
+
   const hazardAnalysisBase = extractHazardAnalysis(fullPlan);
   const hazardAnalysis = hazardAnalysisBase.map((row) => {
     if (!allergensPresent || ['none', '-', 'not provided'].includes(allergensPresent.toLowerCase())) {
@@ -416,7 +439,6 @@ export function buildTemplateData(
     return row;
   });
   const ccps = extractCCPs(fullPlan);
-  const ccpDecisions = extractCCPDecisions(fullPlan);
   const intendedUseRaw = productInputs.intended_consumer_group || productInputs.intended_use || data.intendedUse || '';
   const productCategory = productInputs.product_category || data.productDescription || '';
   const isRte = isReadyToEat(productCategory) || isReadyToEat(intendedUseRaw);
@@ -500,13 +522,17 @@ export function buildTemplateData(
     hazard_analysis: hazardAnalysis,
     has_hazard_analysis: hazardAnalysis.length > 0,
 
-    // CCP Decision Tree
-    ccp_decisions: ccpDecisions,
-    has_ccp_decisions: ccpDecisions.length > 0,
-
     // CCPs
     ccps: ccps,
     has_ccps: ccps.length > 0,
+
+    // Verification & Validation (user answers)
+    verification_data: verificationData,
+    has_verification_data: hasVerificationData,
+
+    // Records (user answers)
+    records_data: recordsData,
+    has_records_data: hasRecordsData,
 
     // Traceability & Recall
     traceability,
