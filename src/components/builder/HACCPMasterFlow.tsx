@@ -7,10 +7,11 @@ import HACCPQuestionnaire from './HACCPQuestionnaire';
 import { getQuestions } from '@/data/haccp/loader';
 import { useLanguage } from '@/lib/i18n';
 
-import { AlertTriangle, Info, ShieldAlert, CheckCircle2, Loader2, CloudOff, Check, CloudUpload, CheckCircle, Pencil } from 'lucide-react';
+import { AlertTriangle, Info, ShieldAlert, CheckCircle2, Loader2, CloudOff, Check, CloudUpload, CheckCircle, Pencil, Save } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ProcessLog } from '@/components/ui/ProcessLog';
+import { SaveProgressModal } from './SaveProgressModal';
 import { fetchWithTimeout } from '@/lib/builder/utils/withTimeoutFetch';
 import { classifyControl, type ControlClassification } from '@/lib/builder/ccpDecisionTree';
 import { applySignificanceToHazardEvaluation, isSignificant } from '@/lib/haccp/significanceMatrix';
@@ -548,6 +549,7 @@ export default function HACCPMasterFlow() {
   const [transition, setTransition] = useState<{ show: boolean, message: string }>({ show: false, message: '' });
   const [showHighRiskModal, setShowHighRiskModal] = useState(false);
   const [showScopeConfirmation, setShowScopeConfirmation] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const [isResumed, setIsResumed] = useState(false);
   const [highRiskConfirmation, setHighRiskConfirmation] = useState("");
 
@@ -803,6 +805,67 @@ export default function HACCPMasterFlow() {
       return (answers.ccp_decisions || []).filter(
         (d: any) => d.control_classification === 'CCP' || d.is_ccp === true
       );
+  };
+
+  const handleSaveProgress = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (session && draftId) {
+      // Logged-in user with a draft: trigger immediate save
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      pendingSaveRef.current = allAnswers;
+
+      if (isSavingRef.current) {
+        // Already saving — the status indicator will show it
+        return;
+      }
+
+      isSavingRef.current = true;
+      setAutoSaveStatus('saving');
+
+      try {
+        const productName = allAnswers?.product?.product_name?.trim();
+        const isDefaultName = draftName ? draftName.startsWith('HACCP Draft –') : true;
+        const shouldSetName = Boolean(productName && isDefaultName);
+        const nextDraftName = shouldSetName ? `${productName} – HACCP Draft` : undefined;
+
+        await fetch(`/api/drafts/${draftId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({
+            answers: allAnswers,
+            current_step: currentSection,
+            ...(nextDraftName ? { name: nextDraftName } : {})
+          })
+        });
+
+        localStorage.setItem('haccp_last_active', new Date().toISOString());
+        if (nextDraftName) setDraftName(nextDraftName);
+        pendingSaveRef.current = null;
+        setAutoSaveStatus('saved');
+        if (autoSaveFadeRef.current) clearTimeout(autoSaveFadeRef.current);
+        autoSaveFadeRef.current = setTimeout(() => setAutoSaveStatus('idle'), 3000);
+      } catch (e) {
+        console.error('Manual save failed', e);
+        setAutoSaveStatus('error');
+      } finally {
+        isSavingRef.current = false;
+      }
+    } else if (draftId) {
+      // Anonymous user with a draft: open email modal
+      setShowSaveModal(true);
+    } else {
+      // No draft yet — persist to localStorage for anonymous users
+      persistAnonymousSnapshot();
+      setAutoSaveStatus('saved');
+      if (autoSaveFadeRef.current) clearTimeout(autoSaveFadeRef.current);
+      autoSaveFadeRef.current = setTimeout(() => setAutoSaveStatus('idle'), 3000);
+    }
   };
 
   const handleBack = (sectionKey: SectionKey, partialData?: any) => {
@@ -2577,6 +2640,15 @@ export default function HACCPMasterFlow() {
                           <CloudOff className="w-3 h-3" /> Save failed
                         </span>
                       )}
+                      {!['generating', 'validating', 'complete'].includes(currentSection) && (
+                        <button
+                          onClick={handleSaveProgress}
+                          disabled={autoSaveStatus === 'saving'}
+                          className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                        >
+                          <Save className="w-3 h-3" /> Save
+                        </button>
+                      )}
                       <span className="text-xs font-bold text-slate-400">{progress}%</span>
                     </span>
                 </div>
@@ -2614,7 +2686,15 @@ export default function HACCPMasterFlow() {
         <div className={`p${'t-10'} px-6`}>
             {renderContent()}
         </div>
-        
+
+        {draftId && (
+            <SaveProgressModal
+                isOpen={showSaveModal}
+                onClose={() => setShowSaveModal(false)}
+                draftId={draftId}
+            />
+        )}
+
     </div>
   );
 }
