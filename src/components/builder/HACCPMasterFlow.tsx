@@ -805,6 +805,60 @@ export default function HACCPMasterFlow() {
       );
   };
 
+  const handleBack = (sectionKey: SectionKey, partialData?: any) => {
+    // Save partial progress for the current section so it's restored if the user returns
+    if (partialData) {
+      setAllAnswers((prev: any) => ({ ...prev, [sectionKey]: partialData }));
+    }
+
+    switch (sectionKey) {
+      case 'process':
+        setCurrentSection('product');
+        break;
+      case 'prp':
+        setCurrentSection('process');
+        break;
+      case 'hazards':
+        if (currentStepIndex > 0) {
+          setCurrentStepIndex(prev => prev - 1);
+        } else {
+          setCurrentSection('prp');
+        }
+        break;
+      case 'ccp_determination':
+        if (currentCCPIndex > 0) {
+          setCurrentCCPIndex(prev => prev - 1);
+        } else {
+          // Go back to last hazard analysis step
+          const steps = allAnswers.process?.process_steps || [];
+          setCurrentStepIndex(Math.max(0, steps.length - 1));
+          setCurrentSection('hazards');
+        }
+        break;
+      case 'ccp_management':
+        // Go back to last CCP determination
+        const sigHazards = getSignificantHazards();
+        setCurrentCCPIndex(Math.max(0, sigHazards.length - 1));
+        setCurrentSection('ccp_determination');
+        break;
+      case 'review_validation': {
+        // Go back to CCP management if CCPs exist, otherwise to hazards
+        const ccps = getIdentifiedCCPs();
+        if (ccps.length > 0) {
+          setCurrentSection('ccp_management');
+        } else {
+          const steps = allAnswers.process?.process_steps || [];
+          setCurrentStepIndex(Math.max(0, steps.length - 1));
+          setCurrentSection('hazards');
+        }
+        break;
+      }
+      default:
+        break;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleSectionComplete = async (sectionKey: SectionKey, data: any) => {
     // Merge data
     const newAnswers = { ...allAnswers, [sectionKey]: data };
@@ -1782,11 +1836,11 @@ export default function HACCPMasterFlow() {
     }
     
     if (currentSection === 'process') {
-      return <HACCPQuestionnaire sectionData={getQuestions('process', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('process', d)} initialData={allAnswers.process} />;
+      return <HACCPQuestionnaire sectionData={getQuestions('process', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('process', d)} onBack={(d) => handleBack('process', d)} initialData={allAnswers.process} />;
   }
 
   if (currentSection === 'prp') {
-      return <HACCPQuestionnaire sectionData={getQuestions('prp', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('prp', d)} initialData={allAnswers.prp} />;
+      return <HACCPQuestionnaire sectionData={getQuestions('prp', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('prp', d)} onBack={(d) => handleBack('prp', d)} initialData={allAnswers.prp} />;
   }
 
   if (currentSection === 'hazards') {
@@ -1814,9 +1868,10 @@ export default function HACCPMasterFlow() {
                     </div>
                 </div>
             )}
-            <HACCPQuestionnaire 
-                sectionData={dynamicSchema} 
-                onComplete={(d) => handleSectionComplete('hazards', d)} 
+            <HACCPQuestionnaire
+                sectionData={dynamicSchema}
+                onComplete={(d) => handleSectionComplete('hazards', d)}
+                onBack={(d) => handleBack('hazards', d)}
                 additionalContext={{ step_name: step?.step_name, vulnerable_consumer: riskFlags.VULNERABLE_CONSUMER }}
                 title="Analyze Hazards"
                 description={
@@ -1845,10 +1900,11 @@ export default function HACCPMasterFlow() {
 
       return (
         <div className="space-y-6">
-            <HACCPQuestionnaire 
+            <HACCPQuestionnaire
                 key={`${currentHazard.step_name}-${currentHazard.hazards}-${currentCCPIndex}`}
-                sectionData={dynamicSchema} 
-                onComplete={(d) => handleSectionComplete('ccp_determination', d)} 
+                sectionData={dynamicSchema}
+                onComplete={(d) => handleSectionComplete('ccp_determination', d)}
+                onBack={(d) => handleBack('ccp_determination', d)}
                 additionalContext={{ step_name: currentHazard.step_name }}
                 title="Identify Critical Points"
                 description={
@@ -1890,9 +1946,10 @@ export default function HACCPMasterFlow() {
 
        return (
         <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-            <HACCPQuestionnaire 
-                sectionData={dynamicSchema} 
-                onComplete={(d) => handleSectionComplete('ccp_management', d)} 
+            <HACCPQuestionnaire
+                sectionData={dynamicSchema}
+                onComplete={(d) => handleSectionComplete('ccp_management', d)}
+                onBack={(d) => handleBack('ccp_management', d)}
                 // Initial data mapping: { group_id: { ...answers } }
                 initialData={
                     normalizeCcpManagementById(allAnswers.ccp_management)
@@ -1929,7 +1986,7 @@ export default function HACCPMasterFlow() {
                     </div>
                 </div>
             )}
-            <HACCPQuestionnaire sectionData={getQuestions('validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('review_validation', d)} />
+            <HACCPQuestionnaire sectionData={getQuestions('validation', language) as unknown as HACCPSectionData} onComplete={(d) => handleSectionComplete('review_validation', d)} onBack={(d) => handleBack('review_validation', d)} />
         </div>
        );
   }
