@@ -228,7 +228,7 @@ export function buildExportDoc({
   const ccpDeterminationInputs = originalInputs.ccp_determination || {};
   const ccpManagementInputs = originalInputs.ccp_management || {};
   const validationInputs = originalInputs.review_validation || originalInputs.validation || {};
-  const intendedUse = productInputs.intended_use || data.intendedUse || "";
+  const intendedUse = productInputs.intended_consumer_group || productInputs.intended_use || data.intendedUse || "";
   const allergensPresent = formatAllergenList(productInputs.allergens_present || productInputs.allergens);
 
   const buildInputSection = (

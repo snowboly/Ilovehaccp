@@ -45,9 +45,16 @@ export async function POST(req: Request) {
         answers
     } = body;
 
+    // Ensure _original_inputs is always present in fullPlan from builder answers
+    if (fullPlan && answers) {
+        if (!fullPlan._original_inputs || !fullPlan._original_inputs.product) {
+            fullPlan._original_inputs = answers;
+        }
+    }
+
     let result;
     let savedPlanId = planId;
-    
+
     // 2. Save/Update Main Plan Record
     if (planId) {
         // Ownership Check
